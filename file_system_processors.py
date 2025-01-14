@@ -46,17 +46,41 @@ class PowerShellFilesystemListing:
             current, peak = tracemalloc.get_traced_memory()
             print(f"Current mem: {current / 1024} KB, Peak mem: {peak / 1024} KB")
 
-    def __insert_filesystem_entry(self, database_cursor, unix_timestamp, byte_size, parent_file_system_entry_id, mode_directory,
-                                mode_archive, mode_read_only, mode_hidden, mode_system, mode_link, entity_name,
-                                full_name):
+    def __db_execute(self, database_cursor, sql_string, *sql_values):
         if not self.__dry_run_mode:
-            # Insert Entity
-            database_cursor.execute(
-                "INSERT INTO FileSystemEntries (LastWriteTime, ByteSize, ParentFileSystemEntryID, IsDirectory, IsArchive, IsReadOnly, IsHidden, IsSystem, IsLink, Filename, FullName) VALUES (?,?,?,?,?,?,?,?,?,?,?);",
-                (unix_timestamp, byte_size, parent_file_system_entry_id, mode_directory, mode_archive, mode_read_only,
-                 mode_hidden, mode_system, mode_link, entity_name, full_name))
-            # Retrieve the ID of the newly inserted row
+            database_cursor.execute(sql_string, sql_values)
+
+    def __db_commit(self):
+        if not self.__dry_run_mode:
+            # Commit changes to the database
+            self.__database_connection.commit()
+
+    def __db_get_last_row_id(self, database_cursor):
+        if self.__dry_run_mode:
+            return None
+        else:
             return database_cursor.lastrowid
+
+    def __db_fetch_all_results(self, database_cursor):
+        if self.__dry_run_mode:
+            return None
+        else:
+            return database_cursor.fetchall()
+
+    def __db_insert_filesystem_entry(self, database_cursor, unix_timestamp, byte_size, parent_file_system_entry_id, mode_is_directory,
+                                mode_is_archive, mode_is_read_only, mode_is_hidden, mode_is_system, mode_is_link, entity_name,
+                                full_name):
+            # Insert Entity
+            if self.__dry_run_mode:
+                return None
+            else:
+                # database_cursor.execute(
+                self.__db_execute(database_cursor,
+                    "INSERT INTO FileSystemEntries (LastWriteTime, ByteSize, ParentFileSystemEntryID, IsDirectory, IsArchive, IsReadOnly, IsHidden, IsSystem, IsLink, Filename, FullName) VALUES (?,?,?,?,?,?,?,?,?,?,?);",
+                    (unix_timestamp, byte_size, parent_file_system_entry_id, mode_is_directory, mode_is_archive, mode_is_read_only,
+                     mode_is_hidden, mode_is_system, mode_is_link, entity_name, full_name))
+                # Retrieve the ID of the newly inserted row
+                return self.__db_get_last_row_id(database_cursor)
 
     def __find_parent_directory_id(self, database_cursor, last_saved_directory_id, last_saved_directory_name, entity_parent_directory, directory_dictionary):
         # Find Parent Directory ID
@@ -75,10 +99,11 @@ class PowerShellFilesystemListing:
                 # If not, see if it's in the database
                 # print("Database")
                 # database_cursor.execute("SELECT FileSystemEntryID, FullName FROM FileSystemEntries WHERE IsDirectory = 1 AND FullName = ?;", [entity_parent_directory])
-                database_cursor.execute(
+                # database_cursor.execute(
+                self.__db_execute(database_cursor,
                     "SELECT FileSystemEntryID FROM FileSystemEntries WHERE IsDirectory = 1 AND FullName = ?;",
                     [entity_parent_directory])
-                select_result = database_cursor.fetchall()
+                select_result = self.__db_fetch_all_results(database_cursor)
                 for x in select_result:
                     # print(x)
                     parent_file_system_entry_id = x[0]
@@ -201,27 +226,15 @@ class PowerShellFilesystemListing:
                             writer.writelines([pieces_right_strip])  # Wrap inside a list to stop writer delimiting each char
                             # csv_file.flush()
                         elif self.__processing_mode == self.PROCESSING_MODE_DB:
+                            modes_list = list(pieces_right_strip[0])
+                            mode_is_directory = True if (modes_list[0] == 'd') else False # d - Directory
+                            mode_is_archive = True if (modes_list[1] == 'a') else False   # a - Archive
+                            mode_is_read_only = True if (modes_list[2] == 'r') else False # r - Read-only
+                            mode_is_hidden = True if (modes_list[3] == 'h') else False    # h - Hidden
+                            mode_is_system = True if (modes_list[4] == 's') else False    # s - System
+                            mode_is_link = True if (modes_list[5] == 'l') else False      # l - Reparse point, symlink, etc.
 
-                            mode_directory = False # d - Directory
-                            mode_archive = False   # a - Archive
-                            mode_read_only = False # r - Read-only
-                            mode_hidden = False    # h - Hidden
-                            mode_system = False    # s - System
-                            mode_link = False      # l - Reparse point, symlink, etc.
-                            mode_list = list(pieces_right_strip[0])
-                            if mode_list[0] == 'd':
-                                mode_directory = True
-                            if mode_list[1] == 'a':
-                                mode_archive = True
-                            if mode_list[2] == 'r':
-                                mode_read_only = True
-                            if mode_list[3] == 'h':
-                                mode_hidden = True
-                            if mode_list[4] == 's':
-                                mode_system = True
-                            if mode_list[5] == 'l':
-                                mode_link = True
-                            # print(f"{pieces_right_strip[0]}{mode_list}{mode_directory}{mode_archive}{mode_read_only}{mode_hidden}{mode_system}{mode_link}")
+                            # print(f"{pieces_right_strip[0]}{modes_list}{mode_is_directory}{mode_is_archive}{mode_is_read_only}{mode_is_hidden}{mode_is_system}{mode_is_link}")
                             # DateTime string
                             datetime_string = pieces_right_strip[1]
                             # print(f"datetime_string: {datetime_string}")
@@ -256,7 +269,7 @@ class PowerShellFilesystemListing:
                                 # and the length of the parent entity directory == 3
                                 # and the parent entity directory ends with ":\"
                                 # then insert it into the database
-                                id_of_inserted_row = self.__insert_filesystem_entry(database_cursor, 1736028193, None,
+                                id_of_inserted_row = self.__db_insert_filesystem_entry(database_cursor, 1736028193, None,
                                                         None, 1, 0, 0,
                                                         1, 1, 0, entity_parent_directory, entity_parent_directory)
                                 last_saved_directory_name = entity_parent_directory
@@ -268,10 +281,10 @@ class PowerShellFilesystemListing:
                             parent_file_system_entry_id = self.__find_parent_directory_id(database_cursor, last_saved_directory_id, last_saved_directory_name, entity_parent_directory, directory_dictionary)
 
                             # Insert Entity
-                            id_of_inserted_row = self.__insert_filesystem_entry(database_cursor, unix_timestamp, byte_size, parent_file_system_entry_id,
-                                                         mode_directory, mode_archive, mode_read_only, mode_hidden,
-                                                         mode_system, mode_link, entity_name, full_name)
-                            if mode_directory:
+                            id_of_inserted_row = self.__db_insert_filesystem_entry(database_cursor, unix_timestamp, byte_size, parent_file_system_entry_id,
+                                                         mode_is_directory, mode_is_archive, mode_is_read_only, mode_is_hidden,
+                                                         mode_is_system, mode_is_link, entity_name, full_name)
+                            if mode_is_directory:
                                 last_saved_directory_name = full_name
                                 last_saved_directory_id = id_of_inserted_row
                                 directory_dictionary[full_name] = id_of_inserted_row
@@ -279,7 +292,7 @@ class PowerShellFilesystemListing:
 
                             #database_cursor.execute(
                             #    "INSERT INTO FileSystemEnties (LastWriteTime, ByteSize, ParentFileSystemEntryID, IsDirectory, IsArchive, IsReadOnly, IsHidden, IsSystem, IsLink, Filename, FullName) VALUES (?,?,NULL,?,?,?,?,?,?,?,?);",
-                            #    (unix_timestamp, byte_size, mode_directory, mode_archive, mode_read_only, mode_hidden, mode_system, mode_link, entity_name, full_name) )
+                            #    (unix_timestamp, byte_size, mode_is_directory, mode_is_archive, mode_is_read_only, mode_is_hidden, mode_is_system, mode_is_link, entity_name, full_name) )
 
 
                         lines_processed += 1
