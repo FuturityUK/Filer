@@ -7,8 +7,7 @@ class Database:
     """ Class to handle SQlite operations """
 
 
-    def __init__(self, conn):
-        self.conn = conn
+    def __init__(self):
         self.connection = None
         self.cursor = None
         return

@@ -40,11 +40,11 @@ database_connection = database.create_connection(database_filename)
 #print(f"database_connection: {database_connection}")
 
 powershell_filesystem_listing = PowerShellFilesystemListing(input_filename, MEMORY_STATS)
-powershell_filesystem_listing.set_dry_run_mode(True)
+powershell_filesystem_listing.set_dry_run_mode(False)
 # Now that data is loaded into the database DON'T run this again
 #powershell_filesystem_listing.save_to_CSV(output_filename)
-#powershell_filesystem_listing.save_to_database(database_connection)
-#powershell_filesystem_listing.process_file()
+powershell_filesystem_listing.save_to_database(database_connection)
+powershell_filesystem_listing.process_file()
 
 queries = Queries(database_connection)
 

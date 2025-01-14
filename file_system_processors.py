@@ -68,7 +68,7 @@ class PowerShellFilesystemListing:
             return database_cursor.fetchall()
 
     def __db_vacuum(self, database_cursor):
-        # Shrink to database to reclaim disk space
+        # Shrink to database to reclaim unused space in the database file as well fix defragmentation.
         self.__database_connection.isolation_level = None
         self.__db_execute(database_cursor, "VACUUM")
         self.__database_connection.isolation_level = ''  # <- note that this is the default value of isolation_level
