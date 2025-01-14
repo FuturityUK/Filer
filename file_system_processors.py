@@ -67,6 +67,14 @@ class PowerShellFilesystemListing:
         else:
             return database_cursor.fetchall()
 
+    def __db_vacuum(self, database_cursor):
+        # Shrink to database to reclaim disk space
+        self.__database_connection.isolation_level = None
+        self.__db_execute(database_cursor, "VACUUM")
+        self.__database_connection.isolation_level = ''  # <- note that this is the default value of isolation_level
+        # self.__database_connection.commit()
+        self.__db_commit()
+
     def __db_insert_filesystem_entry(self, database_cursor, unix_timestamp, byte_size, parent_file_system_entry_id, mode_is_directory,
                                 mode_is_archive, mode_is_read_only, mode_is_hidden, mode_is_system, mode_is_link, entity_name,
                                 full_name):
@@ -139,18 +147,16 @@ class PowerShellFilesystemListing:
 
                 # Check is tables already exist.
                 # If it exists, empty all the data and reset autoincrement counters
-                database_cursor.execute("DELETE FROM FileSystemEntries;")
-                database_cursor.execute("DELETE FROM SQLITE_SEQUENCE WHERE name='FileSystemEntries';")
+                self.__db_execute(database_cursor, "DELETE FROM FileSystemEntries;")
+                self.__db_execute(database_cursor, "DELETE FROM SQLITE_SEQUENCE WHERE name='FileSystemEntries';")
                 # Commit changes to the database
-                self.__database_connection.commit()
-                # Shrink to database to reclaim disk space
-                self.__database_connection.isolation_level = None
-                database_cursor.execute('VACUUM')
-                self.__database_connection.isolation_level = ''  # <- note that this is the default value of isolation_level
-                self.__database_connection.commit()
+                #self.__database_connection.commit()
+                self.__db_commit()
+                # Vacuum database to reclaim empty space
+                self.__db_vacuum(database_cursor)
+                quit()
 
                 # If not create them.
-
                 # Create database tables
                 # create_table_sql = """;"""
                 # database_cursor.execute(create_table_sql)
