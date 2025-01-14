@@ -1,11 +1,10 @@
 import sqlite3
 from sqlite3 import Error
-import functools
-from typing import Any, Callable, List, Optional, Tuple
+#import functools
+#from typing import Any, Callable, List, Optional, Tuple
 
 class Database:
     """ Class to handle SQlite operations """
-
 
     def __init__(self):
         self.connection = None

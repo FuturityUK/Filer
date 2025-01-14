@@ -48,7 +48,7 @@ class PowerShellFilesystemListing:
 
     def __db_execute(self, database_cursor, sql_string, *sql_values):
         if not self.__dry_run_mode:
-            database_cursor.execute(sql_string, sql_values)
+            database_cursor.execute(sql_string, *sql_values)
 
     def __db_commit(self):
         if not self.__dry_run_mode:
@@ -73,6 +73,12 @@ class PowerShellFilesystemListing:
         self.__db_execute(database_cursor, "VACUUM")
         self.__database_connection.isolation_level = ''  # <- note that this is the default value of isolation_level
         # self.__database_connection.commit()
+        self.__db_commit()
+
+    def __db_empty_table(self, database_cursor):
+        self.__db_execute(database_cursor, "DELETE FROM FileSystemEntries;")
+        self.__db_execute(database_cursor, "DELETE FROM SQLITE_SEQUENCE WHERE name='FileSystemEntries';")
+        # Commit changes to the database
         self.__db_commit()
 
     def __db_insert_filesystem_entry(self, database_cursor, unix_timestamp, byte_size, parent_file_system_entry_id, mode_is_directory,
@@ -147,14 +153,9 @@ class PowerShellFilesystemListing:
 
                 # Check is tables already exist.
                 # If it exists, empty all the data and reset autoincrement counters
-                self.__db_execute(database_cursor, "DELETE FROM FileSystemEntries;")
-                self.__db_execute(database_cursor, "DELETE FROM SQLITE_SEQUENCE WHERE name='FileSystemEntries';")
-                # Commit changes to the database
-                #self.__database_connection.commit()
-                self.__db_commit()
+                self.__db_empty_table(database_cursor)
                 # Vacuum database to reclaim empty space
                 self.__db_vacuum(database_cursor)
-                quit()
 
                 # If not create them.
                 # Create database tables
@@ -166,8 +167,14 @@ class PowerShellFilesystemListing:
                 slices.append(slice(offset, offset + width))
                 offset += width
 
+            input_file_stats = os.stat(self.__input_filename)
+            input_file_size_bytes = input_file_stats.st_size
+            input_file_processed_bytes = 0
+
             for filelineno, line in enumerate(open(self.__input_filename, encoding="utf-8")):
                 line_number += 1
+                input_file_processed_bytes += len(line) +1 # +1 for \n line terminator (HANDLE \r\n in future)
+
                 line_right_strip = line.rstrip()
                 # print("Line loaded")
                 # print(f"next_line_field_widths: {next_line_field_widths}")
@@ -308,7 +315,12 @@ class PowerShellFilesystemListing:
                         time_taken_ms = (time.time() - processing_data_lines_start_time)*1000
 
                     if (lines_processed % 10000 == 0):
-                        print(f"Processed: {lines_processed} lines, in {int(time_taken_ms)}ms = {int((lines_processed / time_taken_ms) * 1000)} lines/s, LS: {hits_last_saved_directory} {int(hits_last_saved_directory/(hits_last_saved_directory+hits_directory_dictionary+hits_database)*100)}%, DD: {hits_directory_dictionary}, DB: {hits_database}")
+                        #print(f"Processed: {lines_processed} lines, in {int(time_taken_ms)}ms = {int((lines_processed / time_taken_ms) * 1000)} lines/s, LS: {hits_last_saved_directory} {int(hits_last_saved_directory / (hits_last_saved_directory + hits_directory_dictionary + hits_database) * 100)}%, DD: {hits_directory_dictionary}, DB: {hits_database}")
+                        #print(f"Processed: {int(input_file_processed_bytes*1000/input_file_size_bytes)/10}% {lines_processed} lines, in {int(time_taken_ms)}ms = {int((lines_processed / time_taken_ms) * 1000)} lines/s, LS: {hits_last_saved_directory}, DD: {hits_directory_dictionary}, DB: {hits_database}")
+                        bytes_remaining_to_process = input_file_size_bytes - input_file_processed_bytes
+                        bytes_processed_per_second = input_file_processed_bytes / time_taken_ms * 1000
+                        eta_seconds = int(bytes_remaining_to_process * 10 / bytes_processed_per_second) / 10
+                        print(f"Processed: {int(input_file_processed_bytes*1000/input_file_size_bytes)/10}%, ETA: {eta_seconds} seconds")
                         self.display_memory_stats()
                         # Commit changes to the database
                         self.__database_connection.commit()
@@ -368,3 +380,54 @@ class FilesystemDatabase:
         print("__init__()")
         self.database_directory = database_directory
 
+''' MAIN '''
+from file_system_processors import PowerShellFilesystemListing
+from queries import Queries
+from database import Database
+import tracemalloc
+
+MEMORY_STATS = False
+
+if MEMORY_STATS:
+    # Start tracing memory allocations
+    tracemalloc.start()
+
+# Press the green button in the gutter to run the script.
+if __name__ == '__main__':
+    print("!!! Starting !!!")
+
+# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+
+'''
+TO DO:
+- Work out the size of a drive so that when it is being scanned, progress as a percentage can be shown.
+- Time the different between using an array and a dictionary. The array should be a lot faster.
+- Store sizes of directories
+- add files to exclude from the directory size calculations like themnails, apple directory cache files (get list from other programs)
+
+'''
+
+input_filename = "C:\\Data\\ws1,e.fwf"
+output_filename = "C:\\Data\\ws1,e.csv.txt"
+database_filename = "I:\\FileProcessorDatabase\\database.sqlite"
+database = Database()
+database_connection = database.create_connection(database_filename)
+#print(f"database_connection: {database_connection}")
+
+powershell_filesystem_listing = PowerShellFilesystemListing(input_filename, MEMORY_STATS)
+powershell_filesystem_listing.set_dry_run_mode(False)
+# Now that data is loaded into the database DON'T run this again
+#powershell_filesystem_listing.save_to_CSV(output_filename)
+powershell_filesystem_listing.save_to_database(database_connection)
+powershell_filesystem_listing.process_file()
+
+queries = Queries(database_connection)
+
+# Closing the connection
+database_connection.close()
+
+if MEMORY_STATS:
+    # Stop tracing memory allocations
+    tracemalloc.stop()
+
+exit()
