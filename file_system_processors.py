@@ -3,50 +3,88 @@ import os
 import datetime
 import os.path
 import time
-from logging import NullHandler
 import tracemalloc
 
-# from fileinput import filename
+
+
 
 class PowerShellFilesystemListing:
     """ Class to convert the output from the PowerShell Get-ChildItem command into a CSV database form """
 
     # Below is the Windows PowerShell command to capture all files and their permissions: "-First 1000" limits search to first 1000 files found:
     # Get-ChildItem -Path E:\ -ErrorAction SilentlyContinue -Recurse -Force | Select-Object -First 1000 Mode, LastWriteTime, Length, FullName | Format-Table -Wrap -AutoSize | Out-File -width 9999 -Encoding utf8 "C:\Users\Administrator.WS1\Documents\csv\ws1-e.csv"
-    cvs_mode = None
-    input_filename = None
-    output_filename = None
-    database_connection = None
-    memory_stats = False
+
+    # Constants
+    PROCESSING_MODE_NOT_SET = 0
+    PROCESSING_MODE_CSV = 1
+    PROCESSING_MODE_DB = 2
 
     def __init__(self, input_filename, memory_stats):
-        print("__init__()")
-        self.input_filename = input_filename
-        self.memory_stats = memory_stats
+        self.__input_filename = input_filename
+        self.__memory_stats = memory_stats
+        self.__processing_mode = self.PROCESSING_MODE_NOT_SET
+        self.__database_connection = None
+        self.__output_csv_filename = None
+        self.__dry_run_mode = False
 
-    def save_to_CSV(self, output_filename):
-        self.cvs_mode = True
-        self.output_filename = output_filename
+    def set_dry_run_mode(self, dry_run_mode):
+        self.__dry_run_mode = dry_run_mode
+
+    def save_to_csv(self, output_csv_filename):
+        self.__processing_mode = self.PROCESSING_MODE_CSV
+        self.__output_csv_filename = output_csv_filename
 
     def save_to_database(self, database_connection):
         # print(database_connection)
-        self.cvs_mode = False
-        self.database_connection = database_connection
-        self.output_filename = os.devnull
-
-    def insert_filesystem_entry(self, database_cursor, unix_timestamp, byte_size, parent_file_system_entry_id, mode_directory, mode_archive, mode_read_only, mode_hidden, mode_system, mode_link, entity_name, full_name):
-        # Insert Entity
-        database_cursor.execute(
-            "INSERT INTO FileSystemEntries (LastWriteTime, ByteSize, ParentFileSystemEntryID, IsDirectory, IsArchive, IsReadOnly, IsHidden, IsSystem, IsLink, Filename, FullName) VALUES (?,?,?,?,?,?,?,?,?,?,?);",
-            (unix_timestamp, byte_size, parent_file_system_entry_id, mode_directory, mode_archive, mode_read_only, mode_hidden, mode_system, mode_link, entity_name, full_name) )
-        # Retrieve the ID of the newly inserted row
-        return database_cursor.lastrowid
+        self.__processing_mode = self.PROCESSING_MODE_DB
+        self.__database_connection = database_connection
+        self.__output_csv_filename = os.devnull
 
     def display_memory_stats(self):
-        if self.memory_stats:
+        if self.__memory_stats:
             # Get the current memory usage
             current, peak = tracemalloc.get_traced_memory()
             print(f"Current mem: {current / 1024} KB, Peak mem: {peak / 1024} KB")
+
+    def __insert_filesystem_entry(self, database_cursor, unix_timestamp, byte_size, parent_file_system_entry_id, mode_directory,
+                                mode_archive, mode_read_only, mode_hidden, mode_system, mode_link, entity_name,
+                                full_name):
+        if not self.__dry_run_mode:
+            # Insert Entity
+            database_cursor.execute(
+                "INSERT INTO FileSystemEntries (LastWriteTime, ByteSize, ParentFileSystemEntryID, IsDirectory, IsArchive, IsReadOnly, IsHidden, IsSystem, IsLink, Filename, FullName) VALUES (?,?,?,?,?,?,?,?,?,?,?);",
+                (unix_timestamp, byte_size, parent_file_system_entry_id, mode_directory, mode_archive, mode_read_only,
+                 mode_hidden, mode_system, mode_link, entity_name, full_name))
+            # Retrieve the ID of the newly inserted row
+            return database_cursor.lastrowid
+
+    def __find_parent_directory_id(self, database_cursor, last_saved_directory_id, last_saved_directory_name, entity_parent_directory, directory_dictionary):
+        # Find Parent Directory ID
+        parent_file_system_entry_id = None
+        # Check if the last inserted directory is the parent directory
+        if last_saved_directory_id != 0 and last_saved_directory_name == entity_parent_directory:
+            parent_file_system_entry_id = last_saved_directory_id
+            #hits_last_saved_directory += 1
+        else:
+            try:
+                # If not, see if it's in the directory_dictionary cache
+                parent_file_system_entry_id = directory_dictionary[entity_parent_directory]
+                #hits_directory_dictionary += 1
+                # print("Cache")
+            except KeyError:
+                # If not, see if it's in the database
+                # print("Database")
+                # database_cursor.execute("SELECT FileSystemEntryID, FullName FROM FileSystemEntries WHERE IsDirectory = 1 AND FullName = ?;", [entity_parent_directory])
+                database_cursor.execute(
+                    "SELECT FileSystemEntryID FROM FileSystemEntries WHERE IsDirectory = 1 AND FullName = ?;",
+                    [entity_parent_directory])
+                select_result = database_cursor.fetchall()
+                for x in select_result:
+                    # print(x)
+                    parent_file_system_entry_id = x[0]
+                    #hits_database += 1
+                    # print(parent_file_system_entry_id)
+        return parent_file_system_entry_id
 
     def process_file(self):
         print("process_file()")
@@ -66,25 +104,25 @@ class PowerShellFilesystemListing:
         hits_directory_dictionary = 0
         hits_database = 0
 
-        with open(self.output_filename, 'w', newline='', encoding="utf-8") as csv_file:
+        with open(self.__output_csv_filename, 'w', newline='', encoding="utf-8") as csv_file:
             writer = csv.writer(csv_file, quoting=csv.QUOTE_NONE,
                                 delimiter='|', quotechar='"', escapechar='\\')
 
-            if not self.cvs_mode:
+            if self.__processing_mode == self.PROCESSING_MODE_DB:
                 # Create a cursor object using the cursor() method
-                database_cursor = self.database_connection.cursor()
+                database_cursor = self.__database_connection.cursor()
 
                 # Check is tables already exist.
                 # If it exists, empty all the data and reset autoincrement counters
                 database_cursor.execute("DELETE FROM FileSystemEntries;")
                 database_cursor.execute("DELETE FROM SQLITE_SEQUENCE WHERE name='FileSystemEntries';")
                 # Commit changes to the database
-                self.database_connection.commit()
+                self.__database_connection.commit()
                 # Shrink to database to reclaim disk space
-                self.database_connection.isolation_level = None
+                self.__database_connection.isolation_level = None
                 database_cursor.execute('VACUUM')
-                self.database_connection.isolation_level = ''  # <- note that this is the default value of isolation_level
-                self.database_connection.commit()
+                self.__database_connection.isolation_level = ''  # <- note that this is the default value of isolation_level
+                self.__database_connection.commit()
 
                 # If not create them.
 
@@ -97,7 +135,7 @@ class PowerShellFilesystemListing:
                 slices.append(slice(offset, offset + width))
                 offset += width
 
-            for filelineno, line in enumerate(open(self.input_filename, encoding="utf-8")):
+            for filelineno, line in enumerate(open(self.__input_filename, encoding="utf-8")):
                 line_number += 1
                 line_right_strip = line.rstrip()
                 # print("Line loaded")
@@ -108,7 +146,7 @@ class PowerShellFilesystemListing:
                         # Must be the first line containing text, so much be the header
                         field_headers = line_right_strip.split()
                         print(field_headers)
-                        if self.cvs_mode:
+                        if self.__processing_mode == self.PROCESSING_MODE_CSV:
                             writer.writelines([field_headers]) # Wrap inside a list to stop writer delimiting each char
                             # csv_file.flush()
 
@@ -159,10 +197,10 @@ class PowerShellFilesystemListing:
                     if len(pieces_right_strip) > 0 and pieces_right_strip[0] != "":
                         # Only save lines with content in them. No mode = no valid row.
                         # print(f"{pieces_right_strip}: {len(pieces_right_strip)}")
-                        if self.cvs_mode:
+                        if self.__processing_mode == self.PROCESSING_MODE_CSV:
                             writer.writelines([pieces_right_strip])  # Wrap inside a list to stop writer delimiting each char
                             # csv_file.flush()
-                        else:
+                        elif self.__processing_mode == self.PROCESSING_MODE_DB:
 
                             mode_directory = False # d - Directory
                             mode_archive = False   # a - Archive
@@ -218,7 +256,7 @@ class PowerShellFilesystemListing:
                                 # and the length of the parent entity directory == 3
                                 # and the parent entity directory ends with ":\"
                                 # then insert it into the database
-                                id_of_inserted_row = self.insert_filesystem_entry(database_cursor, 1736028193, None,
+                                id_of_inserted_row = self.__insert_filesystem_entry(database_cursor, 1736028193, None,
                                                         None, 1, 0, 0,
                                                         1, 1, 0, entity_parent_directory, entity_parent_directory)
                                 last_saved_directory_name = entity_parent_directory
@@ -227,31 +265,10 @@ class PowerShellFilesystemListing:
                                 root_entity_not_found = False
 
                             # Find Parent Directory ID
-                            # Check if the last inserted directory is the parent directory
-                            if last_saved_directory_id != 0 and last_saved_directory_name == entity_parent_directory:
-                                parent_file_system_entry_id = last_saved_directory_id
-                                hits_last_saved_directory += 1
-                            else:
-                                try:
-                                    # If not, see if it's in the directory_dictionary cache
-                                    parent_file_system_entry_id = directory_dictionary[entity_parent_directory]
-                                    hits_directory_dictionary += 1
-                                    # print("Cache")
-                                except KeyError:
-                                    # If not, see if it's in the database
-                                    # print("Database")
-                                    parent_file_system_entry_id = None
-                                    #database_cursor.execute("SELECT FileSystemEntryID, FullName FROM FileSystemEntries WHERE IsDirectory = 1 AND FullName = ?;", [entity_parent_directory])
-                                    database_cursor.execute("SELECT FileSystemEntryID FROM FileSystemEntries WHERE IsDirectory = 1 AND FullName = ?;", [entity_parent_directory])
-                                    select_result = database_cursor.fetchall()
-                                    for x in select_result:
-                                        # print(x)
-                                        parent_file_system_entry_id = x[0]
-                                        hits_database += 1
-                                        # print(parent_file_system_entry_id)
+                            parent_file_system_entry_id = self.__find_parent_directory_id(database_cursor, last_saved_directory_id, last_saved_directory_name, entity_parent_directory, directory_dictionary)
 
                             # Insert Entity
-                            id_of_inserted_row = self.insert_filesystem_entry(database_cursor, unix_timestamp, byte_size, parent_file_system_entry_id,
+                            id_of_inserted_row = self.__insert_filesystem_entry(database_cursor, unix_timestamp, byte_size, parent_file_system_entry_id,
                                                          mode_directory, mode_archive, mode_read_only, mode_hidden,
                                                          mode_system, mode_link, entity_name, full_name)
                             if mode_directory:
@@ -275,20 +292,20 @@ class PowerShellFilesystemListing:
                         print(f"Processed: {lines_processed} lines, in {int(time_taken_ms)}ms = {int((lines_processed / time_taken_ms) * 1000)} lines/s, LS: {hits_last_saved_directory} {int(hits_last_saved_directory/(hits_last_saved_directory+hits_directory_dictionary+hits_database)*100)}%, DD: {hits_directory_dictionary}, DB: {hits_database}")
                         self.display_memory_stats()
                         # Commit changes to the database
-                        self.database_connection.commit()
+                        self.__database_connection.commit()
 
                     # if (lines_processed >= 10000):
                     #     print(f"Lines: Processed: {lines_processed}, in {time_taken_ms}ms = {(1000 / time_taken_ms) * 1000} lines per second")
                     #     # Commit changes to the database
-                    #     self.database_connection.commit()
+                    #     self.__database_connection.commit()
                     #     # Closing the connection
-                    #     self.database_connection.close()
+                    #     self.__database_connection.close()
                     #     exit()
 
         print(f"Processed: {lines_processed} lines, in {int(time_taken_ms)}ms = {int((lines_processed / time_taken_ms)) * 1000} lines/s")
         self.display_memory_stats()
         # Commit changes to the database
-        self.database_connection.commit()
+        self.__database_connection.commit()
         # Close the Cursor
         database_cursor.close()
         print("File Processed")
@@ -296,11 +313,11 @@ class PowerShellFilesystemListing:
     def directory_sizes_clear(self):
         sql_directory_sizes_clear = """UPDATE FileSystemEntries SET ByteSize = NULL WHERE IsDirectory = 1;"""
         # Create a cursor object using the cursor() method
-        database_cursor = self.database_connection.cursor()
+        database_cursor = self.__database_connection.cursor()
         # Execute SQL
         database_cursor.execute(sql_directory_sizes_clear)
         # Commit changes to the database
-        self.database_connection.commit()
+        self.__database_connection.commit()
         # Close the Cursor
         database_cursor.close()
 
@@ -314,11 +331,11 @@ ON fse1.FileSystemEntryID = fse2.ParentFileSystemEntryID
 GROUP BY fse1.FileSystemEntryID
 HAVING fse1.ByteSize = NULL;"""
         # Create a cursor object using the cursor() method
-        database_cursor = self.database_connection.cursor()
+        database_cursor = self.__database_connection.cursor()
         # Execute SQL
         database_cursor.execute(sql_directory_sizes_calculate)
         # Commit changes to the database
-        self.database_connection.commit()
+        self.__database_connection.commit()
         # Close the Cursor
         database_cursor.close()
 
