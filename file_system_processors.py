@@ -289,11 +289,38 @@ class PowerShellFilesystemListing:
         self.display_memory_stats()
         # Commit changes to the database
         self.database_connection.commit()
-        # Closing the connection
-        self.database_connection.close()
+        # Close the Cursor
+        database_cursor.close()
         print("File Processed")
 
+    def directory_sizes_clear(self):
+        sql_directory_sizes_clear = """UPDATE FileSystemEntries SET ByteSize = NULL WHERE IsDirectory = 1;"""
+        # Create a cursor object using the cursor() method
+        database_cursor = self.database_connection.cursor()
+        # Execute SQL
+        database_cursor.execute(sql_directory_sizes_clear)
+        # Commit changes to the database
+        self.database_connection.commit()
+        # Close the Cursor
+        database_cursor.close()
 
+    def directory_sizes_calculate(self):
+        sql_directory_sizes_calculate = """SELECT fse1.FileSystemEntryID, fse1.FullName, fse1.ByteSize,
+SUM(fse2.IsDirectory) Sub_Dirs, SUM(CASE WHEN fse2.ByteSize IS NULL THEN 1 ELSE 0 END) Sub_Dirs_Nulls,
+count(fse2.ByteSize) Sub_Dirs_Not_Nulls, SUM(fse2.ByteSize) Total_Size, COUNT(fse2.FullName) Entities_In_Dir
+FROM FileSystemEntries fse1
+INNER JOIN FileSystemEntries fse2
+ON fse1.FileSystemEntryID = fse2.ParentFileSystemEntryID
+GROUP BY fse1.FileSystemEntryID
+HAVING fse1.ByteSize = NULL;"""
+        # Create a cursor object using the cursor() method
+        database_cursor = self.database_connection.cursor()
+        # Execute SQL
+        database_cursor.execute(sql_directory_sizes_calculate)
+        # Commit changes to the database
+        self.database_connection.commit()
+        # Close the Cursor
+        database_cursor.close()
 
 class FilesystemDatabase:
     """ Class to load and process the CSV database """

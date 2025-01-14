@@ -47,6 +47,9 @@ database_connection = database.create_connection(database_filename)
 
 queries = Queries(database_connection)
 
+# Closing the connection
+database_connection.close()
+
 if MEMORY_STATS:
     # Stop tracing memory allocations
     tracemalloc.stop()
