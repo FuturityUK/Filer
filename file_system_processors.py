@@ -385,6 +385,7 @@ from file_system_processors import PowerShellFilesystemListing
 from queries import Queries
 from database import Database
 import tracemalloc
+import argparse
 
 MEMORY_STATS = False
 
@@ -406,6 +407,20 @@ TO DO:
 - add files to exclude from the directory size calculations like themnails, apple directory cache files (get list from other programs)
 
 '''
+
+parser=argparse.ArgumentParser(description="Filer - File System Manager")
+parser.add_argument("-c", "--cmd", help="command to perform") #  Compulsory option if this not added: ,nargs='?', default="input.fwf"
+parser.add_argument("-n", "--name", default="unknown", help="drive's unique name")
+parser.add_argument("-d", "--db", default="database.sqlite", help="database filename (including path if necessary)")
+parser.add_argument("-i", "--input", default="input.fwf", help="input filename (including path if necessary) of a directory structure to be processed in fixed width format")
+parser.add_argument("-o", "--output", default="output.csv", help="output filename (including path if necessary) to export information into in csv format")
+parser.add_argument("-t", "--test", action="store_true", help="test input file without modifying the database")
+parser.add_argument("-v", "--verbose", action="store_true", help="increase output verbosity")
+args=parser.parse_args()
+
+print(f"name: '{args.name}'")
+
+quit()
 
 input_filename = "C:\\Data\\ws1,e.fwf"
 output_filename = "C:\\Data\\ws1,e.csv.txt"
