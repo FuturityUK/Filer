@@ -1,0 +1,26 @@
+To DO:
+- Ask the user if they want to create a new database if it is missing
+  - Show filename
+  - Show path
+- Implement the create database functionality
+  - call it if the user agrees to create a new database
+- Implement database reset functionality
+  - only call it after the user has requested it
+  - Show filename
+  - Show path
+  - Double check by asking the user to type 'reset'
+- Fix the function to import of file system listing from the fwf file.
+- Modify the import function to
+  - take the file system label
+  - check if the label exists in the file system table and if it does, ask the user if they want to replace the entries for it
+  - if not update the file systems table to obtain the id of this new label
+  - store the file system id for each of its file system entries
+- add '-y' functionality to turn off interactive questions and go with defaults
+  - for all questions, make sure that the defaults are shown
+- 'list-file-systems' subcommand
+- 'find' subcommand
+- 'duplicates' subcommand
+
+
+
+
