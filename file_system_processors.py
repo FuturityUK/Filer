@@ -358,6 +358,12 @@ from database import Database
 import tracemalloc
 import argparse
 
+def add_db_and_verbose_to_parser(parser):
+    parser.add_argument("-d", "--db", default="database.sqlite",
+                               help="database filename (including path if necessary). Default='database.sqlite'")
+    parser.add_argument("-v", "--verbose", action="store_true", help="increase output verbosity")
+
+
 MEMORY_STATS = False
 
 if MEMORY_STATS:
@@ -383,56 +389,61 @@ parser=argparse.ArgumentParser(
 #    prog='Filer',
 #    epilog='Text at the bottom of help',
     description="Filer - File System Manager")
-#parser.add_argument("-c", "--cmd", help="command to perform") #  Compulsory option if this not added: ,nargs='?', default="input.fwf"
-#parser.add_argument("-o", "--output", default="output.csv", help="output filename (including path if necessary) to export information into in csv format")
 #parser.add_argument("-t", "--test", action="store_true", help="test input file without modifying the database")
 
 subparsers = parser.add_subparsers(title='subcommands',
                                    description='valid subcommands',
                                    required=True,
-                                   dest='command',
+                                   dest='subcommand',
                                    help='additional help')
 
-# create the parser for the "import" command
+# create the parser for the "import" subcommand
 parser_find = subparsers.add_parser('find', help='find help')
 parser_find.add_argument('--baz', choices=('X', 'Y', 'Z'), help='baz help')
 
-# create the parser for the "import" command
+# create the parser for the "import" subcommand
 parser_import = subparsers.add_parser('import', help='import help')
 parser_import.add_argument("-l", "--label", default="unknown", help="drive's unique label string")
 parser_import.add_argument("-f", "--file", default="listing.fwf", help="filename (including path) containing a directory structure in fixed width format to be processed")
 parser_import.add_argument("-t", "--test", action="store_true", help="test input file without modifying the database")
 
-# create the parser for the "vacuum" command
+# create the parser for the "vacuum" subcommand
 parser_vacuum = subparsers.add_parser('vacuum',
                                       help='vacuum help',
-                                      description="The VACUUM command rebuilds the database file by reading the current file and writing the content into a new file. As a result it repacking it into a minimal amount of disk space and defragments it which ensures that each table and index is largely stored contiguously. Depending on the size of the database it can take some time to do perform.")
-parser_vacuum.add_argument("-d", "--db", default="database.sqlite", help="database filename (including path if necessary). Default='database.sqlite'")
-parser_vacuum.add_argument("-v", "--verbose", action="store_true", help="increase output verbosity")
+                                      description="The VACUUM subcommand rebuilds the database file by reading the current file and writing the content into a new file. As a result it repacking it into a minimal amount of disk space and defragments it which ensures that each table and index is largely stored contiguously. Depending on the size of the database it can take some time to do perform.")
+add_db_and_verbose_to_parser(parser_vacuum)
+
+parser_vacuum = subparsers.add_parser('reset',
+                                      help='reset help',
+                                      description="Warning: Using the 'reset' subcommand will delete the specified database and replace it with an empty one.")
+add_db_and_verbose_to_parser(parser_vacuum)
 
 args=parser.parse_args()
 
 print(f"args: '{args}'")
 
-print(f"command: '{args.command}'")
+print(f"subcommand: '{args.subcommand}'")
 
 #quit()
 
-# These command don't require a database
-if args.command == "version":
+# These subcommands don't require a database
+if args.subcommand == "version":
     version = "0.1 Alpha"
     print(f"Version: {version}")
     quit()
 
-# The following commands all require a database
+# The following subcommands all require a database
 database_filename = args.db
+
+# Does the database file exit?
+# If not, ask the user if they want to create a new database at the specified location (give the full path as well)
 
 database = Database()
 database.create_connection(database_filename)
 #print(f"database_connection: {database_connection}")
 database.create_cursor()
 
-if args.command == "vacuum":
+if args.subcommand == "vacuum":
     print(f"Vacuuming database. This may take a while depending on the your database size.")
     database.vacuum()
     print(f"Vacuuming finished.")
