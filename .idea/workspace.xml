@@ -4,8 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Added arguments">
+    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Further work on Arguments and subcommand arguments">
+      <change afterPath="$PROJECT_DIR$/vacuum.bat" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database.py" beforeDir="false" afterPath="$PROJECT_DIR$/database.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/file_system_processors.py" beforeDir="false" afterPath="$PROJECT_DIR$/file_system_processors.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -151,7 +153,15 @@
       <option name="project" value="LOCAL" />
       <updated>1737060051901</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="Further work on Arguments and subcommand arguments">
+      <option name="closed" value="true" />
+      <created>1737224720699</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1737224720699</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -174,6 +184,7 @@
     <MESSAGE value="Database deletion and vacuum works" />
     <MESSAGE value="Database inserts are now working, as well as parent ID lookups." />
     <MESSAGE value="Added arguments" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added arguments" />
+    <MESSAGE value="Further work on Arguments and subcommand arguments" />
+    <option name="LAST_COMMIT_MESSAGE" value="Further work on Arguments and subcommand arguments" />
   </component>
 </project>

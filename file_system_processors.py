@@ -46,35 +46,6 @@ class PowerShellFilesystemListing:
             current, peak = tracemalloc.get_traced_memory()
             print(f"Current mem: {current / 1024} KB, Peak mem: {peak / 1024} KB")
 
-    def __db_execute(self, database_cursor, sql_string, *sql_values):
-        if not self.__dry_run_mode:
-            database_cursor.execute(sql_string, *sql_values)
-
-    def __db_commit(self):
-        if not self.__dry_run_mode:
-            # Commit changes to the database
-            self.__database_connection.commit()
-
-    def __db_get_last_row_id(self, database_cursor):
-        if self.__dry_run_mode:
-            return None
-        else:
-            return database_cursor.lastrowid
-
-    def __db_fetch_all_results(self, database_cursor):
-        if self.__dry_run_mode:
-            return None
-        else:
-            return database_cursor.fetchall()
-
-    def __db_vacuum(self, database_cursor):
-        # Shrink to database to reclaim unused space in the database file as well fix defragmentation.
-        self.__database_connection.isolation_level = None
-        self.__db_execute(database_cursor, "VACUUM")
-        self.__database_connection.isolation_level = ''  # <- note that this is the default value of isolation_level
-        # self.__database_connection.commit()
-        self.__db_commit()
-
     def __db_empty_table(self, database_cursor):
         self.__db_execute(database_cursor, "DELETE FROM FileSystemEntries;")
         self.__db_execute(database_cursor, "DELETE FROM SQLITE_SEQUENCE WHERE name='FileSystemEntries';")
@@ -412,11 +383,9 @@ parser=argparse.ArgumentParser(
 #    prog='Filer',
 #    epilog='Text at the bottom of help',
     description="Filer - File System Manager")
-parser.add_argument("-d", "--db", default="database.sqlite", help="database filename (including path if necessary)")
 #parser.add_argument("-c", "--cmd", help="command to perform") #  Compulsory option if this not added: ,nargs='?', default="input.fwf"
 #parser.add_argument("-o", "--output", default="output.csv", help="output filename (including path if necessary) to export information into in csv format")
 #parser.add_argument("-t", "--test", action="store_true", help="test input file without modifying the database")
-parser.add_argument("-v", "--verbose", action="store_true", help="increase output verbosity")
 
 subparsers = parser.add_subparsers(title='subcommands',
                                    description='valid subcommands',
@@ -438,6 +407,8 @@ parser_import.add_argument("-t", "--test", action="store_true", help="test input
 parser_vacuum = subparsers.add_parser('vacuum',
                                       help='vacuum help',
                                       description="The VACUUM command rebuilds the database file by reading the current file and writing the content into a new file. As a result it repacking it into a minimal amount of disk space and defragments it which ensures that each table and index is largely stored contiguously. Depending on the size of the database it can take some time to do perform.")
+parser_vacuum.add_argument("-d", "--db", default="database.sqlite", help="database filename (including path if necessary). Default='database.sqlite'")
+parser_vacuum.add_argument("-v", "--verbose", action="store_true", help="increase output verbosity")
 
 args=parser.parse_args()
 
@@ -445,14 +416,35 @@ print(f"args: '{args}'")
 
 print(f"command: '{args.command}'")
 
+#quit()
+
+# These command don't require a database
+if args.command == "version":
+    version = "0.1 Alpha"
+    print(f"Version: {version}")
+    quit()
+
+# The following commands all require a database
+database_filename = args.db
+
+database = Database()
+database.create_connection(database_filename)
+#print(f"database_connection: {database_connection}")
+database.create_cursor()
+
+if args.command == "vacuum":
+    print(f"Vacuuming database. This may take a while depending on the your database size.")
+    database.vacuum()
+    print(f"Vacuuming finished.")
+
 quit()
+
+verbose = args.verbose
+
+#database_filename = "I:\\FileProcessorDatabase\\database.sqlite"
 
 input_filename = "C:\\Data\\ws1,e.fwf"
 output_filename = "C:\\Data\\ws1,e.csv.txt"
-database_filename = "I:\\FileProcessorDatabase\\database.sqlite"
-database = Database()
-database_connection = database.create_connection(database_filename)
-#print(f"database_connection: {database_connection}")
 
 powershell_filesystem_listing = PowerShellFilesystemListing(input_filename, MEMORY_STATS)
 powershell_filesystem_listing.set_dry_run_mode(False)

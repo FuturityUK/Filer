@@ -1,0 +1,1 @@
+.venv\Scripts\python.exe C:\Users\Neil.FUTURITY\PycharmProjects\Filer\file_system_processors.py vacuum -d "I:\\FileProcessorDatabase\\database.sqlite"
