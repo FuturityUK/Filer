@@ -408,17 +408,42 @@ TO DO:
 
 '''
 
-parser=argparse.ArgumentParser(description="Filer - File System Manager")
-parser.add_argument("-c", "--cmd", help="command to perform") #  Compulsory option if this not added: ,nargs='?', default="input.fwf"
-parser.add_argument("-n", "--name", default="unknown", help="drive's unique name")
+parser=argparse.ArgumentParser(
+#    prog='Filer',
+#    epilog='Text at the bottom of help',
+    description="Filer - File System Manager")
 parser.add_argument("-d", "--db", default="database.sqlite", help="database filename (including path if necessary)")
-parser.add_argument("-i", "--input", default="input.fwf", help="input filename (including path if necessary) of a directory structure to be processed in fixed width format")
-parser.add_argument("-o", "--output", default="output.csv", help="output filename (including path if necessary) to export information into in csv format")
-parser.add_argument("-t", "--test", action="store_true", help="test input file without modifying the database")
+#parser.add_argument("-c", "--cmd", help="command to perform") #  Compulsory option if this not added: ,nargs='?', default="input.fwf"
+#parser.add_argument("-o", "--output", default="output.csv", help="output filename (including path if necessary) to export information into in csv format")
+#parser.add_argument("-t", "--test", action="store_true", help="test input file without modifying the database")
 parser.add_argument("-v", "--verbose", action="store_true", help="increase output verbosity")
+
+subparsers = parser.add_subparsers(title='subcommands',
+                                   description='valid subcommands',
+                                   required=True,
+                                   dest='command',
+                                   help='additional help')
+
+# create the parser for the "import" command
+parser_find = subparsers.add_parser('find', help='find help')
+parser_find.add_argument('--baz', choices=('X', 'Y', 'Z'), help='baz help')
+
+# create the parser for the "import" command
+parser_import = subparsers.add_parser('import', help='import help')
+parser_import.add_argument("-l", "--label", default="unknown", help="drive's unique label string")
+parser_import.add_argument("-f", "--file", default="listing.fwf", help="filename (including path) containing a directory structure in fixed width format to be processed")
+parser_import.add_argument("-t", "--test", action="store_true", help="test input file without modifying the database")
+
+# create the parser for the "vacuum" command
+parser_vacuum = subparsers.add_parser('vacuum',
+                                      help='vacuum help',
+                                      description="The VACUUM command rebuilds the database file by reading the current file and writing the content into a new file. As a result it repacking it into a minimal amount of disk space and defragments it which ensures that each table and index is largely stored contiguously. Depending on the size of the database it can take some time to do perform.")
+
 args=parser.parse_args()
 
-print(f"name: '{args.name}'")
+print(f"args: '{args}'")
+
+print(f"command: '{args.command}'")
 
 quit()
 
