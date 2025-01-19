@@ -7,7 +7,6 @@
 # Get-ChildItem -Path E:\ -ErrorAction SilentlyContinue -Recurse -Force | Select-Object -First 1000 Mode, LastWriteTime, Length, FullName | Format-Table -Wrap -AutoSize | Out-File -width 9999 -Encoding utf8 "C:\Users\Administrator.WS1\Documents\csv\ws1-e.csv"
 
 from file_system_processors import PowerShellFilesystemListing
-from queries import Queries
 from database import Database
 import tracemalloc
 
@@ -45,8 +44,6 @@ powershell_filesystem_listing.set_dry_run_mode(False)
 #powershell_filesystem_listing.save_to_CSV(output_filename)
 powershell_filesystem_listing.save_to_database(database_connection)
 powershell_filesystem_listing.process_file()
-
-queries = Queries(database_connection)
 
 # Closing the connection
 database_connection.close()

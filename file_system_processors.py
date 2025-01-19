@@ -353,7 +353,6 @@ class FilesystemDatabase:
 
 ''' MAIN '''
 from file_system_processors import PowerShellFilesystemListing
-from queries import Queries
 from database import Database
 import tracemalloc
 import argparse

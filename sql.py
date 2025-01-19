@@ -1,3 +1,7 @@
+
+sql_dictionary = {}
+
+sql_dictionary["create_database"] = '''
 -- FileSystems definition
 
 CREATE TABLE "FileSystems" (
@@ -6,7 +10,6 @@ CREATE TABLE "FileSystems" (
 
 CREATE INDEX Drives_DateAdded_IDX ON "FileSystems" (DateAdded);
 CREATE UNIQUE INDEX FileSystems_Label_IDX ON FileSystems (Label);
-
 
 -- FileSystemEntries definition
 
@@ -27,3 +30,6 @@ CREATE INDEX FileSystemEntries_Filename_IDX ON FileSystemEntries (Filename);
 CREATE INDEX FileSystemEntries_ByteSize_IDX ON FileSystemEntries (ByteSize);
 CREATE INDEX FileSystemEntries_LastWriteTime_IDX ON FileSystemEntries (LastWriteTime);
 CREATE INDEX FileSystemEntries_IsDirectory_IDX ON FileSystemEntries (IsDirectory);
+'''
+
+print(f"create_database: {sql_dictionary["create_database"]}")
