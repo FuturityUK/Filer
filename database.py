@@ -34,7 +34,12 @@ class Database:
 
     def set_verbose_mode(self, verbose: bool):
         self.__verbose__ = verbose
-        print(f"Setting self.__verbose__ = {self.__verbose__}")
+        if self.__verbose__:
+            print(f"verbose enabled")
+            self.connection.set_trace_callback(print)
+        else:
+            print(f"verbose disabled")
+            self.connection.set_trace_callback(None)
 
     def __vprint__(self, string: str):
         if self.__verbose__:
@@ -94,9 +99,9 @@ class Database:
           parameters, or a dictionary for ``where id = :id``
         """
         if parameters is not None:
-            return self.connection.execute(sql, parameters)
+            return self.cursor.execute(sql, parameters)
         else:
-            return self.connection.execute(sql)
+            return self.cursor.execute(sql)
 
     def commit(self):
         if not self.dry_run_mode:
@@ -128,14 +133,21 @@ class Database:
         self.commit()
 
     def find_filename_exact_match(self, filename: str):
-        self.execute(self.sql_dictionary["find_filename_exact_match"], (filename)
+        if self.__verbose__:
+            print(f"SQL Query: \"{self.sql_dictionary["find_filename_exact_match"]}\"")
+            print(f"filename: \"{filename}\"")
+
+        self.execute(self.sql_dictionary["find_filename_exact_match"], [filename]
             )
+        rows_found = 0
         select_result = self.fetch_all_results()
-        for x in select_result:
-            print(x)
-            parent_file_system_entry_id = x[0]
-            # hits_database += 1
-            # print(parent_file_system_entry_id)
+        for row in select_result:
+            print(row[0])
+            rows_found += 1
+        print(f"{rows_found} results found")
+
+    def find_filename_like(self, search: str):
+        return
 
 ### Class Test ###
 #database = Database("I:\\FileProcessorDatabase\\database.sqlite")

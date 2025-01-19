@@ -396,12 +396,17 @@ subparsers = parser.add_subparsers(title='subcommands',
                                    dest='subcommand',
                                    help='additional help')
 
-# create the parser for the "import" subcommand
 parser_find = subparsers.add_parser('find',
                                     help='find help',
                                     description="Find files exactly matching the provided filename.")
 parser_find.add_argument("filename", help="filename to be found.")
 add_db_and_verbose_to_parser(parser_find)
+
+parser_like = subparsers.add_parser('like',
+                                    help='like help',
+                                    description='Find files with filenames like the provided search. "%xyz%" = filenames containing "xyz". "xyz%" = filenames starting with xyz. "%xyz" = filenames ending with xyz. ')
+parser_like.add_argument("search", help="search string to be found.")
+add_db_and_verbose_to_parser(parser_like)
 
 # create the parser for the "import" subcommand
 parser_import = subparsers.add_parser('import', help='import help')
@@ -415,16 +420,15 @@ parser_vacuum = subparsers.add_parser('vacuum',
                                       description="The VACUUM subcommand rebuilds the database file by reading the current file and writing the content into a new file. As a result it repacking it into a minimal amount of disk space and defragments it which ensures that each table and index is largely stored contiguously. Depending on the size of the database it can take some time to do perform.")
 add_db_and_verbose_to_parser(parser_vacuum)
 
-parser_vacuum = subparsers.add_parser('reset',
+parser_reset = subparsers.add_parser('reset',
                                       help='reset help',
                                       description="Warning: Using the 'reset' subcommand will delete the specified database and replace it with an empty one.")
-add_db_and_verbose_to_parser(parser_vacuum)
+add_db_and_verbose_to_parser(parser_reset)
 
 args=parser.parse_args()
 
-print(f"args: '{args}'")
-
-print(f"subcommand: '{args.subcommand}'")
+#print(f"args: '{args}'")
+#print(f"subcommand: '{args.subcommand}'")
 
 #quit()
 
@@ -441,7 +445,7 @@ database_filename = args.db
 # If not, ask the user if they want to create a new database at the specified location (give the full path as well)
 
 database = Database(database_filename)
-database.set_verbose_mode(True)
+#database.set_verbose_mode(False)
 
 if args.subcommand == "vacuum":
     print(f"Vacuuming database. This may take a while depending on the your database size.")
@@ -449,10 +453,12 @@ if args.subcommand == "vacuum":
     print(f"Vacuuming finished.")
 
 elif args.subcommand == "find":
-    print(f"Finding matching filenames.")
-    database.find_filename_exact_match([args.filename])
-    database.fetch_all_results()
+    print(f"Finding filenames matching \"{args.filename}\" :")
+    database.find_filename_exact_match(args.filename)
 
+elif args.subcommand == "like":
+    print(f"Finding filenames like \"{args.search}\" :")
+    database.find_filename_like(args.search)
 
 quit()
 
