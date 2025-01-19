@@ -147,7 +147,18 @@ class Database:
         print(f"{rows_found} results found")
 
     def find_filename_like(self, search: str):
-        return
+        if self.__verbose__:
+            print(f"SQL Query: \"{self.sql_dictionary["find_filename_like"]}\"")
+            print(f"filename: \"{search}\"")
+
+        self.execute(self.sql_dictionary["find_filename_like"], [search]
+            )
+        rows_found = 0
+        select_result = self.fetch_all_results()
+        for row in select_result:
+            print(row[0])
+            rows_found += 1
+        print(f"{rows_found} results found")
 
 ### Class Test ###
 #database = Database("I:\\FileProcessorDatabase\\database.sqlite")

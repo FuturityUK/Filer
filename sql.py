@@ -42,6 +42,11 @@ class SQLDictionary:
                 WHERE Filename = ?
             '''
 
+        self.sql_dictionary["find_filename_like"] = '''
+                SELECT Fullname
+                FROM FileSystemEntries
+                WHERE Filename LIKE ?
+            '''
 ### Class Test ###
 #sql_dictionary = SQLDictionary()
 #print(f"create_database: {sql_dictionary.sql_dictionary["create_database"]}")
