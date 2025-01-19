@@ -359,7 +359,7 @@ import argparse
 
 def add_db_and_verbose_to_parser(parser):
     parser.add_argument("-d", "--db", default="database.sqlite",
-                               help="database filename (including path if necessary). Default='database.sqlite'")
+                               help="database filename (including path if necessary). Default='database.sqlite' in the current directory.")
     parser.add_argument("-v", "--verbose", action="store_true", help="increase output verbosity")
 
 
@@ -397,8 +397,11 @@ subparsers = parser.add_subparsers(title='subcommands',
                                    help='additional help')
 
 # create the parser for the "import" subcommand
-parser_find = subparsers.add_parser('find', help='find help')
-parser_find.add_argument('--baz', choices=('X', 'Y', 'Z'), help='baz help')
+parser_find = subparsers.add_parser('find',
+                                    help='find help',
+                                    description="Find files exactly matching the provided filename.")
+parser_find.add_argument("filename", help="filename to be found.")
+add_db_and_verbose_to_parser(parser_find)
 
 # create the parser for the "import" subcommand
 parser_import = subparsers.add_parser('import', help='import help')
@@ -437,15 +440,19 @@ database_filename = args.db
 # Does the database file exit?
 # If not, ask the user if they want to create a new database at the specified location (give the full path as well)
 
-database = Database()
-database.create_connection(database_filename)
-#print(f"database_connection: {database_connection}")
-database.create_cursor()
+database = Database(database_filename)
+database.set_verbose_mode(True)
 
 if args.subcommand == "vacuum":
     print(f"Vacuuming database. This may take a while depending on the your database size.")
     database.vacuum()
     print(f"Vacuuming finished.")
+
+elif args.subcommand == "find":
+    print(f"Finding matching filenames.")
+    database.find_filename_exact_match([args.filename])
+    database.fetch_all_results()
+
 
 quit()
 
