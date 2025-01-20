@@ -105,6 +105,22 @@ class Database:
         else:
             return self.cursor.execute(sql)
 
+    def executescript(self,
+        sql: str,
+        parameters: Optional[Union[Iterable, dict]] = None
+        ):
+        """
+        Execute SQL query and return a ``sqlite3.Cursor``.
+
+        :param sql: SQL query to execute
+        :param parameters: Parameters to use in that query - an iterable for ``where id = ?``
+          parameters, or a dictionary for ``where id = :id``
+        """
+        if parameters is not None:
+            return self.cursor.executescript(sql, parameters)
+        else:
+            return self.cursor.executescript(sql)
+
     def commit(self):
         if not self.dry_run_mode:
             # Commit changes to the database
@@ -131,8 +147,11 @@ class Database:
         self.commit()
 
     def create_database_structure(self):
-        self.execute(self.sql_dictionary["create_database"])
+        print(f"Creating database.")
+        self.__vprint__(f"SQL Query: \"{self.sql_dictionary["create_database_tables_and_indexes"]}\"")
+        self.executescript(self.sql_dictionary["create_database_tables_and_indexes"])
         self.commit()
+        print(f"Database created.")
 
     def find_filename_exact_match(self, filename: str):
         if self.__verbose__:

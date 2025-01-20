@@ -4,9 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="&quot;like&quot; subcommand now working">
+    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Added code to ask the user if they want to create a new database if one is missing.">
+      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database.py" beforeDir="false" afterPath="$PROJECT_DIR$/database.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/file_system_processors.py" beforeDir="false" afterPath="$PROJECT_DIR$/file_system_processors.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sql.py" beforeDir="false" afterPath="$PROJECT_DIR$/sql.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -223,7 +226,15 @@
       <option name="project" value="LOCAL" />
       <updated>1737324281798</updated>
     </task>
-    <option name="localTasksCounter" value="19" />
+    <task id="LOCAL-00019" summary="Added code to ask the user if they want to create a new database if one is missing.">
+      <option name="closed" value="true" />
+      <created>1737364165041</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1737364165041</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -253,6 +264,7 @@
     <MESSAGE value="database execute now implemented. Needs testing" />
     <MESSAGE value="file find now working" />
     <MESSAGE value="&quot;like&quot; subcommand now working" />
-    <option name="LAST_COMMIT_MESSAGE" value="&quot;like&quot; subcommand now working" />
+    <MESSAGE value="Added code to ask the user if they want to create a new database if one is missing." />
+    <option name="LAST_COMMIT_MESSAGE" value="Added code to ask the user if they want to create a new database if one is missing." />
   </component>
 </project>

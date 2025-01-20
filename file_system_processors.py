@@ -454,7 +454,9 @@ if not os.path.isfile(database_filename):
 # If not, ask the user if they want to create a new database at the specified location (give the full path as well)
 
 database = Database(database_filename, create_tables)
-#database.set_verbose_mode(False)
+database.set_verbose_mode(args.verbose)
+if create_tables:
+    database.create_database_structure()
 
 if args.subcommand == "vacuum":
     print(f"Vacuuming database. This may take a while depending on the your database size.")
