@@ -5,9 +5,6 @@ import os.path
 import time
 import tracemalloc
 
-
-
-
 class PowerShellFilesystemListing:
     """ Class to convert the output from the PowerShell Get-ChildItem command into a CSV database form """
 
@@ -442,9 +439,21 @@ if args.subcommand == "version":
 database_filename = args.db
 
 # Does the database file exit?
+create_tables = False
+if not os.path.isfile(database_filename):
+    # Database file doesn't exist
+    # Ask user if they want to create a new database file?
+    print(f"Database file doesn't exist at location: \"{os.path.abspath(database_filename)}\"")
+    create_database_answer = input("Do you want to create a new database there? ")
+    if create_database_answer.lower() == "y" or create_database_answer.lower() == "yes":
+        create_tables = True
+    else:
+        print("Database not created. Exiting")
+        quit()
+
 # If not, ask the user if they want to create a new database at the specified location (give the full path as well)
 
-database = Database(database_filename)
+database = Database(database_filename, create_tables)
 #database.set_verbose_mode(False)
 
 if args.subcommand == "vacuum":
