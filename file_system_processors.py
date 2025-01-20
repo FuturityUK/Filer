@@ -4,6 +4,18 @@ import datetime
 import os.path
 import time
 import tracemalloc
+from typing import (
+    cast,
+    Any,
+    Callable,
+    Dict,
+    Generator,
+    Iterable,
+    Union,
+    Optional,
+    List,
+    Tuple,
+)
 
 class PowerShellFilesystemListing:
     """ Class to convert the output from the PowerShell Get-ChildItem command into a CSV database form """
@@ -16,16 +28,48 @@ class PowerShellFilesystemListing:
     PROCESSING_MODE_CSV = 1
     PROCESSING_MODE_DB = 2
 
-    def __init__(self, input_filename, memory_stats):
+    def __init__(self, label: str, input_filename: str):
+        self.__label = label
         self.__input_filename = input_filename
-        self.__memory_stats = memory_stats
         self.__processing_mode = self.PROCESSING_MODE_NOT_SET
         self.__database_connection = None
         self.__output_csv_filename = None
-        self.__dry_run_mode = False
+        self.__test = False
+        self.__verbose = False
+        self.__memory_stats = False
+        self.__make = None
+        self.__model = None
+        self.__serial = None
+        self.__combined = None
+        self.__hostname = None
+        self.__prefix = None
 
-    def set_dry_run_mode(self, dry_run_mode):
-        self.__dry_run_mode = dry_run_mode
+    def set_test(self, test: bool):
+        self.__test = test
+
+    def set_verbose(self, verbose: bool):
+        self.__verbose = verbose
+            
+    def set_memory_stats(self, memory_stats: bool):
+        self.__memory_stats = memory_stats
+
+    def set_make(self, make: str):
+        self.__make = make
+
+    def set_model(self, model: str):
+        self.__model = model
+
+    def set_serial(self, serial: str):
+        self.__serial = serial
+
+    def set_combined(self, combined: str):
+        self.__combined = combined
+
+    def set_hostname(self, hostname: str):
+        self.__hostname = hostname
+
+    def set_prefix(self, prefix: str):
+        self.__prefix = prefix
 
     def save_to_csv(self, output_csv_filename):
         self.__processing_mode = self.PROCESSING_MODE_CSV
@@ -53,7 +97,7 @@ class PowerShellFilesystemListing:
                                 mode_is_archive, mode_is_read_only, mode_is_hidden, mode_is_system, mode_is_link, entity_name,
                                 full_name):
             # Insert Entity
-            if self.__dry_run_mode:
+            if self.__test:
                 return None
             else:
                 # database_cursor.execute(

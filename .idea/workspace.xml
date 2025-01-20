@@ -4,12 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Added import subcommand arguments">
+    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Database function fixes">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database.py" beforeDir="false" afterPath="$PROJECT_DIR$/database.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/file_system_processors.py" beforeDir="false" afterPath="$PROJECT_DIR$/file_system_processors.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/filer.py" beforeDir="false" afterPath="$PROJECT_DIR$/filer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/to_do.txt" beforeDir="false" afterPath="$PROJECT_DIR$/to_do.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -291,7 +289,15 @@
       <option name="project" value="LOCAL" />
       <updated>1737395110885</updated>
     </task>
-    <option name="localTasksCounter" value="27" />
+    <task id="LOCAL-00027" summary="Database function fixes">
+      <option name="closed" value="true" />
+      <created>1737396650410</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1737396650410</updated>
+    </task>
+    <option name="localTasksCounter" value="28" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -329,6 +335,7 @@
     <MESSAGE value="Added Database indexes" />
     <MESSAGE value="Added Database hostname and more indexes" />
     <MESSAGE value="Added import subcommand arguments" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added import subcommand arguments" />
+    <MESSAGE value="Database function fixes" />
+    <option name="LAST_COMMIT_MESSAGE" value="Database function fixes" />
   </component>
 </project>

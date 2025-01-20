@@ -127,32 +127,32 @@ elif args.subcommand == "like":
     print(f"Finding filenames like \"{args.search}\" :")
     database.find_filename_like(args.search)
 
-elif args.subcommand == "import":
-    print(f"Not fully implemented yet")
-
-elif args.subcommand == "reset":
-    print(f"Not implemented yet")
-
 elif args.subcommand == "vacuum":
     print(f"Vacuuming database. This may take a while depending on the your database size.")
     database.vacuum()
     print(f"Vacuuming finished.")
 
+elif args.subcommand == "reset":
+    print(f"Not implemented yet")
+
+elif args.subcommand == "import":
+    print(f"Not fully implemented yet")
+    powershell_filesystem_listing = PowerShellFilesystemListing(args.label, args.listing_filename)
+    powershell_filesystem_listing.set_verbose(args.verbose)
+    powershell_filesystem_listing.set_test(args.test)
+    powershell_filesystem_listing.set_make(args.make)
+    powershell_filesystem_listing.set_model(args.model)
+    powershell_filesystem_listing.set_serial(args.serial)
+    powershell_filesystem_listing.set_combined(args.combined)
+    powershell_filesystem_listing.set_hostname(args.hostname)
+    powershell_filesystem_listing.set_prefix(args.prefix)
+    powershell_filesystem_listing.set_memory_stats(MEMORY_STATS)
+    powershell_filesystem_listing.save_to_database(database)
+    # Check if records exist first and warn user if they do.
+    powershell_filesystem_listing.import_listing()
+
+# Now that the subcommands have been run, close the database cleanly
 database.close_database()
-
-quit()
-
-verbose = args.verbose
-
-powershell_filesystem_listing = PowerShellFilesystemListing(input_filename, MEMORY_STATS)
-powershell_filesystem_listing.set_dry_run_mode(False)
-# Now that data is loaded into the database DON'T run this again
-#powershell_filesystem_listing.save_to_CSV(output_filename)
-powershell_filesystem_listing.save_to_database(database_connection)
-powershell_filesystem_listing.process_file()
-
-# Closing the connection
-database_connection.close()
 
 if MEMORY_STATS:
     # Stop tracing memory allocations
