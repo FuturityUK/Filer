@@ -40,7 +40,6 @@ class PowerShellFilesystemListing:
         self.__make = None
         self.__model = None
         self.__serial = None
-        self.__combined = None
         self.__hostname = None
         self.__prefix = None
 
@@ -63,7 +62,13 @@ class PowerShellFilesystemListing:
         self.__serial = serial
 
     def set_combined(self, combined: str):
-        self.__combined = combined
+        combined_list = combined.split(",")
+        if len(combined_list) == 3:
+            self.set_make(combined_list[0])
+            self.set_model(combined_list[1])
+            self.set_serial(combined_list[2])
+        else:
+            print(f"Combined string doesn't contain \"make,model,serial_number\": {combined}")
 
     def set_hostname(self, hostname: str):
         self.__hostname = hostname

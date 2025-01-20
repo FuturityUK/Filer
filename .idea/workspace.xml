@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Database function fixes">
+    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="New file_system_processor methods to handle new options like make, model, etc">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/file_system_processors.py" beforeDir="false" afterPath="$PROJECT_DIR$/file_system_processors.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/filer.py" beforeDir="false" afterPath="$PROJECT_DIR$/filer.py" afterDir="false" />
@@ -297,7 +297,23 @@
       <option name="project" value="LOCAL" />
       <updated>1737396650410</updated>
     </task>
-    <option name="localTasksCounter" value="28" />
+    <task id="LOCAL-00028" summary="New file_system_processor methods to handle new options like make, model, etc">
+      <option name="closed" value="true" />
+      <created>1737399409590</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1737399409590</updated>
+    </task>
+    <task id="LOCAL-00029" summary="New file_system_processor methods to handle new options like make, model, etc">
+      <option name="closed" value="true" />
+      <created>1737399500725</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1737399500725</updated>
+    </task>
+    <option name="localTasksCounter" value="30" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -336,6 +352,7 @@
     <MESSAGE value="Added Database hostname and more indexes" />
     <MESSAGE value="Added import subcommand arguments" />
     <MESSAGE value="Database function fixes" />
-    <option name="LAST_COMMIT_MESSAGE" value="Database function fixes" />
+    <MESSAGE value="New file_system_processor methods to handle new options like make, model, etc" />
+    <option name="LAST_COMMIT_MESSAGE" value="New file_system_processor methods to handle new options like make, model, etc" />
   </component>
 </project>

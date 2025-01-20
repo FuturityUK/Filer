@@ -138,14 +138,24 @@ elif args.subcommand == "reset":
 elif args.subcommand == "import":
     print(f"Not fully implemented yet")
     powershell_filesystem_listing = PowerShellFilesystemListing(args.label, args.listing_filename)
-    powershell_filesystem_listing.set_verbose(args.verbose)
-    powershell_filesystem_listing.set_test(args.test)
-    powershell_filesystem_listing.set_make(args.make)
-    powershell_filesystem_listing.set_model(args.model)
-    powershell_filesystem_listing.set_serial(args.serial)
-    powershell_filesystem_listing.set_combined(args.combined)
-    powershell_filesystem_listing.set_hostname(args.hostname)
-    powershell_filesystem_listing.set_prefix(args.prefix)
+
+    if args.verbose is not None:
+        powershell_filesystem_listing.set_verbose(args.verbose)
+    if args.test is not None:
+        powershell_filesystem_listing.set_test(args.test)
+    if args.make is not None:
+        powershell_filesystem_listing.set_make(args.make)
+    if args.model is not None:
+        powershell_filesystem_listing.set_model(args.model)
+    if args.serial is not None:
+        powershell_filesystem_listing.set_serial(args.serial)
+    if args.combined is not None:
+        powershell_filesystem_listing.set_combined(args.combined)
+    if args.hostname is not None:
+        powershell_filesystem_listing.set_hostname(args.hostname)
+    if args.prefix is not None:
+        powershell_filesystem_listing.set_prefix(args.prefix)
+
     powershell_filesystem_listing.set_memory_stats(MEMORY_STATS)
     powershell_filesystem_listing.save_to_database(database)
     # Check if records exist first and warn user if they do.
