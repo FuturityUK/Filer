@@ -10,16 +10,17 @@ class SQLDictionary:
 
 CREATE TABLE Drives (
                     DriveID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-                    Make INTEGER,
-                    Model INTEGER,
-                    SerialNumber INTEGER
+                    Make TEXT,
+                    Model TEXT,
+                    SerialNumber TEXT, 
+                    hostname TEXT
                 );
 
 CREATE INDEX Drives_Make_IDX ON Drives (Make);
 CREATE INDEX Drives_Model_IDX ON Drives (Model);
 CREATE INDEX Drives_SerialNumber_IDX ON Drives (SerialNumber);
 CREATE UNIQUE INDEX Drives_Make_Model_SerialNumber_IDX ON Drives (Make,Model,SerialNumber);
-
+CREATE INDEX Drives_hostname_IDX ON Drives (hostname);
 
 -- FileSystemEntries definition
 
@@ -45,7 +46,6 @@ CREATE INDEX FileSystemEntries_LastWriteTime_IDX ON FileSystemEntries (LastWrite
 CREATE INDEX FileSystemEntries_IsDirectory_IDX ON FileSystemEntries (IsDirectory);
 CREATE INDEX FileSystemEntries_FileSystemID_IDX ON FileSystemEntries (FileSystemID);
 CREATE UNIQUE INDEX FileSystemEntries_FileSystemID_FullName_IDX ON FileSystemEntries (FileSystemID,FullName);
-
 
 -- FileSystems definition
 

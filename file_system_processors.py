@@ -407,8 +407,14 @@ add_db_and_verbose_to_parser(parser_like)
 
 # create the parser for the "import" subcommand
 parser_import = subparsers.add_parser('import', help='import help')
-parser_import.add_argument("-l", "--label", default="unknown", help="drive's unique label string")
-parser_import.add_argument("-f", "--file", default="listing.fwf", help="filename (including path) containing a directory structure in fixed width format to be processed")
+parser_import.add_argument("label", help="listings' unique label string")
+parser_import.add_argument("listing_filename", help="filename (including path) of the listing in fixed width format to be processed. See PowerShell example.")
+parser_import.add_argument("-m", "--make", default=None, help="drive's make")
+parser_import.add_argument("-o", "--model", default=None, help="drive's model")
+parser_import.add_argument("-s", "--serial", default=None, help="drive's serial number")
+parser_import.add_argument("-c", "--combined", default=None, help="drive's combined string in format \"make,model,serial-number\"")
+parser_import.add_argument("-h", "--hostname", default=None, help="hostname of the machine containing the drive")
+parser_import.add_argument("-p", "--prefix", default=None, help="prefix to remove from the start of each file's path. e.g. \"C:\\Users\\username\"")
 parser_import.add_argument("-t", "--test", action="store_true", help="test input file without modifying the database")
 
 # create the parser for the "vacuum" subcommand
