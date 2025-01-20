@@ -94,10 +94,10 @@ class Database:
         parameters: Optional[Union[Iterable, dict]] = None
         ):
         """
-        Execute SQL query and return a ``sqlite3.Cursor``.
+        Execute SQL statement and return a ``sqlite3.Cursor``.
 
-        :param sql: SQL query to execute
-        :param parameters: Parameters to use in that query - an iterable for ``where id = ?``
+        :param sql: SQL statement to execute
+        :param parameters: Parameters to use in that statement - an iterable for ``where id = ?``
           parameters, or a dictionary for ``where id = :id``
         """
         if parameters is not None:
@@ -105,21 +105,12 @@ class Database:
         else:
             return self.cursor.execute(sql)
 
-    def executescript(self,
-        sql: str,
-        parameters: Optional[Union[Iterable, dict]] = None
-        ):
+    def executescript(self, sql: str):
         """
-        Execute SQL query and return a ``sqlite3.Cursor``.
-
-        :param sql: SQL query to execute
-        :param parameters: Parameters to use in that query - an iterable for ``where id = ?``
-          parameters, or a dictionary for ``where id = :id``
+        Execute SQL statement and return a ``sqlite3.Cursor``.
+        :param sql: SQL statement to execute
         """
-        if parameters is not None:
-            return self.cursor.executescript(sql, parameters)
-        else:
-            return self.cursor.executescript(sql)
+        return self.cursor.executescript(sql)
 
     def commit(self):
         if not self.dry_run_mode:

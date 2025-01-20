@@ -1,20 +1,24 @@
 To DO:
-- Ask the user if they want to create a new database if it is missing
-  - Show filename
-  - Show path
-- Implement the create database functionality
-  - call it if the user agrees to create a new database
-- Implement database reset functionality
+
+- reset database function
   - only call it after the user has requested it
   - Show filename
   - Show path
   - Double check by asking the user to type 'reset'
-- Fix the function to import of file system listing from the fwf file.
-- Modify the import function to
+
+- import function
+  - Fix the function to import of file system listing from the fwf file.
   - take the file system label
   - check if the label exists in the file system table and if it does, ask the user if they want to replace the entries for it
   - if not update the file systems table to obtain the id of this new label
   - store the file system id for each of its file system entries
+  - add hostname, make, model, serial
+  - record file types
+  - store sizes of directories
+  - add files to exclude from the directory size calculations like thumbnails, apple directory cache files (get list from other programs)
+  - is it faster to delete all records for a file_system and insert all files, or to check to see if a file exists and update it only if necessary?
+  - if updating a file system's files, remember to delete the files that are in the database but not in the file system listing.
+
 - add '-y' functionality to turn off interactive questions and go with defaults
   - for all questions, make sure that the defaults are shown
 - 'list-file-systems' subcommand
