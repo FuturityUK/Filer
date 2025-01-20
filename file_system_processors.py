@@ -93,7 +93,7 @@ class PowerShellFilesystemListing:
                     # print(parent_file_system_entry_id)
         return parent_file_system_entry_id
 
-    def process_file(self):
+    def import_listing(self):
         print("process_file()")
         header_line_processed = False
         next_line_field_widths = False
@@ -413,9 +413,10 @@ parser_import.add_argument("-m", "--make", default=None, help="drive's make")
 parser_import.add_argument("-o", "--model", default=None, help="drive's model")
 parser_import.add_argument("-s", "--serial", default=None, help="drive's serial number")
 parser_import.add_argument("-c", "--combined", default=None, help="drive's combined string in format \"make,model,serial-number\"")
-parser_import.add_argument("-h", "--hostname", default=None, help="hostname of the machine containing the drive")
+parser_import.add_argument("-n", "--hostname", default=None, help="hostname of the machine containing the drive")
 parser_import.add_argument("-p", "--prefix", default=None, help="prefix to remove from the start of each file's path. e.g. \"C:\\Users\\username\"")
 parser_import.add_argument("-t", "--test", action="store_true", help="test input file without modifying the database")
+add_db_and_verbose_to_parser(parser_import)
 
 # create the parser for the "vacuum" subcommand
 parser_vacuum = subparsers.add_parser('vacuum',
@@ -474,6 +475,7 @@ elif args.subcommand == "like":
 
 elif args.subcommand == "import":
     print(f"Not fully implemented yet")
+
 
 elif args.subcommand == "reset":
     print(f"Not implemented yet")

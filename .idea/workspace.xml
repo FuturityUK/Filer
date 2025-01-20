@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Added Database indexes">
+    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Added Database hostname and more indexes">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/file_system_processors.py" beforeDir="false" afterPath="$PROJECT_DIR$/file_system_processors.py" afterDir="false" />
     </list>
@@ -271,7 +271,15 @@
       <option name="project" value="LOCAL" />
       <updated>1737380963871</updated>
     </task>
-    <option name="localTasksCounter" value="25" />
+    <task id="LOCAL-00025" summary="Added Database hostname and more indexes">
+      <option name="closed" value="true" />
+      <created>1737394246083</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1737394246083</updated>
+    </task>
+    <option name="localTasksCounter" value="26" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -307,6 +315,7 @@
     <MESSAGE value="Added a placeholder for the &quot;reset&quot; subcommand" />
     <MESSAGE value="Changes to workspace.xml" />
     <MESSAGE value="Added Database indexes" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added Database indexes" />
+    <MESSAGE value="Added Database hostname and more indexes" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added Database hostname and more indexes" />
   </component>
 </project>
