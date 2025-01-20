@@ -458,12 +458,7 @@ database.set_verbose_mode(args.verbose)
 if create_tables:
     database.create_database_structure()
 
-if args.subcommand == "vacuum":
-    print(f"Vacuuming database. This may take a while depending on the your database size.")
-    database.vacuum()
-    print(f"Vacuuming finished.")
-
-elif args.subcommand == "find":
+if args.subcommand == "find":
     print(f"Finding filenames matching \"{args.filename}\" :")
     database.find_filename_exact_match(args.filename)
 
@@ -473,6 +468,14 @@ elif args.subcommand == "like":
 
 elif args.subcommand == "import":
     print(f"Not fully implemented yet")
+
+elif args.subcommand == "reset":
+    print(f"Not implemented yet")
+
+elif args.subcommand == "vacuum":
+    print(f"Vacuuming database. This may take a while depending on the your database size.")
+    database.vacuum()
+    print(f"Vacuuming finished.")
 
 quit()
 
