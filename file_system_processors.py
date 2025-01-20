@@ -471,6 +471,9 @@ elif args.subcommand == "like":
     print(f"Finding filenames like \"{args.search}\" :")
     database.find_filename_like(args.search)
 
+elif args.subcommand == "import":
+    print(f"Not fully implemented yet")
+
 quit()
 
 verbose = args.verbose
