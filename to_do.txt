@@ -8,6 +8,7 @@ To DO:
 
 - import function
   - Fix the function to import of file system listing from the fwf file.
+  - Split the "combined" "make,model,serial-number" string and update the separate make, model and serial-number variables
   - take the file system label
   - check if the label exists in the file system table and if it does, ask the user if they want to replace the entries for it
   - if not update the file systems table to obtain the id of this new label
