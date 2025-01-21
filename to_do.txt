@@ -1,5 +1,9 @@
 To DO:
 
+- Database
+  - Check errors caught is drive database is trying to be written to doesn't exist
+  - Fix database creation
+
 - reset database function
   - only call it after the user has requested it
   - Show filename

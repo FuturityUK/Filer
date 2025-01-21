@@ -59,7 +59,7 @@ class Database:
             sqlite3.enable_callback_tracebacks(True)
             database_path_string = 'file:'+path+'?mode=rw'
             # print(f"database_path_string: {database_path_string}")
-            self.__connection = sqlite3.connect(database_path_string, uri=True)
+            self.__connection = sqlite3.connect(path)
             #if os.path.isfile(path):
             if self.__connection is not None:
                 self.__vprint__("Connection to SQLite DB successful")
