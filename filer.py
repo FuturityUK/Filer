@@ -137,7 +137,7 @@ elif args.subcommand == "reset":
 
 elif args.subcommand == "import":
     print(f"Not fully implemented yet")
-    powershell_filesystem_listing = PowerShellFilesystemListing(args.label, args.listing_filename)
+    powershell_filesystem_listing = PowerShellFilesystemListing(database, args.label, args.listing_filename)
 
     if args.verbose is not None:
         powershell_filesystem_listing.set_verbose(args.verbose)
@@ -157,7 +157,7 @@ elif args.subcommand == "import":
         powershell_filesystem_listing.set_prefix(args.prefix)
 
     powershell_filesystem_listing.set_memory_stats(MEMORY_STATS)
-    powershell_filesystem_listing.save_to_database(database)
+    powershell_filesystem_listing.save_to_database()
     # Check if records exist first and warn user if they do.
     powershell_filesystem_listing.import_listing()
 
