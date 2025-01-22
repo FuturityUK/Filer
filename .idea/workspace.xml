@@ -4,11 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Updated To Do">
+    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="To Do updated">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/database.py" beforeDir="false" afterPath="$PROJECT_DIR$/database.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/file_system_processors.py" beforeDir="false" afterPath="$PROJECT_DIR$/file_system_processors.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/filer.py" beforeDir="false" afterPath="$PROJECT_DIR$/filer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sql.py" beforeDir="false" afterPath="$PROJECT_DIR$/sql.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -338,7 +339,23 @@
       <option name="project" value="LOCAL" />
       <updated>1737495934292</updated>
     </task>
-    <option name="localTasksCounter" value="33" />
+    <task id="LOCAL-00033" summary="Added checks:&#10;Does the parent directory in the specified database file path exist? If not, error because the database can't be created until it exists.&#10;Does the Input Listing file exist?">
+      <option name="closed" value="true" />
+      <created>1737540525738</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1737540525738</updated>
+    </task>
+    <task id="LOCAL-00034" summary="To Do updated">
+      <option name="closed" value="true" />
+      <created>1737540633404</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1737540633404</updated>
+    </task>
+    <option name="localTasksCounter" value="35" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -353,8 +370,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Added functions to simplify database manipulation (not tested yet)" />
-    <MESSAGE value="Added function to Vacuum the database to reclaim unused space" />
     <MESSAGE value="Database deletion and vacuum works" />
     <MESSAGE value="Database inserts are now working, as well as parent ID lookups." />
     <MESSAGE value="Added arguments" />
@@ -378,6 +393,8 @@
     <MESSAGE value="Added checks to see if optional argements are set before calling the setter functions" />
     <MESSAGE value="Major edits to file_system_processors.py to make use of the Database class.&#10;Still not working" />
     <MESSAGE value="Updated To Do" />
-    <option name="LAST_COMMIT_MESSAGE" value="Updated To Do" />
+    <MESSAGE value="Added checks:&#10;Does the parent directory in the specified database file path exist? If not, error because the database can't be created until it exists.&#10;Does the Input Listing file exist?" />
+    <MESSAGE value="To Do updated" />
+    <option name="LAST_COMMIT_MESSAGE" value="To Do updated" />
   </component>
 </project>

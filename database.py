@@ -42,7 +42,7 @@ class Database:
         else:
             self.__connection.set_trace_callback(None)
 
-    def __vprint__(self, string: str):
+    def __vprint(self, string: str):
         if self.__verbose:
             print(string)
 
@@ -55,14 +55,14 @@ class Database:
         self.__connection = None
         try:
             sqlite3.enable_callback_tracebacks(True)
-            database_path_string = 'file:'+path+'?mode=rw'
-            # print(f"database_path_string: {database_path_string}")
+            #database_path_string = 'file:'+path+'?mode=rw'
+            #__vprint__(f"database_path_string: {database_path_string}")
             self.__connection = sqlite3.connect(path)
             #if os.path.isfile(path):
             if self.__connection is not None:
-                self.__vprint__("Connection to SQLite DB successful")
+                self.__vprint("Connection to SQLite DB successful")
             else:
-                self.__vprint__("Connection to SQLite DB failed")
+                self.__vprint("Connection to SQLite DB failed")
                 raise sqlite3.OperationalError("Connection to SQLite DB failed")
         except sqlite3.OperationalError as e:
             print(f"sqlite3.OperationalError: '{e}'")
@@ -150,16 +150,14 @@ class Database:
 
     def create_database_structure(self):
         print(f"Creating database.")
-        self.__vprint__(f"SQL Query: \"{self.__sql_dictionary["create_database_tables_and_indexes"]}\"")
+        self.__vprint(f"SQL Query: \"{self.__sql_dictionary["create_database_tables_and_indexes"]}\"")
         self.executescript(self.__sql_dictionary["create_database_tables_and_indexes"])
         self.commit()
         print(f"Database created.")
 
     def find_filename_exact_match(self, filename: str):
-        if self.__verbose:
-            print(f"SQL Query: \"{self.__sql_dictionary["find_filename_exact_match"]}\"")
-            print(f"filename: \"{filename}\"")
-
+        self.__vprint(f"SQL Query: \"{self.__sql_dictionary["find_filename_exact_match"]}\"")
+        self.__vprint(f"filename: \"{filename}\"")
         self.execute(self.__sql_dictionary["find_filename_exact_match"], [filename]
             )
         rows_found = 0
@@ -170,12 +168,25 @@ class Database:
         print(f"{rows_found} results found")
 
     def find_filename_like(self, search: str):
-        if self.__verbose:
-            print(f"SQL Query: \"{self.__sql_dictionary["find_filename_like"]}\"")
-            print(f"filename: \"{search}\"")
+        self.__vprint(f"SQL Query: \"{self.__sql_dictionary["find_filename_like"]}\"")
+        self.__vprint(f"filename: \"{search}\"")
 
-        self.execute(self.__sql_dictionary["find_filename_like"], [search]
-            )
+        self.execute(self.__sql_dictionary["find_filename_like"],
+                     search
+                    )
+        rows_found = 0
+        select_result = self.fetch_all_results()
+        for row in select_result:
+            print(row[0])
+            rows_found += 1
+        print(f"{rows_found} results found")
+
+    def find_driveid(self, make: str, model: str, serial_number: str):
+        self.__vprint(f"SQL Query: \"{self.__sql_dictionary["find_driveid"]}\"")
+        self.__vprint(f"make: \"{make}\", model: \"{model}\", serial_number: \"{serial_number}\"")
+        self.execute(self.__sql_dictionary["find_driveid"],
+                     (make, model, serial_number)
+                    )
         rows_found = 0
         select_result = self.fetch_all_results()
         for row in select_result:

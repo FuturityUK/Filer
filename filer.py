@@ -156,7 +156,7 @@ elif args.subcommand == "import":
     if args.model is not None:
         powershell_filesystem_listing.set_model(args.model)
     if args.serial is not None:
-        powershell_filesystem_listing.set_serial(args.serial)
+        powershell_filesystem_listing.set_serial_number(args.serial)
     if args.combined is not None:
         powershell_filesystem_listing.set_combined(args.combined)
     if args.hostname is not None:
@@ -167,6 +167,10 @@ elif args.subcommand == "import":
     powershell_filesystem_listing.set_memory_stats(MEMORY_STATS)
     powershell_filesystem_listing.save_to_database()
     # Check if records exist first and warn user if they do.
+    driveid = powershell_filesystem_listing.find_driveid()
+    print({f"driveid: \"{driveid}\""})
+    quit()
+
     powershell_filesystem_listing.import_listing()
 
 # Now that the subcommands have been run, close the database cleanly

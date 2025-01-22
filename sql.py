@@ -72,6 +72,16 @@ CREATE INDEX FileSystems_DriveID_IDX ON FileSystems (DriveID);
                 FROM FileSystemEntries
                 WHERE Filename LIKE ?
             '''
+
+        self.sql_dictionary["find_driveid"] = '''
+                SELECT DriveID 
+                FROM Drives
+                WHERE Make = ? AND Model = ? AND SerialNumber = ?;    
+            '''
+
+
+
+
 ### Class Test ###
 #sql_dictionary = SQLDictionary()
 #print(f"create_database: {sql_dictionary.sql_dictionary["create_database"]}")

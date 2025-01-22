@@ -46,9 +46,13 @@ class PowerShellFilesystemListing:
         self.__memory_stats = False
         self.__make = None
         self.__model = None
-        self.__serial = None
+        self.__serial_number = None
         self.__hostname = None
         self.__prefix = None
+
+    def __vprint(self, string: str):
+        if self.__verbose:
+            print(string)
 
     def set_test(self, test: bool):
         self.__test = test
@@ -65,15 +69,15 @@ class PowerShellFilesystemListing:
     def set_model(self, model: str):
         self.__model = model
 
-    def set_serial(self, serial: str):
-        self.__serial = serial
+    def set_serial_number(self, serial_number: str):
+        self.__serial_number = serial_number
 
     def set_combined(self, combined: str):
         combined_list = combined.split(",")
         if len(combined_list) == 3:
             self.set_make(combined_list[0])
             self.set_model(combined_list[1])
-            self.set_serial(combined_list[2])
+            self.set_serial_number(combined_list[2])
         else:
             print(f"Combined string doesn't contain \"make,model,serial_number\": {combined}")
 
@@ -138,6 +142,9 @@ class PowerShellFilesystemListing:
                     #hits_database += 1
                     # print(parent_file_system_entry_id)
         return parent_file_system_entry_id
+
+    def find_driveid(self):
+        return self.__database.find_driveid(self.__make, self.__model, self.__serial_number)
 
     def import_listing(self):
         print("process_file()")
