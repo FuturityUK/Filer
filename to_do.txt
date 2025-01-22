@@ -11,6 +11,8 @@ To DO:
   - Double check by asking the user to type 'reset'
 
 - import function
+  - Insert the Label and Drive details before starting to process the Listing file as the LabelID is needed first.
+
   - Fix the function to import of file system listing from the fwf file.
   - Split the "combined" "make,model,serial-number" string and update the separate make, model and serial-number variables
   - take the file system label
