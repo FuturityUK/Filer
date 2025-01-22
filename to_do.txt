@@ -12,6 +12,16 @@ To DO:
 
 - import function
   - Insert the Label and Drive details before starting to process the Listing file as the LabelID is needed first.
+    - Look up the Label
+      - If it is found, display details about it and any drive / host information attached to it
+      - Warn if the drive / host information doesn't match and ask if they want to continue.
+      - Ask user if they want to process the label again (empty and reinsert, or update)
+      - Update Drive / Host
+      - Update Label
+      - Update File System
+
+    If DriveID not found, insert the drive, together with the hostname if it was provided
+    - With the
 
   - Fix the function to import of file system listing from the fwf file.
   - Split the "combined" "make,model,serial-number" string and update the separate make, model and serial-number variables
