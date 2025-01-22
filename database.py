@@ -38,10 +38,8 @@ class Database:
     def set_verbose_mode(self, verbose: bool):
         self.__verbose = verbose
         if self.__verbose:
-            print(f"verbose enabled")
             self.__connection.set_trace_callback(print)
         else:
-            print(f"verbose disabled")
             self.__connection.set_trace_callback(None)
 
     def __vprint__(self, string: str):

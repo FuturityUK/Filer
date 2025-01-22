@@ -85,9 +85,9 @@ add_db_and_verbose_to_parser(parser_reset)
 
 args=parser.parse_args()
 
+# Debug
 #print(f"args: '{args}'")
 #print(f"subcommand: '{args.subcommand}'")
-
 #quit()
 
 # These subcommands don't require a database
@@ -101,6 +101,14 @@ database_filename = args.db
 
 # Does the database file exit?
 create_tables = False
+
+directory_name = os.path.dirname(database_filename)
+
+if not os.path.exists(directory_name):
+    print(f"\"{directory_name}\" directory in your database filename path, does not exist!")
+    print("The directory must exist before a new database can be created there. Exiting")
+    exit(2)
+
 if not os.path.isfile(database_filename):
     # Database file doesn't exist
     # Ask user if they want to create a new database file?
@@ -110,7 +118,7 @@ if not os.path.isfile(database_filename):
         create_tables = True
     else:
         print("Database not created. Exiting")
-        quit()
+        exit(2)
 
 # If not, ask the user if they want to create a new database at the specified location (give the full path as well)
 
@@ -136,7 +144,7 @@ elif args.subcommand == "reset":
     print(f"Not implemented yet")
 
 elif args.subcommand == "import":
-    print(f"Not fully implemented yet")
+    print(f"Import subcommand: Not fully implemented yet!")
     powershell_filesystem_listing = PowerShellFilesystemListing(database, args.label, args.listing_filename)
 
     if args.verbose is not None:

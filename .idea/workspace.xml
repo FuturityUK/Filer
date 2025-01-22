@@ -4,7 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Major edits to file_system_processors.py to make use of the Database class.&#10;Still not working" />
+    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Updated To Do">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database.py" beforeDir="false" afterPath="$PROJECT_DIR$/database.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/file_system_processors.py" beforeDir="false" afterPath="$PROJECT_DIR$/file_system_processors.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/filer.py" beforeDir="false" afterPath="$PROJECT_DIR$/filer.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -325,7 +330,15 @@
       <option name="project" value="LOCAL" />
       <updated>1737495510896</updated>
     </task>
-    <option name="localTasksCounter" value="32" />
+    <task id="LOCAL-00032" summary="Updated To Do">
+      <option name="closed" value="true" />
+      <created>1737495934292</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1737495934292</updated>
+    </task>
+    <option name="localTasksCounter" value="33" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -340,7 +353,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Tidy up of classes. Adding private functions." />
     <MESSAGE value="Added functions to simplify database manipulation (not tested yet)" />
     <MESSAGE value="Added function to Vacuum the database to reclaim unused space" />
     <MESSAGE value="Database deletion and vacuum works" />
@@ -365,6 +377,7 @@
     <MESSAGE value="New file_system_processor methods to handle new options like make, model, etc" />
     <MESSAGE value="Added checks to see if optional argements are set before calling the setter functions" />
     <MESSAGE value="Major edits to file_system_processors.py to make use of the Database class.&#10;Still not working" />
-    <option name="LAST_COMMIT_MESSAGE" value="Major edits to file_system_processors.py to make use of the Database class.&#10;Still not working" />
+    <MESSAGE value="Updated To Do" />
+    <option name="LAST_COMMIT_MESSAGE" value="Updated To Do" />
   </component>
 </project>

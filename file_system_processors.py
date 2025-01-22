@@ -31,6 +31,11 @@ class PowerShellFilesystemListing:
     PROCESSING_MODE_DB = 2
 
     def __init__(self, database: Database, label: str, input_filename: str):
+        if not os.path.isfile(input_filename):
+            # Input file doesn't exist
+            print(f"Listing file doesn't exist at location: \"{os.path.abspath(input_filename)}\"")
+            print("Exiting")
+            exit(2)
         self.__label = label
         self.__input_filename = input_filename
         self.__processing_mode = self.PROCESSING_MODE_NOT_SET
