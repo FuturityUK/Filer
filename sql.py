@@ -99,6 +99,21 @@ class SQLDictionary:
                 VALUES (?, ?, ?);    
             '''
 
+        self.sql_dictionary["delete_filesystem"] = '''
+                DELETE FROM FileSystems
+                WHERE FileSystemID = ?; 
+            '''
+
+        self.sql_dictionary["delete_filesystem_entries"] = '''
+                DELETE FROM FileSystemEntries
+                WHERE FileSystemID = ?; 
+            '''
+
+        self.sql_dictionary["update_filesystem"] = '''
+                UPDATE FileSystems
+                SET DateAdded = ?
+                WHERE FileSystemID = ?; 
+            '''
 
 ### Class Test ###
 #sql_dictionary = SQLDictionary()

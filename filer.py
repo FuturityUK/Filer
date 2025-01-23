@@ -178,8 +178,6 @@ elif args.subcommand == "import":
     powershell_filesystem_listing.set_memory_stats(MEMORY_STATS)
     powershell_filesystem_listing.save_to_database()
 
-    clean_up_and_quit()
-
     powershell_filesystem_listing.import_listing()
 
     clean_up_and_quit()

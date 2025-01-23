@@ -168,6 +168,7 @@ class PowerShellFilesystemListing:
                 exit()
 
     def get_drive_id(self):
+        self.__vprint("get_drive_id()")
         if self.__make is None and self.__model is None and self.__serial_number is None:
             self.__vprint("Drive ignored as Make, Model and Serial Number aren't specified")
         else:
@@ -186,6 +187,7 @@ class PowerShellFilesystemListing:
                 exit(2)
 
     def get_filesystem_id(self):
+        self.__vprint("get_filesystem_id()")
         drive_id = self.get_drive_id()
         if self.__make is None and self.__model is None and self.__serial_number is None:
             self.__vprint("Drive ignored as Label isn't specified")
@@ -201,10 +203,10 @@ class PowerShellFilesystemListing:
                     print("\t2) Exit")
                     selection = input("Please enter an option number from those listed above? ")
                     if selection == "1":
-                        self.__database.erase_filesystem_listing(filesystem_id)
+                        self.__database.delete_filesystem_listing_entries(filesystem_id)
                         # Now that the entries for the filesystem have been deleted, update the date
                         self.__choose_filesystem_date()
-                        return self.__database.update_filesystem(filesystem_id, self.__date)
+                        return self.__database.update_filesystem_date(self.__date, filesystem_id)
                     elif selection == "2":
                         self.__database.close_database()
                         print("Existing.")
@@ -227,6 +229,9 @@ class PowerShellFilesystemListing:
         filesystem_id = self.get_filesystem_id()
 
         # print({f"drive_id: \"{drive_id}\""})
+
+        self.__database.close_database()
+        exit()
 
         self.__vprint("Processing listing file.")
         header_line_processed = False

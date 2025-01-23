@@ -34,6 +34,10 @@ class Database:
             print("Creating tables.")
         return
 
+    def __vprint(self, string: str):
+        if self.__verbose:
+            print(string)
+
     def set_test(self, test: bool):
         self.__dry_run_mode = test
 
@@ -43,10 +47,6 @@ class Database:
             self.__connection.set_trace_callback(print)
         else:
             self.__connection.set_trace_callback(None)
-
-    def __vprint(self, string: str):
-        if self.__verbose:
-            print(string)
 
     def close_database(self):
         self.commit()
@@ -253,6 +253,27 @@ class Database:
         filesystem_id = self.get_last_row_id()
         self.__vprint(f"New row filesystem_id: \"{filesystem_id}\"")
         return filesystem_id
+
+    def delete_filesystem_listing(self, filesystem_id: int):
+        self.__vprint(f"SQL Query: \"{self.__sql_dictionary["delete_filesystem"]}\"")
+        self.__vprint(f"filesystem_id: \"{filesystem_id}\"")
+        self.execute(self.__sql_dictionary["delete_filesystem"],
+                     [filesystem_id] # [] as a single parameter
+                     )
+
+    def delete_filesystem_listing_entries(self, filesystem_id: int):
+        self.__vprint(f"SQL Query: \"{self.__sql_dictionary["delete_filesystem_entries"]}\"")
+        self.__vprint(f"filesystem_id: \"{filesystem_id}\"")
+        self.execute(self.__sql_dictionary["delete_filesystem_entries"],
+                     [filesystem_id] # [] as a single parameter
+                     )
+
+    def update_filesystem_date(self, filesystem_id: int, date: int):
+        self.__vprint(f"SQL Query: \"{self.__sql_dictionary["update_filesystem"]}\"")
+        self.__vprint(f"filesystem_id: \"{filesystem_id}\", date: \"{date}\"")
+        self.execute(self.__sql_dictionary["update_filesystem"],
+                     (filesystem_id, date) # () as a multiple parameters
+                     )
 
     def empty_table(self, table_name: str):
         ## FIX ##
