@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="To Do updated">
+    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Added code to check if a driveID already exists for the specified make, model, serial number.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/database.py" beforeDir="false" afterPath="$PROJECT_DIR$/database.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/file_system_processors.py" beforeDir="false" afterPath="$PROJECT_DIR$/file_system_processors.py" afterDir="false" />
@@ -355,7 +355,23 @@
       <option name="project" value="LOCAL" />
       <updated>1737540633404</updated>
     </task>
-    <option name="localTasksCounter" value="35" />
+    <task id="LOCAL-00035" summary="Added code to check if a driveID already exists for the specified make, model, serial number.">
+      <option name="closed" value="true" />
+      <created>1737557415144</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1737557415144</updated>
+    </task>
+    <task id="LOCAL-00036" summary="Added code to check if a driveID already exists for the specified make, model, serial number.">
+      <option name="closed" value="true" />
+      <created>1737557667365</created>
+      <option name="number" value="00036" />
+      <option name="presentableId" value="LOCAL-00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1737557667365</updated>
+    </task>
+    <option name="localTasksCounter" value="37" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -370,7 +386,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Database deletion and vacuum works" />
     <MESSAGE value="Database inserts are now working, as well as parent ID lookups." />
     <MESSAGE value="Added arguments" />
     <MESSAGE value="Further work on Arguments and subcommand arguments" />
@@ -395,6 +410,7 @@
     <MESSAGE value="Updated To Do" />
     <MESSAGE value="Added checks:&#10;Does the parent directory in the specified database file path exist? If not, error because the database can't be created until it exists.&#10;Does the Input Listing file exist?" />
     <MESSAGE value="To Do updated" />
-    <option name="LAST_COMMIT_MESSAGE" value="To Do updated" />
+    <MESSAGE value="Added code to check if a driveID already exists for the specified make, model, serial number." />
+    <option name="LAST_COMMIT_MESSAGE" value="Added code to check if a driveID already exists for the specified make, model, serial number." />
   </component>
 </project>

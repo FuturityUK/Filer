@@ -25,6 +25,17 @@ def add_db_and_verbose_to_parser(parser):
                                help="database filename (including path if necessary). Default='database.sqlite' in the current directory.")
     parser.add_argument("-v", "--verbose", action="store_true", help="increase output verbosity")
 
+def clean_up_and_quit():
+    # Now that the subcommands have been run, close the database cleanly
+    database.close_database()
+
+    if MEMORY_STATS:
+        # Stop tracing memory allocations
+        tracemalloc.stop()
+
+    # Exit normally
+    exit()
+
 MEMORY_STATS = False
 
 if MEMORY_STATS:
@@ -167,17 +178,13 @@ elif args.subcommand == "import":
     powershell_filesystem_listing.set_memory_stats(MEMORY_STATS)
     powershell_filesystem_listing.save_to_database()
     # Check if records exist first and warn user if they do.
-    driveid = powershell_filesystem_listing.find_driveid()
-    print({f"driveid: \"{driveid}\""})
-    quit()
+    #drive_id = powershell_filesystem_listing.get_drive_id()
+    filesystem_id = powershell_filesystem_listing.get_filesystem_id()
+
+    #print({f"drive_id: \"{drive_id}\""})
+
+    clean_up_and_quit()
 
     powershell_filesystem_listing.import_listing()
 
-# Now that the subcommands have been run, close the database cleanly
-database.close_database()
-
-if MEMORY_STATS:
-    # Stop tracing memory allocations
-    tracemalloc.stop()
-
-exit()
+    clean_up_and_quit()

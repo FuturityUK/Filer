@@ -17,6 +17,7 @@ from typing import (
     List,
     Tuple,
 )
+from datetime import datetime
 from database import Database
 
 class PowerShellFilesystemListing:
@@ -31,11 +32,6 @@ class PowerShellFilesystemListing:
     PROCESSING_MODE_DB = 2
 
     def __init__(self, database: Database, label: str, input_filename: str):
-        if not os.path.isfile(input_filename):
-            # Input file doesn't exist
-            print(f"Listing file doesn't exist at location: \"{os.path.abspath(input_filename)}\"")
-            print("Exiting")
-            exit(2)
         self.__label = label
         self.__input_filename = input_filename
         self.__processing_mode = self.PROCESSING_MODE_NOT_SET
@@ -49,6 +45,30 @@ class PowerShellFilesystemListing:
         self.__serial_number = None
         self.__hostname = None
         self.__prefix = None
+        self.__date = None
+        if not os.path.isfile(input_filename):
+            # Input file doesn't exist
+            print(f"Listing file doesn't exist at location: \"{os.path.abspath(input_filename)}\"")
+            print("Exiting")
+            exit(2)
+        else:
+            file_modified_timestamp = int(os.path.getmtime(input_filename))
+            now_timestamp = int(time.time())
+            selection = None
+            while selection not in {"1", "2", "3"}:
+                print("Filesystem listing creation date time options:")
+                print(f"\t1) {datetime.fromtimestamp(file_modified_timestamp)} UTC - from filesystem listing file's last modified time")
+                print(f"\t2) {datetime.fromtimestamp(now_timestamp)} UTC - the current time")
+                print("\t3) Exit")
+                selection = input("Please enter an option number from those listed above? ")
+                if selection == "1":
+                    self.__date = file_modified_timestamp
+                elif selection == "2":
+                    self.__date = now_timestamp
+                elif selection == "3":
+                    database.close_database()
+                    print("Existing.")
+                    exit()
 
     def __vprint(self, string: str):
         if self.__verbose:
@@ -86,6 +106,9 @@ class PowerShellFilesystemListing:
 
     def set_prefix(self, prefix: str):
         self.__prefix = prefix
+
+    def set_date(self, date: int):
+        self.__date = date
 
     def save_to_csv(self, output_csv_filename: str):
         self.__processing_mode = self.PROCESSING_MODE_CSV
@@ -143,8 +166,40 @@ class PowerShellFilesystemListing:
                     # print(parent_file_system_entry_id)
         return parent_file_system_entry_id
 
-    def find_driveid(self):
-        return self.__database.find_driveid(self.__make, self.__model, self.__serial_number)
+    def get_drive_id(self):
+        if self.__make is None and self.__model is None and self.__serial_number is None:
+            self.__vprint("Drive ignored as Make, Model and Serial Number aren't specified")
+        else:
+            drive_ids = self.__database.find_drive_id(self.__make, self.__model, self.__serial_number)
+            if len(drive_ids) == 1:
+                # drive_id found
+                return drive_ids[0]
+            elif len(drive_ids) == 0:
+                # No drive_id found so create one
+                return self.__database.insert_drive(self.__make, self.__model, self.__serial_number, self.__hostname)
+            else:
+                # More than 1 drive_id found so error
+                print("Error: More than one drive_id found for the Make, Model and Serial Number specified.")
+                print("Exiting.")
+                exit(2)
+
+    def get_filesystem_id(self):
+        drive_id = self.get_drive_id()
+        if self.__make is None and self.__model is None and self.__serial_number is None:
+            self.__vprint("Drive ignored as Label isn't specified")
+        else:
+            filesystem_ids = self.__database.find_filesystem_id(self.__label)
+            if len(filesystem_ids) == 1:
+                # drive_id found
+                return filesystem_ids[0]
+            elif len(filesystem_ids) == 0:
+                # No drive_id found so create one
+                return self.__database.insert_filesystem(self.__label, drive_id, self.__date)
+            else:
+                # More than 1 drive_id found so error
+                print("Error: More than one filesystem_id found for the Label specified.")
+                print("Exiting.")
+                exit(2)
 
     def import_listing(self):
         print("process_file()")
