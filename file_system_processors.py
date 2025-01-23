@@ -107,7 +107,7 @@ class PowerShellFilesystemListing:
             current, peak = tracemalloc.get_traced_memory()
             print(f"Current mem: {current / 1024} KB, Peak mem: {peak / 1024} KB")
 
-    def __db_insert_filesystem_entry(self, unix_timestamp, byte_size, parent_file_system_entry_id, mode_is_directory,
+    def __db_insert_filesystem_entry(self, filesystem_id, unix_timestamp, byte_size, parent_file_system_entry_id, mode_is_directory,
                                 mode_is_archive, mode_is_read_only, mode_is_hidden, mode_is_system, mode_is_link, entity_name,
                                 full_name):
             # Insert Entity
@@ -115,13 +115,13 @@ class PowerShellFilesystemListing:
                 return None
             else:
                 self.__database.execute(
-                    "INSERT INTO FileSystemEntries (LastWriteTime, ByteSize, ParentFileSystemEntryID, IsDirectory, IsArchive, IsReadOnly, IsHidden, IsSystem, IsLink, Filename, FullName) VALUES (?,?,?,?,?,?,?,?,?,?,?);",
-                        (unix_timestamp, byte_size, parent_file_system_entry_id, mode_is_directory, mode_is_archive, mode_is_read_only,
+                    "INSERT INTO FileSystemEntries (FileSystemID, LastWriteTime, ByteSize, ParentFileSystemEntryID, IsDirectory, IsArchive, IsReadOnly, IsHidden, IsSystem, IsLink, Filename, FullName) VALUES (?,?,?,?,?,?,?,?,?,?,?,?);",
+                        (filesystem_id, unix_timestamp, byte_size, parent_file_system_entry_id, mode_is_directory, mode_is_archive, mode_is_read_only,
                                     mode_is_hidden, mode_is_system, mode_is_link, entity_name, full_name) )
                 # Retrieve the ID of the newly inserted row
                 return self.__database.get_last_row_id()
 
-    def __find_parent_directory_id(self, last_saved_directory_id, last_saved_directory_name, entity_parent_directory, directory_dictionary):
+    def __find_parent_directory_id(self, filesystem_id, last_saved_directory_id, last_saved_directory_name, entity_parent_directory, directory_dictionary):
         # Find Parent Directory ID
         parent_file_system_entry_id = None
         # Check if the last inserted directory is the parent directory
@@ -206,7 +206,8 @@ class PowerShellFilesystemListing:
                         self.__database.delete_filesystem_listing_entries(filesystem_id)
                         # Now that the entries for the filesystem have been deleted, update the date
                         self.__choose_filesystem_date()
-                        return self.__database.update_filesystem_date(self.__date, filesystem_id)
+                        self.__database.update_filesystem_date(self.__date, filesystem_id)
+                        return filesystem_id
                     elif selection == "2":
                         self.__database.close_database()
                         print("Existing.")
@@ -227,11 +228,7 @@ class PowerShellFilesystemListing:
         self.__vprint("Recording listing details.")
         # Check if records exist first and warn user if they do.
         filesystem_id = self.get_filesystem_id()
-
-        # print({f"drive_id: \"{drive_id}\""})
-
-        self.__database.close_database()
-        exit()
+        self.__vprint(f"filesystem_id: {filesystem_id}")
 
         self.__vprint("Processing listing file.")
         header_line_processed = False
@@ -354,11 +351,11 @@ class PowerShellFilesystemListing:
                             # print(f"{pieces_right_strip[0]}{modes_list}{mode_is_directory}{mode_is_archive}{mode_is_read_only}{mode_is_hidden}{mode_is_system}{mode_is_link}")
                             # DateTime string
                             datetime_string = pieces_right_strip[1]
-                            # print(f"datetime_string: {datetime_string}")
-                            # Parse the string into a datetime object
-                            datetime_obj = datetime.datetime.strptime(datetime_string, "%d/%m/%Y %H:%M:%S")
-                            # print(f"datetime_obj: {datetime_obj}")
                             try:
+                                self.__vprint(f"datetime_string: {datetime_string}")
+                                # Parse the string into a datetime object
+                                datetime_obj = datetime.strptime(datetime_string, "%d/%m/%Y %H:%M:%S")
+                                self.__vprint(f"datetime_obj: {datetime_obj}")
                                 # Convert to UNIX timestamp
                                 unix_timestamp = datetime_obj.timestamp()
                             except OSError as err:
@@ -386,7 +383,7 @@ class PowerShellFilesystemListing:
                                 # and the length of the parent entity directory == 3
                                 # and the parent entity directory ends with ":\"
                                 # then insert it into the database
-                                id_of_inserted_row = self.__db_insert_filesystem_entry(1736028193, None,
+                                id_of_inserted_row = self.__db_insert_filesystem_entry(filesystem_id, 1736028193, None,
                                                         None, 1, 0, 0,
                                                         1, 1, 0, entity_parent_directory, entity_parent_directory)
                                 last_saved_directory_name = entity_parent_directory
@@ -395,10 +392,10 @@ class PowerShellFilesystemListing:
                                 root_entity_not_found = False
 
                             # Find Parent Directory ID
-                            parent_file_system_entry_id = self.__find_parent_directory_id(last_saved_directory_id, last_saved_directory_name, entity_parent_directory, directory_dictionary)
+                            parent_file_system_entry_id = self.__find_parent_directory_id(filesystem_id, last_saved_directory_id, last_saved_directory_name, entity_parent_directory, directory_dictionary)
 
                             # Insert Entity
-                            id_of_inserted_row = self.__db_insert_filesystem_entry(unix_timestamp, byte_size, parent_file_system_entry_id,
+                            id_of_inserted_row = self.__db_insert_filesystem_entry(filesystem_id, unix_timestamp, byte_size, parent_file_system_entry_id,
                                                          mode_is_directory, mode_is_archive, mode_is_read_only, mode_is_hidden,
                                                          mode_is_system, mode_is_link, entity_name, full_name)
                             if mode_is_directory:
@@ -413,8 +410,8 @@ class PowerShellFilesystemListing:
 
 
                         lines_processed += 1
-                        #if(lines_processed > 50):
-                        #    break
+                        if(lines_processed > 50):
+                            break
 
                         time_taken_ms = (time.time() - processing_data_lines_start_time)*1000
 

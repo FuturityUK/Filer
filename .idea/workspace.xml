@@ -4,12 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Place holders calls added to detech exist filesystem listing for a label, ask the user if they wish to replace it, update the filesystem listing date etc.">
+    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Filesystem Listing date is updated if the user chooses to replace / update the existing file listing">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database.py" beforeDir="false" afterPath="$PROJECT_DIR$/database.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/file_system_processors.py" beforeDir="false" afterPath="$PROJECT_DIR$/file_system_processors.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/filer.py" beforeDir="false" afterPath="$PROJECT_DIR$/filer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sql.py" beforeDir="false" afterPath="$PROJECT_DIR$/sql.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -387,7 +384,15 @@
       <option name="project" value="LOCAL" />
       <updated>1737654895306</updated>
     </task>
-    <option name="localTasksCounter" value="39" />
+    <task id="LOCAL-00039" summary="Filesystem Listing date is updated if the user chooses to replace / update the existing file listing">
+      <option name="closed" value="true" />
+      <created>1737656809712</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1737656809712</updated>
+    </task>
+    <option name="localTasksCounter" value="40" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -402,7 +407,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Further work on Arguments and subcommand arguments" />
     <MESSAGE value="Some database methods moved to the Database class.&#10;Vacuuming option implemented." />
     <MESSAGE value="Changed 'command' to 'subcommand' in the argument options.&#10;Added a 'sql' directory, together with a file containing sql to create the necessary database tables." />
     <MESSAGE value="Started embedding the SQL code in the program" />
@@ -427,6 +431,7 @@
     <MESSAGE value="Added code to check if a driveID already exists for the specified make, model, serial number." />
     <MESSAGE value="Drive (Hostname) and Filesystem inserts now working." />
     <MESSAGE value="Place holders calls added to detech exist filesystem listing for a label, ask the user if they wish to replace it, update the filesystem listing date etc." />
-    <option name="LAST_COMMIT_MESSAGE" value="Place holders calls added to detech exist filesystem listing for a label, ask the user if they wish to replace it, update the filesystem listing date etc." />
+    <MESSAGE value="Filesystem Listing date is updated if the user chooses to replace / update the existing file listing" />
+    <option name="LAST_COMMIT_MESSAGE" value="Filesystem Listing date is updated if the user chooses to replace / update the existing file listing" />
   </component>
 </project>
