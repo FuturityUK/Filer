@@ -4,6 +4,9 @@ To DO:
   - Check errors caught is drive database is trying to be written to doesn't exist
   - Fix database creation
 
+  - Check if the Hostname matches when looking up drive details
+  - if it doesn't, ask the user if they want to change it
+
 - reset database function
   - only call it after the user has requested it
   - Show filename

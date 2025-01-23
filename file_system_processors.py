@@ -51,24 +51,6 @@ class PowerShellFilesystemListing:
             print(f"Listing file doesn't exist at location: \"{os.path.abspath(input_filename)}\"")
             print("Exiting")
             exit(2)
-        else:
-            file_modified_timestamp = int(os.path.getmtime(input_filename))
-            now_timestamp = int(time.time())
-            selection = None
-            while selection not in {"1", "2", "3"}:
-                print("Filesystem listing creation date time options:")
-                print(f"\t1) {datetime.fromtimestamp(file_modified_timestamp)} UTC - from filesystem listing file's last modified time")
-                print(f"\t2) {datetime.fromtimestamp(now_timestamp)} UTC - the current time")
-                print("\t3) Exit")
-                selection = input("Please enter an option number from those listed above? ")
-                if selection == "1":
-                    self.__date = file_modified_timestamp
-                elif selection == "2":
-                    self.__date = now_timestamp
-                elif selection == "3":
-                    database.close_database()
-                    print("Existing.")
-                    exit()
 
     def __vprint(self, string: str):
         if self.__verbose:
@@ -166,6 +148,25 @@ class PowerShellFilesystemListing:
                     # print(parent_file_system_entry_id)
         return parent_file_system_entry_id
 
+    def __choose_filesystem_date(self):
+        file_modified_timestamp = int(os.path.getmtime(self.__input_filename))
+        now_timestamp = int(time.time())
+        selection = None
+        while selection not in {"1", "2", "3"}:
+            print("Filesystem listing creation date time options:")
+            print(f"\t1) {datetime.fromtimestamp(file_modified_timestamp)} UTC - from filesystem listing file's last modified time")
+            print(f"\t2) {datetime.fromtimestamp(now_timestamp)} UTC - the current time")
+            print("\t3) Exit")
+            selection = input("Please enter an option number from those listed above? ")
+            if selection == "1":
+                self.__date = file_modified_timestamp
+            elif selection == "2":
+                self.__date = now_timestamp
+            elif selection == "3":
+                print("Existing.")
+                self.__database.close_database()
+                exit()
+
     def get_drive_id(self):
         if self.__make is None and self.__model is None and self.__serial_number is None:
             self.__vprint("Drive ignored as Make, Model and Serial Number aren't specified")
@@ -181,6 +182,7 @@ class PowerShellFilesystemListing:
                 # More than 1 drive_id found so error
                 print("Error: More than one drive_id found for the Make, Model and Serial Number specified.")
                 print("Exiting.")
+                self.__database.close_database()
                 exit(2)
 
     def get_filesystem_id(self):
@@ -191,18 +193,42 @@ class PowerShellFilesystemListing:
             filesystem_ids = self.__database.find_filesystem_id(self.__label)
             if len(filesystem_ids) == 1:
                 # drive_id found
+                filesystem_id = filesystem_ids[0]
+                selection = None
+                while selection not in {"1", "2"}:
+                    print("Filesystem listing already existing in database:")
+                    print("\t1) Replace the listing")
+                    print("\t2) Exit")
+                    selection = input("Please enter an option number from those listed above? ")
+                    if selection == "1":
+                        self.__database.erase_filesystem_listing(filesystem_id)
+                        # Now that the entries for the filesystem have been deleted, update the date
+                        self.__choose_filesystem_date()
+                        return self.__database.update_filesystem(filesystem_id, self.__date)
+                    elif selection == "2":
+                        self.__database.close_database()
+                        print("Existing.")
+                        exit()
                 return filesystem_ids[0]
             elif len(filesystem_ids) == 0:
                 # No drive_id found so create one
+                self.__choose_filesystem_date()
                 return self.__database.insert_filesystem(self.__label, drive_id, self.__date)
             else:
                 # More than 1 drive_id found so error
                 print("Error: More than one filesystem_id found for the Label specified.")
                 print("Exiting.")
+                self.__database.close_database()
                 exit(2)
 
     def import_listing(self):
-        print("process_file()")
+        self.__vprint("Recording listing details.")
+        # Check if records exist first and warn user if they do.
+        filesystem_id = self.get_filesystem_id()
+
+        # print({f"drive_id: \"{drive_id}\""})
+
+        self.__vprint("Processing listing file.")
         header_line_processed = False
         next_line_field_widths = False
         next_line_process = False

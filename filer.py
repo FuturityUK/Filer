@@ -177,11 +177,6 @@ elif args.subcommand == "import":
 
     powershell_filesystem_listing.set_memory_stats(MEMORY_STATS)
     powershell_filesystem_listing.save_to_database()
-    # Check if records exist first and warn user if they do.
-    #drive_id = powershell_filesystem_listing.get_drive_id()
-    filesystem_id = powershell_filesystem_listing.get_filesystem_id()
-
-    #print({f"drive_id: \"{drive_id}\""})
 
     clean_up_and_quit()
 
