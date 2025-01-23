@@ -410,8 +410,9 @@ class PowerShellFilesystemListing:
 
 
                         lines_processed += 1
-                        if(lines_processed > 50):
-                            break
+
+                        #if(lines_processed > 1):
+                        #    break
 
                         time_taken_ms = (time.time() - processing_data_lines_start_time)*1000
 
