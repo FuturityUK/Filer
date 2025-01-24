@@ -1,5 +1,10 @@
 To DO:
 
+make vpool
+model vdisk
+partition volume
+Serial identifier 
+
 - Database
   - Check errors caught is drive database is trying to be written to doesn't exist
   - Fix database creation
