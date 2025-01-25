@@ -1,5 +1,10 @@
 To DO:
 
+- release tags?
+
+- powershell, add commands to prevent result truncation 
+
+- visual disk
 make vpool
 model vdisk
 partition volume
