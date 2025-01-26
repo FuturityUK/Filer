@@ -94,30 +94,41 @@ def get_system_information_examples():
 
 
 def display_dictionary(results_array: []):
-    print(f"results_array length: {len(results_array)}")
-    array_element = 0
+    #print(f"results_array length: {len(results_array)}")
+    print("[")
+    results_array_length = len(results_array)
+    array_element_counter = 0
     for results_dictionary in results_array:
-        array_element += 1
-        print("{")
+        array_element_counter += 1
+        print("  {")
         results_dictionary_length = len(results_dictionary)
         key_counter = 0
         for key, value in results_dictionary.items():
             key_counter += 1
             if key_counter != results_dictionary_length:
-                print(f"  \"{key}\": \"{value}\",")
+                print(f"    '{key}': '{value}',")
             else:
-                print(f"  \"{key}\": \"{value}\"")
-        print("}")
-
+                print(f"    '{key}': '{value}'")
+        if array_element_counter != results_array_length:
+            print("  },")
+        else:
+            print("  }")
+    print("]")
 
 class Windows:
     """ Class to execute Windows commands """
+
+    __verbose = False
 
     def __init__(self):
         self.commands = {
             "dir_protected_directory": '"dir "C:\\Users\\Neil"',
             "list_disks": '"Get-Disk"'
         }
+
+    def __vprint(self, string: str):
+        if self.__verbose:
+            print(string)
 
     def run_powershell_command_with_fix_width_output(self, command_string: str):
         power_shell_command = "powershell.exe"
@@ -170,10 +181,10 @@ class Windows:
         for line in out_utf_8.splitlines():
             if len(line.rstrip()) > 0:
                 lines_with_content += 1
-                print(f"lines_with_content: {lines_with_content}")
+                self.__vprint(f"lines_with_content: {lines_with_content}")
                 if lines_with_content >= 2 and not line.startswith("--"):
                     # Dash line is missing, so this must be a wmic command so with have our widths already
-                    print("Dash line is missing from content line 2")
+                    self.__vprint("Dash line is missing from content line 2")
                     break
                 # If we have reached here, this is either a header line, or a dash line.
                 # As the dash line is after the header line in the Get- command, it will replace the bad field widths with the correct ones
@@ -187,7 +198,8 @@ class Windows:
                 for i in range(line_length):
                     last_char = char
                     char = line[i]
-                    print(char, end="")
+                    if self.__verbose:
+                        print(char, end="")
                     if (last_char == ' ') and (char != ' '):
                         field_length = i - char_offset
                         char_offset = i
@@ -196,18 +208,18 @@ class Windows:
                 field_length = line_length - char_offset
                 # Check that the longest path doesn't get truncated
                 field_widths.append(field_length)
-                # print()
-                # print(field_widths)
+                # self.__vprint()
+                # self.__vprint(field_widths)
                 # Create slices
                 offset = 0
                 for width in field_widths:
                     slices.append(slice(offset, offset + width))
                     offset += width
-                print("")
-                print(slices)
+                self.__vprint("")
+                self.__vprint(slices)
                 header_line_processed = True
                 # processing_data_lines_start_time = time.time()
-                # print(dash_field_lengths)
+                # self.__vprint(dash_field_lengths)
                 #break
 
         # Process the output again, but this time extract the headers and the data
@@ -220,17 +232,17 @@ class Windows:
                 continue
             else:
                 if not line_right_strip.startswith("--"):
-                    print(line_right_strip)
+                    self.__vprint(line_right_strip)
                     pieces_array = [line_right_strip[slice] for slice in slices]
                     pieces_right_strip_array = [piece.rstrip() for piece in pieces_array]
-                    #print(pieces_right_strip_array)
+                    #self.__vprint(pieces_right_strip_array)
                     if len(pieces_right_strip_array) > 0:
                         if not first_content_line_found:
                             headers_array = pieces_right_strip_array
-                            print(f"HEADERS: {headers_array}")
+                            self.__vprint(f"HEADERS: {headers_array}")
                             first_content_line_found = True
                         else:
-                            print(f"VALUES : {pieces_right_strip_array}")
+                            self.__vprint(f"VALUES : {pieces_right_strip_array}")
                             if len(headers_array) != len(pieces_right_strip_array):
                                 print("headers array and values array sizes don't match.")
                                 print(f"Length headers_array: {len(headers_array)}")
@@ -240,7 +252,7 @@ class Windows:
                                 values_dictionary = {}
                                 for index, header_name in enumerate(headers_array):
                                     values_dictionary[header_name] = pieces_right_strip_array[index]
-                                print(f"values_dictionary: {values_dictionary}")
+                                self.__vprint(f"values_dictionary: {values_dictionary}")
                                 command_results.append(values_dictionary)
         return command_results
 
@@ -262,7 +274,8 @@ class System:
 
     def get_drives_details(self):
         if self.windows:
-            return self.windows.run_powershell_command_with_fix_width_output("Get-Disk")
+            #return self.windows.run_powershell_command_with_fix_width_output("Get-Disk")
+            return self.windows.run_command_with_fix_width_output("wmic diskdrive")
 
     def get_volumes(self):
         if self.windows:
@@ -281,7 +294,7 @@ if __name__ == "__main__":
 
     volumes = system.get_volumes()
     print(f"volumes: {volumes}")
-    display_dictionary(volumes)
+#    display_dictionary(volumes)
 
     #available_drives = ['%s:' % d for d in string.ascii_uppercase if os.path.exists('%s:' % d)]
     #print(f"available_drives: {available_drives}")
