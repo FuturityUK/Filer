@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Added a powershell command function">
+    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="More refactoring of the powershell commands">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/powershell.py" beforeDir="false" afterPath="$PROJECT_DIR$/powershell.py" afterDir="false" />
     </list>
@@ -21,6 +21,11 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="master" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
@@ -56,7 +61,7 @@
     &quot;Python.sql.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;9ead0e3c&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;
   }
 }</component>
@@ -417,15 +422,7 @@
       <option name="project" value="LOCAL" />
       <updated>1737663826196</updated>
     </task>
-    <task id="LOCAL-00043" summary="Added a powershell command function">
-      <option name="closed" value="true" />
-      <created>1737749766819</created>
-      <option name="number" value="00043" />
-      <option name="presentableId" value="LOCAL-00043" />
-      <option name="project" value="LOCAL" />
-      <updated>1737749766819</updated>
-    </task>
-    <option name="localTasksCounter" value="44" />
+    <option name="localTasksCounter" value="43" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -440,6 +437,7 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
+    <MESSAGE value="Changed 'command' to 'subcommand' in the argument options.&#10;Added a 'sql' directory, together with a file containing sql to create the necessary database tables." />
     <MESSAGE value="Started embedding the SQL code in the program" />
     <MESSAGE value="database execute now implemented. Needs testing" />
     <MESSAGE value="file find now working" />
@@ -464,7 +462,6 @@
     <MESSAGE value="Place holders calls added to detech exist filesystem listing for a label, ask the user if they wish to replace it, update the filesystem listing date etc." />
     <MESSAGE value="Filesystem Listing date is updated if the user chooses to replace / update the existing file listing" />
     <MESSAGE value="This version may actually import the filesystem listing :)" />
-    <MESSAGE value="Added a powershell command function" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added a powershell command function" />
+    <option name="LAST_COMMIT_MESSAGE" value="This version may actually import the filesystem listing :)" />
   </component>
 </project>
