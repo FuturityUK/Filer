@@ -95,10 +95,19 @@ def get_system_information_examples():
 
 def display_dictionary(results_array: []):
     print(f"results_array length: {len(results_array)}")
+    array_element = 0
     for results_dictionary in results_array:
-        print(f"Number: {results_dictionary['Number']}")
+        array_element += 1
+        print("{")
+        results_dictionary_length = len(results_dictionary)
+        key_counter = 0
         for key, value in results_dictionary.items():
-            print(f"  - \"{key}\": \"{value}\"")
+            key_counter += 1
+            if key_counter != results_dictionary_length:
+                print(f"  \"{key}\": \"{value}\",")
+            else:
+                print(f"  \"{key}\": \"{value}\"")
+        print("}")
 
 
 class Windows:
@@ -266,8 +275,8 @@ if __name__ == "__main__":
 
     system = System()
 
-    volumes = system.get_volumes()
-    print(f"volumes: {volumes}")
+#    volumes = system.get_volumes()
+#    print(f"volumes: {volumes}")
 
     drives = system.get_drives_details()
     print(f"drives_details: {drives}")
