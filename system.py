@@ -92,6 +92,15 @@ def get_system_information_examples():
         'platform platform': 'Linux-5.15.0-86-generic-x86_64-with-glibc2.35',
     }
 
+
+def display_dictionary(results_array: []):
+    print(f"results_array length: {len(results_array)}")
+    for results_dictionary in results_array:
+        print(f"Number: {results_dictionary['Number']}")
+        for key, value in results_dictionary.items():
+            print(f"  - \"{key}\": \"{value}\"")
+
+
 class Windows:
     """ Class to execute Windows commands """
 
@@ -101,13 +110,17 @@ class Windows:
             "list_disks": '"Get-Disk"'
         }
 
-    def run_command_with_fix_width_output(self, command_string: str):
+    def run_powershell_command_with_fix_width_output(self, command_string: str):
         power_shell_command = "powershell.exe"
         power_shell_command_args = "-ExecutionPolicy RemoteSigned -command"
-        post_command_pipe_to_prevent_truncation = "| Format-Table -Wrap -AutoSize"
+        powershell_post_command_pipe_to_prevent_truncation = "| Format-Table -Wrap -AutoSize"
+        command_string = power_shell_command + " " + power_shell_command_args +  " " + command_string +  " " + powershell_post_command_pipe_to_prevent_truncation
+        return self.run_command_with_fix_width_output(command_string)
+
+    def run_command_with_fix_width_output(self, command_string: str):
         try:
             #p = subprocess.Popen(self.power_shell_command,  + command_string, stdout=sys.stdout)
-            p = subprocess.Popen(power_shell_command + " " + power_shell_command_args +  " " + command_string +  " " + post_command_pipe_to_prevent_truncation, stdout=subprocess.PIPE)
+            p = subprocess.Popen(command_string, stdout=subprocess.PIPE)
             #p = subprocess.Popen(command_string, stdout=subprocess.PIPE)
             out, err = p.communicate()
             if err is not None:
@@ -115,6 +128,10 @@ class Windows:
                 print(f"Error running command: \"{command_string}\"")
                 print(f"Error: \"{err_utf_8}\"")
                 exit(2)
+        except FileNotFoundError as e:
+            print(f"Error running command: \"{command_string}\"")
+            print(f"Error: \"{e}\"")
+            exit(2)
         except subprocess.CalledProcessError as e:
             print(f"Error running command: \"{command_string}\"")
             print(f"Error: \"{e}\"")
@@ -136,12 +153,24 @@ class Windows:
         last_saved_directory_name = "" # Shouldn't use None because we can't use string operations on a None type
         last_saved_directory_id = 0 # IDs start at 1 so this 0 will never be used.
 
-        # Hunt for line with dashes that define the width of the columns
+        # Find field widths within the fixed width output.
+        # The first non-blank line will be the header line. For wmic commands this line will define the field widths
+        # The second next line may contain dashes which defines the field width for PowerShell Get- commands
+        # Hunt for line with headers that define the width of the columns as the won't have spaces in them
+        lines_with_content = 0
         for line in out_utf_8.splitlines():
-            #line_right_strip = line.rstrip()
-            #print(line_right_strip)
-            if line.startswith("--"):
+            if len(line.rstrip()) > 0:
+                lines_with_content += 1
+                print(f"lines_with_content: {lines_with_content}")
+                if lines_with_content >= 2 and not line.startswith("--"):
+                    # Dash line is missing, so this must be a wmic command so with have our widths already
+                    print("Dash line is missing from content line 2")
+                    break
+                # If we have reached here, this is either a header line, or a dash line.
+                # As the dash line is after the header line in the Get- command, it will replace the bad field widths with the correct ones
                 # Calculate max column widths from line, as each path and hence line could be a different length.
+                field_widths = []
+                slices = []
                 char = '-'
                 last_char = '-'
                 char_offset = 0
@@ -150,7 +179,7 @@ class Windows:
                     last_char = char
                     char = line[i]
                     print(char, end="")
-                    if (last_char == ' ') and (char == '-'):
+                    if (last_char == ' ') and (char != ' '):
                         field_length = i - char_offset
                         char_offset = i
                         field_widths.append(field_length)
@@ -165,13 +194,16 @@ class Windows:
                 for width in field_widths:
                     slices.append(slice(offset, offset + width))
                     offset += width
+                print("")
                 print(slices)
-                field_widths_processed = True
-                #processing_data_lines_start_time = time.time()
-                #print(dash_field_lengths)
-                break
+                header_line_processed = True
+                # processing_data_lines_start_time = time.time()
+                # print(dash_field_lengths)
+                #break
 
         # Process the output again, but this time extract the headers and the data
+        command_results = []
+        headers_array = None
         first_content_line_found = False
         for line in out_utf_8.splitlines():
             line_right_strip = line.rstrip()
@@ -182,8 +214,27 @@ class Windows:
                     print(line_right_strip)
                     pieces_array = [line_right_strip[slice] for slice in slices]
                     pieces_right_strip_array = [piece.rstrip() for piece in pieces_array]
-                    if len(pieces_right_strip_array) > 0 and pieces_right_strip_array[0] != "":
-                        print(pieces_right_strip_array)
+                    #print(pieces_right_strip_array)
+                    if len(pieces_right_strip_array) > 0:
+                        if not first_content_line_found:
+                            headers_array = pieces_right_strip_array
+                            print(f"HEADERS: {headers_array}")
+                            first_content_line_found = True
+                        else:
+                            print(f"VALUES : {pieces_right_strip_array}")
+                            if len(headers_array) != len(pieces_right_strip_array):
+                                print("headers array and values array sizes don't match.")
+                                print(f"Length headers_array: {len(headers_array)}")
+                                print(f"Length pieces_right_strip_array: {len(pieces_right_strip_array)}")
+                                exit(2)
+                            else:
+                                values_dictionary = {}
+                                for index, header_name in enumerate(headers_array):
+                                    values_dictionary[header_name] = pieces_right_strip_array[index]
+                                print(f"values_dictionary: {values_dictionary}")
+                                command_results.append(values_dictionary)
+        return command_results
+
 
 class Linux:
     """ Class to execute Linux commands """
@@ -202,15 +253,25 @@ class System:
 
     def get_drives_details(self):
         if self.windows:
-            return self.windows.run_command_with_fix_width_output("Get-Disk")
+            return self.windows.run_powershell_command_with_fix_width_output("Get-Disk")
+
+    def get_volumes(self):
+        if self.windows:
+            return self.windows.run_command_with_fix_width_output("wmic volume")
+
 
 if __name__ == "__main__":
     sys_info = get_system_information()
     print(f"system_information: {sys_info}")
 
     system = System()
-    drives_details = system.get_drives_details()
-    print(f"drives_details: {drives_details}")
+
+    volumes = system.get_volumes()
+    print(f"volumes: {volumes}")
+
+    drives = system.get_drives_details()
+    print(f"drives_details: {drives}")
+    display_dictionary(drives)
 
     #available_drives = ['%s:' % d for d in string.ascii_uppercase if os.path.exists('%s:' % d)]
     #print(f"available_drives: {available_drives}")
