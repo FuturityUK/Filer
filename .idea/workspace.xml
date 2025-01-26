@@ -4,8 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="added missing code">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="enhance output of display_dictionary function">
       <change beforePath="$PROJECT_DIR$/system.py" beforeDir="false" afterPath="$PROJECT_DIR$/system.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -88,14 +87,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1736868367160</updated>
-    </task>
-    <task id="LOCAL-00001" summary="Initial Commit">
-      <option name="closed" value="true" />
-      <created>1736868498880</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1736868498880</updated>
     </task>
     <task id="LOCAL-00002" summary="Added Functions:&#10;directory_sizes_clear()&#10;directory_sizes_calculate()">
       <option name="closed" value="true" />
@@ -481,7 +472,15 @@
       <option name="project" value="LOCAL" />
       <updated>1737899974107</updated>
     </task>
-    <option name="localTasksCounter" value="50" />
+    <task id="LOCAL-00050" summary="enhance output of display_dictionary function">
+      <option name="closed" value="true" />
+      <created>1737903845668</created>
+      <option name="number" value="00050" />
+      <option name="presentableId" value="LOCAL-00050" />
+      <option name="project" value="LOCAL" />
+      <updated>1737903845669</updated>
+    </task>
+    <option name="localTasksCounter" value="51" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -496,7 +495,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Code to create a new database, tables and indexes.&#10;Foreign keys are still missing" />
     <MESSAGE value="Added a placeholder for the &quot;import&quot; subcommand" />
     <MESSAGE value="Added a placeholder for the &quot;reset&quot; subcommand" />
     <MESSAGE value="Changes to workspace.xml" />
@@ -521,6 +519,7 @@
     <MESSAGE value="More OS Functions" />
     <MESSAGE value="Code to stop results from being truncated" />
     <MESSAGE value="added missing code" />
-    <option name="LAST_COMMIT_MESSAGE" value="added missing code" />
+    <MESSAGE value="enhance output of display_dictionary function" />
+    <option name="LAST_COMMIT_MESSAGE" value="enhance output of display_dictionary function" />
   </component>
 </project>

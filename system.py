@@ -275,12 +275,13 @@ if __name__ == "__main__":
 
     system = System()
 
-#    volumes = system.get_volumes()
-#    print(f"volumes: {volumes}")
-
     drives = system.get_drives_details()
     print(f"drives_details: {drives}")
     display_dictionary(drives)
+
+    volumes = system.get_volumes()
+    print(f"volumes: {volumes}")
+    display_dictionary(volumes)
 
     #available_drives = ['%s:' % d for d in string.ascii_uppercase if os.path.exists('%s:' % d)]
     #print(f"available_drives: {available_drives}")
