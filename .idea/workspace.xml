@@ -4,7 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Added code to detect system type">
+    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Added OS detection methods">
+      <change afterPath="$PROJECT_DIR$/test.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/system.py" beforeDir="false" afterPath="$PROJECT_DIR$/system.py" afterDir="false" />
     </list>
@@ -60,10 +61,12 @@
     "Python.powershell.executor": "Run",
     "Python.sql.executor": "Run",
     "Python.system.executor": "Run",
+    "Python.test.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "master",
-    "ignore.virus.scanning.warn.message": "true"
+    "ignore.virus.scanning.warn.message": "true",
+    "run.code.analysis.last.selected.profile": "aDefault"
   }
 }]]></component>
   <component name="RecentsManager">
@@ -447,7 +450,15 @@
       <option name="project" value="LOCAL" />
       <updated>1737888564340</updated>
     </task>
-    <option name="localTasksCounter" value="46" />
+    <task id="LOCAL-00046" summary="Added OS detection methods">
+      <option name="closed" value="true" />
+      <created>1737893713740</created>
+      <option name="number" value="00046" />
+      <option name="presentableId" value="LOCAL-00046" />
+      <option name="project" value="LOCAL" />
+      <updated>1737893713740</updated>
+    </task>
+    <option name="localTasksCounter" value="47" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -462,7 +473,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="database execute now implemented. Needs testing" />
     <MESSAGE value="file find now working" />
     <MESSAGE value="&quot;like&quot; subcommand now working" />
     <MESSAGE value="Added code to ask the user if they want to create a new database if one is missing." />
@@ -487,6 +497,7 @@
     <MESSAGE value="This version may actually import the filesystem listing :)" />
     <MESSAGE value="Renamed powershell.py to system.py" />
     <MESSAGE value="Added code to detect system type" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added code to detect system type" />
+    <MESSAGE value="Added OS detection methods" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added OS detection methods" />
   </component>
 </project>

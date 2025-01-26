@@ -5,8 +5,95 @@ import os
 import sys
 import string
 
-class System:
-    """ Class to execute PowerShell commands """
+def is_windows():
+    return True if platform.system().lower() == "windows" else False
+
+def is_macos():
+    return True if platform.system().lower() == "darwin" else False
+
+def is_linux():
+    return True if platform.system().lower() == "linux" else False
+
+def is_java():
+    return True if platform.system().lower() == "java" else False
+
+def is_android():
+    return True if platform.system().lower() == "android" else False
+
+def is_ios():
+    return True if platform.system().lower() == "ios" else False
+
+def is_ipados():
+    return True if platform.system().lower() == "ipados" else False
+
+def is_unix_like():
+    return True if os.name == "posix" else False
+
+def get_system_information():
+    system_information = {'system': platform.system(), 'os name': os.name, 'system platform': sys.platform,
+                          'platform release': platform.release(), 'platform version': platform.version(),
+                          'platform platform': platform.platform(),
+                          'platform platform terse': platform.platform(terse=True),
+                          'platform platform aliased': platform.platform(aliased=True)}
+    if system_information['system'] == "Windows":
+        # Windows specific functions
+        system_information['windows edition'] = platform.win32_edition()
+        # Windows 11 Home = "Core"
+        system_information['windows is iot'] = platform.win32_is_iot()
+        # Windows 11 Home = False
+    elif system_information['system'] == "Darwin":
+        # MacOS specific function
+        system_information['mac version'] = platform.mac_ver()
+    elif system_information['system'] == "Linux":
+        # We could import the "distro" module and get further Linux information (see below)
+        # but I've decided not to include them to focus on using on modules built into Python
+        # for easy of installation
+        do_nothing = True
+        #print(distro.name())
+        # Ubuntu
+        #print(distro.id())
+        # ubuntu
+        #print(distro.version())
+        # 22.04
+    return system_information
+
+    # Examples:
+def get_system_information_examples():
+    # MacOS Sonoma 14.0
+    macos = {
+        'system': 'Darwin',
+        'os name': 'posix',
+        'system platform': 'darwin',
+        'platform release': '23.0.0',
+        'platform version': 'Darwin Kernel Version 23.0.0: Fri Sep 15 14:42:57 PDT 2023; root:xnu-10002.1.13~1/RELEASE_ARM64_T8112',
+        'platform platform': 'macOS-14.0-arm64-arm-64bit',
+        'mac version': ('14.0', ('', '', ''), 'arm64')
+    }
+    # Windows 11 Pro
+    win = {
+        'system': 'Windows',
+        'os name': 'nt',
+        'system platform': 'win32',
+        'platform release': '11',
+        'platform version': '10.0.26100',
+        'platform platform': 'Windows-11-10.0.26100-SP0',
+        'platform platform terse': 'Windows-11',
+        'platform platform aliased': 'Windows-11-10.0.26100-SP0',
+        'windows edition': 'Professional',
+        'windows is iot': False
+    }
+    # Ubuntu 22.04.3 LTS
+    ubuntu = {
+        'system': 'Linux',
+        'os name': 'posix',
+        'system platform': 'linux',
+        'platform release': '5.15.0-86-generic',
+        'platform version': '#96-Ubuntu SMP Wed Sep 20 08:23:49 UTC 2023',
+        'platform platform': 'Linux-5.15.0-86-generic-x86_64-with-glibc2.35',
+    }
+
+class PowerShell:
+    """ Class to execute Windows PowerShell commands """
 
     def __init__(self):
         self.power_shell_command = "powershell.exe"
@@ -92,113 +179,35 @@ class System:
                     if len(pieces_right_strip_array) > 0 and pieces_right_strip_array[0] != "":
                         print(pieces_right_strip_array)
 
-    # Examples:
-    def get_system_information(self):
-        system_information = {}
-        system_information['system'] = platform.system()
-        system_information['os name'] = os.name
-        system_information['system platform'] = sys.platform
-        system_information['platform release'] = platform.release()
-        system_information['platform version'] = platform.version()
-        system_information['platform platform'] = platform.platform()
-        system_information['platform platform terse'] = platform.platform(terse=True)
-        system_information['platform platform aliased'] = platform.platform(aliased=True)
-        if system_information.get('system') == "Windows":
-            # Windows specific functions
-            system_information['windows edition'] = platform.win32_edition()
-            # Windows 11 Home = "Core"
-            system_information['windows is iot'] = platform.win32_is_iot()
-            # Windows 11 Home = False
-        elif system_information.get('system') == "Darwin":
-            # MacOS specific function
-            system_information['mac version'] = platform.mac_ver()
-        elif system_information.get('system') == "Linux":
-            # We could import the "distro" module and get further Linux information (see below)
-            # but I've decided not to include them to focus on using on modules built into Python
-            # for easy of installation
-            do_nothing = True
-            #print(distro.name())
-            # Ubuntu
-            #print(distro.id())
-            # ubuntu
-            #print(distro.version())
-            # 22.04
-        return system_information
+class Linux:
+    """ Class to execute Linux commands """
 
-    def is_windows(self):
-        if platform.system() == "Windows":
-            return True
+class System:
+    """ Class to execute System commands """
+
+    def __init__(self):
+        self.windows = is_windows()
+        if self.windows:
+            self.powershell = PowerShell()
+            self.unix = None
         else:
-            return False
+            self.powershell = None
+            self.unix = Linux()
 
-    def is_macos(self):
-        if platform.system() == "Darwin":
-            return True
-        else:
-            return False
 
-    def is_linux(self):
-        if platform.system() == "Linux":
-            return True
-        else:
-            return False
+if __name__ == "__main__":
+    system = System()
+    sys_info = get_system_information()
+    print(f"system_information: {sys_info}")
 
-    def is_unix(self):
-        if os.name == "posix":
-            return True
-        else:
-            return False
+    #available_drives = ['%s:' % d for d in string.ascii_uppercase if os.path.exists('%s:' % d)]
+    #print(f"available_drives: {available_drives}")
 
-    def get_system_information_examples(self):
-        """
-        MacOS Sonoma 14.0
-        {
-            'system': 'Darwin',
-            'os name': 'posix',
-            'system platform': 'darwin',
-            'platform release': '23.0.0',
-            'platform version': 'Darwin Kernel Version 23.0.0: Fri Sep 15 14:42:57 PDT 2023; root:xnu-10002.1.13~1/RELEASE_ARM64_T8112',
-            'platform platform': 'macOS-14.0-arm64-arm-64bit',
-            'mac version': ('14.0', ('', '', ''), 'arm64')
-        }
+    #import psutil
+    #partitions = psutil.disk_partitions()
+    #for p in partitions:
+    #    print(p.mountpoint, psutil.disk_usage(p.mountpoint).percent)
 
-        Windows 11 Pro
-        {
-            'system': 'Windows',
-            'os name': 'nt',
-            'system platform': 'win32',
-            'platform release': '11',
-            'platform version': '10.0.26100',
-            'platform platform': 'Windows-11-10.0.26100-SP0',
-            'platform platform terse': 'Windows-11',
-            'platform platform aliased': 'Windows-11-10.0.26100-SP0',
-            'windows edition': 'Professional',
-            'windows is iot': False
-        }
+    #ps = PowerShell()
 
-        Ubuntu 22.04.3 LTS
-        {
-            'system': 'Linux',
-            'os name': 'posix',
-            'system platform': 'linux',
-            'platform release': '5.15.0-86-generic',
-            'platform version': '#96-Ubuntu SMP Wed Sep 20 08:23:49 UTC 2023',
-            'platform platform': 'Linux-5.15.0-86-generic-x86_64-with-glibc2.35',
-        }
-        """
-
-system = System()
-system_information = system.get_system_information()
-print(f"system_information: {system_information}")
-
-available_drives = ['%s:' % d for d in string.ascii_uppercase if os.path.exists('%s:' % d)]
-print(f"available_drives: {available_drives}")
-
-#import psutil
-#partitions = psutil.disk_partitions()
-#for p in partitions:
-#    print(p.mountpoint, psutil.disk_usage(p.mountpoint).percent)
-
-#ps = PowerShell()
-
-#ps.run_command(ps.commands["list_disks"])
+    #ps.run_command(ps.commands["list_disks"])
