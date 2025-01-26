@@ -92,26 +92,32 @@ def get_system_information_examples():
         'platform platform': 'Linux-5.15.0-86-generic-x86_64-with-glibc2.35',
     }
 
-class PowerShell:
-    """ Class to execute Windows PowerShell commands """
+class Windows:
+    """ Class to execute Windows commands """
 
     def __init__(self):
-        self.power_shell_command = "powershell.exe"
-        self.power_shell_command_args = "-ExecutionPolicy RemoteSigned -command"
         self.commands = {
             "dir_protected_directory": '"dir "C:\\Users\\Neil"',
             "list_disks": '"Get-Disk"'
         }
 
-    def run_powershell_command(self, command_string: str):
-        #p = subprocess.Popen(self.power_shell_command,  + command_string, stdout=sys.stdout)
-        p = subprocess.Popen(self.power_shell_command + " " + self.power_shell_command_args +  " " + command_string, stdout=subprocess.PIPE)
-        #p = subprocess.Popen(command_string, stdout=subprocess.PIPE)
-        out, err = p.communicate()
-        if err is not None:
-            err_utf_8 = err.decode('UTF-8')
+    def run_command_with_fix_width_output(self, command_string: str):
+        power_shell_command = "powershell.exe"
+        power_shell_command_args = "-ExecutionPolicy RemoteSigned -command"
+        post_command_pipe_to_prevent_truncation = "| Format-Table -Wrap -AutoSize"
+        try:
+            #p = subprocess.Popen(self.power_shell_command,  + command_string, stdout=sys.stdout)
+            p = subprocess.Popen(power_shell_command + " " + power_shell_command_args +  " " + command_string +  " " + post_command_pipe_to_prevent_truncation, stdout=subprocess.PIPE)
+            #p = subprocess.Popen(command_string, stdout=subprocess.PIPE)
+            out, err = p.communicate()
+            if err is not None:
+                err_utf_8 = err.decode('UTF-8')
+                print(f"Error running command: \"{command_string}\"")
+                print(f"Error: \"{err_utf_8}\"")
+                exit(2)
+        except subprocess.CalledProcessError as e:
             print(f"Error running command: \"{command_string}\"")
-            print(f"Error: \"{err_utf_8}\"")
+            print(f"Error: \"{e}\"")
             exit(2)
         # If we reached here, no error were detected
         out_utf_8 = out.decode('UTF-8')
@@ -188,17 +194,23 @@ class System:
     def __init__(self):
         self.windows = is_windows()
         if self.windows:
-            self.powershell = PowerShell()
+            self.windows = Windows()
             self.unix = None
         else:
-            self.powershell = None
+            self.windows = None
             self.unix = Linux()
 
+    def get_drives_details(self):
+        if self.windows:
+            return self.windows.run_command_with_fix_width_output("Get-Disk")
 
 if __name__ == "__main__":
-    system = System()
     sys_info = get_system_information()
     print(f"system_information: {sys_info}")
+
+    system = System()
+    drives_details = system.get_drives_details()
+    print(f"drives_details: {drives_details}")
 
     #available_drives = ['%s:' % d for d in string.ascii_uppercase if os.path.exists('%s:' % d)]
     #print(f"available_drives: {available_drives}")
