@@ -92,28 +92,41 @@ def get_system_information_examples():
         'platform platform': 'Linux-5.15.0-86-generic-x86_64-with-glibc2.35',
     }
 
-
-def display_array_of_dictionaries(results_array: []):
-    #print(f"results_array length: {len(results_array)}")
-    print("[")
-    results_array_length = len(results_array)
-    array_element_counter = 0
-    for results_dictionary in results_array:
-        array_element_counter += 1
-        print("  {")
-        results_dictionary_length = len(results_dictionary)
-        key_counter = 0
-        for key, value in results_dictionary.items():
-            key_counter += 1
-            if key_counter != results_dictionary_length:
-                print(f"    '{key}': '{value}',")
-            else:
-                print(f"    '{key}': '{value}'")
-        if array_element_counter != results_array_length:
-            print("  },")
+def display_dictionary(dictionary_to_print: {}, indent_string: str = "", last_element: int = True):
+    print(indent_string+"{")
+    dictionary_to_print_length = len(dictionary_to_print)
+    key_counter = 0
+    for key, value in dictionary_to_print.items():
+        key_counter += 1
+        if key_counter != dictionary_to_print_length:
+            print(indent_string+f"  '{key}': '{value}',")
         else:
-            print("  }")
-    print("]")
+            print(indent_string+f"  '{key}': '{value}'")
+    if not last_element:
+        print(indent_string + "},")
+    else:
+        print(indent_string + "}")
+
+def display_array_of_dictionaries(array_to_print: [], indent_string: str = ""):
+    #print(f"results_array length: {len(results_array)}")
+    print(indent_string+"[")
+    array_to_print_length = len(array_to_print)
+    array_element_counter = 0
+    for element_to_print in array_to_print:
+        array_element_counter += 1
+        last_element = True if array_element_counter == array_to_print_length else False
+        if isinstance(element_to_print, dict):
+            display_dictionary(element_to_print, indent_string+"  ", last_element)
+        else:
+            print(indent_string+"  "+element_to_print)
+    print(indent_string+"]")
+
+def display_diff_dictionaries(first_dict: dict, second_dict: dict):
+    print("first_dict, second_dict")
+    for key, value in first_dict.items():
+        if first_dict[key] != second_dict[key]:
+            print(f"['{key}']: {value} != ['{key}']: {second_dict[key]} ")
+
 
 class Windows:
     """ Class to execute Windows commands """
@@ -130,14 +143,7 @@ class Windows:
         if self.__verbose:
             print(string)
 
-    def run_powershell_command_with_fix_width_output(self, command_string: str):
-        power_shell_command = "powershell.exe"
-        power_shell_command_args = "-ExecutionPolicy RemoteSigned -command"
-        powershell_post_command_pipe_to_prevent_truncation = "| Format-Table -Wrap -AutoSize"
-        command_string = power_shell_command + " " + power_shell_command_args +  " " + command_string +  " " + powershell_post_command_pipe_to_prevent_truncation
-        return self.run_command_with_fix_width_output(command_string)
-
-    def run_command_with_fix_width_output(self, command_string: str):
+    def run_command(self, command_string: str) -> str:
         try:
             #p = subprocess.Popen(self.power_shell_command,  + command_string, stdout=sys.stdout)
             p = subprocess.Popen(command_string, stdout=subprocess.PIPE)
@@ -159,19 +165,34 @@ class Windows:
         # If we reached here, no error were detected
         out_utf_8 = out.decode('UTF-8')
         #print(f"out: {out_utf_8}")
+        return out_utf_8
 
-        header_line_processed = False
-        field_widths_processed = False
-        process_next_line = False
-        line_number = 0
-        lines_processed = 0
-        field_widths = []
+    def run_powershell_command(self, command_string: str):
+        power_shell_command = "powershell.exe"
+        power_shell_command_args = "-ExecutionPolicy RemoteSigned -command"
+        new_command_string = power_shell_command + " " + power_shell_command_args +  " " + command_string
+        return self.run_command(new_command_string)
+
+    def run_powershell_command_with_value_per_line(self, command_string: str):
+        power_shell_command = "powershell.exe"
+        power_shell_command_args = "-ExecutionPolicy RemoteSigned -command"
+        powershell_post_command_pipe_to_prevent_truncation = "| Format-Table -Wrap -AutoSize"
+        new_command_string = power_shell_command + " " + power_shell_command_args +  " " + command_string +  " " + powershell_post_command_pipe_to_prevent_truncation
+        return self.run_command_with_value_per_line(new_command_string)
+
+    def run_command_with_value_per_line(self, command_string: str):
+        out_utf_8 = self.run_command(command_string)
+
+    def run_powershell_command_with_fix_width_output(self, command_string: str):
+        power_shell_command = "powershell.exe"
+        power_shell_command_args = "-ExecutionPolicy RemoteSigned -command"
+        powershell_post_command_pipe_to_prevent_truncation = "| Format-Table -Wrap -AutoSize"
+        new_command_string = power_shell_command + " " + power_shell_command_args +  " " + command_string +  " " + powershell_post_command_pipe_to_prevent_truncation
+        return self.run_command_with_fix_width_output(new_command_string)
+
+    def run_command_with_fix_width_output(self, command_string: str):
+        out_utf_8 = self.run_command(command_string)
         slices = []
-        offset = 0
-        root_entity_not_found = True
-        directory_dictionary = {}
-        last_saved_directory_name = "" # Shouldn't use None because we can't use string operations on a None type
-        last_saved_directory_id = 0 # IDs start at 1 so this 0 will never be used.
 
         # Find field widths within the fixed width output.
         # The first non-blank line will be the header line. For wmic commands this line will define the field widths
@@ -274,12 +295,29 @@ class System:
 
     def get_drives_details(self):
         if self.windows:
-            #return self.windows.run_powershell_command_with_fix_width_output("Get-Disk")
-            return self.windows.run_command_with_fix_width_output("wmic diskdrive")
+            return self.windows.run_powershell_command_with_fix_width_output("Get-Disk")
+            #return self.windows.run_command_with_fix_width_output("wmic diskdrive")
 
-    def get_volumes(self):
+    def get_volumes(self, mount: int = None):
+        all_volumes = []
         if self.windows:
-            return self.windows.run_command_with_fix_width_output("wmic volume")
+            all_volumes = self.windows.run_powershell_command_with_fix_width_output("Get-Volume")
+            #all_volumes = self.windows.run_command_with_fix_width_output("wmic volume")
+        if mount is None:
+            return all_volumes
+        elif mount:
+            # Only return mounted volumes
+            mounted_volumes = []
+            for volume_dictionary in all_volumes:
+                if len(volume_dictionary['DriveLetter'].strip()) != 0 and volume_dictionary['OperationalStatus'].strip() != "Unknown":
+                    mounted_volumes.append(volume_dictionary)
+            return mounted_volumes
+
+    def get_disk_number_for_drive_letter(self, drive_letter: str):
+        if self.windows:
+            return self.windows.run_powershell_command('(Get-Partition -DriveLetter (Get-Item "'+drive_letter+'").PSDrive.Name).DiskNumber"')
+        else:
+            return None
 
 
 if __name__ == "__main__":
@@ -292,9 +330,17 @@ if __name__ == "__main__":
     print(f"drives_details: {drives}")
     display_array_of_dictionaries(drives)
 
-    volumes = system.get_volumes()
-    print(f"volumes: {volumes}")
-#    display_dictionary(volumes)
+    volumes = system.get_volumes(True)
+    #print(f"volumes: {volumes}")
+    display_array_of_dictionaries(volumes)
+    #display_diff_dictionaries(volumes[0], volumes[1])
+
+    for volume_dictionary in volumes:
+        print(f"\"{volume_dictionary['DriveLetter']}:\" ({volume_dictionary['FriendlyName']} / {volume_dictionary['FileSystemType']})")
+
+    drive_letter = 'I:'
+    print(f"{drive_letter} is on drive {system.get_disk_number_for_drive_letter(drive_letter)}")
+
 
     #available_drives = ['%s:' % d for d in string.ascii_uppercase if os.path.exists('%s:' % d)]
     #print(f"available_drives: {available_drives}")
