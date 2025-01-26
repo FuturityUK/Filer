@@ -89,7 +89,48 @@ class PowerShell:
                     if len(pieces_right_strip_array) > 0 and pieces_right_strip_array[0] != "":
                         print(pieces_right_strip_array)
 
+import platform
+import os
+import sys
+import string
 
-ps = PowerShell()
+system = platform.system()
+print(f"System: {system}")
 
-ps.run_command(ps.commands["list_disks"])
+os_name = os.name
+print(f"OS Name: {os_name}")
+
+sys_platform = sys.platform
+print(f"Ststem Platform: {sys_platform}")
+
+platform_release = platform.release()
+print(f"Platform Release: {platform_release}")
+
+platform_version = platform.version()
+print(f"Platform Version: {platform_version}")
+
+platform_platform = platform.platform()
+print(f"Platform Platform: {platform_platform}")
+
+platform_platform_terse_true = platform.platform(terse=True)
+print(f"Platform Platform (terse = true): {platform_platform_terse_true}")
+
+platform_platform_aliased_true = platform.platform(aliased=True)
+print(f"Platform Platform (aliased = true): {platform_platform_aliased_true}")
+
+
+
+
+
+available_drives = ['%s:' % d for d in string.ascii_uppercase if os.path.exists('%s:' % d)]
+print(f"available_drives: {available_drives}")
+
+import psutil
+partitions = psutil.disk_partitions()
+
+for p in partitions:
+    print(p.mountpoint, psutil.disk_usage(p.mountpoint).percent)
+
+#ps = PowerShell()
+
+#ps.run_command(ps.commands["list_disks"])
