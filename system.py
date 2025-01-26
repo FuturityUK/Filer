@@ -93,7 +93,7 @@ def get_system_information_examples():
     }
 
 
-def display_dictionary(results_array: []):
+def display_array_of_dictionaries(results_array: []):
     #print(f"results_array length: {len(results_array)}")
     print("[")
     results_array_length = len(results_array)
@@ -290,7 +290,7 @@ if __name__ == "__main__":
 
     drives = system.get_drives_details()
     print(f"drives_details: {drives}")
-    display_dictionary(drives)
+    display_array_of_dictionaries(drives)
 
     volumes = system.get_volumes()
     print(f"volumes: {volumes}")

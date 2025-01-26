@@ -4,7 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="more drive functions added">
+    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="display_dictionary now prints the array of dicionaries in a python valid syntax">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/system.py" beforeDir="false" afterPath="$PROJECT_DIR$/system.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -87,14 +88,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1736868367160</updated>
-    </task>
-    <task id="LOCAL-00003" summary="Added Functions:&#10;directory_sizes_clear()&#10;directory_sizes_calculate()">
-      <option name="closed" value="true" />
-      <created>1736873143902</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1736873143902</updated>
     </task>
     <task id="LOCAL-00004" summary="Tidy up of classes. Adding private functions.">
       <option name="closed" value="true" />
@@ -480,7 +473,15 @@
       <option name="project" value="LOCAL" />
       <updated>1737904043450</updated>
     </task>
-    <option name="localTasksCounter" value="52" />
+    <task id="LOCAL-00052" summary="display_dictionary now prints the array of dicionaries in a python valid syntax">
+      <option name="closed" value="true" />
+      <created>1737904904772</created>
+      <option name="number" value="00052" />
+      <option name="presentableId" value="LOCAL-00052" />
+      <option name="project" value="LOCAL" />
+      <updated>1737904904772</updated>
+    </task>
+    <option name="localTasksCounter" value="53" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -495,7 +496,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Added a placeholder for the &quot;reset&quot; subcommand" />
     <MESSAGE value="Changes to workspace.xml" />
     <MESSAGE value="Added Database indexes" />
     <MESSAGE value="Added Database hostname and more indexes" />
@@ -520,6 +520,7 @@
     <MESSAGE value="added missing code" />
     <MESSAGE value="enhance output of display_dictionary function" />
     <MESSAGE value="more drive functions added" />
-    <option name="LAST_COMMIT_MESSAGE" value="more drive functions added" />
+    <MESSAGE value="display_dictionary now prints the array of dicionaries in a python valid syntax" />
+    <option name="LAST_COMMIT_MESSAGE" value="display_dictionary now prints the array of dicionaries in a python valid syntax" />
   </component>
 </project>
