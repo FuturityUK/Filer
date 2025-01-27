@@ -172,6 +172,25 @@ print(format_storage_size(4318498233, True, 3)) # 4.318 gigabytes
 print(format_storage_size(-4318498233, precision=2)) # -4.02 gibibytes
 """
 
+def get_input(message: str, options: [], options_descriptions: []) -> str:
+    #print(f"length options: {len(options)}")
+    #print(f"length options_descriptions: {len(options_descriptions)}")
+    if options is None or len(options) == 0:
+        # No selections given so assume a Yes / No question
+        selections = ['y', 'yes', 'n', 'no']
+    internal_selection = None
+    while internal_selection not in options:
+        if options_descriptions is not None and len(options_descriptions) > 0:
+            if len(options) != len(options_descriptions):
+                print("the size of the selections and the selections descriptions don't match")
+                print("Exiting...")
+                exit(2)
+            else:
+                for index, option in enumerate(options):
+                    print(f"{option}) - {options_descriptions[index]}")
+        internal_selection = input(f"{message} {options}: ")
+    return internal_selection
+
 class Windows:
     """ Class to execute Windows commands """
 
@@ -399,12 +418,17 @@ class System:
 
     def get_disk_number_for_drive_letter(self, drive_letter: str):
         if self.windows:
-            return self.windows.run_powershell_command('(Get-Partition -DriveLetter (Get-Item "'+drive_letter+'").PSDrive.Name).DiskNumber"').strip()
+            return self.windows.run_powershell_command('(Get-Partition -ErrorAction SilentlyContinue -DriveLetter (Get-Item "'+drive_letter+'").PSDrive.Name).DiskNumber').strip()
         else:
             return None
 
 
 if __name__ == "__main__":
+
+    selection = get_input("Please select and option?", ["1","2","3"], ["One","Two","Three"])
+    print(f"selection: {selection}")
+    quit()
+
     sys_info = get_system_information()
     print(f"system_information: {sys_info}")
     system = System()
@@ -430,13 +454,14 @@ if __name__ == "__main__":
         except:
             print(f"Couldn't find disk number for drive letter: {drive_letter}")
             exit(2)
-        logical_disk_dictionary = find_dictionary_in_array(logical_disk_array, "DiskNumber", disk_number)
-        physical_disk_dictionary = find_dictionary_in_array(physical_disk_array, "DeviceId", disk_number)
-        if logical_disk_dictionary is not None:
-            volume_info_line = f"{volume_dictionary['DriveLetter']}: {format_storage_size(int(volume_dictionary['Size']),True,1)}, {volume_dictionary['FileSystemType']} ({volume_dictionary['HealthStatus']}) / {logical_disk_dictionary['BusType']} {physical_disk_dictionary['MediaType']}: {logical_disk_dictionary['Manufacturer']}, {logical_disk_dictionary['Model']}, SN: {logical_disk_dictionary['SerialNumber']} ({logical_disk_dictionary['HealthStatus']}))"
-        else:
-            #volume_info_line = f"\"{volume_dictionary['DriveLetter']}:\" ({volume_dictionary['FriendlyName']} / {volume_dictionary['FileSystemType']})"
-            volume_info_line = ""
+        volume_info_line = f"{volume_dictionary['DriveLetter']}: \"{volume_dictionary['FileSystemLabel']}\" {format_storage_size(int(volume_dictionary['Size']), True, 1)}, {volume_dictionary['FileSystemType']} ({volume_dictionary['HealthStatus']})"
+        if len(disk_number.strip()) != 0:
+            logical_disk_dictionary = find_dictionary_in_array(logical_disk_array, "DiskNumber", disk_number)
+            physical_disk_dictionary = find_dictionary_in_array(physical_disk_array, "DeviceId", disk_number)
+            if logical_disk_dictionary is not None:
+                volume_info_line += f" / {logical_disk_dictionary['BusType']} {physical_disk_dictionary['MediaType']}: {logical_disk_dictionary['Manufacturer']}, {logical_disk_dictionary['Model']}, SN: {logical_disk_dictionary['SerialNumber']} ({logical_disk_dictionary['HealthStatus']}))"
+            else:
+                volume_info_line += ""
         print(volume_info_line)
 
     #format_storage_size
