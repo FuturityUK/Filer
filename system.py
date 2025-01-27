@@ -141,6 +141,37 @@ def find_dictionary_in_array(array_of_dictionary: dict, key: str, search_value: 
             return dictionary
     return None
 
+def format_storage_size(size: int, metric: bool=False, precision: int=1, spacer: str=" ") -> str:
+    temp_size = size
+    METRIC_LABELS: [str] = ["B", "kB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"]
+    BINARY_LABELS: [str] = ["B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB"]
+    PRECISION_OFFSETS: [float] = [0.5, 0.05, 0.005, 0.0005] # PREDEFINED FOR SPEED.
+    PRECISION_FORMATS: [str] = []
+    for i in range(0, 11):
+        PRECISION_FORMATS.append("{}{:."+str(i)+"f}"+spacer+"{}")
+        #"{}{:.0f} {}", "{}{:.1f} {}", "{}{:.2f} {}", "{}{:.3f} {}"]
+    unit_labels = METRIC_LABELS if metric else BINARY_LABELS
+    is_negative = temp_size < 0
+    if is_negative:
+        temp_size = abs(temp_size)
+    size_type = 0
+    divide_factor = 1024 if metric else 1000
+    while temp_size > divide_factor:
+        size_type += 1
+        temp_size = temp_size / divide_factor
+    return PRECISION_FORMATS[precision].format("-" if is_negative else "", temp_size, unit_labels[size_type])
+
+"""
+print(format_storage_size(2251799813685247)) # 2 pebibytes
+print(format_storage_size(2000000000000000, True)) # 2 petabytes
+print(format_storage_size(1099511627776)) # 1 tebibyte
+print(format_storage_size(1000000000000, True)) # 1 terabyte
+print(format_storage_size(1000000000, True)) # 1 gigabyte
+print(format_storage_size(4318498233, precision=3)) # 4.022 gibibytes
+print(format_storage_size(4318498233, True, 3)) # 4.318 gigabytes
+print(format_storage_size(-4318498233, precision=2)) # -4.02 gibibytes
+"""
+
 class Windows:
     """ Class to execute Windows commands """
 
@@ -354,7 +385,7 @@ class System:
         volumes = []
         if self.windows:
             #volumes = self.windows.run_powershell_command_with_fix_width_output("Get-Volume")
-            volumes = self.windows.run_powershell_command_with_value_per_line("Get-Volume | Select-Object -Property *")
+            volumes = self.windows.run_powershell_command_with_value_per_line("Get-Volume | Sort-Object -Property DriveLetter | Select-Object -Property *")
             #all_volumes = self.windows.run_command_with_fix_width_output("wmic volume")
         if mount is None:
             return volumes
@@ -402,13 +433,13 @@ if __name__ == "__main__":
         logical_disk_dictionary = find_dictionary_in_array(logical_disk_array, "DiskNumber", disk_number)
         physical_disk_dictionary = find_dictionary_in_array(physical_disk_array, "DeviceId", disk_number)
         if logical_disk_dictionary is not None:
-            volume_info_line = f"{volume_dictionary['DriveLetter']}: {volume_dictionary['FileSystemType']} ({volume_dictionary['HealthStatus']}) / {logical_disk_dictionary['BusType']} {physical_disk_dictionary['MediaType']}: {logical_disk_dictionary['Manufacturer']}, {logical_disk_dictionary['Model']}, SN: {logical_disk_dictionary['SerialNumber']}, {logical_disk_dictionary['SerialNumber']} ({logical_disk_dictionary['HealthStatus']}))"
+            volume_info_line = f"{volume_dictionary['DriveLetter']}: {format_storage_size(int(volume_dictionary['Size']),True,1)}, {volume_dictionary['FileSystemType']} ({volume_dictionary['HealthStatus']}) / {logical_disk_dictionary['BusType']} {physical_disk_dictionary['MediaType']}: {logical_disk_dictionary['Manufacturer']}, {logical_disk_dictionary['Model']}, SN: {logical_disk_dictionary['SerialNumber']} ({logical_disk_dictionary['HealthStatus']}))"
         else:
             #volume_info_line = f"\"{volume_dictionary['DriveLetter']}:\" ({volume_dictionary['FriendlyName']} / {volume_dictionary['FileSystemType']})"
             volume_info_line = ""
         print(volume_info_line)
 
-
+    #format_storage_size
 
     #available_drives = ['%s:' % d for d in string.ascii_uppercase if os.path.exists('%s:' % d)]
     #print(f"available_drives: {available_drives}")
