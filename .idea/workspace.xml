@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="System example working">
+    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Now works out which drive letter is on which drive.&#10;&#10;Skeleton for processing powershell output that are returned in lists rather than tables.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/system.py" beforeDir="false" afterPath="$PROJECT_DIR$/system.py" afterDir="false" />
     </list>
@@ -51,23 +51,23 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Python.database.executor": "Run",
-    "Python.file_system_processors.executor": "Run",
-    "Python.filer.executor": "Run",
-    "Python.main.executor": "Run",
-    "Python.powershell.executor": "Run",
-    "Python.sql.executor": "Run",
-    "Python.system.executor": "Run",
-    "Python.test.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "master",
-    "ignore.virus.scanning.warn.message": "true",
-    "run.code.analysis.last.selected.profile": "aDefault"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Python.database.executor&quot;: &quot;Run&quot;,
+    &quot;Python.file_system_processors.executor&quot;: &quot;Run&quot;,
+    &quot;Python.filer.executor&quot;: &quot;Run&quot;,
+    &quot;Python.main.executor&quot;: &quot;Run&quot;,
+    &quot;Python.powershell.executor&quot;: &quot;Run&quot;,
+    &quot;Python.sql.executor&quot;: &quot;Run&quot;,
+    &quot;Python.system.executor&quot;: &quot;Run&quot;,
+    &quot;Python.test.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;aDefault&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\Neil.FUTURITY\PycharmProjects\Filer" />
@@ -88,14 +88,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1736868367160</updated>
-    </task>
-    <task id="LOCAL-00005" summary="Tidy up of classes. Adding private functions.">
-      <option name="closed" value="true" />
-      <created>1736884937452</created>
-      <option name="number" value="00005" />
-      <option name="presentableId" value="LOCAL-00005" />
-      <option name="project" value="LOCAL" />
-      <updated>1736884937452</updated>
     </task>
     <task id="LOCAL-00006" summary="Added functions to simplify database manipulation (not tested yet)">
       <option name="closed" value="true" />
@@ -481,7 +473,15 @@
       <option name="project" value="LOCAL" />
       <updated>1737905166801</updated>
     </task>
-    <option name="localTasksCounter" value="54" />
+    <task id="LOCAL-00054" summary="Now works out which drive letter is on which drive.&#10;&#10;Skeleton for processing powershell output that are returned in lists rather than tables.">
+      <option name="closed" value="true" />
+      <created>1737922815231</created>
+      <option name="number" value="00054" />
+      <option name="presentableId" value="LOCAL-00054" />
+      <option name="project" value="LOCAL" />
+      <updated>1737922815231</updated>
+    </task>
+    <option name="localTasksCounter" value="55" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -496,7 +496,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Added Database indexes" />
     <MESSAGE value="Added Database hostname and more indexes" />
     <MESSAGE value="Added import subcommand arguments" />
     <MESSAGE value="Database function fixes" />
@@ -521,6 +520,7 @@
     <MESSAGE value="more drive functions added" />
     <MESSAGE value="display_dictionary now prints the array of dicionaries in a python valid syntax" />
     <MESSAGE value="System example working" />
-    <option name="LAST_COMMIT_MESSAGE" value="System example working" />
+    <MESSAGE value="Now works out which drive letter is on which drive.&#10;&#10;Skeleton for processing powershell output that are returned in lists rather than tables." />
+    <option name="LAST_COMMIT_MESSAGE" value="Now works out which drive letter is on which drive.&#10;&#10;Skeleton for processing powershell output that are returned in lists rather than tables." />
   </component>
 </project>
