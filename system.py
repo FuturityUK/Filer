@@ -172,7 +172,7 @@ print(format_storage_size(4318498233, True, 3)) # 4.318 gigabytes
 print(format_storage_size(-4318498233, precision=2)) # -4.02 gibibytes
 """
 
-def get_input(message: str, options: [], options_descriptions: []) -> str:
+def get_input(message: str, options: [], options_descriptions: [], options_results: []):
     #print(f"length options: {len(options)}")
     #print(f"length options_descriptions: {len(options_descriptions)}")
     if options is None or len(options) == 0:
@@ -182,13 +182,24 @@ def get_input(message: str, options: [], options_descriptions: []) -> str:
     while internal_selection not in options:
         if options_descriptions is not None and len(options_descriptions) > 0:
             if len(options) != len(options_descriptions):
-                print("the size of the selections and the selections descriptions don't match")
+                print("the size of the options and the options descriptions don't match")
                 print("Exiting...")
                 exit(2)
             else:
                 for index, option in enumerate(options):
                     print(f"{option}) - {options_descriptions[index]}")
         internal_selection = input(f"{message} {options}: ")
+        if options_results is not None and len(options_results) > 0:
+            # If we have been provided results, return the result matching the internal_selection
+            if len(options) != len(options_results):
+                print("the size of the options and the options results don't match")
+                print("Exiting...")
+                exit(2)
+            else:
+                for index, option in enumerate(options):
+                    print(f"{internal_selection.lower()} ?? {option.lower()}")
+                    if internal_selection.lower() == option.lower():
+                        return options_results[index]
     return internal_selection
 
 class Windows:
@@ -425,10 +436,6 @@ class System:
 
 if __name__ == "__main__":
 
-    selection = get_input("Please select and option?", ["1","2","3"], ["One","Two","Three"])
-    print(f"selection: {selection}")
-    quit()
-
     sys_info = get_system_information()
     print(f"system_information: {sys_info}")
     system = System()
@@ -444,26 +451,35 @@ if __name__ == "__main__":
     #print(f"volumes: {volumes}")
     #display_array_of_dictionaries(volumes_array)
     #display_diff_dictionaries(volumes[0], volumes[1])
-
+    print("Matching Volumes to Drives...")
+    option_number = 1
+    options = []
+    options_descriptions = []
+    options_results = []
     for volume_dictionary in volumes_array:
-        disk_number = None
+        options.append(str(option_number))
+        volume_array_of_dicts = []
+        volume_array_of_dicts.append(volume_dictionary)
         drive_letter = f'{volume_dictionary['DriveLetter']}:'
         #print(f"{drive_letter} is on drive {system.get_disk_number_for_drive_letter(drive_letter)}")
-        try:
-            disk_number = system.get_disk_number_for_drive_letter(drive_letter)
-        except:
-            print(f"Couldn't find disk number for drive letter: {drive_letter}")
-            exit(2)
+        disk_number = system.get_disk_number_for_drive_letter(drive_letter)
         volume_info_line = f"{volume_dictionary['DriveLetter']}: \"{volume_dictionary['FileSystemLabel']}\" {format_storage_size(int(volume_dictionary['Size']), True, 1)}, {volume_dictionary['FileSystemType']} ({volume_dictionary['HealthStatus']})"
         if len(disk_number.strip()) != 0:
             logical_disk_dictionary = find_dictionary_in_array(logical_disk_array, "DiskNumber", disk_number)
+            volume_array_of_dicts.append(logical_disk_dictionary)
             physical_disk_dictionary = find_dictionary_in_array(physical_disk_array, "DeviceId", disk_number)
+            volume_array_of_dicts.append(physical_disk_dictionary)
             if logical_disk_dictionary is not None:
                 volume_info_line += f" / {logical_disk_dictionary['BusType']} {physical_disk_dictionary['MediaType']}: {logical_disk_dictionary['Manufacturer']}, {logical_disk_dictionary['Model']}, SN: {logical_disk_dictionary['SerialNumber']} ({logical_disk_dictionary['HealthStatus']}))"
             else:
                 volume_info_line += ""
-        print(volume_info_line)
+        options_descriptions.append(volume_info_line)
+        options_results.append(volume_array_of_dicts)
+        option_number += 1
 
+    #result = get_input("Please select a volume to process?", options: [], options_descriptions: [], options_results: [])
+    result_array = get_input("Please select a volume to process?", options, options_descriptions, options_results)
+    display_array_of_dictionaries(result_array)
     #format_storage_size
 
     #available_drives = ['%s:' % d for d in string.ascii_uppercase if os.path.exists('%s:' % d)]

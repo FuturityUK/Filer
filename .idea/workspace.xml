@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Added a storage size formatting function">
+    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="added a &quot;get_input&quot; function">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/system.py" beforeDir="false" afterPath="$PROJECT_DIR$/system.py" afterDir="false" />
     </list>
@@ -88,14 +88,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1736868367160</updated>
-    </task>
-    <task id="LOCAL-00008" summary="Database deletion and vacuum works">
-      <option name="closed" value="true" />
-      <created>1736885691789</created>
-      <option name="number" value="00008" />
-      <option name="presentableId" value="LOCAL-00008" />
-      <option name="project" value="LOCAL" />
-      <updated>1736885691789</updated>
     </task>
     <task id="LOCAL-00009" summary="Database inserts are now working, as well as parent ID lookups.">
       <option name="closed" value="true" />
@@ -481,7 +473,15 @@
       <option name="project" value="LOCAL" />
       <updated>1737989494856</updated>
     </task>
-    <option name="localTasksCounter" value="57" />
+    <task id="LOCAL-00057" summary="added a &quot;get_input&quot; function">
+      <option name="closed" value="true" />
+      <created>1737997607116</created>
+      <option name="number" value="00057" />
+      <option name="presentableId" value="LOCAL-00057" />
+      <option name="project" value="LOCAL" />
+      <updated>1737997607116</updated>
+    </task>
+    <option name="localTasksCounter" value="58" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -496,7 +496,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Database function fixes" />
     <MESSAGE value="New file_system_processor methods to handle new options like make, model, etc" />
     <MESSAGE value="Added checks to see if optional argements are set before calling the setter functions" />
     <MESSAGE value="Major edits to file_system_processors.py to make use of the Database class.&#10;Still not working" />
@@ -521,6 +520,7 @@
     <MESSAGE value="Now works out which drive letter is on which drive.&#10;&#10;Skeleton for processing powershell output that are returned in lists rather than tables." />
     <MESSAGE value="Now lists mounted drive letters, together with their details" />
     <MESSAGE value="Added a storage size formatting function" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added a storage size formatting function" />
+    <MESSAGE value="added a &quot;get_input&quot; function" />
+    <option name="LAST_COMMIT_MESSAGE" value="added a &quot;get_input&quot; function" />
   </component>
 </project>
