@@ -4,7 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="&quot;get_input&quot; function returns the correct value for the selected options">
+    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="system.py now finds the volume + drive info, and prompts the user to choose what they wish to do process, or rescan or exit.">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/system.py" beforeDir="false" afterPath="$PROJECT_DIR$/system.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -87,14 +88,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1736868367160</updated>
-    </task>
-    <task id="LOCAL-00010" summary="Added arguments">
-      <option name="closed" value="true" />
-      <created>1737060051901</created>
-      <option name="number" value="00010" />
-      <option name="presentableId" value="LOCAL-00010" />
-      <option name="project" value="LOCAL" />
-      <updated>1737060051901</updated>
     </task>
     <task id="LOCAL-00011" summary="Further work on Arguments and subcommand arguments">
       <option name="closed" value="true" />
@@ -480,7 +473,15 @@
       <option name="project" value="LOCAL" />
       <updated>1737999406696</updated>
     </task>
-    <option name="localTasksCounter" value="59" />
+    <task id="LOCAL-00059" summary="system.py now finds the volume + drive info, and prompts the user to choose what they wish to do process, or rescan or exit.">
+      <option name="closed" value="true" />
+      <created>1738000420185</created>
+      <option name="number" value="00059" />
+      <option name="presentableId" value="LOCAL-00059" />
+      <option name="project" value="LOCAL" />
+      <updated>1738000420185</updated>
+    </task>
+    <option name="localTasksCounter" value="60" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -495,7 +496,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Added checks to see if optional argements are set before calling the setter functions" />
     <MESSAGE value="Major edits to file_system_processors.py to make use of the Database class.&#10;Still not working" />
     <MESSAGE value="Updated To Do" />
     <MESSAGE value="Added checks:&#10;Does the parent directory in the specified database file path exist? If not, error because the database can't be created until it exists.&#10;Does the Input Listing file exist?" />
@@ -520,6 +520,7 @@
     <MESSAGE value="Added a storage size formatting function" />
     <MESSAGE value="added a &quot;get_input&quot; function" />
     <MESSAGE value="&quot;get_input&quot; function returns the correct value for the selected options" />
-    <option name="LAST_COMMIT_MESSAGE" value="&quot;get_input&quot; function returns the correct value for the selected options" />
+    <MESSAGE value="system.py now finds the volume + drive info, and prompts the user to choose what they wish to do process, or rescan or exit." />
+    <option name="LAST_COMMIT_MESSAGE" value="system.py now finds the volume + drive info, and prompts the user to choose what they wish to do process, or rescan or exit." />
   </component>
 </project>

@@ -436,62 +436,76 @@ class System:
 
 if __name__ == "__main__":
 
-    sys_info = get_system_information()
-    print(f"system_information: {sys_info}")
+    #sys_info = get_system_information()
+    #print(f"system_information: {sys_info}")
+
     system = System()
 
-    print("Finding Logical Drives...")
-    logical_disk_array = system.get_logical_drives_details()
-    print("Finding Physical Drive...")
-    physical_disk_array = system.get_physical_drives_details()
-    #print(f"physical_disk_array: {physical_disk_array}")
-    #display_array_of_dictionaries(drives)
-    print("Finding Volumes...")
-    volumes_array = system.get_volumes(True)
-    #print(f"volumes: {volumes}")
-    #display_array_of_dictionaries(volumes_array)
-    #display_diff_dictionaries(volumes[0], volumes[1])
-    print("Matching Volumes to Drives...")
-    option_number = 1
-    options = []
-    options_descriptions = []
-    options_results = []
-    for volume_dictionary in volumes_array:
-        options.append(str(option_number))
-        volume_array_of_dicts = []
-        volume_array_of_dicts.append(volume_dictionary)
-        drive_letter = f'{volume_dictionary['DriveLetter']}:'
-        #print(f"{drive_letter} is on drive {system.get_disk_number_for_drive_letter(drive_letter)}")
-        disk_number = system.get_disk_number_for_drive_letter(drive_letter)
-        volume_info_line = f"{volume_dictionary['DriveLetter']}: \"{volume_dictionary['FileSystemLabel']}\" {format_storage_size(int(volume_dictionary['Size']), True, 1)}, {volume_dictionary['FileSystemType']} ({volume_dictionary['HealthStatus']})"
-        if len(disk_number.strip()) != 0:
-            logical_disk_dictionary = find_dictionary_in_array(logical_disk_array, "DiskNumber", disk_number)
-            volume_array_of_dicts.append(logical_disk_dictionary)
-            physical_disk_dictionary = find_dictionary_in_array(physical_disk_array, "DeviceId", disk_number)
-            volume_array_of_dicts.append(physical_disk_dictionary)
-            if logical_disk_dictionary is not None:
-                volume_info_line += f" / {logical_disk_dictionary['BusType']} {physical_disk_dictionary['MediaType']}: {logical_disk_dictionary['Manufacturer']}, {logical_disk_dictionary['Model']}, SN: {logical_disk_dictionary['SerialNumber']} ({logical_disk_dictionary['HealthStatus']}))"
-            else:
-                volume_info_line += ""
-        options_descriptions.append(volume_info_line)
-        options_results.append(volume_array_of_dicts)
+    while True:
+        print("Finding Logical Drives ...")
+        logical_disk_array = system.get_logical_drives_details()
+        print("Finding Physical Drives ...")
+        physical_disk_array = system.get_physical_drives_details()
+        #print(f"physical_disk_array: {physical_disk_array}")
+        #display_array_of_dictionaries(drives)
+        print("Finding Volumes ...")
+        volumes_array = system.get_volumes(True)
+        #print(f"volumes: {volumes}")
+        #display_array_of_dictionaries(volumes_array)
+        #display_diff_dictionaries(volumes[0], volumes[1])
+        print("Matching Volumes to Drives ...")
+        RESCAN: str = 'Rescan'
+        EXIT: str = 'Exit'
+        option_number = 1
+        options = []
+        options_descriptions = []
+        options_results = []
+        for volume_dictionary in volumes_array:
+            options.append(str(option_number))
+            volume_array_of_dicts = []
+            volume_array_of_dicts.append(volume_dictionary)
+            drive_letter = f'{volume_dictionary['DriveLetter']}:'
+            #print(f"{drive_letter} is on drive {system.get_disk_number_for_drive_letter(drive_letter)}")
+            disk_number = system.get_disk_number_for_drive_letter(drive_letter)
+            volume_info_line = f"{volume_dictionary['DriveLetter']}: \"{volume_dictionary['FileSystemLabel']}\" {format_storage_size(int(volume_dictionary['Size']), True, 1)}, {volume_dictionary['FileSystemType']} ({volume_dictionary['HealthStatus']})"
+            if len(disk_number.strip()) != 0:
+                logical_disk_dictionary = find_dictionary_in_array(logical_disk_array, "DiskNumber", disk_number)
+                volume_array_of_dicts.append(logical_disk_dictionary)
+                physical_disk_dictionary = find_dictionary_in_array(physical_disk_array, "DeviceId", disk_number)
+                volume_array_of_dicts.append(physical_disk_dictionary)
+                if logical_disk_dictionary is not None:
+                    volume_info_line += f" / {logical_disk_dictionary['BusType']} {physical_disk_dictionary['MediaType']}: {logical_disk_dictionary['Manufacturer']}, {logical_disk_dictionary['Model']}, SN: {logical_disk_dictionary['SerialNumber']} ({logical_disk_dictionary['HealthStatus']}))"
+                else:
+                    volume_info_line += ""
+            options_descriptions.append(volume_info_line)
+            options_results.append(volume_array_of_dicts)
+            option_number += 1
+
+        # Add Rescan option
+        options.append('R')
+        options_descriptions.append(RESCAN)
+        options_results.append(RESCAN)
+        option_number += 1
+        # Add Exit option
+        options.append('E')
+        options_descriptions.append(EXIT)
+        options_results.append(EXIT)
         option_number += 1
 
-    # Add Rescan option
-    options.append(str(option_number))
-    options_descriptions.append("Rescan")
-    options_results.append("Rescan")
-    option_number += 1
-    # Add Exit option
-    options.append(str(option_number))
-    options_descriptions.append("Exit")
-    options_results.append("Exit")
-    option_number += 1
-
-    result_array = get_input("Please select a volume to process?", options, options_descriptions, options_results)
-    if isinstance(result_array, str):
-        # Test if result is a string first as strings are technically arrays as well
-        print(result_array)
-    elif isinstance(result_array, collections.abc.Sequence):
-        display_array_of_dictionaries(result_array)
-
+        result_array = get_input("Please select a volume to process?", options, options_descriptions, options_results)
+        if isinstance(result_array, str):
+            # Test if result is a string first as strings are technically arrays as well
+            #print(f"String result: {result_array}")
+            if result_array == EXIT:
+                print("Exiting ...")
+                exit()
+            elif result_array == RESCAN:
+                pass # Rescanning happens anyway at the end of this loop. This option just skips processing a volume
+            else:
+                print("Invalid result")
+                print("Exiting ...")
+                exit(2)
+        elif isinstance(result_array, collections.abc.Sequence):
+            #display_array_of_dictionaries(result_array)
+            print(f"Processing Volume {result_array[0]['DriveLetter']}:\\ ...")
+        print("Rescanning ...")
