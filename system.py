@@ -3,7 +3,7 @@ import subprocess
 import platform
 import os
 import sys
-import string
+import collections.abc
 
 def is_windows():
     return True if platform.system().lower() == "windows" else False
@@ -197,7 +197,7 @@ def get_input(message: str, options: [], options_descriptions: [], options_resul
                 exit(2)
             else:
                 for index, option in enumerate(options):
-                    print(f"{internal_selection.lower()} ?? {option.lower()}")
+                    #print(f"{internal_selection.lower()} ?? {option.lower()}")
                     if internal_selection.lower() == option.lower():
                         return options_results[index]
     return internal_selection
@@ -477,19 +477,21 @@ if __name__ == "__main__":
         options_results.append(volume_array_of_dicts)
         option_number += 1
 
-    #result = get_input("Please select a volume to process?", options: [], options_descriptions: [], options_results: [])
+    # Add Rescan option
+    options.append(str(option_number))
+    options_descriptions.append("Rescan")
+    options_results.append("Rescan")
+    option_number += 1
+    # Add Exit option
+    options.append(str(option_number))
+    options_descriptions.append("Exit")
+    options_results.append("Exit")
+    option_number += 1
+
     result_array = get_input("Please select a volume to process?", options, options_descriptions, options_results)
-    display_array_of_dictionaries(result_array)
-    #format_storage_size
+    if isinstance(result_array, str):
+        # Test if result is a string first as strings are technically arrays as well
+        print(result_array)
+    elif isinstance(result_array, collections.abc.Sequence):
+        display_array_of_dictionaries(result_array)
 
-    #available_drives = ['%s:' % d for d in string.ascii_uppercase if os.path.exists('%s:' % d)]
-    #print(f"available_drives: {available_drives}")
-
-    #import psutil
-    #partitions = psutil.disk_partitions()
-    #for p in partitions:
-    #    print(p.mountpoint, psutil.disk_usage(p.mountpoint).percent)
-
-    #ps = PowerShell()
-
-    #ps.run_command(ps.commands["list_disks"])
