@@ -87,6 +87,11 @@ parser_import.add_argument("-p", "--prefix", default=None, help="prefix to remov
 parser_import.add_argument("-t", "--test", action="store_true", help="test input file without modifying the database")
 add_db_and_verbose_to_parser(parser_import)
 
+# create the parser for the "interactive" subcommand
+parser_interactive = subparsers.add_parser('interactive', help='interactive help')
+parser_interactive.add_argument("-t", "--test", action="store_true", help="test input file without modifying the database")
+add_db_and_verbose_to_parser(parser_interactive)
+
 # create the parser for the "vacuum" subcommand
 parser_vacuum = subparsers.add_parser('vacuum',
                                       help='vacuum help',
@@ -184,7 +189,7 @@ elif args.subcommand == "import":
 
     powershell_filesystem_listing.import_listing()
 
-elif True:
+elif args.subcommand == 'interactive':
     system = System()
 
     while True:
