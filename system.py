@@ -19,7 +19,8 @@ class Windows:
         if self.__verbose:
             print(string)
 
-    def run_command(self, command_string: str) -> str:
+    @staticmethod
+    def run_command(command_string: str) -> str:
         try:
             #p = subprocess.Popen(self.power_shell_command,  + command_string, stdout=sys.stdout)
             p = subprocess.Popen(command_string, stdout=subprocess.PIPE)
@@ -243,31 +244,40 @@ class System:
         else:
             return None
 
-    def is_windows(self):
+    @staticmethod
+    def is_windows():
         return True if platform.system().lower() == "windows" else False
 
-    def is_macos(self):
+    @staticmethod
+    def is_macos():
         return True if platform.system().lower() == "darwin" else False
 
-    def is_linux(self):
+    @staticmethod
+    def is_linux():
         return True if platform.system().lower() == "linux" else False
 
-    def is_java(self):
+    @staticmethod
+    def is_java():
         return True if platform.system().lower() == "java" else False
 
-    def is_android(self):
+    @staticmethod
+    def is_android():
         return True if platform.system().lower() == "android" else False
 
-    def is_ios(self):
+    @staticmethod
+    def is_ios():
         return True if platform.system().lower() == "ios" else False
 
-    def is_ipados(self):
+    @staticmethod
+    def is_ipados():
         return True if platform.system().lower() == "ipados" else False
 
-    def is_unix_like(self):
+    @staticmethod
+    def is_unix_like():
         return True if os.name == "posix" else False
 
-    def get_system_information(self):
+    @staticmethod
+    def get_system_information():
         system_information = {'system': platform.system(), 'os name': os.name, 'system platform': sys.platform,
                               'platform release': platform.release(), 'platform version': platform.version(),
                               'platform platform': platform.platform(),
@@ -295,8 +305,9 @@ class System:
             # 22.04
         return system_information
 
+    @staticmethod
+    def get_system_information_examples():
         # Examples:
-    def get_system_information_examples(self):
         # MacOS Sonoma 14.0
         macos = {
             'system': 'Darwin',
@@ -330,7 +341,8 @@ class System:
             'platform platform': 'Linux-5.15.0-86-generic-x86_64-with-glibc2.35',
         }
 
-    def get_input(message: str, options: [], options_descriptions: [], options_results: []):
+    @staticmethod
+    def select_option(message: str, options: [], options_descriptions: [], options_results: []):
         # print(f"length options: {len(options)}")
         # print(f"length options_descriptions: {len(options_descriptions)}")
         if options is None or len(options) == 0:

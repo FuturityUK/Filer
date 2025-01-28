@@ -2,21 +2,8 @@ import csv
 import os
 import datetime
 import os.path
-import sqlite3
 import time
 import tracemalloc
-from typing import (
-    cast,
-    Any,
-    Callable,
-    Dict,
-    Generator,
-    Iterable,
-    Union,
-    Optional,
-    List,
-    Tuple,
-)
 from datetime import datetime
 from database import Database
 

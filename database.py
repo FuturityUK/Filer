@@ -1,21 +1,10 @@
 import sqlite3
-from sqlite3 import Error
-import os.path
 import traceback
 import sys
-#import functools
-#from typing import Any, Callable, List, Optional, Tuple
 from typing import (
-    cast,
-    Any,
-    Callable,
-    Dict,
-    Generator,
     Iterable,
     Union,
     Optional,
-    List,
-    Tuple,
 )
 from sql import SQLDictionary
 

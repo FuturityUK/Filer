@@ -4,9 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Split out functions and classes into their own types of python files. e.g. print functions in print.py">
+    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="added interactive option which now works">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data.py" beforeDir="false" afterPath="$PROJECT_DIR$/data.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/filer.py" beforeDir="false" afterPath="$PROJECT_DIR$/filer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/print.py" beforeDir="false" afterPath="$PROJECT_DIR$/print.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/system.py" beforeDir="false" afterPath="$PROJECT_DIR$/system.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/test.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -88,14 +92,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1736868367160</updated>
-    </task>
-    <task id="LOCAL-00013" summary="Changed 'command' to 'subcommand' in the argument options.&#10;Added a 'sql' directory, together with a file containing sql to create the necessary database tables.">
-      <option name="closed" value="true" />
-      <created>1737234654196</created>
-      <option name="number" value="00013" />
-      <option name="presentableId" value="LOCAL-00013" />
-      <option name="project" value="LOCAL" />
-      <updated>1737234654196</updated>
     </task>
     <task id="LOCAL-00014" summary="Changed 'command' to 'subcommand' in the argument options.&#10;Added a 'sql' directory, together with a file containing sql to create the necessary database tables.">
       <option name="closed" value="true" />
@@ -481,7 +477,15 @@
       <option name="project" value="LOCAL" />
       <updated>1738065794922</updated>
     </task>
-    <option name="localTasksCounter" value="62" />
+    <task id="LOCAL-00062" summary="added interactive option which now works">
+      <option name="closed" value="true" />
+      <created>1738068362190</created>
+      <option name="number" value="00062" />
+      <option name="presentableId" value="LOCAL-00062" />
+      <option name="project" value="LOCAL" />
+      <updated>1738068362190</updated>
+    </task>
+    <option name="localTasksCounter" value="63" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -496,7 +500,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Added checks:&#10;Does the parent directory in the specified database file path exist? If not, error because the database can't be created until it exists.&#10;Does the Input Listing file exist?" />
     <MESSAGE value="To Do updated" />
     <MESSAGE value="Added code to check if a driveID already exists for the specified make, model, serial number." />
     <MESSAGE value="Drive (Hostname) and Filesystem inserts now working." />
@@ -521,6 +524,7 @@
     <MESSAGE value="system.py now finds the volume + drive info, and prompts the user to choose what they wish to do process, or rescan or exit." />
     <MESSAGE value="Loop where drives are presented for scanning and once processed they are rescanned. Options for rescanning and exiting are included." />
     <MESSAGE value="Split out functions and classes into their own types of python files. e.g. print functions in print.py" />
-    <option name="LAST_COMMIT_MESSAGE" value="Split out functions and classes into their own types of python files. e.g. print functions in print.py" />
+    <MESSAGE value="added interactive option which now works" />
+    <option name="LAST_COMMIT_MESSAGE" value="added interactive option which now works" />
   </component>
 </project>
