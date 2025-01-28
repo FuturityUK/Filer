@@ -3,204 +3,6 @@ import subprocess
 import platform
 import os
 import sys
-import collections.abc
-
-def is_windows():
-    return True if platform.system().lower() == "windows" else False
-
-def is_macos():
-    return True if platform.system().lower() == "darwin" else False
-
-def is_linux():
-    return True if platform.system().lower() == "linux" else False
-
-def is_java():
-    return True if platform.system().lower() == "java" else False
-
-def is_android():
-    return True if platform.system().lower() == "android" else False
-
-def is_ios():
-    return True if platform.system().lower() == "ios" else False
-
-def is_ipados():
-    return True if platform.system().lower() == "ipados" else False
-
-def is_unix_like():
-    return True if os.name == "posix" else False
-
-def get_system_information():
-    system_information = {'system': platform.system(), 'os name': os.name, 'system platform': sys.platform,
-                          'platform release': platform.release(), 'platform version': platform.version(),
-                          'platform platform': platform.platform(),
-                          'platform platform terse': platform.platform(terse=True),
-                          'platform platform aliased': platform.platform(aliased=True)}
-    if system_information['system'] == "Windows":
-        # Windows specific functions
-        system_information['windows edition'] = platform.win32_edition()
-        # Windows 11 Home = "Core"
-        system_information['windows is iot'] = platform.win32_is_iot()
-        # Windows 11 Home = False
-    elif system_information['system'] == "Darwin":
-        # MacOS specific function
-        system_information['mac version'] = platform.mac_ver()
-    elif system_information['system'] == "Linux":
-        # We could import the "distro" module and get further Linux information (see below)
-        # but I've decided not to include them to focus on using on modules built into Python
-        # for easy of installation
-        do_nothing = True
-        #print(distro.name())
-        # Ubuntu
-        #print(distro.id())
-        # ubuntu
-        #print(distro.version())
-        # 22.04
-    return system_information
-
-    # Examples:
-def get_system_information_examples():
-    # MacOS Sonoma 14.0
-    macos = {
-        'system': 'Darwin',
-        'os name': 'posix',
-        'system platform': 'darwin',
-        'platform release': '23.0.0',
-        'platform version': 'Darwin Kernel Version 23.0.0: Fri Sep 15 14:42:57 PDT 2023; root:xnu-10002.1.13~1/RELEASE_ARM64_T8112',
-        'platform platform': 'macOS-14.0-arm64-arm-64bit',
-        'mac version': ('14.0', ('', '', ''), 'arm64')
-    }
-    # Windows 11 Pro
-    win = {
-        'system': 'Windows',
-        'os name': 'nt',
-        'system platform': 'win32',
-        'platform release': '11',
-        'platform version': '10.0.26100',
-        'platform platform': 'Windows-11-10.0.26100-SP0',
-        'platform platform terse': 'Windows-11',
-        'platform platform aliased': 'Windows-11-10.0.26100-SP0',
-        'windows edition': 'Professional',
-        'windows is iot': False
-    }
-    # Ubuntu 22.04.3 LTS
-    ubuntu = {
-        'system': 'Linux',
-        'os name': 'posix',
-        'system platform': 'linux',
-        'platform release': '5.15.0-86-generic',
-        'platform version': '#96-Ubuntu SMP Wed Sep 20 08:23:49 UTC 2023',
-        'platform platform': 'Linux-5.15.0-86-generic-x86_64-with-glibc2.35',
-    }
-
-def display_dictionary(dictionary_to_print: {}, indent_string: str = "", last_element: int = True):
-    print(indent_string+"{")
-    dictionary_to_print_length = len(dictionary_to_print)
-    key_counter = 0
-    for key, value in dictionary_to_print.items():
-        key_counter += 1
-        if key_counter != dictionary_to_print_length:
-            print(indent_string+f"  '{key}': '{value}',")
-        else:
-            print(indent_string+f"  '{key}': '{value}'")
-    if not last_element:
-        print(indent_string + "},")
-    else:
-        print(indent_string + "}")
-
-def display_array_of_dictionaries(array_to_print: [], indent_string: str = ""):
-    #print(f"results_array length: {len(results_array)}")
-    print(indent_string+"[")
-    array_to_print_length = len(array_to_print)
-    array_element_counter = 0
-    for element_to_print in array_to_print:
-        array_element_counter += 1
-        last_element = True if array_element_counter == array_to_print_length else False
-        if isinstance(element_to_print, dict):
-            display_dictionary(element_to_print, indent_string+"  ", last_element)
-        else:
-            print(indent_string+"  "+element_to_print)
-    print(indent_string+"]")
-
-def display_diff_dictionaries(first_dict: dict, second_dict: dict):
-    print("first_dict, second_dict")
-    for key, value in first_dict.items():
-        if first_dict[key] != second_dict[key]:
-            print(f"['{key}']: {value} != ['{key}']: {second_dict[key]} ")
-
-def find_dictionary_in_array(array_of_dictionary: dict, key: str, search_value: any) -> dict | None:
-    #print(f"Value to match: '{search_value}'")
-    for dictionary in array_of_dictionary:
-        dictionary_value = dictionary[key]
-        if type(search_value) is not type(dictionary_value):
-            print("find_dictionary_in_array() - Types do not match")
-            print(f"search value type: {type(search_value)}")
-            print(f"dictionary value type: {type(search_value)}")
-            exit(2)
-        #print(f"dictionary['{key}'] == '{dictionary[key]}'")
-        if dictionary[key] == search_value:
-            return dictionary
-    return None
-
-def format_storage_size(size: int, metric: bool=False, precision: int=1, spacer: str=" ") -> str:
-    temp_size = size
-    METRIC_LABELS: [str] = ["B", "kB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"]
-    BINARY_LABELS: [str] = ["B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB"]
-    PRECISION_OFFSETS: [float] = [0.5, 0.05, 0.005, 0.0005] # PREDEFINED FOR SPEED.
-    PRECISION_FORMATS: [str] = []
-    for i in range(0, 11):
-        PRECISION_FORMATS.append("{}{:."+str(i)+"f}"+spacer+"{}")
-        #"{}{:.0f} {}", "{}{:.1f} {}", "{}{:.2f} {}", "{}{:.3f} {}"]
-    unit_labels = METRIC_LABELS if metric else BINARY_LABELS
-    is_negative = temp_size < 0
-    if is_negative:
-        temp_size = abs(temp_size)
-    size_type = 0
-    divide_factor = 1024 if metric else 1000
-    while temp_size > divide_factor:
-        size_type += 1
-        temp_size = temp_size / divide_factor
-    return PRECISION_FORMATS[precision].format("-" if is_negative else "", temp_size, unit_labels[size_type])
-
-"""
-print(format_storage_size(2251799813685247)) # 2 pebibytes
-print(format_storage_size(2000000000000000, True)) # 2 petabytes
-print(format_storage_size(1099511627776)) # 1 tebibyte
-print(format_storage_size(1000000000000, True)) # 1 terabyte
-print(format_storage_size(1000000000, True)) # 1 gigabyte
-print(format_storage_size(4318498233, precision=3)) # 4.022 gibibytes
-print(format_storage_size(4318498233, True, 3)) # 4.318 gigabytes
-print(format_storage_size(-4318498233, precision=2)) # -4.02 gibibytes
-"""
-
-def get_input(message: str, options: [], options_descriptions: [], options_results: []):
-    #print(f"length options: {len(options)}")
-    #print(f"length options_descriptions: {len(options_descriptions)}")
-    if options is None or len(options) == 0:
-        # No selections given so assume a Yes / No question
-        selections = ['y', 'yes', 'n', 'no']
-    internal_selection = None
-    while internal_selection not in options:
-        if options_descriptions is not None and len(options_descriptions) > 0:
-            if len(options) != len(options_descriptions):
-                print("the size of the options and the options descriptions don't match")
-                print("Exiting...")
-                exit(2)
-            else:
-                for index, option in enumerate(options):
-                    print(f"{option}) - {options_descriptions[index]}")
-        internal_selection = input(f"{message} {options}: ")
-        if options_results is not None and len(options_results) > 0:
-            # If we have been provided results, return the result matching the internal_selection
-            if len(options) != len(options_results):
-                print("the size of the options and the options results don't match")
-                print("Exiting...")
-                exit(2)
-            else:
-                for index, option in enumerate(options):
-                    #print(f"{internal_selection.lower()} ?? {option.lower()}")
-                    if internal_selection.lower() == option.lower():
-                        return options_results[index]
-    return internal_selection
 
 class Windows:
     """ Class to execute Windows commands """
@@ -387,7 +189,7 @@ class System:
     """ Class to execute System commands """
 
     def __init__(self):
-        self.windows = is_windows()
+        self.windows = self.is_windows()
         if self.windows:
             self.windows = Windows()
             self.unix = None
@@ -433,79 +235,133 @@ class System:
         else:
             return None
 
+    def create_path_listing(self, path: str):
+        if self.windows:
+            print(f"path: {path}")
+            listing_powershell_command = 'Get-ChildItem -Path '+ path +' -ErrorAction SilentlyContinue -Recurse -Force | Select-Object Mode, LastWriteTime, Length, FullName | Format-Table -Wrap -AutoSize | Out-File -width 9999 -Encoding utf8 "filer.fwf"'
+            return self.windows.run_powershell_command(listing_powershell_command).strip()
+        else:
+            return None
+
+    def is_windows(self):
+        return True if platform.system().lower() == "windows" else False
+
+    def is_macos(self):
+        return True if platform.system().lower() == "darwin" else False
+
+    def is_linux(self):
+        return True if platform.system().lower() == "linux" else False
+
+    def is_java(self):
+        return True if platform.system().lower() == "java" else False
+
+    def is_android(self):
+        return True if platform.system().lower() == "android" else False
+
+    def is_ios(self):
+        return True if platform.system().lower() == "ios" else False
+
+    def is_ipados(self):
+        return True if platform.system().lower() == "ipados" else False
+
+    def is_unix_like(self):
+        return True if os.name == "posix" else False
+
+    def get_system_information(self):
+        system_information = {'system': platform.system(), 'os name': os.name, 'system platform': sys.platform,
+                              'platform release': platform.release(), 'platform version': platform.version(),
+                              'platform platform': platform.platform(),
+                              'platform platform terse': platform.platform(terse=True),
+                              'platform platform aliased': platform.platform(aliased=True)}
+        if system_information['system'] == "Windows":
+            # Windows specific functions
+            system_information['windows edition'] = platform.win32_edition()
+            # Windows 11 Home = "Core"
+            system_information['windows is iot'] = platform.win32_is_iot()
+            # Windows 11 Home = False
+        elif system_information['system'] == "Darwin":
+            # MacOS specific function
+            system_information['mac version'] = platform.mac_ver()
+        elif system_information['system'] == "Linux":
+            # We could import the "distro" module and get further Linux information (see below)
+            # but I've decided not to include them to focus on using on modules built into Python
+            # for easy of installation
+            do_nothing = True
+            #print(distro.name())
+            # Ubuntu
+            #print(distro.id())
+            # ubuntu
+            #print(distro.version())
+            # 22.04
+        return system_information
+
+        # Examples:
+    def get_system_information_examples(self):
+        # MacOS Sonoma 14.0
+        macos = {
+            'system': 'Darwin',
+            'os name': 'posix',
+            'system platform': 'darwin',
+            'platform release': '23.0.0',
+            'platform version': 'Darwin Kernel Version 23.0.0: Fri Sep 15 14:42:57 PDT 2023; root:xnu-10002.1.13~1/RELEASE_ARM64_T8112',
+            'platform platform': 'macOS-14.0-arm64-arm-64bit',
+            'mac version': ('14.0', ('', '', ''), 'arm64')
+        }
+        # Windows 11 Pro
+        win = {
+            'system': 'Windows',
+            'os name': 'nt',
+            'system platform': 'win32',
+            'platform release': '11',
+            'platform version': '10.0.26100',
+            'platform platform': 'Windows-11-10.0.26100-SP0',
+            'platform platform terse': 'Windows-11',
+            'platform platform aliased': 'Windows-11-10.0.26100-SP0',
+            'windows edition': 'Professional',
+            'windows is iot': False
+        }
+        # Ubuntu 22.04.3 LTS
+        ubuntu = {
+            'system': 'Linux',
+            'os name': 'posix',
+            'system platform': 'linux',
+            'platform release': '5.15.0-86-generic',
+            'platform version': '#96-Ubuntu SMP Wed Sep 20 08:23:49 UTC 2023',
+            'platform platform': 'Linux-5.15.0-86-generic-x86_64-with-glibc2.35',
+        }
+
+    def get_input(message: str, options: [], options_descriptions: [], options_results: []):
+        # print(f"length options: {len(options)}")
+        # print(f"length options_descriptions: {len(options_descriptions)}")
+        if options is None or len(options) == 0:
+            # No selections given so assume a Yes / No question
+            selections = ['y', 'yes', 'n', 'no']
+        internal_selection = None
+        while internal_selection not in options:
+            if options_descriptions is not None and len(options_descriptions) > 0:
+                if len(options) != len(options_descriptions):
+                    print("the size of the options and the options descriptions don't match")
+                    print("Exiting...")
+                    exit(2)
+                else:
+                    for index, option in enumerate(options):
+                        print(f"{option}) - {options_descriptions[index]}")
+            internal_selection = input(f"{message} {options}: ")
+            if options_results is not None and len(options_results) > 0:
+                # If we have been provided results, return the result matching the internal_selection
+                if len(options) != len(options_results):
+                    print("the size of the options and the options results don't match")
+                    print("Exiting...")
+                    exit(2)
+                else:
+                    for index, option in enumerate(options):
+                        # print(f"{internal_selection.lower()} ?? {option.lower()}")
+                        if internal_selection.lower() == option.lower():
+                            return options_results[index]
+        return internal_selection
 
 if __name__ == "__main__":
 
-    #sys_info = get_system_information()
-    #print(f"system_information: {sys_info}")
+    sys_info = System.get_system_information()
+    print(f"system_information: {sys_info}")
 
-    system = System()
-
-    while True:
-        print("Finding Logical Drives ...")
-        logical_disk_array = system.get_logical_drives_details()
-        print("Finding Physical Drives ...")
-        physical_disk_array = system.get_physical_drives_details()
-        #print(f"physical_disk_array: {physical_disk_array}")
-        #display_array_of_dictionaries(drives)
-        print("Finding Volumes ...")
-        volumes_array = system.get_volumes(True)
-        #print(f"volumes: {volumes}")
-        #display_array_of_dictionaries(volumes_array)
-        #display_diff_dictionaries(volumes[0], volumes[1])
-        print("Matching Volumes to Drives ...")
-        RESCAN: str = 'Rescan'
-        EXIT: str = 'Exit'
-        option_number = 1
-        options = []
-        options_descriptions = []
-        options_results = []
-        for volume_dictionary in volumes_array:
-            options.append(str(option_number))
-            volume_array_of_dicts = []
-            volume_array_of_dicts.append(volume_dictionary)
-            drive_letter = f'{volume_dictionary['DriveLetter']}:'
-            #print(f"{drive_letter} is on drive {system.get_disk_number_for_drive_letter(drive_letter)}")
-            disk_number = system.get_disk_number_for_drive_letter(drive_letter)
-            volume_info_line = f"{volume_dictionary['DriveLetter']}: \"{volume_dictionary['FileSystemLabel']}\" {format_storage_size(int(volume_dictionary['Size']), True, 1)}, {volume_dictionary['FileSystemType']} ({volume_dictionary['HealthStatus']})"
-            if len(disk_number.strip()) != 0:
-                logical_disk_dictionary = find_dictionary_in_array(logical_disk_array, "DiskNumber", disk_number)
-                volume_array_of_dicts.append(logical_disk_dictionary)
-                physical_disk_dictionary = find_dictionary_in_array(physical_disk_array, "DeviceId", disk_number)
-                volume_array_of_dicts.append(physical_disk_dictionary)
-                if logical_disk_dictionary is not None:
-                    volume_info_line += f" / {logical_disk_dictionary['BusType']} {physical_disk_dictionary['MediaType']}: {logical_disk_dictionary['Manufacturer']}, {logical_disk_dictionary['Model']}, SN: {logical_disk_dictionary['SerialNumber']} ({logical_disk_dictionary['HealthStatus']}))"
-                else:
-                    volume_info_line += ""
-            options_descriptions.append(volume_info_line)
-            options_results.append(volume_array_of_dicts)
-            option_number += 1
-
-        # Add Rescan option
-        options.append('R')
-        options_descriptions.append(RESCAN)
-        options_results.append(RESCAN)
-        option_number += 1
-        # Add Exit option
-        options.append('E')
-        options_descriptions.append(EXIT)
-        options_results.append(EXIT)
-        option_number += 1
-
-        result_array = get_input("Please select a volume to process?", options, options_descriptions, options_results)
-        if isinstance(result_array, str):
-            # Test if result is a string first as strings are technically arrays as well
-            #print(f"String result: {result_array}")
-            if result_array == EXIT:
-                print("Exiting ...")
-                exit()
-            elif result_array == RESCAN:
-                pass # Rescanning happens anyway at the end of this loop. This option just skips processing a volume
-            else:
-                print("Invalid result")
-                print("Exiting ...")
-                exit(2)
-        elif isinstance(result_array, collections.abc.Sequence):
-            #display_array_of_dictionaries(result_array)
-            print(f"Processing Volume {result_array[0]['DriveLetter']}:\\ ...")
-        print("Rescanning ...")

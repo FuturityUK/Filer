@@ -4,8 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="system.py now finds the volume + drive info, and prompts the user to choose what they wish to do process, or rescan or exit.">
+    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Loop where drives are presented for scanning and once processed they are rescanned. Options for rescanning and exiting are included.">
+      <change afterPath="$PROJECT_DIR$/data.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/print.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/filer.py" beforeDir="false" afterPath="$PROJECT_DIR$/filer.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/system.py" beforeDir="false" afterPath="$PROJECT_DIR$/system.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -88,14 +92,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1736868367160</updated>
-    </task>
-    <task id="LOCAL-00011" summary="Further work on Arguments and subcommand arguments">
-      <option name="closed" value="true" />
-      <created>1737224720699</created>
-      <option name="number" value="00011" />
-      <option name="presentableId" value="LOCAL-00011" />
-      <option name="project" value="LOCAL" />
-      <updated>1737224720699</updated>
     </task>
     <task id="LOCAL-00012" summary="Some database methods moved to the Database class.&#10;Vacuuming option implemented.">
       <option name="closed" value="true" />
@@ -481,7 +477,15 @@
       <option name="project" value="LOCAL" />
       <updated>1738000420185</updated>
     </task>
-    <option name="localTasksCounter" value="60" />
+    <task id="LOCAL-00060" summary="Loop where drives are presented for scanning and once processed they are rescanned. Options for rescanning and exiting are included.">
+      <option name="closed" value="true" />
+      <created>1738001905495</created>
+      <option name="number" value="00060" />
+      <option name="presentableId" value="LOCAL-00060" />
+      <option name="project" value="LOCAL" />
+      <updated>1738001905498</updated>
+    </task>
+    <option name="localTasksCounter" value="61" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -496,7 +500,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Major edits to file_system_processors.py to make use of the Database class.&#10;Still not working" />
     <MESSAGE value="Updated To Do" />
     <MESSAGE value="Added checks:&#10;Does the parent directory in the specified database file path exist? If not, error because the database can't be created until it exists.&#10;Does the Input Listing file exist?" />
     <MESSAGE value="To Do updated" />
@@ -521,6 +524,7 @@
     <MESSAGE value="added a &quot;get_input&quot; function" />
     <MESSAGE value="&quot;get_input&quot; function returns the correct value for the selected options" />
     <MESSAGE value="system.py now finds the volume + drive info, and prompts the user to choose what they wish to do process, or rescan or exit." />
-    <option name="LAST_COMMIT_MESSAGE" value="system.py now finds the volume + drive info, and prompts the user to choose what they wish to do process, or rescan or exit." />
+    <MESSAGE value="Loop where drives are presented for scanning and once processed they are rescanned. Options for rescanning and exiting are included." />
+    <option name="LAST_COMMIT_MESSAGE" value="Loop where drives are presented for scanning and once processed they are rescanned. Options for rescanning and exiting are included." />
   </component>
 </project>

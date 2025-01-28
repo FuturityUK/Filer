@@ -19,6 +19,10 @@ from database import Database
 import tracemalloc
 import argparse
 import os.path
+import collections.abc
+from system import System
+from data import find_dictionary_in_array
+from format import format_storage_size
 
 def add_db_and_verbose_to_parser(parser):
     parser.add_argument("-d", "--db", default="database.sqlite",
@@ -180,4 +184,82 @@ elif args.subcommand == "import":
 
     powershell_filesystem_listing.import_listing()
 
-    clean_up_and_quit()
+elif True:
+    system = System()
+
+    while True:
+        print("Finding Logical Drives ...")
+        logical_disk_array = system.get_logical_drives_details()
+        print("Finding Physical Drives ...")
+        physical_disk_array = system.get_physical_drives_details()
+        #print(f"physical_disk_array: {physical_disk_array}")
+        #display_array_of_dictionaries(drives)
+        print("Finding Volumes ...")
+        volumes_array = system.get_volumes(True)
+        #print(f"volumes: {volumes}")
+        #display_array_of_dictionaries(volumes_array)
+        #display_diff_dictionaries(volumes[0], volumes[1])
+        print("Matching Volumes to Drives ...")
+        RESCAN: str = 'Rescan'
+        EXIT: str = 'Exit'
+        VOLUME_DICT_INDEX: int = 0
+        LOGICAL_DICT_INDEX: int = 1
+        PHYSICAL_DICT_INDEX: int = 1
+        option_number = 1
+        options = []
+        options_descriptions = []
+        options_results = []
+        for volume_dictionary in volumes_array:
+            options.append(str(option_number))
+            volume_array_of_dicts = []
+            volume_array_of_dicts.append(volume_dictionary)
+            drive_letter = f'{volume_dictionary['DriveLetter']}:'
+            #print(f"{drive_letter} is on drive {system.get_disk_number_for_drive_letter(drive_letter)}")
+            disk_number = system.get_disk_number_for_drive_letter(drive_letter)
+            volume_info_line = f"{volume_dictionary['DriveLetter']}: \"{volume_dictionary['FileSystemLabel']}\" {format_storage_size(int(volume_dictionary['Size']), True, 1)}, {volume_dictionary['FileSystemType']} ({volume_dictionary['HealthStatus']})"
+            if len(disk_number.strip()) != 0:
+                logical_disk_dictionary = find_dictionary_in_array(logical_disk_array, "DiskNumber", disk_number)
+                volume_array_of_dicts.append(logical_disk_dictionary)
+                physical_disk_dictionary = find_dictionary_in_array(physical_disk_array, "DeviceId", disk_number)
+                volume_array_of_dicts.append(physical_disk_dictionary)
+                if logical_disk_dictionary is not None:
+                    volume_info_line += f" / {logical_disk_dictionary['BusType']} {physical_disk_dictionary['MediaType']}: {logical_disk_dictionary['Manufacturer']}, {logical_disk_dictionary['Model']}, SN: {logical_disk_dictionary['SerialNumber']} ({logical_disk_dictionary['HealthStatus']}))"
+                else:
+                    volume_info_line += ""
+            options_descriptions.append(volume_info_line)
+            options_results.append(volume_array_of_dicts)
+            option_number += 1
+
+        # Add Rescan option
+        options.append('R')
+        options_descriptions.append(RESCAN)
+        options_results.append(RESCAN)
+        option_number += 1
+        # Add Exit option
+        options.append('E')
+        options_descriptions.append(EXIT)
+        options_results.append(EXIT)
+        option_number += 1
+
+        result_array = System.get_input("Please select a volume to process?", options, options_descriptions, options_results)
+        if isinstance(result_array, str):
+            # Test if result is a string first as strings are technically arrays as well
+            #print(f"String result: {result_array}")
+            if result_array == EXIT:
+                print("Exiting ...")
+                exit()
+            elif result_array == RESCAN:
+                pass # Rescanning happens anyway at the end of this loop. This option just skips processing a volume
+            else:
+                print("Invalid result")
+                print("Exiting ...")
+                break # Leave the interactive loop
+        elif isinstance(result_array, collections.abc.Sequence):
+            #display_array_of_dictionaries(result_array)
+            drive_letter = result_array[VOLUME_DICT_INDEX]['DriveLetter']
+            print(f"Processing Volume {drive_letter}:\\ ...")
+            output = system.create_path_listing(drive_letter+':\\')
+
+        print("Rescanning ...")
+
+clean_up_and_quit()
