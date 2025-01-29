@@ -23,8 +23,18 @@ import collections.abc
 from system import System
 from data import Data
 from format import Format
+import socket
 
 class Filer:
+
+    RESCAN: str = 'Rescan'
+    EXIT: str = 'Exit'
+    PROCEED: str = 'Proceed'
+    CHANGE_LABEL: str = 'Change'
+
+    VOLUME_DICT_INDEX: int = 0
+    LOGICAL_DICT_INDEX: int = 1
+    PHYSICAL_DICT_INDEX: int = 2
 
     def __init__(self):
         self.database = None
@@ -49,13 +59,10 @@ class Filer:
         parser.add_argument("-v", "--verbose", action="store_true", help="increase output verbosity")
 
     def start(self):
+
         if self.memory_stats:
             # Start tracing memory allocations
             tracemalloc.start()
-
-        # Press the green button in the gutter to run the script.
-        #if __name__ == '__main__':
-        #    print("!!! Starting !!!")
 
         parser=argparse.ArgumentParser(
         #    prog='Filer',
@@ -202,21 +209,22 @@ class Filer:
             while True:
                 print("Finding Logical Drives ...")
                 logical_disk_array = system.get_logical_drives_details()
+                #display_array_of_dictionaries(logical_disk_array)
+
                 print("Finding Physical Drives ...")
                 physical_disk_array = system.get_physical_drives_details()
                 #print(f"physical_disk_array: {physical_disk_array}")
-                #display_array_of_dictionaries(drives)
+
+                #print("Finding Partitions ...")
+                #partitions_array = system.get_partition_details()
+                #print(f"physical_disk_array: {partitions_array}")
+
                 print("Finding Volumes ...")
                 volumes_array = system.get_volumes(True)
                 #print(f"volumes: {volumes}")
                 #display_array_of_dictionaries(volumes_array)
                 #display_diff_dictionaries(volumes[0], volumes[1])
                 print("Matching Volumes to Drives ...")
-                RESCAN: str = 'Rescan'
-                EXIT: str = 'Exit'
-                VOLUME_DICT_INDEX: int = 0
-                LOGICAL_DICT_INDEX: int = 1
-                PHYSICAL_DICT_INDEX: int = 1
                 option_number = 1
                 options = []
                 options_descriptions = []
@@ -244,58 +252,78 @@ class Filer:
 
                 # Add Rescan option
                 options.append('R')
-                options_descriptions.append(RESCAN)
-                options_results.append(RESCAN)
+                options_descriptions.append(self.RESCAN)
+                options_results.append(self.RESCAN)
                 option_number += 1
                 # Add Exit option
                 options.append('E')
-                options_descriptions.append(EXIT)
-                options_results.append(EXIT)
+                options_descriptions.append(self.EXIT)
+                options_results.append(self.EXIT)
                 option_number += 1
 
                 result_array = System.select_option("Please select a volume to process?", options, options_descriptions, options_results)
+                # Detect result_array type as we may have an exit command, or a data structure we've been asked to process
                 if isinstance(result_array, str):
                     # Test if result is a string first as strings are technically arrays as well
                     #print(f"String result: {result_array}")
-                    if result_array == EXIT:
+                    if result_array == self.RESCAN:
+                        continue # Skip the rest of the code and rescan at the beginning of the WHILE loop
+                    elif result_array == self.EXIT:
                         print("Exiting ...")
                         exit()
-                    elif result_array == RESCAN:
-                        pass # Rescanning happens anyway at the end of this loop. This option just skips processing a volume
                     else:
                         print("Invalid result")
                         print("Exiting ...")
                         break # Leave the interactive loop
                 elif isinstance(result_array, collections.abc.Sequence):
                     #display_array_of_dictionaries(result_array)
-                    drive_letter = result_array[VOLUME_DICT_INDEX]['DriveLetter']
-                    print(f"Processing Volume {drive_letter}:\\ ...")
-                    output = system.create_path_listing(drive_letter+':\\')
+                    drive_letter = result_array[self.VOLUME_DICT_INDEX]['DriveLetter']
+                    label = result_array[self.VOLUME_DICT_INDEX]['FileSystemLabel']
+                    make = result_array[self.LOGICAL_DICT_INDEX]['Manufacturer']
+                    model = result_array[self.LOGICAL_DICT_INDEX]['Model']
+                    serial_number = result_array[self.LOGICAL_DICT_INDEX]['SerialNumber']
+                    hostname = socket.gethostname()
 
-                    powershell_filesystem_listing = PowerShellFilesystemListing(self.database, args.label, args.listing_filename)
+                    while True:
+                        print("Information to be saved into the database:")
+                        print(f"  Drive : {drive_letter}:")
+                        print(f"  Label : {label}")
+                        print(f"  Make  : {make}")
+                        print(f"  Model : {model}")
+                        print(f"  S / N : {serial_number}")
+                        print(f"  Host  : {hostname}")
+                        result = System.select_option("Please select one of the following options:", ["P", "C", "R", "E"], ["Proceed", "Change Label", self.RESCAN, self.EXIT], [self.PROCEED, self.CHANGE_LABEL, self.RESCAN, self.EXIT])
+                        if result == self.PROCEED:
+                            print(f"Processing Volume {drive_letter}: ...")
+                            output = system.create_path_listing(drive_letter + ':\\', 'filer.fwf')
+                            powershell_filesystem_listing = PowerShellFilesystemListing(self.database, label,'filer.fwf')
+                            if args.verbose is not None:
+                                powershell_filesystem_listing.set_verbose(args.verbose)
+                            if args.test is not None:
+                                powershell_filesystem_listing.set_test(args.test)
 
-                    if args.verbose is not None:
-                        powershell_filesystem_listing.set_verbose(args.verbose)
-                    if args.test is not None:
-                        powershell_filesystem_listing.set_test(args.test)
+                            powershell_filesystem_listing.set_make(make)
+                            powershell_filesystem_listing.set_model(model)
+                            powershell_filesystem_listing.set_serial_number(serial_number)
+                            #powershell_filesystem_listing.set_combined(args.combined)
+                            powershell_filesystem_listing.set_hostname(hostname)
+                            #powershell_filesystem_listing.set_prefix(args.prefix)
+                            powershell_filesystem_listing.set_memory_stats(self.memory_stats)
+                            powershell_filesystem_listing.save_to_database()
+                            powershell_filesystem_listing.import_listing()
+                            print(f"Volume {drive_letter}: Processed Successfully...")
+                            break
 
-                    if args.make is not None:
-                        powershell_filesystem_listing.set_make(args.make)
-                    if args.model is not None:
-                        powershell_filesystem_listing.set_model(args.model)
-                    if args.serial is not None:
-                        powershell_filesystem_listing.set_serial_number(args.serial)
-                    if args.combined is not None:
-                        powershell_filesystem_listing.set_combined(args.combined)
-                    if args.hostname is not None:
-                        powershell_filesystem_listing.set_hostname(args.hostname)
-                    if args.prefix is not None:
-                        powershell_filesystem_listing.set_prefix(args.prefix)
-
-                    powershell_filesystem_listing.set_memory_stats(self.memory_stats)
-                    powershell_filesystem_listing.save_to_database()
-
-                    powershell_filesystem_listing.import_listing()
+                        elif result == self.CHANGE_LABEL:
+                            print(f"Current Label: {label}")
+                            label = input("Please enter a new label: ")
+                        elif result == self.RESCAN:
+                            continue # Skip the rest of the code and rescan at the beginning of the WHILE loop
+                        elif result == self.EXIT:
+                            print("Exiting ...")
+                            break
+                        else:
+                            print("Invalid result")
 
                 print("Rescanning ...")
 

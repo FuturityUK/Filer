@@ -3,6 +3,7 @@ import subprocess
 import platform
 import os
 import sys
+from typing import List, Optional
 
 class Windows:
     """ Class to execute Windows commands """
@@ -203,7 +204,7 @@ class System:
             get_disk_parameters = ""
             if disk_number is not None:
                 get_disk_parameters = f"-Number {disk_number}"
-            return self.windows.run_powershell_command_with_value_per_line(f"get-disk {get_disk_parameters} | Select-Object -Property *")
+            return self.windows.run_powershell_command_with_value_per_line(f"get-disk {get_disk_parameters} | Select-Object -Property * | Format-List")
             #return self.windows.run_powershell_command_with_fix_width_output("Get-Disk")
             #return self.windows.run_command_with_fix_width_output("wmic diskdrive")
 
@@ -212,13 +213,20 @@ class System:
             get_disk_parameters = ""
             if device_id is not None:
                 get_disk_parameters = f"-DeviceId {device_id}"
-            return self.windows.run_powershell_command_with_value_per_line(f"Get-PhysicalDisk {get_disk_parameters} | Select-Object -Property *")
+            return self.windows.run_powershell_command_with_value_per_line(f"Get-PhysicalDisk {get_disk_parameters} | Select-Object -Property * | Format-List")
+
+    def get_partition_details(self, drive_number: int = None):
+        if self.windows:
+            get_disk_parameters = ""
+            if drive_number is not None:
+                get_disk_parameters = f"-DiskNumber {drive_number}"
+            return self.windows.run_powershell_command_with_value_per_line(f"Get-Partition {get_disk_parameters} | Select-Object -Property * | Format-List")
 
     def get_volumes(self, mount: int = None):
         volumes = []
         if self.windows:
             #volumes = self.windows.run_powershell_command_with_fix_width_output("Get-Volume")
-            volumes = self.windows.run_powershell_command_with_value_per_line("Get-Volume | Sort-Object -Property DriveLetter | Select-Object -Property *")
+            volumes = self.windows.run_powershell_command_with_value_per_line("Get-Volume | Sort-Object -Property DriveLetter | Select-Object -Property * | Format-List")
             #all_volumes = self.windows.run_command_with_fix_width_output("wmic volume")
         if mount is None:
             return volumes
@@ -236,10 +244,10 @@ class System:
         else:
             return None
 
-    def create_path_listing(self, path: str):
+    def create_path_listing(self, path: str, listing_filename: str):
         if self.windows:
-            print(f"path: {path}")
-            listing_powershell_command = 'Get-ChildItem -Path '+ path +' -ErrorAction SilentlyContinue -Recurse -Force | Select-Object Mode, LastWriteTime, Length, FullName | Format-Table -Wrap -AutoSize | Out-File -width 9999 -Encoding utf8 "filer.fwf"'
+            #print(f"path: {path}")
+            listing_powershell_command = f'Get-ChildItem -Path "{path}" -ErrorAction SilentlyContinue -Recurse -Force | Select-Object Mode, LastWriteTime, Length, FullName | Format-Table -Wrap -AutoSize | Out-File -width 9999 -Encoding utf8 "{listing_filename}"'
             return self.windows.run_powershell_command(listing_powershell_command).strip()
         else:
             return None
@@ -342,14 +350,19 @@ class System:
         }
 
     @staticmethod
-    def select_option(message: str, options: [], options_descriptions: [], options_results: []):
+    def select_option(message: str, options=None, options_descriptions=None, options_results=None):
         # print(f"length options: {len(options)}")
         # print(f"length options_descriptions: {len(options_descriptions)}")
-        if options is None or len(options) == 0:
-            # No selections given so assume a Yes / No question
-            selections = ['y', 'yes', 'n', 'no']
-        internal_selection = None
-        while internal_selection not in options:
+
+        if options is None:
+            options = ['Y', 'N']
+        if options_descriptions is None:
+            options_descriptions = []
+        if options_results is None:
+            options_results = []
+        print(f"{message}")
+        internal_selection = ""
+        while internal_selection not in options or internal_selection.lower() not in options:
             if options_descriptions is not None and len(options_descriptions) > 0:
                 if len(options) != len(options_descriptions):
                     print("the size of the options and the options descriptions don't match")
@@ -358,7 +371,7 @@ class System:
                 else:
                     for index, option in enumerate(options):
                         print(f"{option}) - {options_descriptions[index]}")
-            internal_selection = input(f"{message} {options}: ")
+            internal_selection = input(f"Options: {options}? ")
             if options_results is not None and len(options_results) > 0:
                 # If we have been provided results, return the result matching the internal_selection
                 if len(options) != len(options_results):
