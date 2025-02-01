@@ -2,13 +2,16 @@ To DO:
 
 - release tags?
 
-- powershell, add commands to prevent result truncation 
+- powershell, add commands to prevent result truncation
 
 - visual disk
 make vpool
 model vdisk
 partition volume
-Serial identifier 
+Serial identifier
+
+- Temp Listing File
+  - Remove the file when finished with it
 
 - Database
   - Check errors caught is drive database is trying to be written to doesn't exist

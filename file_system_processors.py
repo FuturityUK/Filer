@@ -197,9 +197,10 @@ class PowerShellFilesystemListing:
                         self.__database.update_filesystem_date(self.__date, filesystem_id)
                         return filesystem_id
                     elif selection == "2":
-                        self.__database.close_database()
-                        print("Existing.")
-                        exit()
+                        return None
+                        #self.__database.close_database()
+                        #print("Existing.")
+                        #exit()
                 return filesystem_ids[0]
             elif len(filesystem_ids) == 0:
                 # No drive_id found so create one
@@ -217,7 +218,9 @@ class PowerShellFilesystemListing:
         # Check if records exist first and warn user if they do.
         filesystem_id = self.get_filesystem_id()
         self.__vprint(f"filesystem_id: {filesystem_id}")
-
+        if filesystem_id is None:
+            # No filesystem_id returned so likely that it already existed and user didn't want to replace it
+            return False
         self.__vprint("Processing listing file.")
         header_line_processed = False
         next_line_field_widths = False
@@ -428,6 +431,7 @@ class PowerShellFilesystemListing:
         # Commit changes to the database
         self.__database.commit()
         print("File Processed")
+        return True
 
     def directory_sizes_clear(self):
         sql_directory_sizes_clear = """UPDATE FileSystemEntries SET ByteSize = NULL WHERE IsDirectory = 1;"""

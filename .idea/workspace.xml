@@ -4,10 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Interactive mode complete, but needs testing!">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Refactored the execution of Powershell commands.&#10;Added option to specify the location of temporary file used when creating file listings in interactive mode.">
+      <change beforePath="$PROJECT_DIR$/file_system_processors.py" beforeDir="false" afterPath="$PROJECT_DIR$/file_system_processors.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/filer.py" beforeDir="false" afterPath="$PROJECT_DIR$/filer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system.py" beforeDir="false" afterPath="$PROJECT_DIR$/system.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -89,14 +88,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1736868367160</updated>
-    </task>
-    <task id="LOCAL-00016" summary="database execute now implemented. Needs testing">
-      <option name="closed" value="true" />
-      <created>1737307387005</created>
-      <option name="number" value="00016" />
-      <option name="presentableId" value="LOCAL-00016" />
-      <option name="project" value="LOCAL" />
-      <updated>1737307387005</updated>
     </task>
     <task id="LOCAL-00017" summary="file find now working">
       <option name="closed" value="true" />
@@ -482,7 +473,15 @@
       <option name="project" value="LOCAL" />
       <updated>1738183989969</updated>
     </task>
-    <option name="localTasksCounter" value="65" />
+    <task id="LOCAL-00065" summary="Refactored the execution of Powershell commands.&#10;Added option to specify the location of temporary file used when creating file listings in interactive mode.">
+      <option name="closed" value="true" />
+      <created>1738416942089</created>
+      <option name="number" value="00065" />
+      <option name="presentableId" value="LOCAL-00065" />
+      <option name="project" value="LOCAL" />
+      <updated>1738416942089</updated>
+    </task>
+    <option name="localTasksCounter" value="66" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -497,7 +496,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Drive (Hostname) and Filesystem inserts now working." />
     <MESSAGE value="Place holders calls added to detech exist filesystem listing for a label, ask the user if they wish to replace it, update the filesystem listing date etc." />
     <MESSAGE value="Filesystem Listing date is updated if the user chooses to replace / update the existing file listing" />
     <MESSAGE value="This version may actually import the filesystem listing :)" />
@@ -522,6 +520,7 @@
     <MESSAGE value="added interactive option which now works" />
     <MESSAGE value="Major code restructuring from functions to class methods, defining static methods where possible." />
     <MESSAGE value="Interactive mode complete, but needs testing!" />
-    <option name="LAST_COMMIT_MESSAGE" value="Interactive mode complete, but needs testing!" />
+    <MESSAGE value="Refactored the execution of Powershell commands.&#10;Added option to specify the location of temporary file used when creating file listings in interactive mode." />
+    <option name="LAST_COMMIT_MESSAGE" value="Refactored the execution of Powershell commands.&#10;Added option to specify the location of temporary file used when creating file listings in interactive mode." />
   </component>
 </project>

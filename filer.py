@@ -310,7 +310,7 @@ class Filer:
                         if result == self.PROCEED:
                             print(f"Processing Volume {drive_letter}: ...")
                             output = system.create_path_listing(drive_letter + ':\\', temp_listing_filename)
-                            print(f"create_path_listing output: {output}")
+                            #print(f"create_path_listing output: {output}")
                             powershell_filesystem_listing = PowerShellFilesystemListing(self.database, label,temp_listing_filename)
                             if args.verbose is not None:
                                 powershell_filesystem_listing.set_verbose(args.verbose)
@@ -325,8 +325,9 @@ class Filer:
                             #powershell_filesystem_listing.set_prefix(args.prefix)
                             powershell_filesystem_listing.set_memory_stats(self.memory_stats)
                             powershell_filesystem_listing.save_to_database()
-                            powershell_filesystem_listing.import_listing()
-                            print(f"Volume {drive_letter}: Processed Successfully...")
+                            import_listing_success = powershell_filesystem_listing.import_listing()
+                            if import_listing_success:
+                                print(f"Volume {drive_letter}: Processed Successfully...")
                             break
 
                         elif result == self.CHANGE_LABEL:
