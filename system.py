@@ -8,6 +8,14 @@ from typing import List, Optional
 class Windows:
     """ Class to execute Windows commands """
 
+    POWERSHELL_COMMAND: str = "powershell.exe"
+    #EXECUTION_POLICY_ARGUMENT: str = "-ExecutionPolicy RemoteSigned"
+    EXECUTION_POLICY_ARGUMENT: str = ""
+    COMMAND_ARGUMENT: str = "-command"
+    FORMAT_LIST_ARGUMENT: str = "| Format-List"
+    FORMAT_TABLE_ARGUMENT: str = "| Format-Table -Wrap -AutoSize"
+    OUT_STRING_ARGUMENT: str = "| out-string -width 4096"
+
     __verbose = False
 
     def __init__(self):
@@ -21,23 +29,23 @@ class Windows:
             print(string)
 
     @staticmethod
-    def run_command(command_string: str) -> str:
+    def run_command(command_array: []) -> str:
         try:
             #p = subprocess.Popen(self.power_shell_command,  + command_string, stdout=sys.stdout)
-            p = subprocess.Popen(command_string, stdout=subprocess.PIPE)
+            p = subprocess.Popen(command_array, stdout=subprocess.PIPE)
             #p = subprocess.Popen(command_string, stdout=subprocess.PIPE)
             out, err = p.communicate()
             if err is not None:
                 err_utf_8 = err.decode('UTF-8')
-                print(f"Error running command: \"{command_string}\"")
+                print(f"Error running command: \"{command_array}\"")
                 print(f"Error: \"{err_utf_8}\"")
                 exit(2)
         except FileNotFoundError as e:
-            print(f"Error running command: \"{command_string}\"")
+            print(f"Error running command: \"{command_array}\"")
             print(f"Error: \"{e}\"")
             exit(2)
         except subprocess.CalledProcessError as e:
-            print(f"Error running command: \"{command_string}\"")
+            print(f"Error running command: \"{command_array}\"")
             print(f"Error: \"{e}\"")
             exit(2)
         # If we reached here, no error were detected
@@ -45,22 +53,29 @@ class Windows:
         #print(f"out: {out_utf_8}")
         return out_utf_8
 
-    def run_powershell_command(self, command_string: str):
-        power_shell_command = "powershell.exe"
-        power_shell_command_args = "-ExecutionPolicy RemoteSigned -command"
-        powershell_post_command_pipe_to_prevent_truncation = "| out-string -width 4096"
-        new_command_string = power_shell_command + " " + power_shell_command_args +  " " + command_string +  " " + powershell_post_command_pipe_to_prevent_truncation
-        return self.run_command(new_command_string)
+    def run_powershell_command(self, command_string: str) -> str:
+        #command_array = ["powershell.exe", "-ExecutionPolicy RemoteSigned", "-command", command_string, "| out-string -width 4096"] # Potentially remove the out-string part for the listing creation
+        command_array = [self.POWERSHELL_COMMAND,
+                         self.EXECUTION_POLICY_ARGUMENT,
+                         self.COMMAND_ARGUMENT,
+                         command_string]
+        return self.run_command(command_array)
 
     def run_powershell_command_with_value_per_line(self, command_string: str):
-        power_shell_command = "powershell.exe"
-        power_shell_command_args = "-ExecutionPolicy RemoteSigned -command"
-        powershell_post_command_pipe_to_prevent_truncation = "| Format-List | out-string -width 4096"
-        new_command_string = power_shell_command + " " + power_shell_command_args +  " " + command_string +  " " + powershell_post_command_pipe_to_prevent_truncation
-        return self.run_command_with_value_per_line(new_command_string)
+        #power_shell_command = "powershell.exe"
+        #power_shell_command_args = "-ExecutionPolicy RemoteSigned -command"
+        #powershell_post_command_pipe_to_prevent_truncation = "| Format-List " + self.OUT_STRING_ARGUMENT
+        #new_command_string = power_shell_command + " " + power_shell_command_args + " " + command_string + " " + powershell_post_command_pipe_to_prevent_truncation
+        command_array = [self.POWERSHELL_COMMAND,
+                         self.EXECUTION_POLICY_ARGUMENT,
+                         self.COMMAND_ARGUMENT,
+                         command_string,
+                         self.FORMAT_LIST_ARGUMENT,
+                         self.OUT_STRING_ARGUMENT]
+        return self.run_command_with_value_per_line(command_array)
 
-    def run_command_with_value_per_line(self, command_string: str):
-        out_utf_8 = self.run_command(command_string)
+    def run_command_with_value_per_line(self, command_array: []):
+        out_utf_8 = self.run_command(command_array)
         command_results = []
         dictionary_results = {}
         for line in out_utf_8.splitlines():
@@ -90,14 +105,20 @@ class Windows:
         return command_results
 
     def run_powershell_command_with_fix_width_output(self, command_string: str):
-        power_shell_command = "powershell.exe"
-        power_shell_command_args = "-ExecutionPolicy RemoteSigned -command"
-        powershell_post_command_pipe_to_prevent_truncation = "| Format-Table -Wrap -AutoSize | out-string -width 4096"
-        new_command_string = power_shell_command + " " + power_shell_command_args +  " " + command_string +  " " + powershell_post_command_pipe_to_prevent_truncation
-        return self.run_command_with_fix_width_output(new_command_string)
+        #power_shell_command = "powershell.exe"
+        #power_shell_command_args = "-ExecutionPolicy RemoteSigned -command"
+        #powershell_post_command_pipe_to_prevent_truncation = "| Format-Table -Wrap -AutoSize" +  " | out-string -width 4096"
+        #new_command_string = power_shell_command + " " + power_shell_command_args +  " " + command_string +  " " + powershell_post_command_pipe_to_prevent_truncation
+        command_array = [self.POWERSHELL_COMMAND,
+                         self.EXECUTION_POLICY_ARGUMENT,
+                         self.COMMAND_ARGUMENT,
+                         command_string,
+                         self.FORMAT_TABLE_ARGUMENT,
+                         self.OUT_STRING_ARGUMENT]
+        return self.run_command_with_fix_width_output(command_array)
 
-    def run_command_with_fix_width_output(self, command_string: str):
-        out_utf_8 = self.run_command(command_string)
+    def run_command_with_fix_width_output(self, command_array: []):
+        out_utf_8 = self.run_command(command_array)
         slices = []
 
         # Find field widths within the fixed width output.
@@ -248,6 +269,8 @@ class System:
         if self.windows:
             #print(f"path: {path}")
             listing_powershell_command = f'Get-ChildItem -Path "{path}" -ErrorAction SilentlyContinue -Recurse -Force | Select-Object Mode, LastWriteTime, Length, FullName | Format-Table -Wrap -AutoSize | Out-File -width 9999 -Encoding utf8 "{listing_filename}"'
+            #listing_powershell_command = f'Get-ChildItem -Path \"{path}\" -Recurse -Force'
+            print(f"listing_powershell_command: {listing_powershell_command}")
             return self.windows.run_powershell_command(listing_powershell_command).strip()
         else:
             return None

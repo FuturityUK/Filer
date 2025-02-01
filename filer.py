@@ -36,6 +36,8 @@ class Filer:
     LOGICAL_DICT_INDEX: int = 1
     PHYSICAL_DICT_INDEX: int = 2
 
+    DEFAULT_TEMP_LISTING_FILE: str = 'filer.fwf'
+
     def __init__(self):
         self.database = None
         self.memory_stats = False
@@ -103,6 +105,7 @@ class Filer:
 
         # create the parser for the "interactive" subcommand
         parser_interactive = subparsers.add_parser('interactive', help='interactive help')
+        parser_interactive.add_argument("-l", "--listing_filename", default="wibble.txt", help="filename (including path) of the temporary created listing file. Default: '"+self.DEFAULT_TEMP_LISTING_FILE+"'")
         parser_interactive.add_argument("-t", "--test", action="store_true", help="test input file without modifying the database")
         self.add_db_and_verbose_to_parser(parser_interactive)
 
@@ -205,11 +208,13 @@ class Filer:
 
         elif args.subcommand == 'interactive':
             system = System()
+            temp_listing_filename = args.listing_filename
 
             while True:
                 print("Finding Logical Drives ...")
                 logical_disk_array = system.get_logical_drives_details()
                 #display_array_of_dictionaries(logical_disk_array)
+                #print(f"logical_disk_array: {logical_disk_array}")
 
                 print("Finding Physical Drives ...")
                 physical_disk_array = system.get_physical_drives_details()
@@ -221,7 +226,7 @@ class Filer:
 
                 print("Finding Volumes ...")
                 volumes_array = system.get_volumes(True)
-                #print(f"volumes: {volumes}")
+                #print(f"volumes: {volumes_array}")
                 #display_array_of_dictionaries(volumes_array)
                 #display_diff_dictionaries(volumes[0], volumes[1])
                 print("Matching Volumes to Drives ...")
@@ -234,8 +239,9 @@ class Filer:
                     volume_array_of_dicts = []
                     volume_array_of_dicts.append(volume_dictionary)
                     drive_letter = f'{volume_dictionary['DriveLetter']}:'
-                    #print(f"{drive_letter} is on drive {system.get_disk_number_for_drive_letter(drive_letter)}")
                     disk_number = system.get_disk_number_for_drive_letter(drive_letter)
+                    #print(f"{drive_letter} is on drive {disk_number}")
+
                     volume_info_line = f"{volume_dictionary['DriveLetter']}: \"{volume_dictionary['FileSystemLabel']}\" {Format.format_storage_size(int(volume_dictionary['Size']), True, 1)}, {volume_dictionary['FileSystemType']} ({volume_dictionary['HealthStatus']})"
                     if len(disk_number.strip()) != 0:
                         logical_disk_dictionary = Data.find_dictionary_in_array(logical_disk_array, "DiskNumber", disk_number)
@@ -277,11 +283,19 @@ class Filer:
                         break # Leave the interactive loop
                 elif isinstance(result_array, collections.abc.Sequence):
                     #display_array_of_dictionaries(result_array)
-                    drive_letter = result_array[self.VOLUME_DICT_INDEX]['DriveLetter']
-                    label = result_array[self.VOLUME_DICT_INDEX]['FileSystemLabel']
-                    make = result_array[self.LOGICAL_DICT_INDEX]['Manufacturer']
-                    model = result_array[self.LOGICAL_DICT_INDEX]['Model']
-                    serial_number = result_array[self.LOGICAL_DICT_INDEX]['SerialNumber']
+                    result_array_length = len(result_array)
+                    volume_dictionary = result_array[self.VOLUME_DICT_INDEX]
+                    drive_letter = volume_dictionary['DriveLetter']
+                    label = volume_dictionary['FileSystemLabel']
+                    if result_array_length > 1:
+                        logical_disk_dictionary = result_array[self.LOGICAL_DICT_INDEX]
+                        make = logical_disk_dictionary['Manufacturer']
+                        model = logical_disk_dictionary['Model']
+                        serial_number = logical_disk_dictionary['SerialNumber']
+                    else:
+                        make = ""
+                        model = ""
+                        serial_number = ""
                     hostname = socket.gethostname()
 
                     while True:
@@ -295,8 +309,9 @@ class Filer:
                         result = System.select_option("Please select one of the following options:", ["P", "C", "R", "E"], ["Proceed", "Change Label", self.RESCAN, self.EXIT], [self.PROCEED, self.CHANGE_LABEL, self.RESCAN, self.EXIT])
                         if result == self.PROCEED:
                             print(f"Processing Volume {drive_letter}: ...")
-                            output = system.create_path_listing(drive_letter + ':\\', 'filer.fwf')
-                            powershell_filesystem_listing = PowerShellFilesystemListing(self.database, label,'filer.fwf')
+                            output = system.create_path_listing(drive_letter + ':\\', temp_listing_filename)
+                            print(f"create_path_listing output: {output}")
+                            powershell_filesystem_listing = PowerShellFilesystemListing(self.database, label,temp_listing_filename)
                             if args.verbose is not None:
                                 powershell_filesystem_listing.set_verbose(args.verbose)
                             if args.test is not None:

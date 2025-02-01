@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Major code restructuring from functions to class methods, defining static methods where possible.">
+    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Interactive mode complete, but needs testing!">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/filer.py" beforeDir="false" afterPath="$PROJECT_DIR$/filer.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/system.py" beforeDir="false" afterPath="$PROJECT_DIR$/system.py" afterDir="false" />
@@ -89,14 +89,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1736868367160</updated>
-    </task>
-    <task id="LOCAL-00015" summary="Started embedding the SQL code in the program">
-      <option name="closed" value="true" />
-      <created>1737289914533</created>
-      <option name="number" value="00015" />
-      <option name="presentableId" value="LOCAL-00015" />
-      <option name="project" value="LOCAL" />
-      <updated>1737289914533</updated>
     </task>
     <task id="LOCAL-00016" summary="database execute now implemented. Needs testing">
       <option name="closed" value="true" />
@@ -482,7 +474,15 @@
       <option name="project" value="LOCAL" />
       <updated>1738086618936</updated>
     </task>
-    <option name="localTasksCounter" value="64" />
+    <task id="LOCAL-00064" summary="Interactive mode complete, but needs testing!">
+      <option name="closed" value="true" />
+      <created>1738183989969</created>
+      <option name="number" value="00064" />
+      <option name="presentableId" value="LOCAL-00064" />
+      <option name="project" value="LOCAL" />
+      <updated>1738183989969</updated>
+    </task>
+    <option name="localTasksCounter" value="65" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -497,7 +497,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Added code to check if a driveID already exists for the specified make, model, serial number." />
     <MESSAGE value="Drive (Hostname) and Filesystem inserts now working." />
     <MESSAGE value="Place holders calls added to detech exist filesystem listing for a label, ask the user if they wish to replace it, update the filesystem listing date etc." />
     <MESSAGE value="Filesystem Listing date is updated if the user chooses to replace / update the existing file listing" />
@@ -522,6 +521,7 @@
     <MESSAGE value="Split out functions and classes into their own types of python files. e.g. print functions in print.py" />
     <MESSAGE value="added interactive option which now works" />
     <MESSAGE value="Major code restructuring from functions to class methods, defining static methods where possible." />
-    <option name="LAST_COMMIT_MESSAGE" value="Major code restructuring from functions to class methods, defining static methods where possible." />
+    <MESSAGE value="Interactive mode complete, but needs testing!" />
+    <option name="LAST_COMMIT_MESSAGE" value="Interactive mode complete, but needs testing!" />
   </component>
 </project>
