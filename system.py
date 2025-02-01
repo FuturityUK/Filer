@@ -275,6 +275,12 @@ class System:
         else:
             return None
 
+    def does_path_listing_exit(self, listing_filename: str):
+        if os.path.isfile(listing_filename):
+            selection = self.select_option(f"Temporary listing file exits. Do you want to delete it and continue? ")
+            print(f"selection: {selection}")
+
+
     @staticmethod
     def is_windows():
         return True if platform.system().lower() == "windows" else False
