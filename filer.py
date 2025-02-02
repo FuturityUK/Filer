@@ -330,8 +330,10 @@ class Filer:
             # Database file doesn't exist
             # Ask user if they want to create a new database file?
             print(f"Database file doesn't exist at location: \"{os.path.abspath(database_filename)}\"")
-            create_database_answer = input("Do you want to create a new database there? ")
-            if create_database_answer.lower() == "y" or create_database_answer.lower() == "yes":
+            #create_database_answer = input("Do you want to create a new database there? ")
+            create_database_answer = System.select_option("Do you want to create a new database there? ")
+            #if create_database_answer.lower() == "y" or create_database_answer.lower() == "yes":
+            if create_database_answer:
                 create_tables = True
             else:
                 print("Database not created. Exiting")

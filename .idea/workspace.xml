@@ -4,11 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Moved code handling different arguments into their own functions.">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Optimised the System.select_option() method.">
       <change beforePath="$PROJECT_DIR$/filer.py" beforeDir="false" afterPath="$PROJECT_DIR$/filer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system.py" beforeDir="false" afterPath="$PROJECT_DIR$/system.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/to_do.txt" beforeDir="false" afterPath="$PROJECT_DIR$/to_do.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -90,14 +87,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1736868367160</updated>
-    </task>
-    <task id="LOCAL-00031" summary="Major edits to file_system_processors.py to make use of the Database class.&#10;Still not working">
-      <option name="closed" value="true" />
-      <created>1737495510896</created>
-      <option name="number" value="00031" />
-      <option name="presentableId" value="LOCAL-00031" />
-      <option name="project" value="LOCAL" />
-      <updated>1737495510896</updated>
     </task>
     <task id="LOCAL-00032" summary="Updated To Do">
       <option name="closed" value="true" />
@@ -483,7 +472,15 @@
       <option name="project" value="LOCAL" />
       <updated>1738514366441</updated>
     </task>
-    <option name="localTasksCounter" value="80" />
+    <task id="LOCAL-00080" summary="Optimised the System.select_option() method.">
+      <option name="closed" value="true" />
+      <created>1738517998834</created>
+      <option name="number" value="00080" />
+      <option name="presentableId" value="LOCAL-00080" />
+      <option name="project" value="LOCAL" />
+      <updated>1738517998835</updated>
+    </task>
+    <option name="localTasksCounter" value="81" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -498,7 +495,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Now works out which drive letter is on which drive.&#10;&#10;Skeleton for processing powershell output that are returned in lists rather than tables." />
     <MESSAGE value="Now lists mounted drive letters, together with their details" />
     <MESSAGE value="Added a storage size formatting function" />
     <MESSAGE value="added a &quot;get_input&quot; function" />
@@ -523,6 +519,7 @@
     <MESSAGE value="finding files against particular labels implemented" />
     <MESSAGE value="Removed old debug output" />
     <MESSAGE value="Moved code handling different arguments into their own functions." />
-    <option name="LAST_COMMIT_MESSAGE" value="Moved code handling different arguments into their own functions." />
+    <MESSAGE value="Optimised the System.select_option() method." />
+    <option name="LAST_COMMIT_MESSAGE" value="Optimised the System.select_option() method." />
   </component>
 </project>
