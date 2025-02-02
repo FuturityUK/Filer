@@ -70,7 +70,6 @@ class Filer:
         #    prog='Filer',
         #    epilog='Text at the bottom of help',
             description="Filer - File System Manager")
-        #parser.add_argument("-t", "--test", action="store_true", help="test input file without modifying the database")
 
         subparsers = parser.add_subparsers(title='subcommands',
                                            description='valid subcommands',
@@ -95,7 +94,7 @@ class Filer:
         # create the parser for the "import" subcommand
         parser_import = subparsers.add_parser('import', help='import help')
         parser_import.add_argument("label", help="listings' unique label string")
-        parser_import.add_argument("listing_filename", help="filename (including path) of the listing in fixed width format to be processed. See PowerShell example.")
+        parser_import.add_argument("filename", help="filename (including path) of the listing in fixed width format to be processed. See PowerShell example.")
         parser_import.add_argument("-m", "--make", default=None, help="drive's make")
         parser_import.add_argument("-o", "--model", default=None, help="drive's model")
         parser_import.add_argument("-s", "--serial", default=None, help="drive's serial number")
@@ -107,8 +106,8 @@ class Filer:
 
         # create the parser for the "interactive" subcommand
         parser_interactive = subparsers.add_parser('interactive', help='interactive help')
-        parser_interactive.add_argument("-l", "--listing_filename", default="listing.fwf", help="filename (including path) of the temporary created listing file. Default: '"+self.DEFAULT_TEMP_LISTING_FILE+"'")
-        #parser_interactive.add_argument("-t", "--test", action="store_true", help="test input file without modifying the database")
+        parser_interactive.add_argument("-f", "--filename", default="tmp_listing.fwf", help="filename (including path) that will be used when creating temporary listing files. Default: '"+self.DEFAULT_TEMP_LISTING_FILE+"'")
+        parser_interactive.add_argument("-t", "--test", action="store_true", help="test input file without modifying the database")
         self.add_db_and_verbose_to_parser(parser_interactive)
 
         # create the parser for the "vacuum" subcommand
@@ -191,12 +190,12 @@ class Filer:
 
         elif args.subcommand == "import":
             print(f"Import subcommand: Test !!!")
-            powershell_filesystem_listing = PowerShellFilesystemListing(self.database, args.label, args.listing_filename)
+            powershell_filesystem_listing = PowerShellFilesystemListing(self.database, args.label, args.filename)
 
             if args.verbose is not None:
                 powershell_filesystem_listing.set_verbose(args.verbose)
-            #if args.test is not None:
-            #    powershell_filesystem_listing.set_test(args.test)
+            if args.test is not None:
+                powershell_filesystem_listing.set_test(args.test)
             if args.make is not None:
                 powershell_filesystem_listing.set_make(args.make)
             if args.model is not None:
@@ -217,7 +216,7 @@ class Filer:
 
         elif args.subcommand == 'interactive':
             system = System()
-            temp_listing_filename = args.listing_filename
+            temp_listing_filename = args.filename
 
             while True:
                 print("Finding Logical Drives ...")

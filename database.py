@@ -215,7 +215,7 @@ class Database:
         rows_found = 0
         select_result = self.fetch_all_results()
         for row in select_result:
-            print(row[0])
+            #print(row[0])
             drive_ids.append(row[0])
             rows_found += 1
         self.__vprint(f"{rows_found} results found")
@@ -242,7 +242,7 @@ class Database:
         rows_found = 0
         select_result = self.fetch_all_results()
         for row in select_result:
-            print(row[0])
+            #print(row[0])
             filesystem_ids.append(row[0])
             rows_found += 1
         self.__vprint(f"{rows_found} results found")

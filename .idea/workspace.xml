@@ -4,8 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Added partial code to allow finding files against particular labels">
+    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="finding files against particular labels implemented">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/database.py" beforeDir="false" afterPath="$PROJECT_DIR$/database.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/file_system_processors.py" beforeDir="false" afterPath="$PROJECT_DIR$/file_system_processors.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/filer.py" beforeDir="false" afterPath="$PROJECT_DIR$/filer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/system.py" beforeDir="false" afterPath="$PROJECT_DIR$/system.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -87,14 +91,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1736868367160</updated>
-    </task>
-    <task id="LOCAL-00028" summary="New file_system_processor methods to handle new options like make, model, etc">
-      <option name="closed" value="true" />
-      <created>1737399409590</created>
-      <option name="number" value="00028" />
-      <option name="presentableId" value="LOCAL-00028" />
-      <option name="project" value="LOCAL" />
-      <updated>1737399409590</updated>
     </task>
     <task id="LOCAL-00029" summary="New file_system_processor methods to handle new options like make, model, etc">
       <option name="closed" value="true" />
@@ -480,7 +476,15 @@
       <option name="project" value="LOCAL" />
       <updated>1738507499511</updated>
     </task>
-    <option name="localTasksCounter" value="77" />
+    <task id="LOCAL-00077" summary="finding files against particular labels implemented">
+      <option name="closed" value="true" />
+      <created>1738508999003</created>
+      <option name="number" value="00077" />
+      <option name="presentableId" value="LOCAL-00077" />
+      <option name="project" value="LOCAL" />
+      <updated>1738508999003</updated>
+    </task>
+    <option name="localTasksCounter" value="78" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -495,7 +499,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="more drive functions added" />
     <MESSAGE value="display_dictionary now prints the array of dicionaries in a python valid syntax" />
     <MESSAGE value="System example working" />
     <MESSAGE value="Now works out which drive letter is on which drive.&#10;&#10;Skeleton for processing powershell output that are returned in lists rather than tables." />
@@ -520,6 +523,7 @@
     <MESSAGE value="Changed the &quot;find&quot; subcommand so that it displays the &quot;label&quot;" />
     <MESSAGE value="Modified README" />
     <MESSAGE value="Added partial code to allow finding files against particular labels" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added partial code to allow finding files against particular labels" />
+    <MESSAGE value="finding files against particular labels implemented" />
+    <option name="LAST_COMMIT_MESSAGE" value="finding files against particular labels implemented" />
   </component>
 </project>

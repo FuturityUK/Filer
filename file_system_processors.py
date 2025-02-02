@@ -217,6 +217,7 @@ class PowerShellFilesystemListing:
         self.__vprint("Recording listing details.")
         # Check if records exist first and warn user if they do.
         filesystem_id = self.get_filesystem_id()
+
         self.__vprint(f"filesystem_id: {filesystem_id}")
         if filesystem_id is None:
             # No filesystem_id returned so likely that it already existed and user didn't want to replace it
@@ -284,7 +285,6 @@ class PowerShellFilesystemListing:
                         next_line_field_widths = True
                         # exit()
                 elif next_line_field_widths is True:
-                    # print("Got Here")
                     """
                     if(not line_right_strip.startswith("---- ")):
                         print("Unexpected field width definition line similar to:")

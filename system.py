@@ -270,7 +270,7 @@ class System:
             #print(f"path: {path}")
             listing_powershell_command = f'Get-ChildItem -Path "{path}" -ErrorAction SilentlyContinue -Recurse -Force | Select-Object Mode, LastWriteTime, Length, FullName | Format-Table -Wrap -AutoSize | Out-File -width 9999 -Encoding utf8 "{listing_filename}"'
             #listing_powershell_command = f'Get-ChildItem -Path \"{path}\" -Recurse -Force'
-            print(f"listing_powershell_command: {listing_powershell_command}")
+            #print(f"listing_powershell_command: {listing_powershell_command}")
             return self.windows.run_powershell_command(listing_powershell_command).strip()
         else:
             return None
