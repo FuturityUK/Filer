@@ -4,11 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Fixed temp listing filename to : listing.fwf">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sql.py" beforeDir="false" afterPath="$PROJECT_DIR$/sql.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system.py" beforeDir="false" afterPath="$PROJECT_DIR$/system.py" afterDir="false" />
-    </list>
+    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Changed the &quot;find&quot; subcommand so that it displays the &quot;label&quot;" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -89,22 +85,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1736868367160</updated>
-    </task>
-    <task id="LOCAL-00024" summary="Added Database indexes">
-      <option name="closed" value="true" />
-      <created>1737380963871</created>
-      <option name="number" value="00024" />
-      <option name="presentableId" value="LOCAL-00024" />
-      <option name="project" value="LOCAL" />
-      <updated>1737380963871</updated>
-    </task>
-    <task id="LOCAL-00025" summary="Added Database hostname and more indexes">
-      <option name="closed" value="true" />
-      <created>1737394246083</created>
-      <option name="number" value="00025" />
-      <option name="presentableId" value="LOCAL-00025" />
-      <option name="project" value="LOCAL" />
-      <updated>1737394246083</updated>
     </task>
     <task id="LOCAL-00026" summary="Added import subcommand arguments">
       <option name="closed" value="true" />
@@ -482,7 +462,23 @@
       <option name="project" value="LOCAL" />
       <updated>1738497775445</updated>
     </task>
-    <option name="localTasksCounter" value="73" />
+    <task id="LOCAL-00073" summary="Changed the &quot;like&quot; subcommand so that it displays the &quot;label&quot;">
+      <option name="closed" value="true" />
+      <created>1738498795777</created>
+      <option name="number" value="00073" />
+      <option name="presentableId" value="LOCAL-00073" />
+      <option name="project" value="LOCAL" />
+      <updated>1738498795777</updated>
+    </task>
+    <task id="LOCAL-00074" summary="Changed the &quot;find&quot; subcommand so that it displays the &quot;label&quot;">
+      <option name="closed" value="true" />
+      <created>1738498989057</created>
+      <option name="number" value="00074" />
+      <option name="presentableId" value="LOCAL-00074" />
+      <option name="project" value="LOCAL" />
+      <updated>1738498989057</updated>
+    </task>
+    <option name="localTasksCounter" value="75" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -497,8 +493,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="More OS Functions" />
-    <MESSAGE value="Code to stop results from being truncated" />
     <MESSAGE value="added missing code" />
     <MESSAGE value="enhance output of display_dictionary function" />
     <MESSAGE value="more drive functions added" />
@@ -522,6 +516,8 @@
     <MESSAGE value="Fixed database directory checking if it exists or not.&#10;Fixed the &quot;like&quot; subcommand." />
     <MESSAGE value="Added task to add &quot;exclude&quot; functionality." />
     <MESSAGE value="Fixed temp listing filename to : listing.fwf" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed temp listing filename to : listing.fwf" />
+    <MESSAGE value="Changed the &quot;like&quot; subcommand so that it displays the &quot;label&quot;" />
+    <MESSAGE value="Changed the &quot;find&quot; subcommand so that it displays the &quot;label&quot;" />
+    <option name="LAST_COMMIT_MESSAGE" value="Changed the &quot;find&quot; subcommand so that it displays the &quot;label&quot;" />
   </component>
 </project>
