@@ -4,9 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="If the user tries to process a listing with the same label, they are given the option to replace the listing, or exit the processing of this listing.">
+    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Started work on System.does_path_listing_exit() to check if a file exists and give the user the option to delete it.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system.py" beforeDir="false" afterPath="$PROJECT_DIR$/system.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -88,14 +87,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1736868367160</updated>
-    </task>
-    <task id="LOCAL-00018" summary="&quot;like&quot; subcommand now working">
-      <option name="closed" value="true" />
-      <created>1737324281798</created>
-      <option name="number" value="00018" />
-      <option name="presentableId" value="LOCAL-00018" />
-      <option name="project" value="LOCAL" />
-      <updated>1737324281798</updated>
     </task>
     <task id="LOCAL-00019" summary="Added code to ask the user if they want to create a new database if one is missing.">
       <option name="closed" value="true" />
@@ -481,7 +472,15 @@
       <option name="project" value="LOCAL" />
       <updated>1738417816419</updated>
     </task>
-    <option name="localTasksCounter" value="67" />
+    <task id="LOCAL-00067" summary="Started work on System.does_path_listing_exit() to check if a file exists and give the user the option to delete it.">
+      <option name="closed" value="true" />
+      <created>1738445153819</created>
+      <option name="number" value="00067" />
+      <option name="presentableId" value="LOCAL-00067" />
+      <option name="project" value="LOCAL" />
+      <updated>1738445153819</updated>
+    </task>
+    <option name="localTasksCounter" value="68" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -496,7 +495,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Filesystem Listing date is updated if the user chooses to replace / update the existing file listing" />
     <MESSAGE value="This version may actually import the filesystem listing :)" />
     <MESSAGE value="Renamed powershell.py to system.py" />
     <MESSAGE value="Added code to detect system type" />
@@ -521,6 +519,7 @@
     <MESSAGE value="Interactive mode complete, but needs testing!" />
     <MESSAGE value="Refactored the execution of Powershell commands.&#10;Added option to specify the location of temporary file used when creating file listings in interactive mode." />
     <MESSAGE value="If the user tries to process a listing with the same label, they are given the option to replace the listing, or exit the processing of this listing." />
-    <option name="LAST_COMMIT_MESSAGE" value="If the user tries to process a listing with the same label, they are given the option to replace the listing, or exit the processing of this listing." />
+    <MESSAGE value="Started work on System.does_path_listing_exit() to check if a file exists and give the user the option to delete it." />
+    <option name="LAST_COMMIT_MESSAGE" value="Started work on System.does_path_listing_exit() to check if a file exists and give the user the option to delete it." />
   </component>
 </project>
