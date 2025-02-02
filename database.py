@@ -182,7 +182,7 @@ class Database:
         self.__vprint(f"filename: \"{search}\"")
 
         self.execute(self.__sql_dictionary["find_filename_like"],
-                     search
+                     [search]
                     )
         rows_found = 0
         select_result = self.fetch_all_results()
