@@ -1,6 +1,7 @@
 To DO:
 
 - release tags?
+  - Format = vX.Y.Z (where X = Major number, Y = Minor number, Z = Patch number)
 
 - powershell, add commands to prevent result truncation
 
