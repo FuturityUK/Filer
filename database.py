@@ -173,7 +173,7 @@ class Database:
         rows_found = 0
         select_result = self.fetch_all_results()
         for row in select_result:
-            print(row[0])
+            print(f"{row[1]}, {row[0]}")
             rows_found += 1
         print(f"{rows_found} results found")
 

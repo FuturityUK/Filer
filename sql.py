@@ -63,10 +63,17 @@ class SQLDictionary:
                 CREATE INDEX FileSystems_DriveID_IDX ON FileSystems (DriveID);
             '''
 
+        #self.sql_dictionary["find_filename_exact_match"] = '''
+        #        SELECT Fullname
+        #        FROM FileSystemEntries
+        #        WHERE Filename = ?
+        #    '''
+
         self.sql_dictionary["find_filename_exact_match"] = '''
-                SELECT Fullname
-                FROM FileSystemEntries
-                WHERE Filename = ?
+                SELECT fse.Fullname, fs.Label
+                FROM FileSystemEntries AS fse, FileSystems AS fs
+                WHERE fse.Filename = ? AND
+                fse.FileSystemID = fs.FileSystemID;
             '''
 
         #self.sql_dictionary["find_filename_like"] = '''
