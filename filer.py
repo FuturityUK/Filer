@@ -138,9 +138,8 @@ class Filer:
 
         # Does the database file exit?
         create_tables = False
-
-        directory_name = os.path.dirname(database_filename)
-
+        abspath_database_filename = os.path.abspath(database_filename)
+        directory_name = os.path.dirname(abspath_database_filename)
         if not os.path.exists(directory_name):
             print(f"\"{directory_name}\" directory in your database filename path, does not exist!")
             print("The directory must exist before a new database can be created there. Exiting")
