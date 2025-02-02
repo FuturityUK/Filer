@@ -105,7 +105,7 @@ class Filer:
 
         # create the parser for the "interactive" subcommand
         parser_interactive = subparsers.add_parser('interactive', help='interactive help')
-        parser_interactive.add_argument("-l", "--listing_filename", default="wibble.txt", help="filename (including path) of the temporary created listing file. Default: '"+self.DEFAULT_TEMP_LISTING_FILE+"'")
+        parser_interactive.add_argument("-l", "--listing_filename", default="listing.fwf", help="filename (including path) of the temporary created listing file. Default: '"+self.DEFAULT_TEMP_LISTING_FILE+"'")
         parser_interactive.add_argument("-t", "--test", action="store_true", help="test input file without modifying the database")
         self.add_db_and_verbose_to_parser(parser_interactive)
 
