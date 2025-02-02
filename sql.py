@@ -63,30 +63,34 @@ class SQLDictionary:
                 CREATE INDEX FileSystems_DriveID_IDX ON FileSystems (DriveID);
             '''
 
-        #self.sql_dictionary["find_filename_exact_match"] = '''
-        #        SELECT Fullname
-        #        FROM FileSystemEntries
-        #        WHERE Filename = ?
-        #    '''
-
         self.sql_dictionary["find_filename_exact_match"] = '''
                 SELECT fse.Fullname, fs.Label
                 FROM FileSystemEntries AS fse, FileSystems AS fs
-                WHERE fse.Filename = ? AND
-                fse.FileSystemID = fs.FileSystemID;
+                WHERE fse.Filename = ? 
+                AND fse.FileSystemID = fs.FileSystemID;
             '''
 
-        #self.sql_dictionary["find_filename_like"] = '''
-        #        SELECT Fullname
-        #        FROM FileSystemEntries
-        #        WHERE Filename LIKE ?
-        #    '''
+        self.sql_dictionary["find_filename_exact_match_with_label"] = '''
+                SELECT fse.Fullname, fs.Label
+                FROM FileSystemEntries AS fse, FileSystems AS fs
+                WHERE fse.Filename = ? 
+                AND fs.Label = ?
+                AND fse.FileSystemID = fs.FileSystemID;
+            '''
 
         self.sql_dictionary["find_filename_like"] = '''
                 SELECT fse.Fullname, fs.Label
                 FROM FileSystemEntries AS fse, FileSystems AS fs
-                WHERE fse.Filename LIKE ? AND
-                fse.FileSystemID = fs.FileSystemID;
+                WHERE fse.Filename LIKE ? 
+                AND fse.FileSystemID = fs.FileSystemID;
+            '''
+
+        self.sql_dictionary["find_filename_like_with_label"] = '''
+                SELECT fse.Fullname, fs.Label
+                FROM FileSystemEntries AS fse, FileSystems AS fs
+                WHERE fse.Filename LIKE ?
+                AND fs.Label = ?
+                AND fse.FileSystemID = fs.FileSystemID;
             '''
 
         self.sql_dictionary["find_drive_id"] = '''

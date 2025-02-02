@@ -46,10 +46,10 @@ class Database:
         self.__connection = None
         try:
             sqlite3.enable_callback_tracebacks(True)
-            #database_path_string = 'file:'+path+'?mode=rw'
-            #__vprint__(f"database_path_string: {database_path_string}")
+            # database_path_string = 'file:'+path+'?mode=rw'
+            # __vprint__(f"database_path_string: {database_path_string}")
             self.__connection = sqlite3.connect(path)
-            #if os.path.isfile(path):
+            # if os.path.isfile(path):
             if self.__connection is not None:
                 self.__vprint("Connection to SQLite DB successful")
             else:
@@ -60,7 +60,7 @@ class Database:
             exit(2)  # Exit with system code 2 to indicate and error
         except Exception as e:
             print(f"Exception: '{e}'")
-            exit(2) # Exit with system code 2 to indicate and error
+            exit(2)  # Exit with system code 2 to indicate and error
         return self.__connection
 
     def close_connection(self):
@@ -92,9 +92,9 @@ class Database:
     """
 
     def execute(self,
-        sql: str,
-        parameters: Optional[Union[Iterable, dict]] = None
-        ):
+                sql: str,
+                parameters: Optional[Union[Iterable, dict]] = None
+                ):
         """
         Execute SQL statement and return a ``sqlite3.Cursor``.
 
@@ -109,7 +109,7 @@ class Database:
             else:
                 self.__cursor.execute(sql)
         except sqlite3.Error as err:
-            #print(f"Error in SQL execute: {err.sqlite_errorname}")
+            # print(f"Error in SQL execute: {err.sqlite_errorname}")
             print('SQLite traceback: ')
             exc_type, exc_value, exc_tb = sys.exc_info()
             print(traceback.format_exception(exc_type, exc_value, exc_tb))
@@ -166,16 +166,28 @@ class Database:
         print(f"Database created.")
 
     def find_filenames_exact_match(self, filename: str, label: str = None):
-        self.find_filenames(
-            self.__sql_dictionary["find_filename_exact_match"],
-            [filename]
-        )
+        if label is None:
+            self.find_filenames(
+                self.__sql_dictionary["find_filename_exact_match"],
+                [filename]
+            )
+        else:
+            self.find_filenames(
+                self.__sql_dictionary["find_filename_exact_match_with_label"],
+                [filename, label]
+            )
 
     def find_filenames_like(self, search: str, label: str = None):
-        self.find_filenames(
-                            self.__sql_dictionary["find_filename_like"],
-                            [search]
-                            )
+        if label is None:
+            self.find_filenames(
+                self.__sql_dictionary["find_filename_like"],
+                [search]
+            )
+        else:
+            self.find_filenames(
+                self.__sql_dictionary["find_filename_like_with_label"],
+                [search, label]
+            )
 
     def find_filenames(self,
                        sql: str,
@@ -185,7 +197,7 @@ class Database:
         self.__vprint(f"filename: \"{parameters}\"")
         self.execute(sql,
                      parameters
-                    )
+                     )
         rows_found = 0
         select_result = self.fetch_all_results()
         for row in select_result:
@@ -198,7 +210,7 @@ class Database:
         self.__vprint(f"make: \"{make}\", model: \"{model}\", serial_number: \"{serial_number}\"")
         self.execute(self.__sql_dictionary["find_drive_id"],
                      (make, model, serial_number)
-                    )
+                     )
         drive_ids = []
         rows_found = 0
         select_result = self.fetch_all_results()
@@ -211,10 +223,11 @@ class Database:
 
     def insert_drive(self, make: str, model: str, serial_number: str, hostname: str):
         self.__vprint(f"SQL Query: \"{self.__sql_dictionary["insert_drive"]}\"")
-        self.__vprint(f"make: \"{make}\", model: \"{model}\", serial_number: \"{serial_number}\", hostname: \"{hostname}\"")
+        self.__vprint(
+            f"make: \"{make}\", model: \"{model}\", serial_number: \"{serial_number}\", hostname: \"{hostname}\"")
         self.execute(self.__sql_dictionary["insert_drive"],
                      (make, model, serial_number, hostname)
-                    )
+                     )
         drive_id = self.get_last_row_id()
         self.__vprint(f"New row driveid: \"{drive_id}\"")
         return drive_id
@@ -223,8 +236,8 @@ class Database:
         self.__vprint(f"SQL Query: \"{self.__sql_dictionary["find_filesystem_id"]}\"")
         self.__vprint(f"label: \"{label}\"")
         self.execute(self.__sql_dictionary["find_filesystem_id"],
-                     [label] # Use [] as a single parameter
-                    )
+                     [label]  # Use [] as a single parameter
+                     )
         filesystem_ids = []
         rows_found = 0
         select_result = self.fetch_all_results()
@@ -240,7 +253,7 @@ class Database:
         self.__vprint(f"label: \"{label}\", drive_id: \"{drive_id}\", date: \"{date}\"")
         self.execute(self.__sql_dictionary["insert_filesystem"],
                      (label, drive_id, date)
-                    )
+                     )
         filesystem_id = self.get_last_row_id()
         self.__vprint(f"New row filesystem_id: \"{filesystem_id}\"")
         return filesystem_id
@@ -249,43 +262,31 @@ class Database:
         self.__vprint(f"SQL Query: \"{self.__sql_dictionary["delete_filesystem"]}\"")
         self.__vprint(f"filesystem_id: \"{filesystem_id}\"")
         self.execute(self.__sql_dictionary["delete_filesystem"],
-                     [filesystem_id] # [] as a single parameter
+                     [filesystem_id]  # [] as a single parameter
                      )
 
     def delete_filesystem_listing_entries(self, filesystem_id: int):
         self.__vprint(f"SQL Query: \"{self.__sql_dictionary["delete_filesystem_entries"]}\"")
         self.__vprint(f"filesystem_id: \"{filesystem_id}\"")
         self.execute(self.__sql_dictionary["delete_filesystem_entries"],
-                     [filesystem_id] # [] as a single parameter
+                     [filesystem_id]  # [] as a single parameter
                      )
 
     def update_filesystem_date(self, filesystem_id: int, date: int):
         self.__vprint(f"SQL Query: \"{self.__sql_dictionary["update_filesystem"]}\"")
         self.__vprint(f"filesystem_id: \"{filesystem_id}\", date: \"{date}\"")
         self.execute(self.__sql_dictionary["update_filesystem"],
-                     (filesystem_id, date) # () as a multiple parameters
+                     (filesystem_id, date)  # () as a multiple parameters
                      )
 
     def empty_table(self, table_name: str):
         ## FIX ##
-        #self.execute("DELETE FROM ?;", [table_name]) # As a single parameter, we have to wrap it in []
-        #self.execute("DELETE FROM SQLITE_SEQUENCE WHERE name=?;", [table_name] )
+        # self.execute("DELETE FROM ?;", [table_name]) # As a single parameter, we have to wrap it in []
+        # self.execute("DELETE FROM SQLITE_SEQUENCE WHERE name=?;", [table_name] )
         # Commit changes to the database
-        #self.commit()
+        # self.commit()
         return
 
 ### Class Test ###
-#database = Database("I:\\FileProcessorDatabase\\database.sqlite")
-#print(f"sql_dictionary: {database.sql_dictionary}")
-
-
-
-
-
-
-
-
-
-
-
-
+# database = Database("I:\\FileProcessorDatabase\\database.sqlite")
+# print(f"sql_dictionary: {database.sql_dictionary}")

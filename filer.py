@@ -166,15 +166,19 @@ class Filer:
             self.database.create_database_structure()
 
         if args.subcommand == "find":
-            print(f"Finding filenames matching \"{args.filename}\" :")
+            print(f"Finding filenames matching \"{args.filename}\"", end="")
             if args.label is not None:
-                print(f"  Where label: {args.label}")
+                print(f" with label \"{args.label}\"")
+            else:
+                print(":")
             self.database.find_filenames_exact_match(args.filename, args.label)
 
         elif args.subcommand == "like":
-            print(f"Finding filenames like \"{args.search}\" :")
+            print(f"Finding filenames like \"{args.search}\"", end="")
             if args.label is not None:
-                print(f"  Where label: {args.label}")
+                print(f" with label \"{args.label}\"")
+            else:
+                print(":")
             self.database.find_filenames_like(args.search, args.label)
 
         elif args.subcommand == "vacuum":
