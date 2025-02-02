@@ -4,9 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Removed old debug output">
+    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Moved code handling different arguments into their own functions.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/filer.py" beforeDir="false" afterPath="$PROJECT_DIR$/filer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/system.py" beforeDir="false" afterPath="$PROJECT_DIR$/system.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/to_do.txt" beforeDir="false" afterPath="$PROJECT_DIR$/to_do.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -88,14 +90,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1736868367160</updated>
-    </task>
-    <task id="LOCAL-00030" summary="Added checks to see if optional argements are set before calling the setter functions">
-      <option name="closed" value="true" />
-      <created>1737400510871</created>
-      <option name="number" value="00030" />
-      <option name="presentableId" value="LOCAL-00030" />
-      <option name="project" value="LOCAL" />
-      <updated>1737400510871</updated>
     </task>
     <task id="LOCAL-00031" summary="Major edits to file_system_processors.py to make use of the Database class.&#10;Still not working">
       <option name="closed" value="true" />
@@ -481,7 +475,15 @@
       <option name="project" value="LOCAL" />
       <updated>1738513156617</updated>
     </task>
-    <option name="localTasksCounter" value="79" />
+    <task id="LOCAL-00079" summary="Moved code handling different arguments into their own functions.">
+      <option name="closed" value="true" />
+      <created>1738514366441</created>
+      <option name="number" value="00079" />
+      <option name="presentableId" value="LOCAL-00079" />
+      <option name="project" value="LOCAL" />
+      <updated>1738514366441</updated>
+    </task>
+    <option name="localTasksCounter" value="80" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -496,7 +498,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="System example working" />
     <MESSAGE value="Now works out which drive letter is on which drive.&#10;&#10;Skeleton for processing powershell output that are returned in lists rather than tables." />
     <MESSAGE value="Now lists mounted drive letters, together with their details" />
     <MESSAGE value="Added a storage size formatting function" />
@@ -521,6 +522,7 @@
     <MESSAGE value="Added partial code to allow finding files against particular labels" />
     <MESSAGE value="finding files against particular labels implemented" />
     <MESSAGE value="Removed old debug output" />
-    <option name="LAST_COMMIT_MESSAGE" value="Removed old debug output" />
+    <MESSAGE value="Moved code handling different arguments into their own functions." />
+    <option name="LAST_COMMIT_MESSAGE" value="Moved code handling different arguments into their own functions." />
   </component>
 </project>

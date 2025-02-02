@@ -27,11 +27,6 @@ import socket
 
 class Filer:
 
-    RESCAN: str = 'Rescan'
-    EXIT: str = 'Exit'
-    PROCEED: str = 'Proceed'
-    CHANGE_LABEL: str = 'Change'
-
     VOLUME_DICT_INDEX: int = 0
     LOGICAL_DICT_INDEX: int = 1
     PHYSICAL_DICT_INDEX: int = 2
@@ -106,6 +101,9 @@ class Filer:
 
     def interactive(self, args: []):
         print(f"Entering Interactive Mode ...")
+        self.process_drive(args)
+
+    def process_drive(self, args: []):
         system = System()
         temp_listing_filename = args.filename
 
@@ -131,10 +129,7 @@ class Filer:
             print("Matching Volumes to Drives ...")
             option_number = 1
             options = []
-            options_descriptions = []
-            options_results = []
             for volume_dictionary in volumes_array:
-                options.append(str(option_number))
                 volume_array_of_dicts = []
                 volume_array_of_dicts.append(volume_dictionary)
                 drive_letter = f'{volume_dictionary['DriveLetter']}:'
@@ -153,30 +148,23 @@ class Filer:
                         volume_info_line += f" / {logical_disk_dictionary['BusType']} {physical_disk_dictionary['MediaType']}: {logical_disk_dictionary['Manufacturer']}, {logical_disk_dictionary['Model']}, SN: {logical_disk_dictionary['SerialNumber']} ({logical_disk_dictionary['HealthStatus']}))"
                     else:
                         volume_info_line += ""
-                options_descriptions.append(volume_info_line)
-                options_results.append(volume_array_of_dicts)
+                option = [str(option_number), volume_info_line, volume_array_of_dicts]
+                options.append(option)
                 option_number += 1
 
             # Add Rescan option
-            options.append('R')
-            options_descriptions.append(self.RESCAN)
-            options_results.append(self.RESCAN)
-            option_number += 1
+            options.append(System.OPTION_RESCAN)
             # Add Exit option
-            options.append('E')
-            options_descriptions.append(self.EXIT)
-            options_results.append(self.EXIT)
-            option_number += 1
+            options.append(System.OPTION_EXIT)
 
-            result_array = System.select_option("Please select a volume to process?", options, options_descriptions,
-                                                options_results)
+            result_array = System.select_option("Please select a volume to process?", options)
             # Detect result_array type as we may have an exit command, or a data structure we've been asked to process
             if isinstance(result_array, str):
                 # Test if result is a string first as strings are technically arrays as well
                 # print(f"String result: {result_array}")
-                if result_array == self.RESCAN:
+                if result_array == System.OPTION_RESCAN_CHAR:
                     continue  # Skip the rest of the code and rescan at the beginning of the WHILE loop
-                elif result_array == self.EXIT:
+                elif result_array == System.OPTION_EXIT_CHAR:
                     print("Exiting ...")
                     exit()
                 else:
@@ -208,10 +196,8 @@ class Filer:
                     print(f"  Model : {model}")
                     print(f"  S / N : {serial_number}")
                     print(f"  Host  : {hostname}")
-                    result = System.select_option("Please select one of the following options:", ["P", "C", "R", "E"],
-                                                  ["Proceed", "Change Label", self.RESCAN, self.EXIT],
-                                                  [self.PROCEED, self.CHANGE_LABEL, self.RESCAN, self.EXIT])
-                    if result == self.PROCEED:
+                    result = System.select_option("Please select one of the following options:", [System.OPTION_PROCEED, System.OPTION_CHANGE_LABEL, System.OPTION_RESCAN, System.OPTION_EXIT])
+                    if result == System.OPTION_PROCEED_CHAR:
                         print(f"Processing Volume {drive_letter}: ...")
                         output = system.create_path_listing(drive_letter + ':\\', temp_listing_filename)
                         # print(f"create_path_listing output: {output}")
@@ -235,12 +221,12 @@ class Filer:
                             print(f"Volume {drive_letter}: Processed Successfully...")
                         break
 
-                    elif result == self.CHANGE_LABEL:
+                    elif result == System.OPTION_CHANGE_LABEL_CHAR:
                         print(f"Current Label: {label}")
                         label = input("Please enter a new label: ")
-                    elif result == self.RESCAN:
+                    elif result == System.OPTION_RESCAN_CHAR:
                         continue  # Skip the rest of the code and rescan at the beginning of the WHILE loop
-                    elif result == self.EXIT:
+                    elif result == System.OPTION_EXIT_CHAR:
                         print("Exiting ...")
                         break
                     else:

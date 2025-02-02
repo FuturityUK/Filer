@@ -11,7 +11,8 @@ partition volume
 Serial identifier
 
 - Temp Listing File
-  - Remove the file when finished with it
+  - Remove the temporary listing file if found before creating the listing
+  - Remove the temporary listing file when finished with it
 
 - Exclude directories option
 

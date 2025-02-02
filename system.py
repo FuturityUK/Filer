@@ -211,6 +211,20 @@ class Linux:
 class System:
     """ Class to execute System commands """
 
+    OPTION_CHAR_INDEX: int = 0
+    OPTION_DESCRIPTION_INDEX: int = 1
+    OPTION_RESULT_INDEX: int = 2
+
+    OPTION_RESCAN_CHAR: str = 'R'
+    OPTION_EXIT_CHAR: str = 'E'
+    OPTION_PROCEED_CHAR: str = 'P'
+    OPTION_CHANGE_LABEL_CHAR: str = 'C'
+
+    OPTION_RESCAN: [] = [OPTION_RESCAN_CHAR, 'Rescan', OPTION_RESCAN_CHAR]
+    OPTION_EXIT: [] = [OPTION_EXIT_CHAR, 'Exit', OPTION_EXIT_CHAR]
+    OPTION_PROCEED: [] = [OPTION_PROCEED_CHAR, 'Proceed', OPTION_PROCEED_CHAR]
+    OPTION_CHANGE_LABEL: [] = [OPTION_CHANGE_LABEL_CHAR, 'Change', OPTION_CHANGE_LABEL_CHAR]
+
     def __init__(self):
         self.windows = self.is_windows()
         if self.windows:
@@ -277,11 +291,9 @@ class System:
 
     def does_path_listing_exit(self, listing_filename: str):
         if os.path.isfile(listing_filename):
-            selection = self.select_option(f"Temporary listing file exits. Do you want to delete it and continue? ")
-            print(f"selection: {selection}")
-
-
-
+            print(f"{listing_filename} exists")
+        else:
+            print(f"{listing_filename} does not exist")
 
     @staticmethod
     def is_windows():
@@ -381,39 +393,26 @@ class System:
         }
 
     @staticmethod
-    def select_option(message: str, options=None, options_descriptions=None, options_results=None):
-        # print(f"length options: {len(options)}")
-        # print(f"length options_descriptions: {len(options_descriptions)}")
-
+    def select_option(message: str, options: [] = None):
         if options is None:
-            options = ['Y', 'N']
-        if options_descriptions is None:
-            options_descriptions = []
-        if options_results is None:
-            options_results = []
+            options = [['Y', 'Yes', True], ['N', 'No', False]]
+
         print(f"{message}")
+
         internal_selection = ""
         while internal_selection not in options or internal_selection.lower() not in options:
-            if options_descriptions is not None and len(options_descriptions) > 0:
-                if len(options) != len(options_descriptions):
-                    print("the size of the options and the options descriptions don't match")
-                    print("Exiting...")
-                    exit(2)
-                else:
-                    for index, option in enumerate(options):
-                        print(f"{option}) - {options_descriptions[index]}")
-            internal_selection = input(f"Options: {options}? ")
-            if options_results is not None and len(options_results) > 0:
-                # If we have been provided results, return the result matching the internal_selection
-                if len(options) != len(options_results):
-                    print("the size of the options and the options results don't match")
-                    print("Exiting...")
-                    exit(2)
-                else:
-                    for index, option in enumerate(options):
-                        # print(f"{internal_selection.lower()} ?? {option.lower()}")
-                        if internal_selection.lower() == option.lower():
-                            return options_results[index]
+            internal_selections=[]
+            for index, option in enumerate(options):
+                print(f"{option[System.OPTION_CHAR_INDEX]}) - {option[System.OPTION_DESCRIPTION_INDEX]}")
+                internal_selections.append(option[System.OPTION_CHAR_INDEX])
+            internal_selection = input(f"Options: {internal_selections}? ")
+            # If we have been provided results, return the result matching the internal_selection
+            for index, option in enumerate(options):
+                # print(f"{internal_selection.lower()} ?? {option.lower()}")
+                if internal_selection.lower() == option[System.OPTION_CHAR_INDEX].lower():
+                    # Return the result for this selection
+                    return option[System.OPTION_RESULT_INDEX]
+        # We couldn't find a result for this selection, so return the selection itself
         return internal_selection
 
 if __name__ == "__main__":
