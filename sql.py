@@ -69,10 +69,17 @@ class SQLDictionary:
                 WHERE Filename = ?
             '''
 
+        #self.sql_dictionary["find_filename_like"] = '''
+        #        SELECT Fullname
+        #        FROM FileSystemEntries
+        #        WHERE Filename LIKE ?
+        #    '''
+
         self.sql_dictionary["find_filename_like"] = '''
-                SELECT Fullname
-                FROM FileSystemEntries
-                WHERE Filename LIKE ?
+                SELECT fse.Fullname, fs.Label
+                FROM FileSystemEntries AS fse, FileSystems AS fs
+                WHERE fse.Filename LIKE ? AND
+                fse.FileSystemID = fs.FileSystemID;
             '''
 
         self.sql_dictionary["find_drive_id"] = '''

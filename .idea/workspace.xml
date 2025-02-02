@@ -4,8 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Removed the Vacuum.bt file">
+    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Fixed temp listing filename to : listing.fwf">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sql.py" beforeDir="false" afterPath="$PROJECT_DIR$/sql.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/system.py" beforeDir="false" afterPath="$PROJECT_DIR$/system.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -87,30 +89,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1736868367160</updated>
-    </task>
-    <task id="LOCAL-00021" summary="Added a placeholder for the &quot;import&quot; subcommand">
-      <option name="closed" value="true" />
-      <created>1737375641942</created>
-      <option name="number" value="00021" />
-      <option name="presentableId" value="LOCAL-00021" />
-      <option name="project" value="LOCAL" />
-      <updated>1737375641942</updated>
-    </task>
-    <task id="LOCAL-00022" summary="Added a placeholder for the &quot;reset&quot; subcommand">
-      <option name="closed" value="true" />
-      <created>1737375746126</created>
-      <option name="number" value="00022" />
-      <option name="presentableId" value="LOCAL-00022" />
-      <option name="project" value="LOCAL" />
-      <updated>1737375746126</updated>
-    </task>
-    <task id="LOCAL-00023" summary="Changes to workspace.xml">
-      <option name="closed" value="true" />
-      <created>1737376176298</created>
-      <option name="number" value="00023" />
-      <option name="presentableId" value="LOCAL-00023" />
-      <option name="project" value="LOCAL" />
-      <updated>1737376176298</updated>
     </task>
     <task id="LOCAL-00024" summary="Added Database indexes">
       <option name="closed" value="true" />
@@ -480,7 +458,31 @@
       <option name="project" value="LOCAL" />
       <updated>1738496457361</updated>
     </task>
-    <option name="localTasksCounter" value="70" />
+    <task id="LOCAL-00070" summary="Fixed database directory checking if it exists or not.&#10;Fixed the &quot;like&quot; subcommand.">
+      <option name="closed" value="true" />
+      <created>1738497514159</created>
+      <option name="number" value="00070" />
+      <option name="presentableId" value="LOCAL-00070" />
+      <option name="project" value="LOCAL" />
+      <updated>1738497514160</updated>
+    </task>
+    <task id="LOCAL-00071" summary="Added task to add &quot;exclude&quot; functionality.">
+      <option name="closed" value="true" />
+      <created>1738497568310</created>
+      <option name="number" value="00071" />
+      <option name="presentableId" value="LOCAL-00071" />
+      <option name="project" value="LOCAL" />
+      <updated>1738497568310</updated>
+    </task>
+    <task id="LOCAL-00072" summary="Fixed temp listing filename to : listing.fwf">
+      <option name="closed" value="true" />
+      <created>1738497775445</created>
+      <option name="number" value="00072" />
+      <option name="presentableId" value="LOCAL-00072" />
+      <option name="project" value="LOCAL" />
+      <updated>1738497775445</updated>
+    </task>
+    <option name="localTasksCounter" value="73" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -495,9 +497,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Renamed powershell.py to system.py" />
-    <MESSAGE value="Added code to detect system type" />
-    <MESSAGE value="Added OS detection methods" />
     <MESSAGE value="More OS Functions" />
     <MESSAGE value="Code to stop results from being truncated" />
     <MESSAGE value="added missing code" />
@@ -520,6 +519,9 @@
     <MESSAGE value="If the user tries to process a listing with the same label, they are given the option to replace the listing, or exit the processing of this listing." />
     <MESSAGE value="Started work on System.does_path_listing_exit() to check if a file exists and give the user the option to delete it." />
     <MESSAGE value="Removed the Vacuum.bt file" />
-    <option name="LAST_COMMIT_MESSAGE" value="Removed the Vacuum.bt file" />
+    <MESSAGE value="Fixed database directory checking if it exists or not.&#10;Fixed the &quot;like&quot; subcommand." />
+    <MESSAGE value="Added task to add &quot;exclude&quot; functionality." />
+    <MESSAGE value="Fixed temp listing filename to : listing.fwf" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed temp listing filename to : listing.fwf" />
   </component>
 </project>
