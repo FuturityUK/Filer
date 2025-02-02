@@ -165,24 +165,26 @@ class Database:
         self.commit()
         print(f"Database created.")
 
-    def find_filename_exact_match(self, filename: str):
-        self.__vprint(f"SQL Query: \"{self.__sql_dictionary["find_filename_exact_match"]}\"")
-        self.__vprint(f"filename: \"{filename}\"")
-        self.execute(self.__sql_dictionary["find_filename_exact_match"], [filename]
-            )
-        rows_found = 0
-        select_result = self.fetch_all_results()
-        for row in select_result:
-            print(f"{row[1]}, {row[0]}")
-            rows_found += 1
-        print(f"{rows_found} results found")
+    def find_filenames_exact_match(self, filename: str, label: str = None):
+        self.find_filenames(
+            self.__sql_dictionary["find_filename_exact_match"],
+            [filename]
+        )
 
-    def find_filename_like(self, search: str):
-        self.__vprint(f"SQL Query: \"{self.__sql_dictionary["find_filename_like"]}\"")
-        self.__vprint(f"filename: \"{search}\"")
+    def find_filenames_like(self, search: str, label: str = None):
+        self.find_filenames(
+                            self.__sql_dictionary["find_filename_like"],
+                            [search]
+                            )
 
-        self.execute(self.__sql_dictionary["find_filename_like"],
-                     [search]
+    def find_filenames(self,
+                       sql: str,
+                       parameters: Optional[Union[Iterable, dict]] = None):
+        result_array = []
+        self.__vprint(f"SQL Query: \"{sql}\"")
+        self.__vprint(f"filename: \"{parameters}\"")
+        self.execute(sql,
+                     parameters
                     )
         rows_found = 0
         select_result = self.fetch_all_results()

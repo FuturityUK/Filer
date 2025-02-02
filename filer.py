@@ -81,12 +81,14 @@ class Filer:
         parser_find = subparsers.add_parser('find',
                                             help='find help',
                                             description='Find files exactly matching (case sensitive) the provided filename. (Faster than "like")')
+        parser_find.add_argument("-l", "--label", default=None, help="drive listing's label")
         parser_find.add_argument("filename", help="filename to be found.")
         self.add_db_and_verbose_to_parser(parser_find)
 
         parser_like = subparsers.add_parser('like',
                                             help='like help',
                                             description='Find files with filenames like the provided search (case insensitive). "%xyz%" = filenames containing "xyz". "xyz%" = filenames starting with xyz. "%xyz" = filenames ending with xyz. (Slower than "find")')
+        parser_like.add_argument("-l", "--label", default=None, help="drive listing's label")
         parser_like.add_argument("search", help="search string to be found.")
         self.add_db_and_verbose_to_parser(parser_like)
 
@@ -106,7 +108,7 @@ class Filer:
         # create the parser for the "interactive" subcommand
         parser_interactive = subparsers.add_parser('interactive', help='interactive help')
         parser_interactive.add_argument("-l", "--listing_filename", default="listing.fwf", help="filename (including path) of the temporary created listing file. Default: '"+self.DEFAULT_TEMP_LISTING_FILE+"'")
-        parser_interactive.add_argument("-t", "--test", action="store_true", help="test input file without modifying the database")
+        #parser_interactive.add_argument("-t", "--test", action="store_true", help="test input file without modifying the database")
         self.add_db_and_verbose_to_parser(parser_interactive)
 
         # create the parser for the "vacuum" subcommand
@@ -165,11 +167,15 @@ class Filer:
 
         if args.subcommand == "find":
             print(f"Finding filenames matching \"{args.filename}\" :")
-            self.database.find_filename_exact_match(args.filename)
+            if args.label is not None:
+                print(f"  Where label: {args.label}")
+            self.database.find_filenames_exact_match(args.filename, args.label)
 
         elif args.subcommand == "like":
             print(f"Finding filenames like \"{args.search}\" :")
-            self.database.find_filename_like(args.search)
+            if args.label is not None:
+                print(f"  Where label: {args.label}")
+            self.database.find_filenames_like(args.search, args.label)
 
         elif args.subcommand == "vacuum":
             print(f"Vacuuming database. This may take a while depending on the your database size.")
@@ -185,8 +191,8 @@ class Filer:
 
             if args.verbose is not None:
                 powershell_filesystem_listing.set_verbose(args.verbose)
-            if args.test is not None:
-                powershell_filesystem_listing.set_test(args.test)
+            #if args.test is not None:
+            #    powershell_filesystem_listing.set_test(args.test)
             if args.make is not None:
                 powershell_filesystem_listing.set_make(args.make)
             if args.model is not None:
