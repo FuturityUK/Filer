@@ -54,6 +54,200 @@ class Filer:
         # Exit normally
         exit()
 
+    def find(self, args: []):
+        print(f"Finding filenames matching \"{args.filename}\"", end="")
+        if args.label is not None:
+            print(f" with label \"{args.label}\"")
+        else:
+            print(":")
+        self.database.find_filenames_exact_match(args.filename, args.label)
+
+    def like(self, args: []):
+        print(f"Finding filenames like \"{args.search}\"", end="")
+        if args.label is not None:
+            print(f" with label \"{args.label}\"")
+        else:
+            print(":")
+        self.database.find_filenames_like(args.search, args.label)
+
+    def vacuum(self):
+        print(f"Vacuuming database. This may take a while depending on the your database size.")
+        self.database.vacuum()
+        print(f"Vacuuming finished.")
+
+    def reset(self, args: []):
+        print(f"Not implemented yet")
+
+    def import_listing(self, args: []):
+        print(f"Import subcommand: Needs Further Testing !!!")
+        powershell_filesystem_listing = PowerShellFilesystemListing(self.database, args.label, args.filename)
+
+        if args.verbose is not None:
+            powershell_filesystem_listing.set_verbose(args.verbose)
+        if args.test is not None:
+            powershell_filesystem_listing.set_test(args.test)
+        if args.make is not None:
+            powershell_filesystem_listing.set_make(args.make)
+        if args.model is not None:
+            powershell_filesystem_listing.set_model(args.model)
+        if args.serial is not None:
+            powershell_filesystem_listing.set_serial_number(args.serial)
+        if args.combined is not None:
+            powershell_filesystem_listing.set_combined(args.combined)
+        if args.hostname is not None:
+            powershell_filesystem_listing.set_hostname(args.hostname)
+        if args.prefix is not None:
+            powershell_filesystem_listing.set_prefix(args.prefix)
+
+        powershell_filesystem_listing.set_memory_stats(self.memory_stats)
+        powershell_filesystem_listing.save_to_database()
+
+        powershell_filesystem_listing.import_listing()
+
+    def interactive(self, args: []):
+        print(f"Entering Interactive Mode ...")
+        system = System()
+        temp_listing_filename = args.filename
+
+        while True:
+            print("Finding Logical Drives ...")
+            logical_disk_array = system.get_logical_drives_details()
+            # display_array_of_dictionaries(logical_disk_array)
+            # print(f"logical_disk_array: {logical_disk_array}")
+
+            print("Finding Physical Drives ...")
+            physical_disk_array = system.get_physical_drives_details()
+            # print(f"physical_disk_array: {physical_disk_array}")
+
+            # print("Finding Partitions ...")
+            # partitions_array = system.get_partition_details()
+            # print(f"physical_disk_array: {partitions_array}")
+
+            print("Finding Volumes ...")
+            volumes_array = system.get_volumes(True)
+            # print(f"volumes: {volumes_array}")
+            # display_array_of_dictionaries(volumes_array)
+            # display_diff_dictionaries(volumes[0], volumes[1])
+            print("Matching Volumes to Drives ...")
+            option_number = 1
+            options = []
+            options_descriptions = []
+            options_results = []
+            for volume_dictionary in volumes_array:
+                options.append(str(option_number))
+                volume_array_of_dicts = []
+                volume_array_of_dicts.append(volume_dictionary)
+                drive_letter = f'{volume_dictionary['DriveLetter']}:'
+                disk_number = system.get_disk_number_for_drive_letter(drive_letter)
+                # print(f"{drive_letter} is on drive {disk_number}")
+
+                volume_info_line = f"{volume_dictionary['DriveLetter']}: \"{volume_dictionary['FileSystemLabel']}\" {Format.format_storage_size(int(volume_dictionary['Size']), True, 1)}, {volume_dictionary['FileSystemType']} ({volume_dictionary['HealthStatus']})"
+                if len(disk_number.strip()) != 0:
+                    logical_disk_dictionary = Data.find_dictionary_in_array(logical_disk_array, "DiskNumber",
+                                                                            disk_number)
+                    volume_array_of_dicts.append(logical_disk_dictionary)
+                    physical_disk_dictionary = Data.find_dictionary_in_array(physical_disk_array, "DeviceId",
+                                                                             disk_number)
+                    volume_array_of_dicts.append(physical_disk_dictionary)
+                    if logical_disk_dictionary is not None:
+                        volume_info_line += f" / {logical_disk_dictionary['BusType']} {physical_disk_dictionary['MediaType']}: {logical_disk_dictionary['Manufacturer']}, {logical_disk_dictionary['Model']}, SN: {logical_disk_dictionary['SerialNumber']} ({logical_disk_dictionary['HealthStatus']}))"
+                    else:
+                        volume_info_line += ""
+                options_descriptions.append(volume_info_line)
+                options_results.append(volume_array_of_dicts)
+                option_number += 1
+
+            # Add Rescan option
+            options.append('R')
+            options_descriptions.append(self.RESCAN)
+            options_results.append(self.RESCAN)
+            option_number += 1
+            # Add Exit option
+            options.append('E')
+            options_descriptions.append(self.EXIT)
+            options_results.append(self.EXIT)
+            option_number += 1
+
+            result_array = System.select_option("Please select a volume to process?", options, options_descriptions,
+                                                options_results)
+            # Detect result_array type as we may have an exit command, or a data structure we've been asked to process
+            if isinstance(result_array, str):
+                # Test if result is a string first as strings are technically arrays as well
+                # print(f"String result: {result_array}")
+                if result_array == self.RESCAN:
+                    continue  # Skip the rest of the code and rescan at the beginning of the WHILE loop
+                elif result_array == self.EXIT:
+                    print("Exiting ...")
+                    exit()
+                else:
+                    print("Invalid result")
+                    print("Exiting ...")
+                    break  # Leave the interactive loop
+            elif isinstance(result_array, collections.abc.Sequence):
+                # display_array_of_dictionaries(result_array)
+                result_array_length = len(result_array)
+                volume_dictionary = result_array[self.VOLUME_DICT_INDEX]
+                drive_letter = volume_dictionary['DriveLetter']
+                label = volume_dictionary['FileSystemLabel']
+                if result_array_length > 1:
+                    logical_disk_dictionary = result_array[self.LOGICAL_DICT_INDEX]
+                    make = logical_disk_dictionary['Manufacturer']
+                    model = logical_disk_dictionary['Model']
+                    serial_number = logical_disk_dictionary['SerialNumber']
+                else:
+                    make = ""
+                    model = ""
+                    serial_number = ""
+                hostname = socket.gethostname()
+
+                while True:
+                    print("Information to be saved into the database:")
+                    print(f"  Drive : {drive_letter}:")
+                    print(f"  Label : {label}")
+                    print(f"  Make  : {make}")
+                    print(f"  Model : {model}")
+                    print(f"  S / N : {serial_number}")
+                    print(f"  Host  : {hostname}")
+                    result = System.select_option("Please select one of the following options:", ["P", "C", "R", "E"],
+                                                  ["Proceed", "Change Label", self.RESCAN, self.EXIT],
+                                                  [self.PROCEED, self.CHANGE_LABEL, self.RESCAN, self.EXIT])
+                    if result == self.PROCEED:
+                        print(f"Processing Volume {drive_letter}: ...")
+                        output = system.create_path_listing(drive_letter + ':\\', temp_listing_filename)
+                        # print(f"create_path_listing output: {output}")
+                        powershell_filesystem_listing = PowerShellFilesystemListing(self.database, label,
+                                                                                    temp_listing_filename)
+                        if args.verbose is not None:
+                            powershell_filesystem_listing.set_verbose(args.verbose)
+                        if args.test is not None:
+                            powershell_filesystem_listing.set_test(args.test)
+
+                        powershell_filesystem_listing.set_make(make)
+                        powershell_filesystem_listing.set_model(model)
+                        powershell_filesystem_listing.set_serial_number(serial_number)
+                        # powershell_filesystem_listing.set_combined(args.combined)
+                        powershell_filesystem_listing.set_hostname(hostname)
+                        # powershell_filesystem_listing.set_prefix(args.prefix)
+                        powershell_filesystem_listing.set_memory_stats(self.memory_stats)
+                        powershell_filesystem_listing.save_to_database()
+                        import_listing_success = powershell_filesystem_listing.import_listing()
+                        if import_listing_success:
+                            print(f"Volume {drive_letter}: Processed Successfully...")
+                        break
+
+                    elif result == self.CHANGE_LABEL:
+                        print(f"Current Label: {label}")
+                        label = input("Please enter a new label: ")
+                    elif result == self.RESCAN:
+                        continue  # Skip the rest of the code and rescan at the beginning of the WHILE loop
+                    elif result == self.EXIT:
+                        print("Exiting ...")
+                        break
+                    else:
+                        print("Invalid result")
+
+            print("Rescanning ...")
+
     @staticmethod
     def add_db_and_verbose_to_parser(parser):
         parser.add_argument("-d", "--db", default="database.sqlite",
@@ -165,192 +359,24 @@ class Filer:
             self.database.create_database_structure()
 
         if args.subcommand == "find":
-            print(f"Finding filenames matching \"{args.filename}\"", end="")
-            if args.label is not None:
-                print(f" with label \"{args.label}\"")
-            else:
-                print(":")
-            self.database.find_filenames_exact_match(args.filename, args.label)
+            self.find(args)
 
         elif args.subcommand == "like":
-            print(f"Finding filenames like \"{args.search}\"", end="")
-            if args.label is not None:
-                print(f" with label \"{args.label}\"")
-            else:
-                print(":")
-            self.database.find_filenames_like(args.search, args.label)
+            self.like(args)
 
         elif args.subcommand == "vacuum":
-            print(f"Vacuuming database. This may take a while depending on the your database size.")
-            self.database.vacuum()
-            print(f"Vacuuming finished.")
+            self.vacuum()
 
         elif args.subcommand == "reset":
-            print(f"Not implemented yet")
+            self.reset(args)
 
         elif args.subcommand == "import":
-            print(f"Import subcommand: Test !!!")
-            powershell_filesystem_listing = PowerShellFilesystemListing(self.database, args.label, args.filename)
-
-            if args.verbose is not None:
-                powershell_filesystem_listing.set_verbose(args.verbose)
-            if args.test is not None:
-                powershell_filesystem_listing.set_test(args.test)
-            if args.make is not None:
-                powershell_filesystem_listing.set_make(args.make)
-            if args.model is not None:
-                powershell_filesystem_listing.set_model(args.model)
-            if args.serial is not None:
-                powershell_filesystem_listing.set_serial_number(args.serial)
-            if args.combined is not None:
-                powershell_filesystem_listing.set_combined(args.combined)
-            if args.hostname is not None:
-                powershell_filesystem_listing.set_hostname(args.hostname)
-            if args.prefix is not None:
-                powershell_filesystem_listing.set_prefix(args.prefix)
-
-            powershell_filesystem_listing.set_memory_stats(self.memory_stats)
-            powershell_filesystem_listing.save_to_database()
-
-            powershell_filesystem_listing.import_listing()
+            self.import_listing(args)
 
         elif args.subcommand == 'interactive':
-            system = System()
-            temp_listing_filename = args.filename
+            self.interactive(args)
 
-            while True:
-                print("Finding Logical Drives ...")
-                logical_disk_array = system.get_logical_drives_details()
-                #display_array_of_dictionaries(logical_disk_array)
-                #print(f"logical_disk_array: {logical_disk_array}")
-
-                print("Finding Physical Drives ...")
-                physical_disk_array = system.get_physical_drives_details()
-                #print(f"physical_disk_array: {physical_disk_array}")
-
-                #print("Finding Partitions ...")
-                #partitions_array = system.get_partition_details()
-                #print(f"physical_disk_array: {partitions_array}")
-
-                print("Finding Volumes ...")
-                volumes_array = system.get_volumes(True)
-                #print(f"volumes: {volumes_array}")
-                #display_array_of_dictionaries(volumes_array)
-                #display_diff_dictionaries(volumes[0], volumes[1])
-                print("Matching Volumes to Drives ...")
-                option_number = 1
-                options = []
-                options_descriptions = []
-                options_results = []
-                for volume_dictionary in volumes_array:
-                    options.append(str(option_number))
-                    volume_array_of_dicts = []
-                    volume_array_of_dicts.append(volume_dictionary)
-                    drive_letter = f'{volume_dictionary['DriveLetter']}:'
-                    disk_number = system.get_disk_number_for_drive_letter(drive_letter)
-                    #print(f"{drive_letter} is on drive {disk_number}")
-
-                    volume_info_line = f"{volume_dictionary['DriveLetter']}: \"{volume_dictionary['FileSystemLabel']}\" {Format.format_storage_size(int(volume_dictionary['Size']), True, 1)}, {volume_dictionary['FileSystemType']} ({volume_dictionary['HealthStatus']})"
-                    if len(disk_number.strip()) != 0:
-                        logical_disk_dictionary = Data.find_dictionary_in_array(logical_disk_array, "DiskNumber", disk_number)
-                        volume_array_of_dicts.append(logical_disk_dictionary)
-                        physical_disk_dictionary = Data.find_dictionary_in_array(physical_disk_array, "DeviceId", disk_number)
-                        volume_array_of_dicts.append(physical_disk_dictionary)
-                        if logical_disk_dictionary is not None:
-                            volume_info_line += f" / {logical_disk_dictionary['BusType']} {physical_disk_dictionary['MediaType']}: {logical_disk_dictionary['Manufacturer']}, {logical_disk_dictionary['Model']}, SN: {logical_disk_dictionary['SerialNumber']} ({logical_disk_dictionary['HealthStatus']}))"
-                        else:
-                            volume_info_line += ""
-                    options_descriptions.append(volume_info_line)
-                    options_results.append(volume_array_of_dicts)
-                    option_number += 1
-
-                # Add Rescan option
-                options.append('R')
-                options_descriptions.append(self.RESCAN)
-                options_results.append(self.RESCAN)
-                option_number += 1
-                # Add Exit option
-                options.append('E')
-                options_descriptions.append(self.EXIT)
-                options_results.append(self.EXIT)
-                option_number += 1
-
-                result_array = System.select_option("Please select a volume to process?", options, options_descriptions, options_results)
-                # Detect result_array type as we may have an exit command, or a data structure we've been asked to process
-                if isinstance(result_array, str):
-                    # Test if result is a string first as strings are technically arrays as well
-                    #print(f"String result: {result_array}")
-                    if result_array == self.RESCAN:
-                        continue # Skip the rest of the code and rescan at the beginning of the WHILE loop
-                    elif result_array == self.EXIT:
-                        print("Exiting ...")
-                        exit()
-                    else:
-                        print("Invalid result")
-                        print("Exiting ...")
-                        break # Leave the interactive loop
-                elif isinstance(result_array, collections.abc.Sequence):
-                    #display_array_of_dictionaries(result_array)
-                    result_array_length = len(result_array)
-                    volume_dictionary = result_array[self.VOLUME_DICT_INDEX]
-                    drive_letter = volume_dictionary['DriveLetter']
-                    label = volume_dictionary['FileSystemLabel']
-                    if result_array_length > 1:
-                        logical_disk_dictionary = result_array[self.LOGICAL_DICT_INDEX]
-                        make = logical_disk_dictionary['Manufacturer']
-                        model = logical_disk_dictionary['Model']
-                        serial_number = logical_disk_dictionary['SerialNumber']
-                    else:
-                        make = ""
-                        model = ""
-                        serial_number = ""
-                    hostname = socket.gethostname()
-
-                    while True:
-                        print("Information to be saved into the database:")
-                        print(f"  Drive : {drive_letter}:")
-                        print(f"  Label : {label}")
-                        print(f"  Make  : {make}")
-                        print(f"  Model : {model}")
-                        print(f"  S / N : {serial_number}")
-                        print(f"  Host  : {hostname}")
-                        result = System.select_option("Please select one of the following options:", ["P", "C", "R", "E"], ["Proceed", "Change Label", self.RESCAN, self.EXIT], [self.PROCEED, self.CHANGE_LABEL, self.RESCAN, self.EXIT])
-                        if result == self.PROCEED:
-                            print(f"Processing Volume {drive_letter}: ...")
-                            output = system.create_path_listing(drive_letter + ':\\', temp_listing_filename)
-                            #print(f"create_path_listing output: {output}")
-                            powershell_filesystem_listing = PowerShellFilesystemListing(self.database, label,temp_listing_filename)
-                            if args.verbose is not None:
-                                powershell_filesystem_listing.set_verbose(args.verbose)
-                            if args.test is not None:
-                                powershell_filesystem_listing.set_test(args.test)
-
-                            powershell_filesystem_listing.set_make(make)
-                            powershell_filesystem_listing.set_model(model)
-                            powershell_filesystem_listing.set_serial_number(serial_number)
-                            #powershell_filesystem_listing.set_combined(args.combined)
-                            powershell_filesystem_listing.set_hostname(hostname)
-                            #powershell_filesystem_listing.set_prefix(args.prefix)
-                            powershell_filesystem_listing.set_memory_stats(self.memory_stats)
-                            powershell_filesystem_listing.save_to_database()
-                            import_listing_success = powershell_filesystem_listing.import_listing()
-                            if import_listing_success:
-                                print(f"Volume {drive_letter}: Processed Successfully...")
-                            break
-
-                        elif result == self.CHANGE_LABEL:
-                            print(f"Current Label: {label}")
-                            label = input("Please enter a new label: ")
-                        elif result == self.RESCAN:
-                            continue # Skip the rest of the code and rescan at the beginning of the WHILE loop
-                        elif result == self.EXIT:
-                            print("Exiting ...")
-                            break
-                        else:
-                            print("Invalid result")
-
-                print("Rescanning ...")
-
+        # Clean up and exit
         self.clean_up_and_quit()
 
 if __name__ == "__main__":
