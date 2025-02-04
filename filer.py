@@ -249,57 +249,10 @@ class Filer:
         parser=argparse.ArgumentParser(
         #    prog='Filer',
         #    epilog='Text at the bottom of help',
-            description="Filer - File System Manager")
-
-        subparsers = parser.add_subparsers(title='subcommands',
-                                           description='valid subcommands',
-                                           required=True,
-                                           dest='subcommand',
-                                           help='additional help')
-
-        parser_find = subparsers.add_parser('find',
-                                            help='find help',
-                                            description='Find files exactly matching (case sensitive) the provided filename. (Faster than "like")')
-        parser_find.add_argument("-l", "--label", default=None, help="drive listing's label")
-        parser_find.add_argument("filename", help="filename to be found.")
-        self.add_db_and_verbose_to_parser(parser_find)
-
-        parser_like = subparsers.add_parser('like',
-                                            help='like help',
-                                            description='Find files with filenames like the provided search (case insensitive). "%xyz%" = filenames containing "xyz". "xyz%" = filenames starting with xyz. "%xyz" = filenames ending with xyz. (Slower than "find")')
-        parser_like.add_argument("-l", "--label", default=None, help="drive listing's label")
-        parser_like.add_argument("search", help="search string to be found.")
-        self.add_db_and_verbose_to_parser(parser_like)
-
-        # create the parser for the "import" subcommand
-        parser_import = subparsers.add_parser('import', help='import help')
-        parser_import.add_argument("label", help="listings' unique label string")
-        parser_import.add_argument("filename", help="filename (including path) of the listing in fixed width format to be processed. See PowerShell example.")
-        parser_import.add_argument("-m", "--make", default=None, help="drive's make")
-        parser_import.add_argument("-o", "--model", default=None, help="drive's model")
-        parser_import.add_argument("-s", "--serial", default=None, help="drive's serial number")
-        parser_import.add_argument("-c", "--combined", default=None, help="drive's combined string in format \"make,model,serial-number\"")
-        parser_import.add_argument("-n", "--hostname", default=None, help="hostname of the machine containing the drive")
-        parser_import.add_argument("-p", "--prefix", default=None, help="prefix to remove from the start of each file's path. e.g. \"C:\\Users\\username\"")
-        parser_import.add_argument("-t", "--test", action="store_true", help="test input file without modifying the database")
-        self.add_db_and_verbose_to_parser(parser_import)
-
-        # create the parser for the "interactive" subcommand
-        parser_interactive = subparsers.add_parser('interactive', help='interactive help')
-        parser_interactive.add_argument("-f", "--filename", default="tmp_listing.fwf", help="filename (including path) that will be used when creating temporary listing files. Default: '"+self.DEFAULT_TEMP_LISTING_FILE+"'")
-        parser_interactive.add_argument("-t", "--test", action="store_true", help="test input file without modifying the database")
-        self.add_db_and_verbose_to_parser(parser_interactive)
-
-        # create the parser for the "vacuum" subcommand
-        parser_vacuum = subparsers.add_parser('vacuum',
-                                              help='vacuum help',
-                                              description='The VACUUM subcommand rebuilds the database file by reading the current file and writing the content into a new file. As a result it repacking it into a minimal amount of disk space and defragments it which ensures that each table and index is largely stored contiguously. Depending on the size of the database it can take some time to do perform.')
-        self.add_db_and_verbose_to_parser(parser_vacuum)
-
-        parser_reset = subparsers.add_parser('reset',
-                                              help='reset help',
-                                              description='Warning: Using the "reset" subcommand will delete the specified database and replace it with an empty one.')
-        self.add_db_and_verbose_to_parser(parser_reset)
+            description="Filer - File Cataloger")
+        parser.add_argument("-f", "--filename", default="tmp_listing.fwf", help="filename (including path) that will be used when creating temporary listing files. Default: '"+self.DEFAULT_TEMP_LISTING_FILE+"'")
+        parser.add_argument("-t", "--test", action="store_true", help="test input file without modifying the database")
+        self.add_db_and_verbose_to_parser(parser)
 
         args=parser.parse_args()
 
@@ -307,12 +260,6 @@ class Filer:
         #print(f"args: '{args}'")
         #print(f"subcommand: '{args.subcommand}'")
         #quit()
-
-        # These subcommands don't require a database
-        if args.subcommand == "version":
-            version = "0.1 Alpha"
-            print(f"Version: {version}")
-            quit()
 
         # The following subcommands all require a database
         database_filename = args.db
@@ -346,23 +293,7 @@ class Filer:
         if create_tables:
             self.database.create_database_structure()
 
-        if args.subcommand == "find":
-            self.find(args)
-
-        elif args.subcommand == "like":
-            self.like(args)
-
-        elif args.subcommand == "vacuum":
-            self.vacuum()
-
-        elif args.subcommand == "reset":
-            self.reset(args)
-
-        elif args.subcommand == "import":
-            self.import_listing(args)
-
-        elif args.subcommand == 'interactive':
-            self.interactive(args)
+        self.interactive(args)
 
         # Clean up and exit
         self.clean_up_and_quit()

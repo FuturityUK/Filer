@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Optimised the System.select_option() method.">
+    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Changed Version format instructions in the To Do file">
+      <change afterPath="$PROJECT_DIR$/f.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/filer.py" beforeDir="false" afterPath="$PROJECT_DIR$/filer.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -87,22 +89,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1736868367160</updated>
-    </task>
-    <task id="LOCAL-00032" summary="Updated To Do">
-      <option name="closed" value="true" />
-      <created>1737495934292</created>
-      <option name="number" value="00032" />
-      <option name="presentableId" value="LOCAL-00032" />
-      <option name="project" value="LOCAL" />
-      <updated>1737495934292</updated>
-    </task>
-    <task id="LOCAL-00033" summary="Added checks:&#10;Does the parent directory in the specified database file path exist? If not, error because the database can't be created until it exists.&#10;Does the Input Listing file exist?">
-      <option name="closed" value="true" />
-      <created>1737540525738</created>
-      <option name="number" value="00033" />
-      <option name="presentableId" value="LOCAL-00033" />
-      <option name="project" value="LOCAL" />
-      <updated>1737540525738</updated>
     </task>
     <task id="LOCAL-00034" summary="To Do updated">
       <option name="closed" value="true" />
@@ -480,7 +466,23 @@
       <option name="project" value="LOCAL" />
       <updated>1738517998835</updated>
     </task>
-    <option name="localTasksCounter" value="81" />
+    <task id="LOCAL-00081" summary="Changed the System.select_option() method's defaults for Y / N to provide True / False results.">
+      <option name="closed" value="true" />
+      <created>1738518389946</created>
+      <option name="number" value="00081" />
+      <option name="presentableId" value="LOCAL-00081" />
+      <option name="project" value="LOCAL" />
+      <updated>1738518389946</updated>
+    </task>
+    <task id="LOCAL-00082" summary="Changed Version format instructions in the To Do file">
+      <option name="closed" value="true" />
+      <created>1738518577424</created>
+      <option name="number" value="00082" />
+      <option name="presentableId" value="LOCAL-00082" />
+      <option name="project" value="LOCAL" />
+      <updated>1738518577424</updated>
+    </task>
+    <option name="localTasksCounter" value="83" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -495,8 +497,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Now lists mounted drive letters, together with their details" />
-    <MESSAGE value="Added a storage size formatting function" />
     <MESSAGE value="added a &quot;get_input&quot; function" />
     <MESSAGE value="&quot;get_input&quot; function returns the correct value for the selected options" />
     <MESSAGE value="system.py now finds the volume + drive info, and prompts the user to choose what they wish to do process, or rescan or exit." />
@@ -520,6 +520,8 @@
     <MESSAGE value="Removed old debug output" />
     <MESSAGE value="Moved code handling different arguments into their own functions." />
     <MESSAGE value="Optimised the System.select_option() method." />
-    <option name="LAST_COMMIT_MESSAGE" value="Optimised the System.select_option() method." />
+    <MESSAGE value="Changed the System.select_option() method's defaults for Y / N to provide True / False results." />
+    <MESSAGE value="Changed Version format instructions in the To Do file" />
+    <option name="LAST_COMMIT_MESSAGE" value="Changed Version format instructions in the To Do file" />
   </component>
 </project>
