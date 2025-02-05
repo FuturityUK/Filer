@@ -140,6 +140,8 @@ class F:
         F.add_db_to_parser(parser_find)
         parser_find.add_argument("-l", "--label", default=None, metavar='Label', help="Label of the drive listing")
         parser_find.add_argument("filename", metavar='Filename', help="Exact name of the file to be found (case-sensitive)")
+        #parser_find.add_argument("-t", "--type", metavar='Type', choices=['Any','Audio','Documents','Images','Video'], default='Any', nargs='?', help="Type of files to be considered")
+        parser_find.add_argument("-t", "--type", metavar='Type', choices=['Audio','Document','Image','Video'], nargs='?', help="Type of files to be considered")
         F.add_verbose_to_parser(parser_find)
 
         parser_like = subparsers.add_parser('like',
@@ -148,6 +150,7 @@ class F:
         F.add_db_to_parser(parser_like)
         parser_like.add_argument("-l", "--label", default=None, metavar='Label', help="Label of the drive listing")
         parser_like.add_argument("search", metavar='Search String', help="Search string to be found within filenames (case-insensitive)\nxyz% - find filenames starting with 'xyz'\n%xyz - find filenames ending with 'xyz'\nSee SQL LIKE command for further options")
+        parser_find.add_argument("-t", "--type", metavar='Type', choices=['Audio','Document','Image','Video'], nargs='?', help="Type of files to be considered")
         F.add_verbose_to_parser(parser_like)
 
         # create the parser for the "import" subcommand
