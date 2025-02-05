@@ -7,12 +7,17 @@ class Fgui:
     def __init__(self):
         pass
 
-    @Gooey
+    @Gooey(
+        program_name='Filer',
+        required_cols=1,
+        optional_cols=1,
+        #navigation='TABBED',
+        default_size=(1000, 600)
+    )
     def start(self):
-        parser=argparse.ArgumentParser(
-        #    prog='Filer',
-        #    epilog='Text at the bottom of help',
-            description="Filer - File Cataloger")
+        parser=GooeyParser(
+            description="Filer - File Cataloger"
+        )
 
         F.add_subcommands_to_parser(parser)
 

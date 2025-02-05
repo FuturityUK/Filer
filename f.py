@@ -96,10 +96,29 @@ class F:
         powershell_filesystem_listing.import_listing()
 
     @staticmethod
-    def add_db_and_verbose_to_parser(parser):
-        parser.add_argument("-d", "--db", default="database.sqlite",
-                                   help="database filename (including path if necessary). Default='database.sqlite' in the current directory.")
-        parser.add_argument("-v", "--verbose", action="store_true", help="increase output verbosity")
+    def add_db_to_parser(parser, create: bool=False):
+        #print(f"Parser type: {type(parser)}")
+        if type(parser) is argparse.ArgumentParser:
+            parser.add_argument("-d", "--db", default="database.sqlite",
+                            help="database filename (including path if necessary). Default='database.sqlite' in the current directory.")
+        else:
+            if create:
+                parser.add_argument("-d", "--db", default="database.sqlite",
+                                    widget = 'FileSaver',
+                                    metavar='Database Filename',
+                                    help="Database filename (including path if necessary). Default='database.sqlite' in the current directory.")
+            else:
+                parser.add_argument("-d", "--db", default="database.sqlite",
+                                    widget = 'FileChooser',
+                                    metavar='Database Filename',
+                                    help="Database filename (including path if necessary). Default='database.sqlite' in the current directory.")
+
+    @staticmethod
+    def add_verbose_to_parser(parser, create: bool = False):
+        parser.add_argument("-v", "--verbose",
+                            action="store_true",
+                            metavar='Verbose',
+                            help="Verbose output")
 
     @staticmethod
     def add_subcommands_to_parser(parser):
@@ -109,48 +128,63 @@ class F:
                                            dest='subcommand',
                                            help='additional help')
 
+        parser_create = subparsers.add_parser('create',
+                                            help='find help',
+                                            description='Create an empty database')
+        F.add_db_to_parser(parser_create, True)
+        F.add_verbose_to_parser(parser_create)
+
         parser_find = subparsers.add_parser('find',
                                             help='find help',
                                             description='Find files exactly matching (case sensitive) the provided filename. (Faster than "like")')
-        parser_find.add_argument("-l", "--label", default=None, help="drive listing's label")
-        parser_find.add_argument("filename", help="filename to be found.")
-        F.add_db_and_verbose_to_parser(parser_find)
+        F.add_db_to_parser(parser_find)
+        parser_find.add_argument("-l", "--label", default=None, metavar='Label', help="Label of the drive listing")
+        parser_find.add_argument("filename", metavar='Filename', help="Exact name of the file to be found (case-sensitive)")
+        F.add_verbose_to_parser(parser_find)
 
         parser_like = subparsers.add_parser('like',
                                             help='like help',
                                             description='Find files with filenames like the provided search (case insensitive). "%xyz%" = filenames containing "xyz". "xyz%" = filenames starting with xyz. "%xyz" = filenames ending with xyz. (Slower than "find")')
-        parser_like.add_argument("-l", "--label", default=None, help="drive listing's label")
-        parser_like.add_argument("search", help="search string to be found.")
-        F.add_db_and_verbose_to_parser(parser_like)
+        F.add_db_to_parser(parser_like)
+        parser_like.add_argument("-l", "--label", default=None, metavar='Label', help="Label of the drive listing")
+        parser_like.add_argument("search", metavar='Search String', help="Search string to be found within filenames (case-insensitive)\nxyz% - find filenames starting with 'xyz'\n%xyz - find filenames ending with 'xyz'\nSee SQL LIKE command for further options")
+        F.add_verbose_to_parser(parser_like)
 
         # create the parser for the "import" subcommand
         parser_import = subparsers.add_parser('import', help='import help')
-        parser_import.add_argument("label", help="listings' unique label string")
-        parser_import.add_argument("filename",
-                                   help="filename (including path) of the listing in fixed width format to be processed. See PowerShell example.")
-        parser_import.add_argument("-m", "--make", default=None, help="drive's make")
-        parser_import.add_argument("-o", "--model", default=None, help="drive's model")
-        parser_import.add_argument("-s", "--serial", default=None, help="drive's serial number")
-        parser_import.add_argument("-c", "--combined", default=None,
-                                   help="drive's combined string in format \"make,model,serial-number\"")
-        parser_import.add_argument("-n", "--hostname", default=None,
-                                   help="hostname of the machine containing the drive")
-        parser_import.add_argument("-p", "--prefix", default=None,
-                                   help="prefix to remove from the start of each file's path. e.g. \"C:\\Users\\username\"")
-        parser_import.add_argument("-t", "--test", action="store_true",
-                                   help="test input file without modifying the database")
-        F.add_db_and_verbose_to_parser(parser_import)
+        F.add_db_to_parser(parser_import)
+        parser_import.add_argument("label", metavar='Label', help="Label of the drive listing")
+        if type(parser) is argparse.ArgumentParser:
+            parser_import.add_argument("filename", metavar='Filename',
+                                   help="Filename (including path) of the listing in fixed width format to be processed. See PowerShell example.")
+        else:
+            parser_import.add_argument("filename", metavar='Filename', widget = 'FileChooser',
+                                   help="Filename (including path) of the listing in fixed width format to be processed. See PowerShell example.")
+        parser_import.add_argument("-m", "--make", metavar='Make', default=None, help="Make of the drive")
+        parser_import.add_argument("-o", "--model", metavar='Model', default=None, help="Model of the drive")
+        parser_import.add_argument("-s", "--serial", metavar='Serial Number', default=None, help="Serial number of the drive")
+        parser_import.add_argument("-c", "--combined", metavar='Combined', default=None,
+                                   help="Combined drive information string, in format \"make,model,serial-number\"")
+        parser_import.add_argument("-n", "--hostname", metavar='Hostname', default=None,
+                                   help="Hostname of the machine containing the drive")
+        parser_import.add_argument("-p", "--prefix", metavar='Prefix', default=None,
+                                   help="Prefix to remove from the start of each file's path. e.g. \"C:\\Users\\username\"")
+        parser_import.add_argument("-t", "--test", metavar='Test', action="store_true",
+                                   help="Test input file without modifying the database")
+        F.add_verbose_to_parser(parser_import)
 
         # create the parser for the "vacuum" subcommand
         parser_vacuum = subparsers.add_parser('vacuum',
                                               help='vacuum help',
                                               description='The VACUUM subcommand rebuilds the database file by reading the current file and writing the content into a new file. As a result it repacking it into a minimal amount of disk space and defragments it which ensures that each table and index is largely stored contiguously. Depending on the size of the database it can take some time to do perform.')
-        F.add_db_and_verbose_to_parser(parser_vacuum)
+        F.add_db_to_parser(parser_vacuum)
+        F.add_verbose_to_parser(parser_vacuum)
 
         parser_reset = subparsers.add_parser('reset',
                                              help='reset help',
                                              description='Warning: Using the "reset" subcommand will delete the specified database and replace it with an empty one.')
-        F.add_db_and_verbose_to_parser(parser_reset)
+        F.add_db_to_parser(parser_reset)
+        F.add_verbose_to_parser(parser_reset)
 
     def process_args_and_call_subcommand(self, args):
 
@@ -211,9 +245,8 @@ class F:
             tracemalloc.start()
 
         parser=argparse.ArgumentParser(
-        #    prog='Filer',
-        #    epilog='Text at the bottom of help',
-            description="Filer - File Cataloger")
+            description="Filer - File Cataloger"
+        )
 
         F.add_subcommands_to_parser(parser)
 

@@ -4,10 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Program split into argument version and interactive version.">
-      <change afterPath="$PROJECT_DIR$/fgui.py" afterDir="false" />
+    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Created fgui.py with is a GUI wrapper around f.py command line version.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/f.py" beforeDir="false" afterPath="$PROJECT_DIR$/f.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/fgui.py" beforeDir="false" afterPath="$PROJECT_DIR$/fgui.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -91,14 +91,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1736868367160</updated>
-    </task>
-    <task id="LOCAL-00035" summary="Added code to check if a driveID already exists for the specified make, model, serial number.">
-      <option name="closed" value="true" />
-      <created>1737557415144</created>
-      <option name="number" value="00035" />
-      <option name="presentableId" value="LOCAL-00035" />
-      <option name="project" value="LOCAL" />
-      <updated>1737557415144</updated>
     </task>
     <task id="LOCAL-00036" summary="Added code to check if a driveID already exists for the specified make, model, serial number.">
       <option name="closed" value="true" />
@@ -484,7 +476,15 @@
       <option name="project" value="LOCAL" />
       <updated>1738701571132</updated>
     </task>
-    <option name="localTasksCounter" value="84" />
+    <task id="LOCAL-00084" summary="Created fgui.py with is a GUI wrapper around f.py command line version.">
+      <option name="closed" value="true" />
+      <created>1738774008298</created>
+      <option name="number" value="00084" />
+      <option name="presentableId" value="LOCAL-00084" />
+      <option name="project" value="LOCAL" />
+      <updated>1738774008298</updated>
+    </task>
+    <option name="localTasksCounter" value="85" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -499,7 +499,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="&quot;get_input&quot; function returns the correct value for the selected options" />
     <MESSAGE value="system.py now finds the volume + drive info, and prompts the user to choose what they wish to do process, or rescan or exit." />
     <MESSAGE value="Loop where drives are presented for scanning and once processed they are rescanned. Options for rescanning and exiting are included." />
     <MESSAGE value="Split out functions and classes into their own types of python files. e.g. print functions in print.py" />
@@ -524,6 +523,7 @@
     <MESSAGE value="Changed the System.select_option() method's defaults for Y / N to provide True / False results." />
     <MESSAGE value="Changed Version format instructions in the To Do file" />
     <MESSAGE value="Program split into argument version and interactive version." />
-    <option name="LAST_COMMIT_MESSAGE" value="Program split into argument version and interactive version." />
+    <MESSAGE value="Created fgui.py with is a GUI wrapper around f.py command line version." />
+    <option name="LAST_COMMIT_MESSAGE" value="Created fgui.py with is a GUI wrapper around f.py command line version." />
   </component>
 </project>
