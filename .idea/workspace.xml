@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Better looking GUI, but the &quot;create&quot; database subcommand needs to be implemented, as well as the other subcommands warning the user if the database doesn't exist.">
+    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Added file type choices to the &quot;find&quot; and &quot;like&quot; subcommands.">
+      <change afterPath="$PROJECT_DIR$/file_types.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/wiki_file_types.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/f.py" beforeDir="false" afterPath="$PROJECT_DIR$/f.py" afterDir="false" />
     </list>
@@ -51,25 +53,26 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Python.database.executor&quot;: &quot;Run&quot;,
-    &quot;Python.f.executor&quot;: &quot;Run&quot;,
-    &quot;Python.file_system_processors.executor&quot;: &quot;Run&quot;,
-    &quot;Python.filer.executor&quot;: &quot;Run&quot;,
-    &quot;Python.main.executor&quot;: &quot;Run&quot;,
-    &quot;Python.powershell.executor&quot;: &quot;Run&quot;,
-    &quot;Python.sql.executor&quot;: &quot;Run&quot;,
-    &quot;Python.system.executor&quot;: &quot;Run&quot;,
-    &quot;Python.test.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;run.code.analysis.last.selected.profile&quot;: &quot;aDefault&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;settings.sync&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Python.database.executor": "Run",
+    "Python.f.executor": "Run",
+    "Python.file_system_processors.executor": "Run",
+    "Python.file_types.executor": "Run",
+    "Python.filer.executor": "Run",
+    "Python.main.executor": "Run",
+    "Python.powershell.executor": "Run",
+    "Python.sql.executor": "Run",
+    "Python.system.executor": "Run",
+    "Python.test.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "master",
+    "ignore.virus.scanning.warn.message": "true",
+    "run.code.analysis.last.selected.profile": "aDefault",
+    "settings.editor.selected.configurable": "settings.sync"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\Neil.FUTURITY\PycharmProjects\Filer" />
@@ -90,14 +93,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1736868367160</updated>
-    </task>
-    <task id="LOCAL-00037" summary="Drive (Hostname) and Filesystem inserts now working.">
-      <option name="closed" value="true" />
-      <created>1737653343624</created>
-      <option name="number" value="00037" />
-      <option name="presentableId" value="LOCAL-00037" />
-      <option name="project" value="LOCAL" />
-      <updated>1737653343624</updated>
     </task>
     <task id="LOCAL-00038" summary="Place holders calls added to detech exist filesystem listing for a label, ask the user if they wish to replace it, update the filesystem listing date etc.">
       <option name="closed" value="true" />
@@ -483,7 +478,15 @@
       <option name="project" value="LOCAL" />
       <updated>1738784522383</updated>
     </task>
-    <option name="localTasksCounter" value="86" />
+    <task id="LOCAL-00086" summary="Added file type choices to the &quot;find&quot; and &quot;like&quot; subcommands.">
+      <option name="closed" value="true" />
+      <created>1738785703892</created>
+      <option name="number" value="00086" />
+      <option name="presentableId" value="LOCAL-00086" />
+      <option name="project" value="LOCAL" />
+      <updated>1738785703892</updated>
+    </task>
+    <option name="localTasksCounter" value="87" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -498,7 +501,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Loop where drives are presented for scanning and once processed they are rescanned. Options for rescanning and exiting are included." />
     <MESSAGE value="Split out functions and classes into their own types of python files. e.g. print functions in print.py" />
     <MESSAGE value="added interactive option which now works" />
     <MESSAGE value="Major code restructuring from functions to class methods, defining static methods where possible." />
@@ -523,6 +525,7 @@
     <MESSAGE value="Program split into argument version and interactive version." />
     <MESSAGE value="Created fgui.py with is a GUI wrapper around f.py command line version." />
     <MESSAGE value="Better looking GUI, but the &quot;create&quot; database subcommand needs to be implemented, as well as the other subcommands warning the user if the database doesn't exist." />
-    <option name="LAST_COMMIT_MESSAGE" value="Better looking GUI, but the &quot;create&quot; database subcommand needs to be implemented, as well as the other subcommands warning the user if the database doesn't exist." />
+    <MESSAGE value="Added file type choices to the &quot;find&quot; and &quot;like&quot; subcommands." />
+    <option name="LAST_COMMIT_MESSAGE" value="Added file type choices to the &quot;find&quot; and &quot;like&quot; subcommands." />
   </component>
 </project>
