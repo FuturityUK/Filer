@@ -2,7 +2,7 @@ import os.path
 import urllib.request, urllib.error, urllib.parse
 from time import sleep
 import re
-
+import csv
 
 class FileTypes:
 
@@ -26,9 +26,13 @@ class FileTypes:
 
     @staticmethod
     def clear_heading_dictionary_below_level(heading_dictionary: {}, heading_level: int):
-        for index, key in enumerate(heading_dictionary):
-            if index + 1 > heading_level:
+        #print(f"clear_heading_dictionary_below_level():")
+        #print(f"heading_level: {heading_level}")
+        #print(f"heading_dictionary: {heading_dictionary}")
+        for key, value in heading_dictionary.items():
+            if int(key) > heading_level:
                 heading_dictionary[key] = None
+        #print(f"new heading_dictionary: {heading_dictionary}")
 
     @staticmethod
     def display_heading_level_counts(heading_level_dictionary):
@@ -87,7 +91,7 @@ class FileTypes:
             #print(f"description_string: '{description_string}'")
             extensions_array = extensions_string.split(",")
             # Custom Split Comma Separated Words Using re.split()
-            pattern = ",\s*"
+            pattern = ",\\s*"
             extensions_array = re.split(pattern, extensions_string)
             for extension in extensions_array:
                 #print(f"extension: '{extension}'")
@@ -97,7 +101,7 @@ class FileTypes:
 
     @staticmethod
     def remove_formatting_from_string(temp_string: str) -> str:
-        # Replace Link with just it's Text
+        # Replace Double square bracket links with just their texts
         while True:
             double_open_square_brackets_index = temp_string.find("[[")
             double_close_square_brackets_index = temp_string.find("]]", double_open_square_brackets_index)
@@ -109,6 +113,18 @@ class FileTypes:
                 link_string = temp_string[double_open_square_brackets_index + 2:double_close_square_brackets_index]
                 link_text = link_string[link_string.find("|") + 1:]
                 temp_string = temp_string[:double_open_square_brackets_index] + link_text + temp_string[double_close_square_brackets_index + 2:]
+        # Replace Single square bracket links with just their texts
+        while True:
+            single_open_square_brackets_index = temp_string.find("[")
+            single_close_square_brackets_index = temp_string.find("]", single_open_square_brackets_index)
+            if single_open_square_brackets_index == -1 or single_close_square_brackets_index == -1:
+                # All links processed so break out of the loop
+                break
+            else:
+                # We've found a link so replace it with text
+                link_string = temp_string[single_open_square_brackets_index + 1:single_close_square_brackets_index]
+                link_text = link_string[link_string.find(" ") + 1:]
+                temp_string = temp_string[:single_open_square_brackets_index] + link_text + temp_string[single_close_square_brackets_index + 2:]
         # Replace 'Visible Anchors' with just it's text
         while True:
             open_visible_anchor_index = temp_string.find("{{visible anchor")
@@ -132,10 +148,15 @@ class FileTypes:
     @staticmethod
     def start():
         line_number = 0
-        heading_dictionary = {1: None, 2: None, 3: None, 4: None, 5: None, 6: None, 7: None}
-        heading_level_dictionary = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0}
-        #heading_dictionary = {2: None, 3: None, 4: None}
-        #heading_level_dictionary = {2: 0, 3: 0, 4: 0}
+        #heading_dictionary = {1: None, 2: None, 3: None, 4: None, 5: None, 6: None, 7: None}
+        #heading_level_dictionary = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0}
+        heading_dictionary = {2: None, 3: None, 4: None}
+        heading_level_dictionary = {2: 0, 3: 0, 4: 0}
+
+        # CSV column headers
+        csv_headers=['Category 2', 'Category 3', 'Category 4', 'Extension', 'Description']
+        csv_rows=[]
+        csv_filename = "file_types.csv"
 
         wiki_page_filename = "wiki_file_types.txt"
         wiki_page_content = None
@@ -170,7 +191,7 @@ class FileTypes:
                 #    break
                 FileTypes.clear_heading_dictionary_below_level(heading_dictionary, heading_level)
                 #print(f"{heading_dictionary}")
-                FileTypes.display_heading_values(heading_dictionary)
+                #FileTypes.display_heading_values(heading_dictionary)
             else:
                 # OTHER TEXT LINE
                 if line_striped.startswith("*"):
@@ -184,14 +205,26 @@ class FileTypes:
                             description = result[1]
                             if description.find("</") != -1:
                                 description = description[:description.find("<")]
-                            print(f"{extension} : {description}")
-
+                            #print(f"{extension} : {description}")
+                            csv_rows.append([heading_dictionary[2], heading_dictionary[3], heading_dictionary[4], extension, description])
                 else:
                     if len(line_striped) > 0:
                         pass
                         #print(f"line_striped: {FileTypes.remove_formatting_from_string(line_striped)}")
 
+        with open(csv_filename, 'w', newline='', encoding='utf-8') as csv_file:
+            # creating a CSV writer object
+            writer = csv.writer(csv_file, delimiter='|')
+
+            # writing headers
+            writer.writerow(csv_headers)
+
+            # writing rows
+            writer.writerows(csv_rows)
+
         FileTypes.display_heading_level_counts(heading_level_dictionary)
+
+        print("Complete")
 
 if __name__ == "__main__":
     FileTypes.start()

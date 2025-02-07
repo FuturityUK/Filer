@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="File type line now split into extensions and description">
+    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Extensions are now split into individual extensions together with their descriptions. More wikitext formatting correctly removed">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/file_types.py" beforeDir="false" afterPath="$PROJECT_DIR$/file_types.py" afterDir="false" />
     </list>
@@ -91,14 +91,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1736868367160</updated>
-    </task>
-    <task id="LOCAL-00042" summary="This version may actually import the filesystem listing :)">
-      <option name="closed" value="true" />
-      <created>1737663826196</created>
-      <option name="number" value="00042" />
-      <option name="presentableId" value="LOCAL-00042" />
-      <option name="project" value="LOCAL" />
-      <updated>1737663826196</updated>
     </task>
     <task id="LOCAL-00043" summary="Renamed powershell.py to system.py">
       <option name="closed" value="true" />
@@ -484,7 +476,15 @@
       <option name="project" value="LOCAL" />
       <updated>1738952739420</updated>
     </task>
-    <option name="localTasksCounter" value="91" />
+    <task id="LOCAL-00091" summary="Extensions are now split into individual extensions together with their descriptions. More wikitext formatting correctly removed">
+      <option name="closed" value="true" />
+      <created>1738960695135</created>
+      <option name="number" value="00091" />
+      <option name="presentableId" value="LOCAL-00091" />
+      <option name="project" value="LOCAL" />
+      <updated>1738960695135</updated>
+    </task>
+    <option name="localTasksCounter" value="92" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -499,7 +499,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Interactive mode complete, but needs testing!" />
     <MESSAGE value="Refactored the execution of Powershell commands.&#10;Added option to specify the location of temporary file used when creating file listings in interactive mode." />
     <MESSAGE value="If the user tries to process a listing with the same label, they are given the option to replace the listing, or exit the processing of this listing." />
     <MESSAGE value="Started work on System.does_path_listing_exit() to check if a file exists and give the user the option to delete it." />
@@ -524,6 +523,7 @@
     <MESSAGE value="Added code to extract file extension information" />
     <MESSAGE value="Now downloads file types from the wiki page if a local copy doesn't already exist." />
     <MESSAGE value="File type line now split into extensions and description" />
-    <option name="LAST_COMMIT_MESSAGE" value="File type line now split into extensions and description" />
+    <MESSAGE value="Extensions are now split into individual extensions together with their descriptions. More wikitext formatting correctly removed" />
+    <option name="LAST_COMMIT_MESSAGE" value="Extensions are now split into individual extensions together with their descriptions. More wikitext formatting correctly removed" />
   </component>
 </project>
