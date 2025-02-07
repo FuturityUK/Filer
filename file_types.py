@@ -90,10 +90,13 @@ class FileTypes:
         wiki_page_filename = "wiki_file_types.txt"
         wiki_page_content = None
         if os.path.isfile(wiki_page_filename):
+            print("Loading file types from local storage")
             with open(wiki_page_filename, 'r', encoding="utf-8") as wiki_file:
                 wiki_page_content = wiki_file.read()
         else:
+            print("Downloading file types from Wikipedia")
             wiki_page_content = FileTypes.download_file_types()
+            print("Saving file types to local storage")
             with open(wiki_page_filename, 'w', encoding="utf-8") as wiki_file:
                 wiki_file.write(wiki_page_content)
         for line in wiki_page_content.splitlines():
