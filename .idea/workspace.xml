@@ -4,11 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Added file type choices to the &quot;find&quot; and &quot;like&quot; subcommands.">
-      <change afterPath="$PROJECT_DIR$/file_types.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/wiki_file_types.txt" afterDir="false" />
+    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Added code to extract file extension information">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/f.py" beforeDir="false" afterPath="$PROJECT_DIR$/f.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/file_types.py" beforeDir="false" afterPath="$PROJECT_DIR$/file_types.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -53,26 +51,26 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Python.database.executor": "Run",
-    "Python.f.executor": "Run",
-    "Python.file_system_processors.executor": "Run",
-    "Python.file_types.executor": "Run",
-    "Python.filer.executor": "Run",
-    "Python.main.executor": "Run",
-    "Python.powershell.executor": "Run",
-    "Python.sql.executor": "Run",
-    "Python.system.executor": "Run",
-    "Python.test.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "master",
-    "ignore.virus.scanning.warn.message": "true",
-    "run.code.analysis.last.selected.profile": "aDefault",
-    "settings.editor.selected.configurable": "settings.sync"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Python.database.executor&quot;: &quot;Run&quot;,
+    &quot;Python.f.executor&quot;: &quot;Run&quot;,
+    &quot;Python.file_system_processors.executor&quot;: &quot;Run&quot;,
+    &quot;Python.file_types.executor&quot;: &quot;Run&quot;,
+    &quot;Python.filer.executor&quot;: &quot;Run&quot;,
+    &quot;Python.main.executor&quot;: &quot;Run&quot;,
+    &quot;Python.powershell.executor&quot;: &quot;Run&quot;,
+    &quot;Python.sql.executor&quot;: &quot;Run&quot;,
+    &quot;Python.system.executor&quot;: &quot;Run&quot;,
+    &quot;Python.test.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;aDefault&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;settings.sync&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\Neil.FUTURITY\PycharmProjects\Filer" />
@@ -93,14 +91,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1736868367160</updated>
-    </task>
-    <task id="LOCAL-00038" summary="Place holders calls added to detech exist filesystem listing for a label, ask the user if they wish to replace it, update the filesystem listing date etc.">
-      <option name="closed" value="true" />
-      <created>1737654895306</created>
-      <option name="number" value="00038" />
-      <option name="presentableId" value="LOCAL-00038" />
-      <option name="project" value="LOCAL" />
-      <updated>1737654895306</updated>
     </task>
     <task id="LOCAL-00039" summary="Filesystem Listing date is updated if the user chooses to replace / update the existing file listing">
       <option name="closed" value="true" />
@@ -486,7 +476,15 @@
       <option name="project" value="LOCAL" />
       <updated>1738785703892</updated>
     </task>
-    <option name="localTasksCounter" value="87" />
+    <task id="LOCAL-00087" summary="Added code to extract file extension information">
+      <option name="closed" value="true" />
+      <created>1738870390584</created>
+      <option name="number" value="00087" />
+      <option name="presentableId" value="LOCAL-00087" />
+      <option name="project" value="LOCAL" />
+      <updated>1738870390584</updated>
+    </task>
+    <option name="localTasksCounter" value="88" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -501,7 +499,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Split out functions and classes into their own types of python files. e.g. print functions in print.py" />
     <MESSAGE value="added interactive option which now works" />
     <MESSAGE value="Major code restructuring from functions to class methods, defining static methods where possible." />
     <MESSAGE value="Interactive mode complete, but needs testing!" />
@@ -526,6 +523,7 @@
     <MESSAGE value="Created fgui.py with is a GUI wrapper around f.py command line version." />
     <MESSAGE value="Better looking GUI, but the &quot;create&quot; database subcommand needs to be implemented, as well as the other subcommands warning the user if the database doesn't exist." />
     <MESSAGE value="Added file type choices to the &quot;find&quot; and &quot;like&quot; subcommands." />
-    <option name="LAST_COMMIT_MESSAGE" value="Added file type choices to the &quot;find&quot; and &quot;like&quot; subcommands." />
+    <MESSAGE value="Added code to extract file extension information" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added code to extract file extension information" />
   </component>
 </project>

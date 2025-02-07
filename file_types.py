@@ -1,10 +1,17 @@
-
-
+import os.path
+import urllib.request, urllib.error, urllib.parse
 
 class FileTypes:
 
     def __init__(self):
         pass
+
+    @staticmethod
+    def download_file_types() -> str :
+        url="https://en.wikipedia.org/w/index.php?title=List_of_file_formats&action=raw"
+        response = urllib.request.urlopen(url)
+        web_content = response.read().decode('UTF-8')
+        return web_content
 
     @staticmethod
     def heading_level(heading: str) -> int:
@@ -21,6 +28,24 @@ class FileTypes:
                 heading_dictionary[key] = None
 
     @staticmethod
+    def display_heading_level_counts(heading_level_dictionary):
+        for key, value in heading_level_dictionary.items():
+            if value != 0:
+                print(f"heading_level: {key} - count: {value}")
+
+    @staticmethod
+    def display_heading_values(heading_dictionary):
+        first_heading = True
+        for key, value in heading_dictionary.items():
+            if value is not None:
+                if first_heading:
+                    first_heading = False
+                else:
+                    print(", ", end="")
+                print(f"{key} : {value}", end="")
+        print()
+
+    @staticmethod
     def remove_formatting_from_string(temp_string: str) -> str:
         # Replace Link with just it's Text
         while True:
@@ -34,7 +59,7 @@ class FileTypes:
                 link_string = temp_string[double_open_square_brackets_index + 2:double_close_square_brackets_index]
                 link_text = link_string[link_string.find("|") + 1:]
                 temp_string = temp_string[:double_open_square_brackets_index] + link_text + temp_string[double_close_square_brackets_index + 2:]
-        # Replace Visible Anchors
+        # Replace 'Visible Anchors' with just it's text
         while True:
             open_visible_anchor_index = temp_string.find("{{visible anchor")
             close_visible_anchor_index = temp_string.find("}}", open_visible_anchor_index)
@@ -47,17 +72,31 @@ class FileTypes:
                 link_text = link_string[link_string.find("|") + 1:] # Extract the text after the anchor definition
                 link_text = link_text[:link_text.find("|")] # Extract the first value before the '|'
                 temp_string = temp_string[:open_visible_anchor_index] + link_text + temp_string[close_visible_anchor_index + 2:]
+        # Remove italics and bold formatting
+        temp_string = temp_string.replace("'''''", "")
+        temp_string = temp_string.replace("''''", "")
+        temp_string = temp_string.replace("'''", "")
+        temp_string = temp_string.replace("''", "")
         return temp_string
 
     @staticmethod
     def start():
         line_number = 0
-        #heading_dictionary = {1: None, 2: None, 3: None, 4: None, 5: None, 6: None, 7: None}
-        #heading_level_dictionary = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0}
-        heading_dictionary = {2: None, 3: None, 4: None}
-        heading_level_dictionary = {2: 0, 3: 0, 4: 0}
+        heading_dictionary = {1: None, 2: None, 3: None, 4: None, 5: None, 6: None, 7: None}
+        heading_level_dictionary = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0}
+        #heading_dictionary = {2: None, 3: None, 4: None}
+        #heading_level_dictionary = {2: 0, 3: 0, 4: 0}
 
-        for filelineno, line in enumerate(open("wiki_file_types.txt", encoding="utf-8")):
+        wiki_page_filename = "wiki_file_types.txt"
+        wiki_page_content = None
+        if os.path.isfile(wiki_page_filename):
+            with open(wiki_page_filename, 'r', encoding="utf-8") as wiki_file:
+                wiki_page_content = wiki_file.read()
+        else:
+            wiki_page_content = FileTypes.download_file_types()
+            with open(wiki_page_filename, 'w', encoding="utf-8") as wiki_file:
+                wiki_file.write(wiki_page_content)
+        for line in wiki_page_content.splitlines():
             line_number += 1
             line_striped = line.strip()
 
@@ -74,7 +113,8 @@ class FileTypes:
                 #if heading_text.count("|") > 0 and heading_text != heading_dictionary[heading_level]:
                 #    break
                 FileTypes.clear_heading_dictionary_below_level(heading_dictionary, heading_level)
-                print(f"heading_dictionary: {heading_dictionary}")
+                #print(f"{heading_dictionary}")
+                FileTypes.display_heading_values(heading_dictionary)
             else:
                 # OTHER TEXT LINE
                 if line_striped.startswith("*"):
@@ -84,12 +124,14 @@ class FileTypes:
                 else:
                     if len(line_striped) > 0:
                         pass
-                        print(f"line_striped: {FileTypes.remove_formatting_from_string(line_striped)}")
+                        #print(f"line_striped: {FileTypes.remove_formatting_from_string(line_striped)}")
 
-        print(f"{heading_level_dictionary}")
+        FileTypes.display_heading_level_counts(heading_level_dictionary)
 
 
 
 if __name__ == "__main__":
     FileTypes.start()
+    #FileTypes.download_file_types()
+
 
