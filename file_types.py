@@ -1,6 +1,7 @@
 import os.path
 import urllib.request, urllib.error, urllib.parse
 from time import sleep
+import re
 
 
 class FileTypes:
@@ -52,7 +53,7 @@ class FileTypes:
         # Remove the * at the start of the line
         #print(f"line: {line}")
         line = line.replace("*", "").strip()
-        print(f"line: {line}")
+        #print(f"line: {line}")
         # Split the line in to extensions and the description
         find_string_length = 3
         # Hyphen type 1
@@ -78,11 +79,21 @@ class FileTypes:
             #input("Press Enter to continue ")
             return None
         else:
+            results_array = []
             # We've found a hyphen so split the line
-            extensions_string = line[:first_hyphen_index]
-            description_string = line[first_hyphen_index + find_string_length:]
-            print(f"extensions_string: '{extensions_string}'")
-            print(f"description_string: '{description_string}'")
+            extensions_string = FileTypes.remove_formatting_from_string(line[:first_hyphen_index])
+            description_string = FileTypes.remove_formatting_from_string(line[first_hyphen_index + find_string_length:])
+            #print(f"extensions_string: '{extensions_string}'")
+            #print(f"description_string: '{description_string}'")
+            extensions_array = extensions_string.split(",")
+            # Custom Split Comma Separated Words Using re.split()
+            pattern = ",\s*"
+            extensions_array = re.split(pattern, extensions_string)
+            for extension in extensions_array:
+                #print(f"extension: '{extension}'")
+                tmp_array = [extension, description_string]
+                results_array.append(tmp_array)
+            return results_array
 
     @staticmethod
     def remove_formatting_from_string(temp_string: str) -> str:
@@ -165,7 +176,16 @@ class FileTypes:
                 if line_striped.startswith("*"):
                     # FILE EXTENSIONS
                     pass
-                    FileTypes.process_file_extension_line(line_striped)
+                    results = FileTypes.process_file_extension_line(line_striped)
+                    #print(f"results: {results}")
+                    if results is not None:
+                        for result in results:
+                            extension = result[0]
+                            description = result[1]
+                            if description.find("</") != -1:
+                                description = description[:description.find("<")]
+                            print(f"{extension} : {description}")
+
                 else:
                     if len(line_striped) > 0:
                         pass
