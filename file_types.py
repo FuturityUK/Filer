@@ -158,7 +158,7 @@ class FileTypes:
         csv_rows=[]
         csv_filename = "file_types.csv"
 
-        wiki_page_filename = "wiki_file_types.txt"
+        wiki_page_filename = "file_types.wikitext"
         wiki_page_content = None
         if os.path.isfile(wiki_page_filename):
             print("Loading file types from local storage")
