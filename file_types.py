@@ -1,5 +1,7 @@
 import os.path
 import urllib.request, urllib.error, urllib.parse
+from time import sleep
+
 
 class FileTypes:
 
@@ -42,8 +44,45 @@ class FileTypes:
                     first_heading = False
                 else:
                     print(", ", end="")
-                print(f"{key} : {value}", end="")
+                print(f"{key} : '{value}'", end="")
         print()
+
+    @staticmethod
+    def process_file_extension_line(line: str):
+        # Remove the * at the start of the line
+        #print(f"line: {line}")
+        line = line.replace("*", "").strip()
+        print(f"line: {line}")
+        # Split the line in to extensions and the description
+        find_string_length = 3
+        # Hyphen type 1
+        first_hyphen_index = line.find(" – ")
+        if first_hyphen_index == -1:
+            # Hyphen type 2
+            first_hyphen_index = line.find(" - ")
+        if first_hyphen_index == -1:
+            # Hyphen type 3
+            first_hyphen_index = line.find(" − ")
+        if first_hyphen_index == -1:
+            find_string_length = 4
+            # Hyphen type 1
+            first_hyphen_index = line.find(" –– ")
+            if first_hyphen_index == -1:
+                # Hyphen type 2
+                first_hyphen_index = line.find(" -- ")
+            if first_hyphen_index == -1:
+                # Hyphen type 3
+                first_hyphen_index = line.find(" −− ")
+        if first_hyphen_index == -1:
+            print(f"No '-' found in line. Ignoring line: {line}")
+            #input("Press Enter to continue ")
+            return None
+        else:
+            # We've found a hyphen so split the line
+            extensions_string = line[:first_hyphen_index]
+            description_string = line[first_hyphen_index + find_string_length:]
+            print(f"extensions_string: '{extensions_string}'")
+            print(f"description_string: '{description_string}'")
 
     @staticmethod
     def remove_formatting_from_string(temp_string: str) -> str:
@@ -111,6 +150,9 @@ class FileTypes:
                 #print(f"heading_level: {heading_level}")
                 heading_text = FileTypes.remove_formatting_from_heading(line_striped)
                 #print(f"heading_text: {heading_text}")
+                if heading_text.lower() == "see also" or heading_text.lower() == "external links" or heading_text.lower() == "references":
+                    # Reached the end of the data so stop processing the file
+                    break
                 heading_dictionary[heading_level] = FileTypes.remove_formatting_from_string(heading_text)
                 #print(f"heading_new : {heading_dictionary[heading_level]}")
                 #if heading_text.count("|") > 0 and heading_text != heading_dictionary[heading_level]:
@@ -123,15 +165,13 @@ class FileTypes:
                 if line_striped.startswith("*"):
                     # FILE EXTENSIONS
                     pass
-                    #file_extension = line_striped.replace("*", "").strip()
+                    FileTypes.process_file_extension_line(line_striped)
                 else:
                     if len(line_striped) > 0:
                         pass
                         #print(f"line_striped: {FileTypes.remove_formatting_from_string(line_striped)}")
 
         FileTypes.display_heading_level_counts(heading_level_dictionary)
-
-
 
 if __name__ == "__main__":
     FileTypes.start()

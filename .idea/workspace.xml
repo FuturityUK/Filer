@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Added code to extract file extension information">
+    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Now downloads file types from the wiki page if a local copy doesn't already exist.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/file_types.py" beforeDir="false" afterPath="$PROJECT_DIR$/file_types.py" afterDir="false" />
     </list>
@@ -91,22 +91,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1736868367160</updated>
-    </task>
-    <task id="LOCAL-00039" summary="Filesystem Listing date is updated if the user chooses to replace / update the existing file listing">
-      <option name="closed" value="true" />
-      <created>1737656809712</created>
-      <option name="number" value="00039" />
-      <option name="presentableId" value="LOCAL-00039" />
-      <option name="project" value="LOCAL" />
-      <updated>1737656809712</updated>
-    </task>
-    <task id="LOCAL-00040" summary="This version may actually import the filesystem listing :)">
-      <option name="closed" value="true" />
-      <created>1737658898381</created>
-      <option name="number" value="00040" />
-      <option name="presentableId" value="LOCAL-00040" />
-      <option name="project" value="LOCAL" />
-      <updated>1737658898381</updated>
     </task>
     <task id="LOCAL-00041" summary="This version may actually import the filesystem listing :)">
       <option name="closed" value="true" />
@@ -484,7 +468,23 @@
       <option name="project" value="LOCAL" />
       <updated>1738870390584</updated>
     </task>
-    <option name="localTasksCounter" value="88" />
+    <task id="LOCAL-00088" summary="Now downloads file types from the wiki page if a local copy doesn't already exist.">
+      <option name="closed" value="true" />
+      <created>1738939936320</created>
+      <option name="number" value="00088" />
+      <option name="presentableId" value="LOCAL-00088" />
+      <option name="project" value="LOCAL" />
+      <updated>1738939936320</updated>
+    </task>
+    <task id="LOCAL-00089" summary="Now downloads file types from the wiki page if a local copy doesn't already exist.">
+      <option name="closed" value="true" />
+      <created>1738940140510</created>
+      <option name="number" value="00089" />
+      <option name="presentableId" value="LOCAL-00089" />
+      <option name="project" value="LOCAL" />
+      <updated>1738940140510</updated>
+    </task>
+    <option name="localTasksCounter" value="90" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -499,7 +499,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="added interactive option which now works" />
     <MESSAGE value="Major code restructuring from functions to class methods, defining static methods where possible." />
     <MESSAGE value="Interactive mode complete, but needs testing!" />
     <MESSAGE value="Refactored the execution of Powershell commands.&#10;Added option to specify the location of temporary file used when creating file listings in interactive mode." />
@@ -524,6 +523,7 @@
     <MESSAGE value="Better looking GUI, but the &quot;create&quot; database subcommand needs to be implemented, as well as the other subcommands warning the user if the database doesn't exist." />
     <MESSAGE value="Added file type choices to the &quot;find&quot; and &quot;like&quot; subcommands." />
     <MESSAGE value="Added code to extract file extension information" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added code to extract file extension information" />
+    <MESSAGE value="Now downloads file types from the wiki page if a local copy doesn't already exist." />
+    <option name="LAST_COMMIT_MESSAGE" value="Now downloads file types from the wiki page if a local copy doesn't already exist." />
   </component>
 </project>
