@@ -20,6 +20,8 @@ import tracemalloc
 import argparse
 import os.path
 from system import System
+from file_types import FileTypes
+import time
 
 class F:
 
@@ -28,8 +30,6 @@ class F:
     PHYSICAL_DICT_INDEX: int = 2
 
     DEFAULT_TEMP_LISTING_FILE: str = 'filer.fwf'
-
-    
 
     def __init__(self):
         self.database = None
@@ -55,13 +55,13 @@ class F:
             print(":")
         self.database.find_filenames_exact_match(args.filename, args.label)
 
-    def like(self, args: []):
+    def search(self, args: []):
         print(f"Finding filenames like \"{args.search}\"", end="")
         if args.label is not None:
             print(f" with label \"{args.label}\"")
         else:
             print(":")
-        self.database.find_filenames_like(args.search, args.label)
+        self.database.find_filenames_search(args.search, args.type, args.label)
 
     def vacuum(self):
         print(f"Vacuuming database. This may take a while depending on the your database size.")
@@ -124,6 +124,9 @@ class F:
 
     @staticmethod
     def add_subcommands_to_parser(parser):
+        file_type_categories = FileTypes.get_file_types_categories()
+        #print(f"file_type_categories: {file_type_categories}")
+
         subparsers = parser.add_subparsers(title='subcommands',
                                            description='valid subcommands',
                                            required=True,
@@ -142,18 +145,17 @@ class F:
         F.add_db_to_parser(parser_find)
         parser_find.add_argument("-l", "--label", default=None, metavar='Label', help="Label of the drive listing")
         parser_find.add_argument("filename", metavar='Filename', help="Exact name of the file to be found (case-sensitive)")
-        #parser_find.add_argument("-t", "--type", metavar='Type', choices=['Any','Audio','Documents','Images','Video'], default='Any', nargs='?', help="Type of files to be considered")
-        parser_find.add_argument("-t", "--type", metavar='Type', choices=['Audio','Document','Image','Video'], nargs='?', help="Type of files to be considered")
+        parser_find.add_argument("-t", "--type", metavar='Type', choices=file_type_categories, nargs='?', help="Type of files to be considered")
         F.add_verbose_to_parser(parser_find)
 
-        parser_like = subparsers.add_parser('like',
-                                            help='like help',
-                                            description='Find files with filenames like the provided search (case insensitive). "%xyz%" = filenames containing "xyz". "xyz%" = filenames starting with xyz. "%xyz" = filenames ending with xyz. (Slower than "find")')
-        F.add_db_to_parser(parser_like)
-        parser_like.add_argument("-l", "--label", default=None, metavar='Label', help="Label of the drive listing")
-        parser_like.add_argument("search", metavar='Search String', help="Search string to be found within filenames (case-insensitive)\nxyz% - find filenames starting with 'xyz'\n%xyz - find filenames ending with 'xyz'\nSee SQL LIKE command for further options")
-        parser_find.add_argument("-t", "--type", metavar='Type', choices=['Audio','Document','Image','Video'], nargs='?', help="Type of files to be considered")
-        F.add_verbose_to_parser(parser_like)
+        parser_search = subparsers.add_parser('search',
+                                            help='search help',
+                                            description='Search for files based on search strings (slower than "find")')
+        parser_search.add_argument("-s", "--search", metavar='Search String', help="Search string to be found within filenames (case-insensitive)\nxyz% - find filenames starting with 'xyz'\n%xyz - find filenames ending with 'xyz'\nSee SQL LIKE command for further options")
+        parser_search.add_argument("-t", "--type", metavar='Type', choices=file_type_categories, nargs='?', help="Type of files to be considered")
+        parser_search.add_argument("-l", "--label", default=None, metavar='Label', help="Label of the drive listing")
+        F.add_db_to_parser(parser_search)
+        F.add_verbose_to_parser(parser_search)
 
         # create the parser for the "import" subcommand
         parser_import = subparsers.add_parser('import', help='import help')
@@ -225,11 +227,13 @@ class F:
         if create_tables:
             self.database.create_database_structure()
 
+        start_time = time.time()
+
         if args.subcommand == "find":
             self.find(args)
 
-        elif args.subcommand == "like":
-            self.like(args)
+        elif args.subcommand == "search":
+            self.search(args)
 
         elif args.subcommand == "vacuum":
             self.vacuum()
@@ -240,8 +244,13 @@ class F:
         elif args.subcommand == "import":
             self.import_listing(args)
 
+        end_time = time.time()
+
+        print(f"Time in seconds: {end_time - start_time}")
+
         # Clean up and exit
         self.clean_up_and_quit()
+        print("")
 
     def start(self):
 

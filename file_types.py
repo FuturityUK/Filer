@@ -9,10 +9,13 @@ class FileTypes:
     def __init__(self):
         pass
 
+    CSV_FILENAME: str = "file_types.csv"
+    WIKI_PAGE_FILENAME: str = "file_types.wikitext"
+    WIKI_PAGE_URL: str = "https://en.wikipedia.org/w/index.php?title=List_of_file_formats&action=raw"
+
     @staticmethod
     def download_file_types() -> str :
-        url="https://en.wikipedia.org/w/index.php?title=List_of_file_formats&action=raw"
-        response = urllib.request.urlopen(url)
+        response = urllib.request.urlopen(FileTypes.WIKI_PAGE_URL)
         web_content = response.read().decode('UTF-8')
         return web_content
 
@@ -79,7 +82,7 @@ class FileTypes:
                 # Hyphen type 3
                 first_hyphen_index = line.find(" −− ")
         if first_hyphen_index == -1:
-            print(f"No '-' found in line. Ignoring line: {line}")
+            #print(f"No '-' found in line. Ignoring line: {line}")
             #input("Press Enter to continue ")
             return None
         else:
@@ -146,7 +149,18 @@ class FileTypes:
         return temp_string
 
     @staticmethod
-    def start():
+    def get_file_types_categories() -> []:
+        file_types_categories = []
+        with open(FileTypes.CSV_FILENAME, 'r', newline='', encoding='utf-8') as csv_file:
+            csv_reader = csv.reader(csv_file, delimiter='|')
+            for row in csv_reader:
+                category_2 = row[0]
+                if category_2 not in file_types_categories:
+                    file_types_categories.append(category_2)
+        return file_types_categories
+
+    @staticmethod
+    def generate_file_types_csv_file():
         line_number = 0
         #heading_dictionary = {1: None, 2: None, 3: None, 4: None, 5: None, 6: None, 7: None}
         #heading_level_dictionary = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0}
@@ -156,19 +170,17 @@ class FileTypes:
         # CSV column headers
         csv_headers=['Category 2', 'Category 3', 'Category 4', 'Extension', 'Description']
         csv_rows=[]
-        csv_filename = "file_types.csv"
 
-        wiki_page_filename = "file_types.wikitext"
         wiki_page_content = None
-        if os.path.isfile(wiki_page_filename):
+        if os.path.isfile(FileTypes.WIKI_PAGE_FILENAME):
             print("Loading file types from local storage")
-            with open(wiki_page_filename, 'r', encoding="utf-8") as wiki_file:
+            with open(FileTypes.WIKI_PAGE_FILENAME, 'r', encoding="utf-8") as wiki_file:
                 wiki_page_content = wiki_file.read()
         else:
             print("Downloading file types from Wikipedia")
             wiki_page_content = FileTypes.download_file_types()
             print("Saving file types to local storage")
-            with open(wiki_page_filename, 'w', encoding="utf-8") as wiki_file:
+            with open(FileTypes.WIKI_PAGE_FILENAME, 'w', encoding="utf-8") as wiki_file:
                 wiki_file.write(wiki_page_content)
         for line in wiki_page_content.splitlines():
             line_number += 1
@@ -212,7 +224,7 @@ class FileTypes:
                         pass
                         #print(f"line_striped: {FileTypes.remove_formatting_from_string(line_striped)}")
 
-        with open(csv_filename, 'w', newline='', encoding='utf-8') as csv_file:
+        with open(FileTypes.CSV_FILENAME, 'w', newline='', encoding='utf-8') as csv_file:
             # creating a CSV writer object
             writer = csv.writer(csv_file, delimiter='|')
 
@@ -222,12 +234,10 @@ class FileTypes:
             # writing rows
             writer.writerows(csv_rows)
 
-        FileTypes.display_heading_level_counts(heading_level_dictionary)
-
-        print("Complete")
+        #FileTypes.display_heading_level_counts(heading_level_dictionary)
+        #print("Complete")
 
 if __name__ == "__main__":
-    FileTypes.start()
-    #FileTypes.download_file_types()
+    FileTypes.generate_file_types_csv_file()
 
 

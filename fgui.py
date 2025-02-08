@@ -12,7 +12,8 @@ class Fgui:
         required_cols=1,
         optional_cols=1,
         #navigation='TABBED',
-        default_size=(1000, 600)
+        default_size=(1000, 1000),
+        clear_before_run=True
     )
     def start(self):
         parser=GooeyParser(

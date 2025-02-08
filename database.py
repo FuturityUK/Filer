@@ -177,17 +177,11 @@ class Database:
                 [filename, label]
             )
 
-    def find_filenames_like(self, search: str, label: str = None):
+    def find_filenames_like(self, search: str, type: str, label: str = None):
         if label is None:
-            self.find_filenames(
-                self.__sql_dictionary["find_filename_like"],
-                [search]
-            )
+            self.find_filenames( self.__sql_dictionary["find_filename_like"],[search] )
         else:
-            self.find_filenames(
-                self.__sql_dictionary["find_filename_like_with_label"],
-                [search, label]
-            )
+            self.find_filenames( self.__sql_dictionary["find_filename_like_with_label"],[search, label] )
 
     def find_filenames(self,
                        sql: str,
