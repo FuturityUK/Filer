@@ -4,10 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Work on search (find) GUI (not finished)">
+    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Find and Search subcommands now share the same code">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/database.py" beforeDir="false" afterPath="$PROJECT_DIR$/database.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sql.py" beforeDir="false" afterPath="$PROJECT_DIR$/sql.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/f.py" beforeDir="false" afterPath="$PROJECT_DIR$/f.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -93,14 +93,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1736868367160</updated>
-    </task>
-    <task id="LOCAL-00046" summary="Added OS detection methods">
-      <option name="closed" value="true" />
-      <created>1737893713740</created>
-      <option name="number" value="00046" />
-      <option name="presentableId" value="LOCAL-00046" />
-      <option name="project" value="LOCAL" />
-      <updated>1737893713740</updated>
     </task>
     <task id="LOCAL-00047" summary="More OS Functions">
       <option name="closed" value="true" />
@@ -486,7 +478,15 @@
       <option name="project" value="LOCAL" />
       <updated>1739027638418</updated>
     </task>
-    <option name="localTasksCounter" value="95" />
+    <task id="LOCAL-00095" summary="Find and Search subcommands now share the same code">
+      <option name="closed" value="true" />
+      <created>1739030224284</created>
+      <option name="number" value="00095" />
+      <option name="presentableId" value="LOCAL-00095" />
+      <option name="project" value="LOCAL" />
+      <updated>1739030224284</updated>
+    </task>
+    <option name="localTasksCounter" value="96" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -501,7 +501,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Removed the Vacuum.bt file" />
     <MESSAGE value="Fixed database directory checking if it exists or not.&#10;Fixed the &quot;like&quot; subcommand." />
     <MESSAGE value="Added task to add &quot;exclude&quot; functionality." />
     <MESSAGE value="Fixed temp listing filename to : listing.fwf" />
@@ -526,6 +525,7 @@
     <MESSAGE value="Finished file_types.py which now can download directly from the wikipedia website, cache the file locally and extract the extension data from it. It then stores the details in a csv file" />
     <MESSAGE value="changed name of cached file to file_types.wikitext" />
     <MESSAGE value="Work on search (find) GUI (not finished)" />
-    <option name="LAST_COMMIT_MESSAGE" value="Work on search (find) GUI (not finished)" />
+    <MESSAGE value="Find and Search subcommands now share the same code" />
+    <option name="LAST_COMMIT_MESSAGE" value="Find and Search subcommands now share the same code" />
   </component>
 </project>

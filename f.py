@@ -22,6 +22,11 @@ import os.path
 from system import System
 from file_types import FileTypes
 import time
+from typing import (
+    Iterable,
+    Union,
+    Optional,
+)
 
 class F:
 
@@ -47,20 +52,8 @@ class F:
         # Exit normally
         exit()
 
-    def find(self, args: []):
-        print(f"Finding filenames matching \"{args.filename}\"", end="")
-        if args.label is not None:
-            print(f" with label \"{args.label}\"")
-        else:
-            print(":")
-        self.database.find_filenames_exact_match(args.filename, args.label)
-
     def search(self, args: []):
-        print(f"Finding filenames like \"{args.search}\"", end="")
-        if args.label is not None:
-            print(f" with label \"{args.label}\"")
-        else:
-            print(":")
+        print(f"Finding filenames:")
         self.database.find_filenames_search(args.search, args.type, args.label)
 
     def vacuum(self):
@@ -98,26 +91,46 @@ class F:
         powershell_filesystem_listing.import_listing()
 
     @staticmethod
+    def add_argument(parser, *temp_args, **temp_kwargs): # : Optional[Union[Iterable, dict]]
+        #parser.add_argument(temp_args, temp_kwargs)
+        if type(parser) is argparse.ArgumentParser:
+            # Remove GooeyParser parameters
+            temp_kwargs.pop("metavar", None)
+        print(f"temp_args: {temp_args}")
+        print(f"temp_kwargs: {temp_kwargs}")
+        parser.add_argument( *temp_args, **temp_kwargs )
+
+    @staticmethod
     def add_db_to_parser(parser, create: bool=False):
         #print(f"Parser type: {type(parser)}")
         if type(parser) is argparse.ArgumentParser:
-            parser.add_argument("-d", "--db", default="database.sqlite",
+            #parser.add_argument("-d", "--db", default="database.sqlite",
+            #                help="database filename (including path if necessary). Default='database.sqlite' in the current directory.")
+            F.add_argument(parser, "-d", "--db", default="database.sqlite",
                             help="database filename (including path if necessary). Default='database.sqlite' in the current directory.")
         else:
             if create:
-                parser.add_argument("-d", "--db", default="database.sqlite",
+                #parser.add_argument("-d", "--db", default="database.sqlite",
+                #                    widget = 'FileSaver',
+                #                    metavar='Database Filename',
+                #                    help="Database filename (including path if necessary). Default='database.sqlite' in the current directory.")
+                F.add_argument(parser, "-d", "--db", default="database.sqlite",
                                     widget = 'FileSaver',
                                     metavar='Database Filename',
                                     help="Database filename (including path if necessary). Default='database.sqlite' in the current directory.")
             else:
-                parser.add_argument("-d", "--db", default="database.sqlite",
+                #parser.add_argument("-d", "--db", default="database.sqlite",
+                #                    widget = 'FileChooser',
+                #                    metavar='Database Filename',
+                #                    help="Database filename (including path if necessary). Default='database.sqlite' in the current directory.")
+                F.add_argument(parser, "-d", "--db", default="database.sqlite",
                                     widget = 'FileChooser',
                                     metavar='Database Filename',
                                     help="Database filename (including path if necessary). Default='database.sqlite' in the current directory.")
 
     @staticmethod
     def add_verbose_to_parser(parser, create: bool = False):
-        parser.add_argument("-v", "--verbose",
+        F.add_argument(parser, "-v", "--verbose",
                             action="store_true",
                             metavar='Verbose',
                             help="Verbose output")
@@ -133,29 +146,27 @@ class F:
                                            dest='subcommand',
                                            help='additional help')
 
+        parser_search = subparsers.add_parser('search',
+                                            help='search help',
+                                            description='Search for files based on search strings (slower than "find")')
+        parser_search.add_argument("-s", "--search", metavar='Search',
+        help='''Search string to be found within filenames
+         - if search doesn't include '%' or '_' characters, then it is a fast exact case-sensitive search
+         - if search includes '%' or '_' characters, then it is a slower pattern match case-insensitive search
+         - '%' wildcard matches any sequence of zero or more characters
+         - '_' wildcard matches exactly one character
+         ''')
+        parser_search.add_argument("-t", "--type", metavar='Type', choices=file_type_categories, nargs='?', help="Type of files to be considered")
+        parser_search.add_argument("-l", "--label", metavar='Label', default=None, help="Label of the drive listing")
+        F.add_db_to_parser(parser_search)
+        F.add_verbose_to_parser(parser_search)
+
+        """
         parser_create = subparsers.add_parser('create',
                                             help='find help',
                                             description='Create an empty database')
         F.add_db_to_parser(parser_create, True)
         F.add_verbose_to_parser(parser_create)
-
-        parser_find = subparsers.add_parser('find',
-                                            help='find help',
-                                            description='Find files exactly matching (case sensitive) the provided filename. (Faster than "like")')
-        F.add_db_to_parser(parser_find)
-        parser_find.add_argument("-l", "--label", default=None, metavar='Label', help="Label of the drive listing")
-        parser_find.add_argument("filename", metavar='Filename', help="Exact name of the file to be found (case-sensitive)")
-        parser_find.add_argument("-t", "--type", metavar='Type', choices=file_type_categories, nargs='?', help="Type of files to be considered")
-        F.add_verbose_to_parser(parser_find)
-
-        parser_search = subparsers.add_parser('search',
-                                            help='search help',
-                                            description='Search for files based on search strings (slower than "find")')
-        parser_search.add_argument("-s", "--search", metavar='Search String', help="Search string to be found within filenames (case-insensitive)\nxyz% - find filenames starting with 'xyz'\n%xyz - find filenames ending with 'xyz'\nSee SQL LIKE command for further options")
-        parser_search.add_argument("-t", "--type", metavar='Type', choices=file_type_categories, nargs='?', help="Type of files to be considered")
-        parser_search.add_argument("-l", "--label", default=None, metavar='Label', help="Label of the drive listing")
-        F.add_db_to_parser(parser_search)
-        F.add_verbose_to_parser(parser_search)
 
         # create the parser for the "import" subcommand
         parser_import = subparsers.add_parser('import', help='import help')
@@ -192,6 +203,7 @@ class F:
                                              description='Warning: Using the "reset" subcommand will delete the specified database and replace it with an empty one.')
         F.add_db_to_parser(parser_reset)
         F.add_verbose_to_parser(parser_reset)
+        """
 
     def process_args_and_call_subcommand(self, args):
 
@@ -223,16 +235,15 @@ class F:
         # If not, ask the user if they want to create a new database at the specified location (give the full path as well)
 
         self.database = Database(database_filename, create_tables)
-        self.database.set_verbose_mode(args.verbose)
+        if "verbose" in args:
+            self.database.set_verbose_mode(args.verbose)
+
         if create_tables:
             self.database.create_database_structure()
 
         start_time = time.time()
 
-        if args.subcommand == "find":
-            self.find(args)
-
-        elif args.subcommand == "search":
+        if args.subcommand == "search":
             self.search(args)
 
         elif args.subcommand == "vacuum":

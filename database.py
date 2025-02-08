@@ -185,6 +185,10 @@ class Database:
         sql_argument_array = []
         clause_added = False
 
+        if filename is not None and filename.count("%") == 0 and filename.count("_") == 0:
+            # We can replace this SQL "like" with an exact match '=' as it doesn't contain 'like" special characters
+            like = False
+
         # Filename clause
         if like:
             sql_string += " " + self.__sql_dictionary["find_filename_like_filename_clause"]
