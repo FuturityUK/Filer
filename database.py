@@ -165,7 +165,8 @@ class Database:
         self.commit()
         print(f"Database created.")
 
-    def find_filenames_exact_match(self, filename: str, label: str = None):
+    def find_filenames_exact_match(self, filename: str, file_type: str, label: str = None):
+        """
         if label is None:
             self.find_filenames(
                 self.__sql_dictionary["find_filename_exact_match"],
@@ -176,12 +177,44 @@ class Database:
                 self.__sql_dictionary["find_filename_exact_match_with_label"],
                 [filename, label]
             )
+        """
+        self.find_filenames_search(filename, file_type, label, False)
 
-    def find_filenames_like(self, search: str, type: str, label: str = None):
-        if label is None:
-            self.find_filenames( self.__sql_dictionary["find_filename_like"],[search] )
+    def find_filenames_search(self, filename: str, file_type: str, label: str = None, like: bool = True):
+        sql_string = self.__sql_dictionary["find_filename_base"]
+        sql_argument_array = []
+        clause_added = False
+
+        # Filename clause
+        if like:
+            sql_string += " " + self.__sql_dictionary["find_filename_like_filename_clause"]
+            if filename is not None and filename != "":
+                sql_argument_array.append(filename)
+            else:
+                sql_argument_array.append("%")
         else:
-            self.find_filenames( self.__sql_dictionary["find_filename_like_with_label"],[search, label] )
+            sql_string += " " + self.__sql_dictionary["find_filename_exact_match_filename_clause"]
+            if filename is not None and filename != "":
+                sql_argument_array.append(filename)
+            else:
+                print("Filename can't be empty for an exact match search")
+                exit()
+        clause_added = True
+
+        # Label clause
+        if label is not None and label != "" :
+            if clause_added:
+                sql_string += " AND "
+            sql_string += self.__sql_dictionary["find_filename_label_clause"]
+            sql_argument_array.append(label)
+
+        # Add table join
+        sql_string += " " + self.__sql_dictionary["find_filename_post"]
+
+        # Run the SQL
+        print(f"sql_string: {sql_string}")
+        print(f"sql_argument_array: {sql_argument_array}")
+        self.find_filenames( sql_string, sql_argument_array )
 
     def find_filenames(self,
                        sql: str,

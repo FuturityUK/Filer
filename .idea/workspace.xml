@@ -4,11 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="changed name of cached file to file_types.wikitext">
+    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Work on search (find) GUI (not finished)">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/f.py" beforeDir="false" afterPath="$PROJECT_DIR$/f.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fgui.py" beforeDir="false" afterPath="$PROJECT_DIR$/fgui.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/file_types.py" beforeDir="false" afterPath="$PROJECT_DIR$/file_types.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database.py" beforeDir="false" afterPath="$PROJECT_DIR$/database.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sql.py" beforeDir="false" afterPath="$PROJECT_DIR$/sql.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -94,14 +93,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1736868367160</updated>
-    </task>
-    <task id="LOCAL-00045" summary="Added code to detect system type">
-      <option name="closed" value="true" />
-      <created>1737888564340</created>
-      <option name="number" value="00045" />
-      <option name="presentableId" value="LOCAL-00045" />
-      <option name="project" value="LOCAL" />
-      <updated>1737888564340</updated>
     </task>
     <task id="LOCAL-00046" summary="Added OS detection methods">
       <option name="closed" value="true" />
@@ -487,7 +478,15 @@
       <option name="project" value="LOCAL" />
       <updated>1738963292672</updated>
     </task>
-    <option name="localTasksCounter" value="94" />
+    <task id="LOCAL-00094" summary="Work on search (find) GUI (not finished)">
+      <option name="closed" value="true" />
+      <created>1739027638412</created>
+      <option name="number" value="00094" />
+      <option name="presentableId" value="LOCAL-00094" />
+      <option name="project" value="LOCAL" />
+      <updated>1739027638418</updated>
+    </task>
+    <option name="localTasksCounter" value="95" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -502,7 +501,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Started work on System.does_path_listing_exit() to check if a file exists and give the user the option to delete it." />
     <MESSAGE value="Removed the Vacuum.bt file" />
     <MESSAGE value="Fixed database directory checking if it exists or not.&#10;Fixed the &quot;like&quot; subcommand." />
     <MESSAGE value="Added task to add &quot;exclude&quot; functionality." />
@@ -527,6 +525,7 @@
     <MESSAGE value="Extensions are now split into individual extensions together with their descriptions. More wikitext formatting correctly removed" />
     <MESSAGE value="Finished file_types.py which now can download directly from the wikipedia website, cache the file locally and extract the extension data from it. It then stores the details in a csv file" />
     <MESSAGE value="changed name of cached file to file_types.wikitext" />
-    <option name="LAST_COMMIT_MESSAGE" value="changed name of cached file to file_types.wikitext" />
+    <MESSAGE value="Work on search (find) GUI (not finished)" />
+    <option name="LAST_COMMIT_MESSAGE" value="Work on search (find) GUI (not finished)" />
   </component>
 </project>

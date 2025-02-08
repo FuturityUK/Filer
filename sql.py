@@ -78,10 +78,24 @@ class SQLDictionary:
                 AND fse.FileSystemID = fs.FileSystemID;
             '''
 
-        self.sql_dictionary["find_filename_like"] = '''
+        self.sql_dictionary["find_filename_base"] = '''
                 SELECT fse.Fullname, fs.Label
                 FROM FileSystemEntries AS fse, FileSystems AS fs
-                WHERE fse.Filename LIKE ? 
+                WHERE 
+            '''
+        self.sql_dictionary["find_filename_like_filename_clause"] = '''
+                fse.Filename LIKE ?
+            '''
+
+        self.sql_dictionary["find_filename_exact_match_filename_clause"] = '''
+                fse.Filename = ?
+            '''
+
+        self.sql_dictionary["find_filename_label_clause"] = '''
+                fs.Label = ?
+            '''
+
+        self.sql_dictionary["find_filename_post"] = '''
                 AND fse.FileSystemID = fs.FileSystemID;
             '''
 
