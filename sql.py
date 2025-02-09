@@ -10,6 +10,14 @@ class SQLDictionary:
 
         self.sql_dictionary = {}
 
+        self.sql_dictionary["does_database_information_table_exist"] = '''
+                SELECT name FROM sqlite_master WHERE type='table' AND name='DatabaseInformation';        
+            '''
+
+        self.sql_dictionary["find_db_version"] = '''
+                SELECT Value FROM DatabaseInformation WHERE KeyName = "DBVersion"; 
+            '''
+
         self.sql_dictionary["create_database_tables_and_indexes"] = '''
                 -- Drives definition
                 

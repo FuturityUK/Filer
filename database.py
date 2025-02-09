@@ -104,16 +104,19 @@ class Database:
         self.__vprint(sql)
         try:
             if parameters is not None:
-                self.__cursor.execute(sql, parameters)
+                return self.__cursor.execute(sql, parameters)
             else:
-                self.__cursor.execute(sql)
+                return self.__cursor.execute(sql)
         except sqlite3.Error as err:
+            """
             # print(f"Error in SQL execute: {err.sqlite_errorname}")
             print('SQLite traceback: ')
             exc_type, exc_value, exc_tb = sys.exc_info()
             print(traceback.format_exception(exc_type, exc_value, exc_tb))
-            print("Exiting.")
-            exit(2)
+            #print("Exiting.")
+            #exit(2)
+            """
+            return err
 
     def executescript(self, sql: str):
         """
@@ -122,11 +125,17 @@ class Database:
         """
         self.__vprint(sql)
         try:
-            self.__cursor.executescript(sql)
+            return self.__cursor.executescript(sql)
         except sqlite3.Error as err:
+            """
             print(f"Error in SQL executescript: {err.sqlite_errorname}")
-            print("Exiting.")
-            exit(2)
+            print('SQLite traceback: ')
+            exc_type, exc_value, exc_tb = sys.exc_info()
+            print(traceback.format_exception(exc_type, exc_value, exc_tb))
+            #print("Exiting.")
+            #exit(2)
+            """
+            return err
 
     def commit(self):
         if not self.__dry_run_mode:
@@ -165,18 +174,74 @@ class Database:
         print(f"Database created.")
 
     def upgrade_database(self):
-        print(f"Updating database.")
-        sql_versions_length = len(self.__sql_versions)
-        for key in sorted(self.__sql_versions.keys()):
-            print(f"key: {key}")
-            sql_dictionary_key = self.__sql_versions[key]
-            print(f"sql: {self.__sql_dictionary[sql_dictionary_key]}")
+        db_version = None
+        while True:
+            # Loop until all upgrades have been applied
+            '''
+            print(f"SQL Query: \"{self.__sql_dictionary["does_database_information_table_exist"]}\"")
+            self.execute(self.__sql_dictionary["does_database_information_table_exist"])
+            rows_found = 0
+            select_result = self.fetch_all_results()
+            for row in select_result:
+                #print(f"{row[0]}")
+                rows_found += 1
+            print(f"{rows_found} results found")
+            if rows_found == 0:
+                # DatabaseVersion table doesn't exist, so this must be the initial version 1 database
+                db_version = 1
+            else:
+            '''
+            # DatabaseVersion table does exist, so load the version of the database
+            #print(f"SQL Query: \"{self.__sql_dictionary["find_db_version"]}\"")
+            result = self.execute(self.__sql_dictionary["find_db_version"])
+            #print(f"type(result): {type(result)}")
+            if type(result) is sqlite3.OperationalError:
+                print("DatabaseInformation table doesn't exist, so this must be database version 1")
+                db_version = 1
+            else:
+                rows_found = 0
+                select_result = self.fetch_all_results()
+                for row in select_result:
+                    db_version = int(row[0])
+                    #print(f"db_version: {db_version}")
+                    rows_found += 1
+                #print(f"{rows_found} results found")
 
+                if rows_found == 0:
+                    # DBVersion not found
+                    print("DBVersion not found in the DatabaseInformation table")
+                    exit(2)
+                elif rows_found > 1:
+                    # More than one DBVersion found
+                    print("More than one DBVersion found in the DatabaseInformation table. Can't continue.")
+                    exit(2)
+            # If we are here, then db_version have been loaded correctly
+            print(f"Database version {db_version} detected.")
 
-        #self.__vprint(f"SQL Query: \"{self.__sql_dictionary["create_database_tables_and_indexes"]}\"")
-        #self.executescript(self.__sql_dictionary["create_database_tables_and_indexes"])
-        #self.commit()
-        print(f"Database updated.")
+            sql_versions_length = len(self.__sql_versions)
+            if db_version >= sql_versions_length:
+                # Database is up to date
+                print(f"Database version {db_version} is the latest version. No upgrade needed.")
+                break
+            else:
+                # Database needs upgrading
+                new_db_version = db_version + 1
+                if str(new_db_version) not in self.__sql_versions:
+                    print(f"No dictionary key found for upgrade version {new_db_version}")
+                    exit(2)
+                else:
+                    sql_dictionary_key = self.__sql_versions[str(new_db_version)]
+                    if sql_dictionary_key not in self.__sql_dictionary:
+                        print(f"No upgrade SQL found for dictionary key {sql_dictionary_key} in the SQL dictionary")
+                        exit(2)
+                    else:
+                        upgrade_sql = self.__sql_dictionary[sql_dictionary_key]
+                        print(f"Upgrading database to version {new_db_version}.")
+                        self.__vprint(f"SQL Query: \"{upgrade_sql}\"")
+                        self.executescript(upgrade_sql)
+                        self.commit()
+                        print(f"Database upgraded to version {new_db_version} complete.")
+        self.commit()
 
     def find_filenames_exact_match(self, filename: str, file_type: str, label: str = None):
         """

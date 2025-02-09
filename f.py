@@ -282,7 +282,7 @@ class F:
 
             end_time = time.time()
 
-            print(f"Time in seconds: {end_time - start_time}")
+            #print(f"Time in seconds: {end_time - start_time}")
 
         # Clean up and exit
         self.clean_up_and_quit()

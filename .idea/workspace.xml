@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Added DBVersion &quot;2&quot; upgrade SQL.&#10;It's not being run yet though.">
+    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Database.upgrade_database() now cycles through the SQL create and upgrade SQL in order">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/database.py" beforeDir="false" afterPath="$PROJECT_DIR$/database.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/f.py" beforeDir="false" afterPath="$PROJECT_DIR$/f.py" afterDir="false" />
@@ -94,14 +94,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1736868367160</updated>
-    </task>
-    <task id="LOCAL-00051" summary="more drive functions added">
-      <option name="closed" value="true" />
-      <created>1737904043450</created>
-      <option name="number" value="00051" />
-      <option name="presentableId" value="LOCAL-00051" />
-      <option name="project" value="LOCAL" />
-      <updated>1737904043450</updated>
     </task>
     <task id="LOCAL-00052" summary="display_dictionary now prints the array of dicionaries in a python valid syntax">
       <option name="closed" value="true" />
@@ -487,7 +479,15 @@
       <option name="project" value="LOCAL" />
       <updated>1739127383715</updated>
     </task>
-    <option name="localTasksCounter" value="100" />
+    <task id="LOCAL-00100" summary="Database.upgrade_database() now cycles through the SQL create and upgrade SQL in order">
+      <option name="closed" value="true" />
+      <created>1739129157280</created>
+      <option name="number" value="00100" />
+      <option name="presentableId" value="LOCAL-00100" />
+      <option name="project" value="LOCAL" />
+      <updated>1739129157280</updated>
+    </task>
+    <option name="localTasksCounter" value="101" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -502,7 +502,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Changed the &quot;find&quot; subcommand so that it displays the &quot;label&quot;" />
     <MESSAGE value="Modified README" />
     <MESSAGE value="Added partial code to allow finding files against particular labels" />
     <MESSAGE value="finding files against particular labels implemented" />
@@ -527,6 +526,7 @@
     <MESSAGE value="add_argument() now strips out Gooey 'widget' attributes if non GUI versions running.&#10;Started migrating add_argument native functions over to custom F.add_argument() function." />
     <MESSAGE value="Database 'create' subcommand works, but should really be moved to the Database class" />
     <MESSAGE value="Added DBVersion &quot;2&quot; upgrade SQL.&#10;It's not being run yet though." />
-    <option name="LAST_COMMIT_MESSAGE" value="Added DBVersion &quot;2&quot; upgrade SQL.&#10;It's not being run yet though." />
+    <MESSAGE value="Database.upgrade_database() now cycles through the SQL create and upgrade SQL in order" />
+    <option name="LAST_COMMIT_MESSAGE" value="Database.upgrade_database() now cycles through the SQL create and upgrade SQL in order" />
   </component>
 </project>
