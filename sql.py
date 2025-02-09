@@ -21,8 +21,7 @@ class SQLDictionary:
                 CREATE INDEX Drives_SerialNumber_IDX ON Drives (SerialNumber);
                 CREATE UNIQUE INDEX Drives_Make_Model_SerialNumber_IDX ON Drives (Make,Model,SerialNumber);
                 CREATE INDEX Drives_hostname_IDX ON Drives (Hostname);
-                
-                
+
                 -- FileSystemEntries definition
                 
                 CREATE TABLE "FileSystemEntries" (
@@ -62,6 +61,67 @@ class SQLDictionary:
                 CREATE UNIQUE INDEX FileSystems_Label_IDX ON FileSystems (Label);
                 CREATE INDEX FileSystems_DriveID_IDX ON FileSystems (DriveID);
             '''
+
+        self.sql_dictionary["modify_database_tables_and_indexes"] = '''
+                -- Categories definition
+
+                CREATE TABLE Categories (
+                    CategoryID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+                    Name TEXT
+                );
+                CREATE UNIQUE INDEX Categories_Name_IDX ON Categories (Name);
+                
+                -- SubCategories definition
+
+                CREATE TABLE SubCategories (
+                    SubCategoryID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+                    Name TEXT
+                );
+                CREATE UNIQUE INDEX SubCategories_Name_IDX ON SubCategories (Name);
+
+                -- SubCategories2 definition
+
+                CREATE TABLE SubCategories2 (
+                    SubCategory2ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+                    Name TEXT
+                );
+                CREATE UNIQUE INDEX SubCategories2_Name_IDX ON SubCategories2 (Name);
+
+                -- FileTypes definition
+                
+                CREATE TABLE FileTypes (
+                    FileTypeID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+                    CategoryID INTEGER,
+                    SubCategoryID INTEGER,
+                    SubCategory2ID INTEGER,
+                    Extension TEXT,
+                    Description TEXT
+                );
+                CREATE INDEX FileTypes_CategoryID_IDX ON FileTypes (CategoryID);
+                CREATE INDEX FileTypes_SubCategoryID_IDX ON FileTypes (SubCategoryID);
+                CREATE INDEX FileTypes_SubCategory2ID_IDX ON FileTypes (SubCategory2ID);
+                CREATE UNIQUE INDEX FileTypes_Extension_IDX ON FileTypes (Extension);
+                
+                -- Update FileSystemEntries
+                
+                ALTER TABLE FileSystemEntries ADD FileTypeID INTEGER;
+                CREATE INDEX FileSystemEntries_FileTypeID_IDX ON FileSystemEntries (FileTypeID);
+                
+                -- DatabaseInformation definition
+                
+                CREATE TABLE DatabaseInformation (
+                    DatabaseInformationID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+                    KeyName TEXT NOT NULL,
+                    Value TEXT
+                );
+                CREATE UNIQUE INDEX DatabaseInformation_Key_IDX ON DatabaseInformation ("Key");
+                
+                -- Set DBVersion to "2"
+
+                INSERT OR REPLACE INTO DatabaseInformation (DatabaseInformationID, KeyName, Value) VALUES (
+                    (SELECT DatabaseInformationID FROM DatabaseInformation WHERE KeyName = "DBVersion"),
+                    "DBVersion", "2");   
+        '''
 
         self.sql_dictionary["find_filename_exact_match"] = '''
                 SELECT fse.Fullname, fs.Label

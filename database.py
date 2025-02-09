@@ -157,6 +157,7 @@ class Database:
         self.commit()
 
     def create_database_structure(self):
+
         print(f"Creating database.")
         self.__vprint(f"SQL Query: \"{self.__sql_dictionary["create_database_tables_and_indexes"]}\"")
         self.executescript(self.__sql_dictionary["create_database_tables_and_indexes"])
