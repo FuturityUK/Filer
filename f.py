@@ -36,6 +36,15 @@ class F:
 
     DEFAULT_TEMP_LISTING_FILE: str = 'filer.fwf'
 
+    SUBCOMMAND_CREATE: str = 'create'
+    SUBCOMMAND_: str = ''
+    SUBCOMMAND_: str = ''
+    SUBCOMMAND_: str = ''
+    SUBCOMMAND_: str = ''
+    SUBCOMMAND_: str = ''
+    SUBCOMMAND_: str = ''
+    SUBCOMMAND_: str = ''
+
     def __init__(self):
         self.database = None
         self.memory_stats = False
@@ -94,35 +103,26 @@ class F:
     def add_argument(parser, *temp_args, **temp_kwargs): # : Optional[Union[Iterable, dict]]
         #parser.add_argument(temp_args, temp_kwargs)
         if type(parser) is argparse.ArgumentParser:
-            # Remove GooeyParser parameters
+            # Remove GooeyParser parameters as they aren't compatible with the ArgumentParser
             temp_kwargs.pop("metavar", None)
-        print(f"temp_args: {temp_args}")
-        print(f"temp_kwargs: {temp_kwargs}")
+            temp_kwargs.pop("widget", None)
+        #print(f"temp_args: {temp_args}")
+        #print(f"temp_kwargs: {temp_kwargs}")
         parser.add_argument( *temp_args, **temp_kwargs )
 
     @staticmethod
     def add_db_to_parser(parser, create: bool=False):
         #print(f"Parser type: {type(parser)}")
         if type(parser) is argparse.ArgumentParser:
-            #parser.add_argument("-d", "--db", default="database.sqlite",
-            #                help="database filename (including path if necessary). Default='database.sqlite' in the current directory.")
             F.add_argument(parser, "-d", "--db", default="database.sqlite",
                             help="database filename (including path if necessary). Default='database.sqlite' in the current directory.")
         else:
             if create:
-                #parser.add_argument("-d", "--db", default="database.sqlite",
-                #                    widget = 'FileSaver',
-                #                    metavar='Database Filename',
-                #                    help="Database filename (including path if necessary). Default='database.sqlite' in the current directory.")
                 F.add_argument(parser, "-d", "--db", default="database.sqlite",
                                     widget = 'FileSaver',
                                     metavar='Database Filename',
                                     help="Database filename (including path if necessary). Default='database.sqlite' in the current directory.")
             else:
-                #parser.add_argument("-d", "--db", default="database.sqlite",
-                #                    widget = 'FileChooser',
-                #                    metavar='Database Filename',
-                #                    help="Database filename (including path if necessary). Default='database.sqlite' in the current directory.")
                 F.add_argument(parser, "-d", "--db", default="database.sqlite",
                                     widget = 'FileChooser',
                                     metavar='Database Filename',
@@ -161,7 +161,6 @@ class F:
         F.add_db_to_parser(parser_search)
         F.add_verbose_to_parser(parser_search)
 
-        """
         parser_create = subparsers.add_parser('create',
                                             help='find help',
                                             description='Create an empty database')
@@ -171,23 +170,27 @@ class F:
         # create the parser for the "import" subcommand
         parser_import = subparsers.add_parser('import', help='import help')
         F.add_db_to_parser(parser_import)
-        parser_import.add_argument("label", metavar='Label', help="Label of the drive listing")
+        F.add_argument(parser_import, "label", metavar='Label', help="Label of the drive listing")
+        """
         if type(parser) is argparse.ArgumentParser:
             parser_import.add_argument("filename", metavar='Filename',
                                    help="Filename (including path) of the listing in fixed width format to be processed. See PowerShell example.")
         else:
             parser_import.add_argument("filename", metavar='Filename', widget = 'FileChooser',
                                    help="Filename (including path) of the listing in fixed width format to be processed. See PowerShell example.")
-        parser_import.add_argument("-m", "--make", metavar='Make', default=None, help="Make of the drive")
-        parser_import.add_argument("-o", "--model", metavar='Model', default=None, help="Model of the drive")
-        parser_import.add_argument("-s", "--serial", metavar='Serial Number', default=None, help="Serial number of the drive")
-        parser_import.add_argument("-c", "--combined", metavar='Combined', default=None,
+        """
+        F.add_argument(parser_import, "filename", metavar='Filename', widget='FileChooser',
+                                   help="Filename (including path) of the listing in fixed width format to be processed. See PowerShell example.")
+        F.add_argument(parser_import, "-m", "--make", metavar='Make', default=None, help="Make of the drive")
+        F.add_argument(parser_import, "-o", "--model", metavar='Model', default=None, help="Model of the drive")
+        F.add_argument(parser_import, "-s", "--serial", metavar='Serial Number', default=None, help="Serial number of the drive")
+        F.add_argument(parser_import, "-c", "--combined", metavar='Combined', default=None,
                                    help="Combined drive information string, in format \"make,model,serial-number\"")
-        parser_import.add_argument("-n", "--hostname", metavar='Hostname', default=None,
+        F.add_argument(parser_import, "-n", "--hostname", metavar='Hostname', default=None,
                                    help="Hostname of the machine containing the drive")
-        parser_import.add_argument("-p", "--prefix", metavar='Prefix', default=None,
+        F.add_argument(parser_import, "-p", "--prefix", metavar='Prefix', default=None,
                                    help="Prefix to remove from the start of each file's path. e.g. \"C:\\Users\\username\"")
-        parser_import.add_argument("-t", "--test", metavar='Test', action="store_true",
+        F.add_argument(parser_import, "-t", "--test", metavar='Test', action="store_true",
                                    help="Test input file without modifying the database")
         F.add_verbose_to_parser(parser_import)
 
@@ -203,12 +206,14 @@ class F:
                                              description='Warning: Using the "reset" subcommand will delete the specified database and replace it with an empty one.')
         F.add_db_to_parser(parser_reset)
         F.add_verbose_to_parser(parser_reset)
-        """
 
     def process_args_and_call_subcommand(self, args):
 
         # The following subcommands all require a database
         database_filename = args.db
+
+        if args.subcommand == "search":
+            self.search(args)
 
         # Does the database file exit?
         create_tables = False
@@ -223,14 +228,16 @@ class F:
             # Database file doesn't exist
             # Ask user if they want to create a new database file?
             print(f"Database file doesn't exist at location: \"{os.path.abspath(database_filename)}\"")
-            #create_database_answer = input("Do you want to create a new database there? ")
+            print(f"Please create the Database using the \'create\' subcommand.")
+            """
             create_database_answer = System.select_option("Do you want to create a new database there? ")
-            #if create_database_answer.lower() == "y" or create_database_answer.lower() == "yes":
             if create_database_answer:
                 create_tables = True
             else:
                 print("Database not created. Exiting")
                 exit(2)
+            """
+            exit(2)
 
         # If not, ask the user if they want to create a new database at the specified location (give the full path as well)
 

@@ -4,9 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Find and Search subcommands now share the same code">
+    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Fixed passing *args and **kwargs">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database.py" beforeDir="false" afterPath="$PROJECT_DIR$/database.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/f.py" beforeDir="false" afterPath="$PROJECT_DIR$/f.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -52,27 +51,27 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Python.database.executor": "Run",
-    "Python.f.executor": "Run",
-    "Python.fgui.executor": "Run",
-    "Python.file_system_processors.executor": "Run",
-    "Python.file_types.executor": "Run",
-    "Python.filer.executor": "Run",
-    "Python.main.executor": "Run",
-    "Python.powershell.executor": "Run",
-    "Python.sql.executor": "Run",
-    "Python.system.executor": "Run",
-    "Python.test.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "master",
-    "ignore.virus.scanning.warn.message": "true",
-    "run.code.analysis.last.selected.profile": "aDefault",
-    "settings.editor.selected.configurable": "settings.sync"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Python.database.executor&quot;: &quot;Run&quot;,
+    &quot;Python.f.executor&quot;: &quot;Run&quot;,
+    &quot;Python.fgui.executor&quot;: &quot;Run&quot;,
+    &quot;Python.file_system_processors.executor&quot;: &quot;Run&quot;,
+    &quot;Python.file_types.executor&quot;: &quot;Run&quot;,
+    &quot;Python.filer.executor&quot;: &quot;Run&quot;,
+    &quot;Python.main.executor&quot;: &quot;Run&quot;,
+    &quot;Python.powershell.executor&quot;: &quot;Run&quot;,
+    &quot;Python.sql.executor&quot;: &quot;Run&quot;,
+    &quot;Python.system.executor&quot;: &quot;Run&quot;,
+    &quot;Python.test.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;aDefault&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;settings.sync&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\Neil.FUTURITY\PycharmProjects\Filer" />
@@ -93,14 +92,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1736868367160</updated>
-    </task>
-    <task id="LOCAL-00047" summary="More OS Functions">
-      <option name="closed" value="true" />
-      <created>1737896966589</created>
-      <option name="number" value="00047" />
-      <option name="presentableId" value="LOCAL-00047" />
-      <option name="project" value="LOCAL" />
-      <updated>1737896966589</updated>
     </task>
     <task id="LOCAL-00048" summary="Code to stop results from being truncated">
       <option name="closed" value="true" />
@@ -486,7 +477,15 @@
       <option name="project" value="LOCAL" />
       <updated>1739030224284</updated>
     </task>
-    <option name="localTasksCounter" value="96" />
+    <task id="LOCAL-00096" summary="Fixed passing *args and **kwargs">
+      <option name="closed" value="true" />
+      <created>1739035631960</created>
+      <option name="number" value="00096" />
+      <option name="presentableId" value="LOCAL-00096" />
+      <option name="project" value="LOCAL" />
+      <updated>1739035631960</updated>
+    </task>
+    <option name="localTasksCounter" value="97" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -501,7 +500,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Fixed database directory checking if it exists or not.&#10;Fixed the &quot;like&quot; subcommand." />
     <MESSAGE value="Added task to add &quot;exclude&quot; functionality." />
     <MESSAGE value="Fixed temp listing filename to : listing.fwf" />
     <MESSAGE value="Changed the &quot;like&quot; subcommand so that it displays the &quot;label&quot;" />
@@ -526,6 +524,7 @@
     <MESSAGE value="changed name of cached file to file_types.wikitext" />
     <MESSAGE value="Work on search (find) GUI (not finished)" />
     <MESSAGE value="Find and Search subcommands now share the same code" />
-    <option name="LAST_COMMIT_MESSAGE" value="Find and Search subcommands now share the same code" />
+    <MESSAGE value="Fixed passing *args and **kwargs" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed passing *args and **kwargs" />
   </component>
 </project>
