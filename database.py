@@ -13,14 +13,12 @@ class Database:
     """ Class to handle SQlite operations """
     __verbose = False
 
-    def __init__(self, path: str, create_tables: bool):
+    def __init__(self, path: str):
         self.__connection = self.create_connection(path)
         self.__cursor = self.create_cursor()
         self.__sql_dictionary = SQLDictionary().sql_dictionary
         self.__dry_run_mode = False
         self.__verbose = False
-        if create_tables:
-            print("Creating tables.")
         return
 
     def __vprint(self, string: str):

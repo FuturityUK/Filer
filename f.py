@@ -36,14 +36,11 @@ class F:
 
     DEFAULT_TEMP_LISTING_FILE: str = 'filer.fwf'
 
+    SUBCOMMAND_SEARCH: str = 'search'
     SUBCOMMAND_CREATE: str = 'create'
-    SUBCOMMAND_: str = ''
-    SUBCOMMAND_: str = ''
-    SUBCOMMAND_: str = ''
-    SUBCOMMAND_: str = ''
-    SUBCOMMAND_: str = ''
-    SUBCOMMAND_: str = ''
-    SUBCOMMAND_: str = ''
+    SUBCOMMAND_IMPORT: str = 'import'
+    SUBCOMMAND_VACUUM: str = 'vacuum'
+    SUBCOMMAND_RESET: str = 'reset'
 
     def __init__(self):
         self.database = None
@@ -64,6 +61,29 @@ class F:
     def search(self, args: []):
         print(f"Finding filenames:")
         self.database.find_filenames_search(args.search, args.type, args.label)
+
+    def create(self, args: []):
+        database_filename = args.db
+        abspath_database_filename = os.path.abspath(database_filename)
+        directory_name = os.path.dirname(abspath_database_filename)
+        # Does the directory exist where we want to create the database?
+        if not os.path.exists(directory_name):
+            print(f"\"{directory_name}\" directory in your database filename path, does not exist!")
+            print("The directory must exist before a new database can be created there.")
+            exit(2)
+
+        if os.path.isfile(database_filename):
+            # Database file doesn't exist
+            # Ask user if they want to create a new database file?
+            print(f"Database file already exists at location: \"{os.path.abspath(database_filename)}\"")
+            print(f"To empty the database, use the \'{F.SUBCOMMAND_RESET}\' subcommand.")
+            exit(2)
+
+        self.database = Database(database_filename)
+        if "verbose" in args:
+            self.database.set_verbose_mode(args.verbose)
+
+        self.database.create_database_structure()
 
     def vacuum(self):
         print(f"Vacuuming database. This may take a while depending on the your database size.")
@@ -209,62 +229,44 @@ class F:
 
     def process_args_and_call_subcommand(self, args):
 
-        # The following subcommands all require a database
-        database_filename = args.db
+        # If 'create' subcommand specified, then we don't need to open the database
+        if args.subcommand == F.SUBCOMMAND_CREATE:
+            self.create(args)
 
-        if args.subcommand == "search":
-            self.search(args)
+        else:
+            # These subcommands all need a working database connection
+            # The following subcommands all require a database
+            database_filename = args.db
 
-        # Does the database file exit?
-        create_tables = False
-        abspath_database_filename = os.path.abspath(database_filename)
-        directory_name = os.path.dirname(abspath_database_filename)
-        if not os.path.exists(directory_name):
-            print(f"\"{directory_name}\" directory in your database filename path, does not exist!")
-            print("The directory must exist before a new database can be created there. Exiting")
-            exit(2)
-
-        if not os.path.isfile(database_filename):
-            # Database file doesn't exist
-            # Ask user if they want to create a new database file?
-            print(f"Database file doesn't exist at location: \"{os.path.abspath(database_filename)}\"")
-            print(f"Please create the Database using the \'create\' subcommand.")
-            """
-            create_database_answer = System.select_option("Do you want to create a new database there? ")
-            if create_database_answer:
-                create_tables = True
-            else:
-                print("Database not created. Exiting")
+            if not os.path.isfile(database_filename):
+                # Database file doesn't exist
+                # Ask user if they want to create a new database file?
+                print(f"Database file doesn't exist at location: \"{os.path.abspath(database_filename)}\"")
+                print(f"Please create the Database using the \'create\' subcommand.")
                 exit(2)
-            """
-            exit(2)
 
-        # If not, ask the user if they want to create a new database at the specified location (give the full path as well)
+            self.database = Database(database_filename)
 
-        self.database = Database(database_filename, create_tables)
-        if "verbose" in args:
-            self.database.set_verbose_mode(args.verbose)
+            if "verbose" in args:
+                self.database.set_verbose_mode(args.verbose)
 
-        if create_tables:
-            self.database.create_database_structure()
+            start_time = time.time()
 
-        start_time = time.time()
+            if args.subcommand == F.SUBCOMMAND_SEARCH:
+                self.search(args)
 
-        if args.subcommand == "search":
-            self.search(args)
+            elif args.subcommand == F.SUBCOMMAND_IMPORT:
+                self.import_listing(args)
 
-        elif args.subcommand == "vacuum":
-            self.vacuum()
+            elif args.subcommand == F.SUBCOMMAND_VACUUM:
+                self.vacuum()
 
-        elif args.subcommand == "reset":
-            self.reset(args)
+            elif args.subcommand == F.SUBCOMMAND_RESET:
+                self.reset(args)
 
-        elif args.subcommand == "import":
-            self.import_listing(args)
+            end_time = time.time()
 
-        end_time = time.time()
-
-        print(f"Time in seconds: {end_time - start_time}")
+            print(f"Time in seconds: {end_time - start_time}")
 
         # Clean up and exit
         self.clean_up_and_quit()
