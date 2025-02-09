@@ -17,6 +17,7 @@ class Database:
         self.__connection = self.create_connection(path)
         self.__cursor = self.create_cursor()
         self.__sql_dictionary = SQLDictionary().sql_dictionary
+        self.__sql_versions = SQLDictionary().sql_versions
         self.__dry_run_mode = False
         self.__verbose = False
         return
@@ -157,12 +158,25 @@ class Database:
         self.commit()
 
     def create_database_structure(self):
-
         print(f"Creating database.")
         self.__vprint(f"SQL Query: \"{self.__sql_dictionary["create_database_tables_and_indexes"]}\"")
         self.executescript(self.__sql_dictionary["create_database_tables_and_indexes"])
         self.commit()
         print(f"Database created.")
+
+    def upgrade_database(self):
+        print(f"Updating database.")
+        sql_versions_length = len(self.__sql_versions)
+        for key in sorted(self.__sql_versions.keys()):
+            print(f"key: {key}")
+            sql_dictionary_key = self.__sql_versions[key]
+            print(f"sql: {self.__sql_dictionary[sql_dictionary_key]}")
+
+
+        #self.__vprint(f"SQL Query: \"{self.__sql_dictionary["create_database_tables_and_indexes"]}\"")
+        #self.executescript(self.__sql_dictionary["create_database_tables_and_indexes"])
+        #self.commit()
+        print(f"Database updated.")
 
     def find_filenames_exact_match(self, filename: str, file_type: str, label: str = None):
         """

@@ -37,8 +37,9 @@ class F:
     DEFAULT_TEMP_LISTING_FILE: str = 'filer.fwf'
 
     SUBCOMMAND_SEARCH: str = 'search'
-    SUBCOMMAND_CREATE: str = 'create'
     SUBCOMMAND_IMPORT: str = 'import'
+    SUBCOMMAND_CREATE: str = 'create'
+    SUBCOMMAND_UPGRADE: str = 'upgrade'
     SUBCOMMAND_VACUUM: str = 'vacuum'
     SUBCOMMAND_RESET: str = 'reset'
 
@@ -84,6 +85,11 @@ class F:
             self.database.set_verbose_mode(args.verbose)
 
         self.database.create_database_structure()
+
+    def upgrade(self):
+        print(f"Upgrading database. This may take a while depending on the your database size.")
+        self.database.upgrade_database()
+        print(f"Upgrading finished.")
 
     def vacuum(self):
         print(f"Vacuuming database. This may take a while depending on the your database size.")
@@ -181,12 +187,6 @@ class F:
         F.add_db_to_parser(parser_search)
         F.add_verbose_to_parser(parser_search)
 
-        parser_create = subparsers.add_parser('create',
-                                            help='find help',
-                                            description='Create an empty database')
-        F.add_db_to_parser(parser_create, True)
-        F.add_verbose_to_parser(parser_create)
-
         # create the parser for the "import" subcommand
         parser_import = subparsers.add_parser('import', help='import help')
         F.add_db_to_parser(parser_import)
@@ -213,6 +213,19 @@ class F:
         F.add_argument(parser_import, "-t", "--test", metavar='Test', action="store_true",
                                    help="Test input file without modifying the database")
         F.add_verbose_to_parser(parser_import)
+
+        parser_create = subparsers.add_parser('create',
+                                              help='find help',
+                                              description='Create an empty database')
+        F.add_db_to_parser(parser_create, True)
+        F.add_verbose_to_parser(parser_create)
+
+        # create the parser for the "vacuum" subcommand
+        parser_upgrade = subparsers.add_parser('upgrade',
+                                              help='upgrade help',
+                                              description='The UPGRADE subcommand upgrades the database file to the latest structure needed for this program to work.')
+        F.add_db_to_parser(parser_upgrade)
+        F.add_verbose_to_parser(parser_upgrade)
 
         # create the parser for the "vacuum" subcommand
         parser_vacuum = subparsers.add_parser('vacuum',
@@ -257,6 +270,9 @@ class F:
 
             elif args.subcommand == F.SUBCOMMAND_IMPORT:
                 self.import_listing(args)
+
+            elif args.subcommand == F.SUBCOMMAND_UPGRADE:
+                self.upgrade()
 
             elif args.subcommand == F.SUBCOMMAND_VACUUM:
                 self.vacuum()

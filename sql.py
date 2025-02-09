@@ -3,6 +3,11 @@ class SQLDictionary:
     """ Class to SQL strings for various operations """
 
     def __init__(self):
+        self.sql_versions = {
+            "1": "create_database_tables_and_indexes",
+            "2": "modify_database_tables_and_indexes_v2"
+        }
+
         self.sql_dictionary = {}
 
         self.sql_dictionary["create_database_tables_and_indexes"] = '''
@@ -62,7 +67,7 @@ class SQLDictionary:
                 CREATE INDEX FileSystems_DriveID_IDX ON FileSystems (DriveID);
             '''
 
-        self.sql_dictionary["modify_database_tables_and_indexes"] = '''
+        self.sql_dictionary["modify_database_tables_and_indexes_v2"] = '''
                 -- Categories definition
 
                 CREATE TABLE Categories (
