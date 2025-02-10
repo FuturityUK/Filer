@@ -4,12 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="filer.py: Split up code into functions that can be used by other programs&#10;f.py: Only scan volumes and add choices for argparse if no arguments provided to program">
-      <change afterPath="$PROJECT_DIR$/dyngooey.py" afterDir="false" />
+    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Added dyngooey.py as a way of resetting choices after running subcommands">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/f.py" beforeDir="false" afterPath="$PROJECT_DIR$/f.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/fgui.py" beforeDir="false" afterPath="$PROJECT_DIR$/fgui.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/test.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -95,14 +93,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1736868367160</updated>
-    </task>
-    <task id="LOCAL-00054" summary="Now works out which drive letter is on which drive.&#10;&#10;Skeleton for processing powershell output that are returned in lists rather than tables.">
-      <option name="closed" value="true" />
-      <created>1737922815231</created>
-      <option name="number" value="00054" />
-      <option name="presentableId" value="LOCAL-00054" />
-      <option name="project" value="LOCAL" />
-      <updated>1737922815231</updated>
     </task>
     <task id="LOCAL-00055" summary="Now lists mounted drive letters, together with their details">
       <option name="closed" value="true" />
@@ -488,7 +478,15 @@
       <option name="project" value="LOCAL" />
       <updated>1739211336787</updated>
     </task>
-    <option name="localTasksCounter" value="103" />
+    <task id="LOCAL-00103" summary="Added dyngooey.py as a way of resetting choices after running subcommands">
+      <option name="closed" value="true" />
+      <created>1739217695237</created>
+      <option name="number" value="00103" />
+      <option name="presentableId" value="LOCAL-00103" />
+      <option name="project" value="LOCAL" />
+      <updated>1739217695237</updated>
+    </task>
+    <option name="localTasksCounter" value="104" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -503,7 +501,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="finding files against particular labels implemented" />
     <MESSAGE value="Removed old debug output" />
     <MESSAGE value="Moved code handling different arguments into their own functions." />
     <MESSAGE value="Optimised the System.select_option() method." />
@@ -528,6 +525,7 @@
     <MESSAGE value="Database.upgrade_database() now cycles through the SQL create and upgrade SQL in order" />
     <MESSAGE value="Database.upgrade_database() now works" />
     <MESSAGE value="filer.py: Split up code into functions that can be used by other programs&#10;f.py: Only scan volumes and add choices for argparse if no arguments provided to program" />
-    <option name="LAST_COMMIT_MESSAGE" value="filer.py: Split up code into functions that can be used by other programs&#10;f.py: Only scan volumes and add choices for argparse if no arguments provided to program" />
+    <MESSAGE value="Added dyngooey.py as a way of resetting choices after running subcommands" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added dyngooey.py as a way of resetting choices after running subcommands" />
   </component>
 </project>

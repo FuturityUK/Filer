@@ -149,23 +149,23 @@ class F:
     def add_db_to_parser(parser, create: bool=False):
         #print(f"Parser type: {type(parser)}")
         if type(parser) is argparse.ArgumentParser:
-            F.add_argument(parser, "-d", "--db", default="database.sqlite",
+            F.add_argument(parser, "-d", "--db", dest='db', default="database.sqlite",
                             help="database filename (including path if necessary). Default='database.sqlite' in the current directory.")
         else:
             if create:
-                F.add_argument(parser, "-d", "--db", default="database.sqlite",
+                F.add_argument(parser, "-d", "--db", dest='db', default="database.sqlite",
                                     widget = 'FileSaver',
                                     metavar='Database Filename',
                                     help="Database filename (including path if necessary). Default='database.sqlite' in the current directory.")
             else:
-                F.add_argument(parser, "-d", "--db", default="database.sqlite",
+                F.add_argument(parser, "-d", "--db", dest='db', default="database.sqlite",
                                     widget = 'FileChooser',
                                     metavar='Database Filename',
                                     help="Database filename (including path if necessary). Default='database.sqlite' in the current directory.")
 
     @staticmethod
     def add_verbose_to_parser(parser, create: bool = False):
-        F.add_argument(parser, "-v", "--verbose",
+        F.add_argument(parser, "-v", "--verbose", dest='verbose', default=False,
                             action="store_true",
                             metavar='Verbose',
                             help="Verbose output")
@@ -192,8 +192,8 @@ class F:
          - '_' wildcard matches exactly one character
          ''')
         if type(parser) is not argparse.ArgumentParser:
-            parser_search.add_argument("-t", "--type", metavar='Type', choices=file_type_categories, nargs='?', help="Type of files to be considered")
-        parser_search.add_argument("-l", "--label", metavar='Label', default=None, help="Label of the drive listing")
+            parser_search.add_argument("-t", "--type", dest='type', metavar='Type', choices=file_type_categories, nargs='?', help="Type of files to be considered")
+        parser_search.add_argument("-l", "--label", dest='label2', metavar='Label', default=None, help="Label of the drive listing")
         F.add_db_to_parser(parser_search)
         F.add_verbose_to_parser(parser_search)
 
@@ -236,14 +236,14 @@ class F:
                     volumes[volume_description] = volume_result_array
                     volumes_argument_help += volume_description+"\n"
                     volume_choices.append(drive_letter)
-                F.add_argument(parser_add, "-m", "--volume", metavar='Volume', choices=volume_choices, nargs='?', default=default_volume_choice,
+                F.add_argument(parser_add, "-m", "--volume", dest='volume', metavar='Volume', choices=volume_choices, nargs='?', default=default_volume_choice,
                                        help=volumes_argument_help)
             else:
-                F.add_argument(parser_add, "-m", "--volume", metavar='Volume',
+                F.add_argument(parser_add, "-m", "--volume", dest='volume', metavar='Volume',
                                        help="Volume that you wish to add to the database")
-            F.add_argument(parser_add, "-l", "--label", metavar='Label', help="Label of the drive listing. If provided it will override the volume label.")
+            F.add_argument(parser_add, "-l", "--label", dest='label', metavar='Label', help="Label of the drive listing. If provided it will override the volume label.")
             hostname = socket.gethostname()
-            F.add_argument(parser_add, "-n", "--hostname", metavar='Hostname', default=hostname,
+            F.add_argument(parser_add, "-n", "--hostname", dest='hostname', metavar='Hostname', default=hostname,
                                        help="Hostname of the machine containing the drive")
             F.add_db_to_parser(parser_add)
             F.add_verbose_to_parser(parser_add)
@@ -254,16 +254,16 @@ class F:
         F.add_argument(parser_import, "label", metavar='Label', help="Label of the drive listing")
         F.add_argument(parser_import, "filename", metavar='Filename', widget='FileChooser',
                                    help="Filename (including path) of the listing in fixed width format to be processed. See PowerShell example.")
-        F.add_argument(parser_import, "-m", "--make", metavar='Make', default=None, help="Make of the drive")
-        F.add_argument(parser_import, "-o", "--model", metavar='Model', default=None, help="Model of the drive")
-        F.add_argument(parser_import, "-s", "--serial", metavar='Serial Number', default=None, help="Serial number of the drive")
-        F.add_argument(parser_import, "-c", "--combined", metavar='Combined', default=None,
+        F.add_argument(parser_import, "-m", "--make", dest='make', metavar='Make', default=None, help="Make of the drive")
+        F.add_argument(parser_import, "-o", "--model", dest='model', metavar='Model', default=None, help="Model of the drive")
+        F.add_argument(parser_import, "-s", "--serial", dest='serial', metavar='Serial Number', default=None, help="Serial number of the drive")
+        F.add_argument(parser_import, "-c", "--combined", dest='combined', metavar='Combined', default=None,
                                    help="Combined drive information string, in format \"make,model,serial-number\"")
-        F.add_argument(parser_import, "-n", "--hostname", metavar='Hostname', default=None,
+        F.add_argument(parser_import, "-n", "--hostname", dest='hostname', metavar='Hostname', default=None,
                                    help="Hostname of the machine containing the drive")
-        F.add_argument(parser_import, "-p", "--prefix", metavar='Prefix', default=None,
+        F.add_argument(parser_import, "-p", "--prefix", dest='prefix', metavar='Prefix', default=None,
                                    help="Prefix to remove from the start of each file's path. e.g. \"C:\\Users\\username\"")
-        F.add_argument(parser_import, "-t", "--test", metavar='Test', action="store_true",
+        F.add_argument(parser_import, "-t", "--test", dest='test', metavar='Test', action="store_true",
                                    help="Test input file without modifying the database")
         F.add_verbose_to_parser(parser_import)
 
