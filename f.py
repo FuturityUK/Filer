@@ -27,6 +27,9 @@ from typing import (
     Union,
     Optional,
 )
+from filer import Filer
+import socket
+import sys
 
 class F:
 
@@ -37,6 +40,7 @@ class F:
     DEFAULT_TEMP_LISTING_FILE: str = 'filer.fwf'
 
     SUBCOMMAND_SEARCH: str = 'search'
+    SUBCOMMAND_ADD_VOLUME: str = 'add_volume'
     SUBCOMMAND_IMPORT: str = 'import'
     SUBCOMMAND_CREATE: str = 'create'
     SUBCOMMAND_UPGRADE: str = 'upgrade'
@@ -62,6 +66,11 @@ class F:
     def search(self, args: []):
         print(f"Finding filenames:")
         self.database.find_filenames_search(args.search, args.type, args.label)
+
+    def add_volumes(self, args: []):
+        print(f"Adding volume:")
+        import_listing_values = self.get_values_for_import_listing(result_array)
+        self.display_import_listing_values(import_listing_values)
 
     def create(self, args: []):
         database_filename = args.db
@@ -172,8 +181,8 @@ class F:
                                            dest='subcommand',
                                            help='additional help')
 
-        parser_search = subparsers.add_parser('search',
-                                            help='search help',
+        parser_search = subparsers.add_parser(F.SUBCOMMAND_SEARCH,
+                                            help=F.SUBCOMMAND_SEARCH+' help',
                                             description='Search for files based on search strings (slower than "find")')
         parser_search.add_argument("-s", "--search", metavar='Search',
         help='''Search string to be found within filenames
@@ -182,23 +191,63 @@ class F:
          - '%' wildcard matches any sequence of zero or more characters
          - '_' wildcard matches exactly one character
          ''')
-        parser_search.add_argument("-t", "--type", metavar='Type', choices=file_type_categories, nargs='?', help="Type of files to be considered")
+        if type(parser) is not argparse.ArgumentParser:
+            parser_search.add_argument("-t", "--type", metavar='Type', choices=file_type_categories, nargs='?', help="Type of files to be considered")
         parser_search.add_argument("-l", "--label", metavar='Label', default=None, help="Label of the drive listing")
         F.add_db_to_parser(parser_search)
         F.add_verbose_to_parser(parser_search)
 
+        # Only add the 'add' subcommand to the GUI
+        if type(parser) is not argparse.ArgumentParser:
+            # create the parser for the "add" subcommand
+            parser_add = subparsers.add_parser(F.SUBCOMMAND_ADD_VOLUME, help=F.SUBCOMMAND_ADD_VOLUME+' help')
+
+            # Only populate the choices, if no arguments have been provided to the program
+            print(f"sys.argv: {sys.argv}")
+            sys_argv_length = len(sys.argv)
+            print(f"sys_argv_length: {sys_argv_length}")
+            if sys_argv_length == 1:
+                # 1 argument == program name only
+                # load the data required for the "add_volume" subcommand
+                filer = Filer()
+                filer.load_volume_drive_details()
+                options = filer.create_volume_options()
+                #print(options)
+
+                volumes = {}
+                volume_choices = []
+                default_volume_choice = None
+                for option in options:
+                    volume_description = option[System.OPTION_DESCRIPTION_INDEX]
+                    #print(f"volume_description: {volume_description}")
+                    volume_result_array = option[System.OPTION_RESULT_INDEX]
+                    #print(f"volume_result: {volume_result_array}")
+
+                    if len(volume_result_array) > 1:
+                        # Results contain Logical drive details
+                        logical_disk_dictionary = volume_result_array[Filer.LOGICAL_DICT_INDEX]
+                        bus_type = logical_disk_dictionary['BusType']
+                        if bus_type.lower() == 'usb':
+                            default_volume_choice = volume_description
+
+                    volumes[volume_description] = volume_result_array
+                    volume_choices.append(volume_description)
+                F.add_argument(parser_add, "-m", "--volume", metavar='Volume', choices=volume_choices, nargs='?', default=default_volume_choice,
+                                       help="Volume that you wish to add to the database")
+            else:
+                F.add_argument(parser_add, "-m", "--volume", metavar='Volume',
+                                       help="Volume that you wish to add to the database")
+            F.add_argument(parser_add, "-l", "--label", metavar='Label', help="Label of the drive listing. If provided it will override the volume label.")
+            hostname = socket.gethostname()
+            F.add_argument(parser_add, "-n", "--hostname", metavar='Hostname', default=hostname,
+                                       help="Hostname of the machine containing the drive")
+            F.add_db_to_parser(parser_add)
+            F.add_verbose_to_parser(parser_add)
+
         # create the parser for the "import" subcommand
-        parser_import = subparsers.add_parser('import', help='import help')
+        parser_import = subparsers.add_parser(F.SUBCOMMAND_IMPORT, help=F.SUBCOMMAND_IMPORT+' help')
         F.add_db_to_parser(parser_import)
         F.add_argument(parser_import, "label", metavar='Label', help="Label of the drive listing")
-        """
-        if type(parser) is argparse.ArgumentParser:
-            parser_import.add_argument("filename", metavar='Filename',
-                                   help="Filename (including path) of the listing in fixed width format to be processed. See PowerShell example.")
-        else:
-            parser_import.add_argument("filename", metavar='Filename', widget = 'FileChooser',
-                                   help="Filename (including path) of the listing in fixed width format to be processed. See PowerShell example.")
-        """
         F.add_argument(parser_import, "filename", metavar='Filename', widget='FileChooser',
                                    help="Filename (including path) of the listing in fixed width format to be processed. See PowerShell example.")
         F.add_argument(parser_import, "-m", "--make", metavar='Make', default=None, help="Make of the drive")
@@ -214,28 +263,28 @@ class F:
                                    help="Test input file without modifying the database")
         F.add_verbose_to_parser(parser_import)
 
-        parser_create = subparsers.add_parser('create',
-                                              help='find help',
+        parser_create = subparsers.add_parser(F.SUBCOMMAND_CREATE,
+                                              help=F.SUBCOMMAND_CREATE+' help',
                                               description='Create an empty database')
         F.add_db_to_parser(parser_create, True)
         F.add_verbose_to_parser(parser_create)
 
         # create the parser for the "vacuum" subcommand
-        parser_upgrade = subparsers.add_parser('upgrade',
-                                              help='upgrade help',
+        parser_upgrade = subparsers.add_parser(F.SUBCOMMAND_UPGRADE,
+                                              help=F.SUBCOMMAND_UPGRADE+' help',
                                               description='The UPGRADE subcommand upgrades the database file to the latest structure needed for this program to work.')
         F.add_db_to_parser(parser_upgrade)
         F.add_verbose_to_parser(parser_upgrade)
 
         # create the parser for the "vacuum" subcommand
-        parser_vacuum = subparsers.add_parser('vacuum',
-                                              help='vacuum help',
+        parser_vacuum = subparsers.add_parser(F.SUBCOMMAND_VACUUM,
+                                              help=F.SUBCOMMAND_VACUUM+' help',
                                               description='The VACUUM subcommand rebuilds the database file by reading the current file and writing the content into a new file. As a result it repacking it into a minimal amount of disk space and defragments it which ensures that each table and index is largely stored contiguously. Depending on the size of the database it can take some time to do perform.')
         F.add_db_to_parser(parser_vacuum)
         F.add_verbose_to_parser(parser_vacuum)
 
-        parser_reset = subparsers.add_parser('reset',
-                                             help='reset help',
+        parser_reset = subparsers.add_parser(F.SUBCOMMAND_RESET,
+                                             help=F.SUBCOMMAND_RESET+' help',
                                              description='Warning: Using the "reset" subcommand will delete the specified database and replace it with an empty one.')
         F.add_db_to_parser(parser_reset)
         F.add_verbose_to_parser(parser_reset)
@@ -298,7 +347,7 @@ class F:
             description="Filer - File Cataloger"
         )
 
-        F.add_subcommands_to_parser(parser)
+        F.add_subcommands_to_parser(parser, )
 
         args=parser.parse_args()
 
