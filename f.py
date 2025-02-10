@@ -214,6 +214,7 @@ class F:
                 options = filer.create_volume_options()
                 #print(options)
 
+                volumes_argument_help = "Volume that you wish to add to the database.\n"
                 volumes = {}
                 volume_choices = []
                 default_volume_choice = None
@@ -222,18 +223,21 @@ class F:
                     #print(f"volume_description: {volume_description}")
                     volume_result_array = option[System.OPTION_RESULT_INDEX]
                     #print(f"volume_result: {volume_result_array}")
+                    volume_dictionary = volume_result_array[Filer.VOLUME_DICT_INDEX]
+                    drive_letter = volume_dictionary['DriveLetter']
 
                     if len(volume_result_array) > 1:
                         # Results contain Logical drive details
                         logical_disk_dictionary = volume_result_array[Filer.LOGICAL_DICT_INDEX]
                         bus_type = logical_disk_dictionary['BusType']
                         if bus_type.lower() == 'usb':
-                            default_volume_choice = volume_description
+                            default_volume_choice = drive_letter
 
                     volumes[volume_description] = volume_result_array
-                    volume_choices.append(volume_description)
+                    volumes_argument_help += volume_description+"\n"
+                    volume_choices.append(drive_letter)
                 F.add_argument(parser_add, "-m", "--volume", metavar='Volume', choices=volume_choices, nargs='?', default=default_volume_choice,
-                                       help="Volume that you wish to add to the database")
+                                       help=volumes_argument_help)
             else:
                 F.add_argument(parser_add, "-m", "--volume", metavar='Volume',
                                        help="Volume that you wish to add to the database")

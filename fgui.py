@@ -30,3 +30,4 @@ class Fgui:
 if __name__ == "__main__":
     fgui = Fgui()
     fgui.start()
+    
