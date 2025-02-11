@@ -3,11 +3,6 @@ import json
 from dyngooey import Gooey, GooeyParser, gooey_stdout, gooey_id
 import logging
 
-from typing import Mapping, Any, Optional
-from gooey import Gooey, GooeyParser
-from gooey.python_bindings.types import Try, PublicGooeyState
-
-
 class Fgui:
 
     def __init__(self):
