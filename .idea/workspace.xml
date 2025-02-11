@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Still loads more debug required to work out how it works and then find a solutions (dictionary of subcommands, containing dictionary of default values)">
+    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="More arguments testing">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/fgui.py" beforeDir="false" afterPath="$PROJECT_DIR$/fgui.py" afterDir="false" />
     </list>
@@ -92,14 +92,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1736868367160</updated>
-    </task>
-    <task id="LOCAL-00056" summary="Added a storage size formatting function">
-      <option name="closed" value="true" />
-      <created>1737989494856</created>
-      <option name="number" value="00056" />
-      <option name="presentableId" value="LOCAL-00056" />
-      <option name="project" value="LOCAL" />
-      <updated>1737989494856</updated>
     </task>
     <task id="LOCAL-00057" summary="added a &quot;get_input&quot; function">
       <option name="closed" value="true" />
@@ -485,7 +477,15 @@
       <option name="project" value="LOCAL" />
       <updated>1739225215590</updated>
     </task>
-    <option name="localTasksCounter" value="105" />
+    <task id="LOCAL-00105" summary="More arguments testing">
+      <option name="closed" value="true" />
+      <created>1739284636882</created>
+      <option name="number" value="00105" />
+      <option name="presentableId" value="LOCAL-00105" />
+      <option name="project" value="LOCAL" />
+      <updated>1739284636883</updated>
+    </task>
+    <option name="localTasksCounter" value="106" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -500,7 +500,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Moved code handling different arguments into their own functions." />
     <MESSAGE value="Optimised the System.select_option() method." />
     <MESSAGE value="Changed the System.select_option() method's defaults for Y / N to provide True / False results." />
     <MESSAGE value="Changed Version format instructions in the To Do file" />
@@ -525,6 +524,7 @@
     <MESSAGE value="filer.py: Split up code into functions that can be used by other programs&#10;f.py: Only scan volumes and add choices for argparse if no arguments provided to program" />
     <MESSAGE value="Added dyngooey.py as a way of resetting choices after running subcommands" />
     <MESSAGE value="Still loads more debug required to work out how it works and then find a solutions (dictionary of subcommands, containing dictionary of default values)" />
-    <option name="LAST_COMMIT_MESSAGE" value="Still loads more debug required to work out how it works and then find a solutions (dictionary of subcommands, containing dictionary of default values)" />
+    <MESSAGE value="More arguments testing" />
+    <option name="LAST_COMMIT_MESSAGE" value="More arguments testing" />
   </component>
 </project>
