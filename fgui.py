@@ -1,9 +1,11 @@
 from f import F
-#from gooey import Gooey, GooeyParser
 import json
 from dyngooey import Gooey, GooeyParser, gooey_stdout, gooey_id
-import argparse
 import logging
+
+from typing import Mapping, Any, Optional
+from gooey import Gooey, GooeyParser
+from gooey.python_bindings.types import Try, PublicGooeyState
 
 
 class Fgui:
@@ -115,6 +117,8 @@ class Fgui:
             """
             logging.info(f"seeds: {seeds}")
             logging.info(f"")
+            logging.info(f"self.dumps(seeds): {self.dumps(seeds)}")
+            logging.info(f"")
 
             print(self.dumps(seeds), file=gooey_stdout())
 
@@ -135,6 +139,9 @@ class Fgui:
                 action_seeds = seeds.setdefault(widget_id, {})
                 #logging.info(f"action_seeds (before): {action_seeds}")
                 #logging.info(f"seeds (before): {seeds}")
+                # NOTE: Matches based on the dest value, but the 'seeds' dictionary uses:
+                # for non-optional parameters: the dest value
+                # for optional parameters: the first option string ('-h', when '-h' & '--help')
                 if action.dest in dynamic_values:
                     action_seeds["value"] = dynamic_values[action.dest]
                 if action.dest in dynamic_items:
