@@ -193,7 +193,8 @@ class F:
          ''')
         if type(parser) is not argparse.ArgumentParser:
             parser_search.add_argument("-t", "--type", dest='type', metavar='Type', choices=file_type_categories, nargs='?', help="Type of files to be considered")
-        parser_search.add_argument("-l", "--label", dest='label2', metavar='Label', default=None, help="Label of the drive listing")
+        #parser_search.add_argument("-l", "--label2", dest='label2', metavar='Label', default=None, help="Label of the drive listing")
+        parser_search.add_argument("--label2", dest='label2', metavar='Label', default=None, help="Label of the drive listing")
         F.add_db_to_parser(parser_search)
         F.add_verbose_to_parser(parser_search)
 

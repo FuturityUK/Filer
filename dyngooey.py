@@ -38,9 +38,8 @@ def gooey_id(action):
     else:
         return action.dest
     """
-    if action.dest is not None:
-        return action.dest
-    elif action.option_strings:
+    print(f"action.dest: {action.dest}")
+    if action.option_strings:
         chosen_option_string = None
         for option_string in action.option_strings:
             if chosen_option_string is None:
@@ -48,6 +47,9 @@ def gooey_id(action):
             elif len(option_string) > len(chosen_option_string):
                 chosen_option_string = option_string
         return chosen_option_string
+    else:
+        return action.dest
+
 
 # --------------------------------------------------------------------------- #
 

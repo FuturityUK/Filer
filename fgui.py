@@ -82,6 +82,7 @@ class Fgui:
             dynamic_values = {
                 'make6': "Hello World!",
                 'label': "Hello Neil!",
+                'label2': "Hello Caroline!",
                 'test_required_1': None,  # This will be replaced with the initial value
                 # 'test_required_2' will be left alone
                 'test_optional_1': None,
