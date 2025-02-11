@@ -32,11 +32,22 @@ def gooey_stdout():
 
 def gooey_id(action):
     """Helper to get Gooey Widget Id from parser action"""
+    """
     if action.option_strings:
         return action.option_strings[0]
     else:
         return action.dest
-
+    """
+    if action.dest is not None:
+        return action.dest
+    elif action.option_strings:
+        chosen_option_string = None
+        for option_string in action.option_strings:
+            if chosen_option_string is None:
+                chosen_option_string = option_string
+            elif len(option_string) > len(chosen_option_string):
+                chosen_option_string = option_string
+        return chosen_option_string
 
 # --------------------------------------------------------------------------- #
 

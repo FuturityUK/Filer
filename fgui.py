@@ -81,7 +81,7 @@ class Fgui:
             #  - missing  => Left alone
             dynamic_values = {
                 'make6': "Hello World!",
-                'label2': "Hello Neil!",
+                'label': "Hello Neil!",
                 'test_required_1': None,  # This will be replaced with the initial value
                 # 'test_required_2' will be left alone
                 'test_optional_1': None,
@@ -111,22 +111,9 @@ class Fgui:
             if self.parser._actions._SubParsersAction is not None:
                 logging.info(f"_subparsers._actions: {self.parser._actions._SubParsersAction}")
                 logging.info(f"_subparsers._actions: {self.parser._subparsers._actions}")
-
-
-                for key, value in d_SubParsersAction.items():
-
-
-                    if widget_id == "subcommand":
-                        logging.info(f"action.choices: {action.choices}")
-                        parser_search = action.choices["search"]
-                        logging.info(f"parser_search._actions: {parser_search._actions}")
-                        parser_add_volume = action.choices["add_volume"]
-                        parser_import = action.choices["import"]
-                        parser_create = action.choices["create"]
-                        parser_upgrade = action.choices["upgrade"]
-                        parser_vacuum = action.choices["vacuum"]
-                        parser_reset = action.choices["reset"]
             """
+            logging.info(f"seeds: {seeds}")
+            logging.info(f"")
 
             print(self.dumps(seeds), file=gooey_stdout())
 
@@ -135,9 +122,9 @@ class Fgui:
         logging.info(f"process_actions()")
 
         for action in parser._actions:
-            logging.info(f"action: {action}")
+            #logging.info(f"action: {action}")
             action_type_name = type(action).__name__
-            logging.info(f"type(action).__name__: {action_type_name}")
+            #logging.info(f"type(action).__name__: {action_type_name}")
             if action_type_name != "_SubParsersAction":
                 # Get the widget_id
                 widget_id = gooey_id(action)
@@ -157,12 +144,14 @@ class Fgui:
                 #logging.info(f"seeds (after): {seeds}")
                 logging.info(f"")
             else:
+                subparser_id = gooey_id(action)
+                logging.info(f"subparser_id: {subparser_id}")
                 subparser_choices = action.choices
-                logging.info(f"action.choices: {subparser_choices}")
+                #logging.info(f"action.choices: {subparser_choices}")
                 if subparser_choices is not None:
                     for subparser_choice_key, subparser_choice_value in subparser_choices.items():
                         logging.info(f"subparser_choice_key: {subparser_choice_key}")
-                        logging.info(f"subparser_choice_value: {subparser_choice_value}")
+                        #logging.info(f"subparser_choice_value: {subparser_choice_value}")
                         seeds = Fgui.process_actions(subparser_choice_value, seeds, dynamic_values, dynamic_items)
 
         return seeds

@@ -4,8 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="More arguments testing">
+    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="label2's value on the search subcommand is successfully reset to its initial value after being changes and started">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dyngooey.py" beforeDir="false" afterPath="$PROJECT_DIR$/dyngooey.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/fgui.py" beforeDir="false" afterPath="$PROJECT_DIR$/fgui.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -51,27 +52,28 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Python.database.executor&quot;: &quot;Run&quot;,
-    &quot;Python.f.executor&quot;: &quot;Run&quot;,
-    &quot;Python.fgui.executor&quot;: &quot;Run&quot;,
-    &quot;Python.file_system_processors.executor&quot;: &quot;Run&quot;,
-    &quot;Python.file_types.executor&quot;: &quot;Run&quot;,
-    &quot;Python.filer.executor&quot;: &quot;Run&quot;,
-    &quot;Python.main.executor&quot;: &quot;Run&quot;,
-    &quot;Python.powershell.executor&quot;: &quot;Run&quot;,
-    &quot;Python.sql.executor&quot;: &quot;Run&quot;,
-    &quot;Python.system.executor&quot;: &quot;Run&quot;,
-    &quot;Python.test.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;run.code.analysis.last.selected.profile&quot;: &quot;aDefault&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;settings.sync&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Python.database.executor": "Run",
+    "Python.dyngooey.executor": "Run",
+    "Python.f.executor": "Run",
+    "Python.fgui.executor": "Run",
+    "Python.file_system_processors.executor": "Run",
+    "Python.file_types.executor": "Run",
+    "Python.filer.executor": "Run",
+    "Python.main.executor": "Run",
+    "Python.powershell.executor": "Run",
+    "Python.sql.executor": "Run",
+    "Python.system.executor": "Run",
+    "Python.test.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "master",
+    "ignore.virus.scanning.warn.message": "true",
+    "run.code.analysis.last.selected.profile": "aDefault",
+    "settings.editor.selected.configurable": "settings.sync"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\Neil.FUTURITY\PycharmProjects\Filer" />
@@ -92,14 +94,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1736868367160</updated>
-    </task>
-    <task id="LOCAL-00057" summary="added a &quot;get_input&quot; function">
-      <option name="closed" value="true" />
-      <created>1737997607116</created>
-      <option name="number" value="00057" />
-      <option name="presentableId" value="LOCAL-00057" />
-      <option name="project" value="LOCAL" />
-      <updated>1737997607116</updated>
     </task>
     <task id="LOCAL-00058" summary="&quot;get_input&quot; function returns the correct value for the selected options">
       <option name="closed" value="true" />
@@ -485,7 +479,15 @@
       <option name="project" value="LOCAL" />
       <updated>1739284636883</updated>
     </task>
-    <option name="localTasksCounter" value="106" />
+    <task id="LOCAL-00106" summary="label2's value on the search subcommand is successfully reset to its initial value after being changes and started">
+      <option name="closed" value="true" />
+      <created>1739299114187</created>
+      <option name="number" value="00106" />
+      <option name="presentableId" value="LOCAL-00106" />
+      <option name="project" value="LOCAL" />
+      <updated>1739299114187</updated>
+    </task>
+    <option name="localTasksCounter" value="107" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -500,7 +502,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Optimised the System.select_option() method." />
     <MESSAGE value="Changed the System.select_option() method's defaults for Y / N to provide True / False results." />
     <MESSAGE value="Changed Version format instructions in the To Do file" />
     <MESSAGE value="Program split into argument version and interactive version." />
@@ -525,6 +526,7 @@
     <MESSAGE value="Added dyngooey.py as a way of resetting choices after running subcommands" />
     <MESSAGE value="Still loads more debug required to work out how it works and then find a solutions (dictionary of subcommands, containing dictionary of default values)" />
     <MESSAGE value="More arguments testing" />
-    <option name="LAST_COMMIT_MESSAGE" value="More arguments testing" />
+    <MESSAGE value="label2's value on the search subcommand is successfully reset to its initial value after being changes and started" />
+    <option name="LAST_COMMIT_MESSAGE" value="label2's value on the search subcommand is successfully reset to its initial value after being changes and started" />
   </component>
 </project>
