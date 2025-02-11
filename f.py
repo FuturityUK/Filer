@@ -171,6 +171,44 @@ class F:
                             help="Verbose output")
 
     @staticmethod
+    def prepare_volume_details() -> {}:
+        # load the data required for the "add_volume" subcommand
+        results = {}
+
+        filer = Filer()
+        filer.load_volume_drive_details()
+        options = filer.create_volume_options()
+        # print(options)
+
+        volumes_argument_help = "Volume that you wish to add to the database.\n"
+        volumes = {}
+        volume_choices = []
+        default_volume_choice = None
+        for option in options:
+            volume_description = option[System.OPTION_DESCRIPTION_INDEX]
+            # print(f"volume_description: {volume_description}")
+            volume_result_array = option[System.OPTION_RESULT_INDEX]
+            # print(f"volume_result: {volume_result_array}")
+            volume_dictionary = volume_result_array[Filer.VOLUME_DICT_INDEX]
+            drive_letter = volume_dictionary['DriveLetter']
+
+            if len(volume_result_array) > 1:
+                # Results contain Logical drive details
+                logical_disk_dictionary = volume_result_array[Filer.LOGICAL_DICT_INDEX]
+                bus_type = logical_disk_dictionary['BusType']
+                if bus_type.lower() == 'usb':
+                    default_volume_choice = drive_letter
+
+            volumes[volume_description] = volume_result_array
+            volumes_argument_help += volume_description + "\n"
+            volume_choices.append(drive_letter)
+
+        results["volume_choices"] = volume_choices
+        results["volumes_argument_help"] = volumes_argument_help
+        results["default_volume_choice"] = default_volume_choice
+        return results
+
+    @staticmethod
     def add_subcommands_to_parser(parser):
         file_type_categories = FileTypes.get_file_types_categories()
         #print(f"file_type_categories: {file_type_categories}")
@@ -194,7 +232,7 @@ class F:
         if type(parser) is not argparse.ArgumentParser:
             parser_search.add_argument("-t", "--type", dest='type', metavar='Type', choices=file_type_categories, nargs='?', help="Type of files to be considered")
         #parser_search.add_argument("-l", "--label2", dest='label2', metavar='Label', default=None, help="Label of the drive listing")
-        parser_search.add_argument("-q", "--labe", dest='label2', metavar='Label', default=None, help="Label of the drive listing")
+        parser_search.add_argument("-l", "--label", dest='label2', metavar='Label', default=None, help="Label of the drive listing")
         F.add_db_to_parser(parser_search)
         F.add_verbose_to_parser(parser_search)
 
@@ -209,34 +247,10 @@ class F:
             print(f"sys_argv_length: {sys_argv_length}")
             if sys_argv_length == 1:
                 # 1 argument == program name only
-                # load the data required for the "add_volume" subcommand
-                filer = Filer()
-                filer.load_volume_drive_details()
-                options = filer.create_volume_options()
-                #print(options)
-
-                volumes_argument_help = "Volume that you wish to add to the database.\n"
-                volumes = {}
-                volume_choices = []
-                default_volume_choice = None
-                for option in options:
-                    volume_description = option[System.OPTION_DESCRIPTION_INDEX]
-                    #print(f"volume_description: {volume_description}")
-                    volume_result_array = option[System.OPTION_RESULT_INDEX]
-                    #print(f"volume_result: {volume_result_array}")
-                    volume_dictionary = volume_result_array[Filer.VOLUME_DICT_INDEX]
-                    drive_letter = volume_dictionary['DriveLetter']
-
-                    if len(volume_result_array) > 1:
-                        # Results contain Logical drive details
-                        logical_disk_dictionary = volume_result_array[Filer.LOGICAL_DICT_INDEX]
-                        bus_type = logical_disk_dictionary['BusType']
-                        if bus_type.lower() == 'usb':
-                            default_volume_choice = drive_letter
-
-                    volumes[volume_description] = volume_result_array
-                    volumes_argument_help += volume_description+"\n"
-                    volume_choices.append(drive_letter)
+                results = F.prepare_volume_details()
+                volume_choices = results["volume_choices"]
+                volumes_argument_help = results["volumes_argument_help"]
+                default_volume_choice = results["default_volume_choice"]
                 F.add_argument(parser_add, "-m", "--volume", dest='volume', metavar='Volume', choices=volume_choices, nargs='?', default=default_volume_choice,
                                        help=volumes_argument_help)
             else:
