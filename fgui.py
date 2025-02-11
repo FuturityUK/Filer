@@ -67,6 +67,41 @@ class Fgui:
     def seed(self, clear=None):
         if clear is None:
             clear = []
+
+        if gooey_stdout():
+
+            # NOTE:
+            #  - None     => Clear/Initial value
+            #  - not None => Dynamic value
+            #  - missing  => Left alone
+            dynamic_values = {
+                'test_required_1': None,  # This will be replaced with the initial value
+                # 'test_required_2' will be left alone
+                'test_optional_1': None,
+                'test_optional_2': None,
+                'test_optional_3': "Hello World!",
+                'test_store_true': None,
+                # 'test_store_false' will be left alone
+                'test_store_const': None
+            }
+
+            dynamic_items = {
+                'test_optional_2': [
+                    f'Random entry {i}' for i in range(__import__('random').randrange(30))
+                ],
+            }
+
+            seeds = {}
+            for action in self.parser._actions:
+                action_seeds = seeds.setdefault(gooey_id(action), {})
+                if action.dest in dynamic_values:
+                    action_seeds["value"] = dynamic_values[action.dest]
+                if action.dest in dynamic_items:
+                    pass
+                    # action_seeds["items"] = dynamic_items[action.dest]
+
+            print(self.dumps(seeds), file=gooey_stdout())
+        """
         if gooey_stdout():
             # NOTE:
             #  - None     => Clear/Initial value
@@ -107,7 +142,8 @@ class Fgui:
                 # Assign the dictionary value from the seeds array to the action_seeds dictionary if it exists, otherwise assign an empty dictionary
                 # The setdefault() method returns the value of the item with the specified key. If the key does not exist, insert the key, with the specified value
                 action_seeds = seeds.setdefault(widget_id, {})
-                print(f"action_seeds: {action_seeds}")
+                print(f"action_seeds (before): {action_seeds}")
+                print(f"seeds (before): {seeds}")
                 print(f"action_seeds: {action_seeds}", file=gooey_stdout())
                 if action.dest in dynamic_values:
                     action_seeds["value"] = dynamic_values[action.dest]
@@ -127,7 +163,12 @@ class Fgui:
                     parser_reset = action.choices["reset"]
                     print(f"Hello")
 
+                print(f"action_seeds (after): {action_seeds}")
+                print(f"seeds (after): {seeds}")
+
+
             print(self.dumps(seeds), file=gooey_stdout())
+            """
 
     @Gooey(
         program_name='Filer',
@@ -135,7 +176,10 @@ class Fgui:
         optional_cols=1,
         #navigation='TABBED',
         default_size=(1000, 1000),
-        clear_before_run=False # Was True
+        clear_before_run=False,# Was True
+        show_stop_warning=False, # From test.py
+        show_success_modal=False, # From test.py
+        show_failure_modal=False # From test.py
     )
     def main(self):
         args = self.parser.parse_args()
@@ -144,7 +188,7 @@ class Fgui:
             print(f"{Fgui.dumps(vars(args))}")
 
         f = F()
-        f.process_args_and_call_subcommand(args)
+        #f.process_args_and_call_subcommand(args)
 
 if __name__ == "__main__":
     fgui = Fgui()
