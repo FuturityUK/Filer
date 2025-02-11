@@ -4,9 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Removed Gooey 1.2 alpha imports">
+    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Moved finding the volume and drive information to its own function">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/f.py" beforeDir="false" afterPath="$PROJECT_DIR$/f.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/fgui.py" beforeDir="false" afterPath="$PROJECT_DIR$/fgui.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/filer.py" beforeDir="false" afterPath="$PROJECT_DIR$/filer.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -93,14 +95,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1736868367160</updated>
-    </task>
-    <task id="LOCAL-00062" summary="added interactive option which now works">
-      <option name="closed" value="true" />
-      <created>1738068362190</created>
-      <option name="number" value="00062" />
-      <option name="presentableId" value="LOCAL-00062" />
-      <option name="project" value="LOCAL" />
-      <updated>1738068362190</updated>
     </task>
     <task id="LOCAL-00063" summary="Major code restructuring from functions to class methods, defining static methods where possible.">
       <option name="closed" value="true" />
@@ -486,7 +480,15 @@
       <option name="project" value="LOCAL" />
       <updated>1739307633179</updated>
     </task>
-    <option name="localTasksCounter" value="111" />
+    <task id="LOCAL-00111" summary="Moved finding the volume and drive information to its own function">
+      <option name="closed" value="true" />
+      <created>1739308250764</created>
+      <option name="number" value="00111" />
+      <option name="presentableId" value="LOCAL-00111" />
+      <option name="project" value="LOCAL" />
+      <updated>1739308250764</updated>
+    </task>
+    <option name="localTasksCounter" value="112" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -501,7 +503,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Created fgui.py with is a GUI wrapper around f.py command line version." />
     <MESSAGE value="Better looking GUI, but the &quot;create&quot; database subcommand needs to be implemented, as well as the other subcommands warning the user if the database doesn't exist." />
     <MESSAGE value="Added file type choices to the &quot;find&quot; and &quot;like&quot; subcommands." />
     <MESSAGE value="Added code to extract file extension information" />
@@ -526,6 +527,7 @@
     <MESSAGE value="Now works on the widget's dest value rather than the '-' or '--' commandline option as they may be duplicated over many subcommands. the 'dest's can be made unique." />
     <MESSAGE value="Dynamic values have to match:&#10; for non optional parameters it needs to match the parameter name (which is the dest name).&#10; for optional parameters it needs to match the either the first '-' or '--' parameter, whichever is defined first, or the dest parameter if the former doesn't exist." />
     <MESSAGE value="Removed Gooey 1.2 alpha imports" />
-    <option name="LAST_COMMIT_MESSAGE" value="Removed Gooey 1.2 alpha imports" />
+    <MESSAGE value="Moved finding the volume and drive information to its own function" />
+    <option name="LAST_COMMIT_MESSAGE" value="Moved finding the volume and drive information to its own function" />
   </component>
 </project>

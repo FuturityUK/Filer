@@ -30,6 +30,7 @@ from typing import (
 from filer import Filer
 import socket
 import sys
+import logging
 
 class F:
 
@@ -251,10 +252,10 @@ class F:
                 volume_choices = results["volume_choices"]
                 volumes_argument_help = results["volumes_argument_help"]
                 default_volume_choice = results["default_volume_choice"]
-                F.add_argument(parser_add, "-m", "--volume", dest='volume', metavar='Volume', choices=volume_choices, nargs='?', default=default_volume_choice,
+                F.add_argument(parser_add, "-q", "--volume", dest='volume', metavar='Volume', choices=volume_choices, nargs='?', default=default_volume_choice,
                                        help=volumes_argument_help)
             else:
-                F.add_argument(parser_add, "-m", "--volume", dest='volume', metavar='Volume',
+                F.add_argument(parser_add, "-q", "--volume", dest='volume', metavar='Volume',
                                        help="Volume that you wish to add to the database")
             F.add_argument(parser_add, "-l", "--label", dest='label', metavar='Label', help="Label of the drive listing. If provided it will override the volume label.")
             hostname = socket.gethostname()

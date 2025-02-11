@@ -24,6 +24,7 @@ from system import System
 from data import Data
 from format import Format
 import socket
+import logging
 
 class Filer:
 
@@ -109,16 +110,16 @@ class Filer:
         self.process_drive(args)
 
     def load_volume_drive_details(self):
-        print("Finding Logical Drives ...")
+        logging.info("Finding Logical Drives ...")
         self.logical_disk_array = self.system.get_logical_drives_details()
         # display_array_of_dictionaries(self.logical_disk_array)
         # print(f"logical_disk_array: {self.logical_disk_array}")
 
-        print("Finding Physical Drives ...")
+        logging.info("Finding Physical Drives ...")
         self.physical_disk_array = self.system.get_physical_drives_details()
         # print(f"physical_disk_array: {self.physical_disk_array}")
 
-        print("Finding Volumes ...")
+        logging.info("Finding Volumes ...")
         self.volumes_array = self.system.get_volumes(True)
         # print(f"volumes: {self.volumes_array}")
         # display_array_of_dictionaries(self.volumes_array)
@@ -129,7 +130,7 @@ class Filer:
         # print(f"physical_disk_array: {self.partitions_array}")
 
     def create_volume_options(self) -> []:
-        print("Matching Volumes to Drives ...")
+        logging.info("Matching Volumes to Drives ...")
         option_number = 1
         options = []
         for volume_dictionary in self.volumes_array:

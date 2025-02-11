@@ -72,11 +72,16 @@ class Fgui:
 
         if gooey_stdout():
             logging.info(f"Neil")
+            results = F.prepare_volume_details()
+            volume_choices = results["volume_choices"]
+            volumes_argument_help = results["volumes_argument_help"]
+            default_volume_choice = results["default_volume_choice"]
             # NOTE:
             #  - None     => Clear/Initial value
             #  - not None => Dynamic value
             #  - missing  => Left alone
             dynamic_values = {
+                'volume': "C",
                 'make6': "Hello World!",
                 'label': "Hello Neil!",
                 'label2': "Hello Caroline!",
@@ -94,6 +99,7 @@ class Fgui:
                 'test_optional_2': [
                     f'Random entry {i}' for i in range(__import__('random').randrange(30))
                 ],
+                'volume': volume_choices
             }
 
             logging.info(f"_actions: {self.parser._actions}")
@@ -122,7 +128,7 @@ class Fgui:
         logging.info(f"process_actions()")
 
         for action in parser._actions:
-            #logging.info(f"action: {action}")
+            logging.info(f"action: {action}")
             action_type_name = type(action).__name__
             #logging.info(f"type(action).__name__: {action_type_name}")
             if action_type_name != "_SubParsersAction":
@@ -141,7 +147,7 @@ class Fgui:
                     action_seeds["value"] = dynamic_values[action.dest]
                 if action.dest in dynamic_items:
                     pass
-                    # action_seeds["items"] = dynamic_items[action.dest]
+                    action_seeds["items"] = dynamic_items[action.dest]
 
                 #logging.info(f"action_seeds (after): {action_seeds}")
                 #logging.info(f"seeds (after): {seeds}")
