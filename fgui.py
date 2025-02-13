@@ -15,6 +15,7 @@ class Fgui:
         return json.dumps(data, indent=4, default=str)
 
     def init(self):
+        logging.info(f"Initialising Argument Parser Arguments...")
         """
         self.parser.add_argument(
             'test_required_1',
@@ -65,23 +66,21 @@ class Fgui:
         F.add_subcommands_to_parser(self.parser)
 
     def seed(self, clear=None):
+        logging.info(f"Seeding Argument Parser Values...")
         if clear is None:
             clear = []
-
-        logging.info(f"Hello")
-
         if gooey_stdout():
-            logging.info(f"Neil")
+            logging.debug(f"gooey_stdout detected")
             results = F.prepare_volume_details()
             volume_choices = results["volume_choices"]
             volumes_argument_help = results["volumes_argument_help"]
-            default_volume_choice = results["default_volume_choice"]
+            volume_default_choice = results["volume_default_choice"]
             # NOTE:
             #  - None     => Clear/Initial value
             #  - not None => Dynamic value
             #  - missing  => Left alone
             dynamic_values = {
-                'volume': "C",
+                'volume': volume_default_choice,
                 'make6': "Hello World!",
                 'label': "Hello Neil!",
                 'label2': "Hello Caroline!",
@@ -102,7 +101,7 @@ class Fgui:
                 'volume': volume_choices
             }
 
-            logging.info(f"_actions: {self.parser._actions}")
+            logging.debug(f"_actions: {self.parser._actions}")
 
             seeds = {}
             seeds = self.process_actions(self.parser, seeds, dynamic_values, dynamic_items)
@@ -116,25 +115,25 @@ class Fgui:
                 logging.info(f"_subparsers._actions: {self.parser._actions._SubParsersAction}")
                 logging.info(f"_subparsers._actions: {self.parser._subparsers._actions}")
             """
-            logging.info(f"seeds: {seeds}")
-            logging.info(f"")
-            logging.info(f"self.dumps(seeds): {self.dumps(seeds)}")
-            logging.info(f"")
+            logging.debug(f"seeds: {seeds}")
+            logging.debug(f"")
+            logging.debug(f"self.dumps(seeds): {self.dumps(seeds)}")
+            logging.debug(f"")
 
             print(self.dumps(seeds), file=gooey_stdout())
 
     @staticmethod
     def process_actions(parser, seeds: {}, dynamic_values: {}, dynamic_items: {}) -> {}:
-        logging.info(f"process_actions()")
+        logging.debug(f"process_actions()")
 
         for action in parser._actions:
-            logging.info(f"action: {action}")
+            logging.debug(f"action: {action}")
             action_type_name = type(action).__name__
             #logging.info(f"type(action).__name__: {action_type_name}")
             if action_type_name != "_SubParsersAction":
                 # Get the widget_id
                 widget_id = gooey_id(action)
-                logging.info(f"widget_id: {widget_id}")
+                logging.debug(f"widget_id: {widget_id}")
                 # Assign the dictionary value from the seeds array to the action_seeds dictionary if it exists, otherwise assign an empty dictionary
                 # The setdefault() method returns the value of the item with the specified key. If the key does not exist, insert the key, with the specified value
                 action_seeds = seeds.setdefault(widget_id, {})
@@ -151,15 +150,15 @@ class Fgui:
 
                 #logging.info(f"action_seeds (after): {action_seeds}")
                 #logging.info(f"seeds (after): {seeds}")
-                logging.info(f"")
+                logging.debug(f"")
             else:
                 subparser_id = gooey_id(action)
-                logging.info(f"subparser_id: {subparser_id}")
+                logging.debug(f"subparser_id: {subparser_id}")
                 subparser_choices = action.choices
                 #logging.info(f"action.choices: {subparser_choices}")
                 if subparser_choices is not None:
                     for subparser_choice_key, subparser_choice_value in subparser_choices.items():
-                        logging.info(f"subparser_choice_key: {subparser_choice_key}")
+                        logging.debug(f"subparser_choice_key: {subparser_choice_key}")
                         #logging.info(f"subparser_choice_value: {subparser_choice_value}")
                         seeds = Fgui.process_actions(subparser_choice_value, seeds, dynamic_values, dynamic_items)
 

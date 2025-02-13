@@ -181,32 +181,32 @@ class F:
         options = filer.create_volume_options()
         # print(options)
 
-        volumes_argument_help = "Volume that you wish to add to the database.\n"
+        volumes_argument_help = "Volume that you wish to add"
         volumes = {}
         volume_choices = []
-        default_volume_choice = None
+        volume_default_choice = None
         for option in options:
             volume_description = option[System.OPTION_DESCRIPTION_INDEX]
             # print(f"volume_description: {volume_description}")
             volume_result_array = option[System.OPTION_RESULT_INDEX]
             # print(f"volume_result: {volume_result_array}")
-            volume_dictionary = volume_result_array[Filer.VOLUME_DICT_INDEX]
-            drive_letter = volume_dictionary['DriveLetter']
 
+            # If the volume_result_array > 1 then as well as the Volume dictionary,
+            # it must also contain the logical disk dictionary
             if len(volume_result_array) > 1:
                 # Results contain Logical drive details
                 logical_disk_dictionary = volume_result_array[Filer.LOGICAL_DICT_INDEX]
                 bus_type = logical_disk_dictionary['BusType']
                 if bus_type.lower() == 'usb':
-                    default_volume_choice = drive_letter
+                    volume_default_choice = volume_description
 
             volumes[volume_description] = volume_result_array
-            volumes_argument_help += volume_description + "\n"
-            volume_choices.append(drive_letter)
+            volume_choices.append(volume_description)
 
         results["volume_choices"] = volume_choices
         results["volumes_argument_help"] = volumes_argument_help
-        results["default_volume_choice"] = default_volume_choice
+        results["volume_default_choice"] = volume_default_choice
+        results["volume_dictionary"] = volumes
         return results
 
     @staticmethod
@@ -223,13 +223,16 @@ class F:
         parser_search = subparsers.add_parser(F.SUBCOMMAND_SEARCH,
                                             help=F.SUBCOMMAND_SEARCH+' help',
                                             description='Search for files based on search strings (slower than "find")')
-        parser_search.add_argument("-s", "--search", metavar='Search',
-        help='''Search string to be found within filenames
+        help_text = '''Search string to be found within filenames
          - if search doesn't include '%' or '_' characters, then it is a fast exact case-sensitive search
          - if search includes '%' or '_' characters, then it is a slower pattern match case-insensitive search
          - '%' wildcard matches any sequence of zero or more characters
          - '_' wildcard matches exactly one character
-         ''')
+         '''
+        if type(parser) is argparse.ArgumentParser:
+            help_text = help_text.replace(r"%", r"%%")
+        parser_search.add_argument("-s", "--search", metavar='Search',
+        help=help_text)
         if type(parser) is not argparse.ArgumentParser:
             parser_search.add_argument("-t", "--type", dest='type', metavar='Type', choices=file_type_categories, nargs='?', help="Type of files to be considered")
         #parser_search.add_argument("-l", "--label2", dest='label2', metavar='Label', default=None, help="Label of the drive listing")
@@ -249,10 +252,10 @@ class F:
             if sys_argv_length == 1:
                 # 1 argument == program name only
                 results = F.prepare_volume_details()
-                volume_choices = results["volume_choices"]
                 volumes_argument_help = results["volumes_argument_help"]
-                default_volume_choice = results["default_volume_choice"]
-                F.add_argument(parser_add, "-q", "--volume", dest='volume', metavar='Volume', choices=volume_choices, nargs='?', default=default_volume_choice,
+                volume_choices = results["volume_choices"]
+                volume_default_choice = results["volume_default_choice"]
+                F.add_argument(parser_add, "-q", "--volume", dest='volume', metavar='Volume', choices=volume_choices, nargs='?', default=volume_default_choice,
                                        help=volumes_argument_help)
             else:
                 F.add_argument(parser_add, "-q", "--volume", dest='volume', metavar='Volume',
@@ -269,7 +272,7 @@ class F:
         F.add_db_to_parser(parser_import)
         F.add_argument(parser_import, "label", metavar='Label', help="Label of the drive listing")
         F.add_argument(parser_import, "filename", metavar='Filename', widget='FileChooser',
-                                   help="Filename (including path) of the listing in fixed width format to be processed. See PowerShell example.")
+                                   help="Filename (including path) of the listing in fixed width format to be processed. See PowerShell example")
         F.add_argument(parser_import, "-m", "--make", dest='make', metavar='Make', default=None, help="Make of the drive")
         F.add_argument(parser_import, "-o", "--model", dest='model', metavar='Model', default=None, help="Model of the drive")
         F.add_argument(parser_import, "-s", "--serial", dest='serial', metavar='Serial Number', default=None, help="Serial number of the drive")

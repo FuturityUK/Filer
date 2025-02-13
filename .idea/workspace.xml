@@ -4,11 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Moved finding the volume and drive information to its own function">
+    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="The Volume choice is now populated after running a command and clicking on edit.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/f.py" beforeDir="false" afterPath="$PROJECT_DIR$/f.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/fgui.py" beforeDir="false" afterPath="$PROJECT_DIR$/fgui.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/filer.py" beforeDir="false" afterPath="$PROJECT_DIR$/filer.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -53,28 +52,28 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Python.database.executor": "Run",
-    "Python.dyngooey.executor": "Run",
-    "Python.f.executor": "Run",
-    "Python.fgui.executor": "Run",
-    "Python.file_system_processors.executor": "Run",
-    "Python.file_types.executor": "Run",
-    "Python.filer.executor": "Run",
-    "Python.main.executor": "Run",
-    "Python.powershell.executor": "Run",
-    "Python.sql.executor": "Run",
-    "Python.system.executor": "Run",
-    "Python.test.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "master",
-    "ignore.virus.scanning.warn.message": "true",
-    "run.code.analysis.last.selected.profile": "aDefault",
-    "settings.editor.selected.configurable": "settings.sync"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Python.database.executor&quot;: &quot;Run&quot;,
+    &quot;Python.dyngooey.executor&quot;: &quot;Run&quot;,
+    &quot;Python.f.executor&quot;: &quot;Run&quot;,
+    &quot;Python.fgui.executor&quot;: &quot;Run&quot;,
+    &quot;Python.file_system_processors.executor&quot;: &quot;Run&quot;,
+    &quot;Python.file_types.executor&quot;: &quot;Run&quot;,
+    &quot;Python.filer.executor&quot;: &quot;Run&quot;,
+    &quot;Python.main.executor&quot;: &quot;Run&quot;,
+    &quot;Python.powershell.executor&quot;: &quot;Run&quot;,
+    &quot;Python.sql.executor&quot;: &quot;Run&quot;,
+    &quot;Python.system.executor&quot;: &quot;Run&quot;,
+    &quot;Python.test.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;aDefault&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;settings.sync&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\Neil.FUTURITY\PycharmProjects\Filer" />
@@ -95,14 +94,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1736868367160</updated>
-    </task>
-    <task id="LOCAL-00063" summary="Major code restructuring from functions to class methods, defining static methods where possible.">
-      <option name="closed" value="true" />
-      <created>1738086618936</created>
-      <option name="number" value="00063" />
-      <option name="presentableId" value="LOCAL-00063" />
-      <option name="project" value="LOCAL" />
-      <updated>1738086618936</updated>
     </task>
     <task id="LOCAL-00064" summary="Interactive mode complete, but needs testing!">
       <option name="closed" value="true" />
@@ -488,7 +479,15 @@
       <option name="project" value="LOCAL" />
       <updated>1739308250764</updated>
     </task>
-    <option name="localTasksCounter" value="112" />
+    <task id="LOCAL-00112" summary="The Volume choice is now populated after running a command and clicking on edit.">
+      <option name="closed" value="true" />
+      <created>1739309630206</created>
+      <option name="number" value="00112" />
+      <option name="presentableId" value="LOCAL-00112" />
+      <option name="project" value="LOCAL" />
+      <updated>1739309630206</updated>
+    </task>
+    <option name="localTasksCounter" value="113" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -503,7 +502,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Better looking GUI, but the &quot;create&quot; database subcommand needs to be implemented, as well as the other subcommands warning the user if the database doesn't exist." />
     <MESSAGE value="Added file type choices to the &quot;find&quot; and &quot;like&quot; subcommands." />
     <MESSAGE value="Added code to extract file extension information" />
     <MESSAGE value="Now downloads file types from the wiki page if a local copy doesn't already exist." />
@@ -528,6 +526,7 @@
     <MESSAGE value="Dynamic values have to match:&#10; for non optional parameters it needs to match the parameter name (which is the dest name).&#10; for optional parameters it needs to match the either the first '-' or '--' parameter, whichever is defined first, or the dest parameter if the former doesn't exist." />
     <MESSAGE value="Removed Gooey 1.2 alpha imports" />
     <MESSAGE value="Moved finding the volume and drive information to its own function" />
-    <option name="LAST_COMMIT_MESSAGE" value="Moved finding the volume and drive information to its own function" />
+    <MESSAGE value="The Volume choice is now populated after running a command and clicking on edit." />
+    <option name="LAST_COMMIT_MESSAGE" value="The Volume choice is now populated after running a command and clicking on edit." />
   </component>
 </project>
