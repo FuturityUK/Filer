@@ -8,11 +8,11 @@
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
 
-'''
+"""
 input_filename = "C:\\Data\\ws1,e.fwf"
 output_filename = "C:\\Data\\ws1,e.csv.txt"
 database_filename = "I:\\FileProcessorDatabase\\database.sqlite"
-'''
+"""
 
 from file_system_processors import PowerShellFilesystemListing
 from database import Database
@@ -22,15 +22,11 @@ import os.path
 from system import System
 from file_types import FileTypes
 import time
-from typing import (
-    Iterable,
-    Union,
-    Optional,
-)
-from filer import Filer
 import socket
 import sys
 import logging
+from data import Data
+from format import Format
 
 class F:
 
@@ -51,6 +47,7 @@ class F:
     def __init__(self):
         self.database = None
         self.memory_stats = False
+        self.system = System()
 
     def set_memory_stats(self, memory_stats):
         self.memory_stats = memory_stats
@@ -66,12 +63,15 @@ class F:
 
     def search(self, args: []):
         print(f"Finding filenames:")
-        self.database.find_filenames_search(args.search, args.type, args.label)
+        search = args.search if "search" in args else None
+        category = args.category if "category" in args else None
+        label = args.label if "label" in args else None
+        self.database.find_filenames_search(search, category, label)
 
     def add_volumes(self, args: []):
         print(f"Adding volume:")
-        import_listing_values = self.get_values_for_import_listing(result_array)
-        self.display_import_listing_values(import_listing_values)
+        #import_listing_values = self.get_values_for_import_listing(result_array)
+        #self.display_import_listing_values(import_listing_values)
 
     def create(self, args: []):
         database_filename = args.db
@@ -136,6 +136,20 @@ class F:
         powershell_filesystem_listing.import_listing()
 
     @staticmethod
+    def start_logger():
+        logging.basicConfig(level=logging.INFO,
+                            filename="app.log",
+                            encoding="utf-8",
+                            filemode="a",
+                            format="{asctime} - {levelname} - {message}",
+                            style="{",
+                            datefmt="%Y-%m-%d %H:%M",
+                            )
+        logging.info("*********************")
+        logging.info("Application started: os.path.basename(__file__)")
+        logging.info("*********************")
+
+    @staticmethod
     def add_argument(parser, *temp_args, **temp_kwargs): # : Optional[Union[Iterable, dict]]
         #parser.add_argument(temp_args, temp_kwargs)
         if type(parser) is argparse.ArgumentParser:
@@ -171,14 +185,60 @@ class F:
                             metavar='Verbose',
                             help="Verbose output")
 
-    @staticmethod
-    def prepare_volume_details() -> {}:
+    def load_volume_drive_details(self):
+        logging.info("Finding Logical Drives ...")
+        self.logical_disk_array = self.system.get_logical_drives_details()
+        # display_array_of_dictionaries(self.logical_disk_array)
+        # print(f"logical_disk_array: {self.logical_disk_array}")
+
+        logging.info("Finding Physical Drives ...")
+        self.physical_disk_array = self.system.get_physical_drives_details()
+        # print(f"physical_disk_array: {self.physical_disk_array}")
+
+        logging.info("Finding Volumes ...")
+        self.volumes_array = self.system.get_volumes(True)
+        # print(f"volumes: {self.volumes_array}")
+        # display_array_of_dictionaries(self.volumes_array)
+        # display_diff_dictionaries(volumes[0], volumes[1])
+
+        # print("Finding Partitions ...")
+        # self.partitions_array = self.system.get_partition_details()
+        # print(f"physical_disk_array: {self.partitions_array}")
+
+    def create_volume_options(self) -> []:
+        logging.info("Matching Volumes to Drives ...")
+        option_number = 1
+        options = []
+        for volume_dictionary in self.volumes_array:
+            volume_array_of_dicts = []
+            volume_array_of_dicts.append(volume_dictionary)
+            drive_letter = f'{volume_dictionary['DriveLetter']}:'
+            disk_number = self.system.get_disk_number_for_drive_letter(drive_letter)
+            # print(f"{drive_letter} is on drive {disk_number}")
+
+            volume_info_line = f"{volume_dictionary['DriveLetter']}: \"{volume_dictionary['FileSystemLabel']}\" {Format.format_storage_size(int(volume_dictionary['Size']), True, 1)}, {volume_dictionary['FileSystemType']} ({volume_dictionary['HealthStatus']})"
+            if len(disk_number.strip()) != 0:
+                logical_disk_dictionary = Data.find_dictionary_in_array(self.logical_disk_array, "DiskNumber",
+                                                                        disk_number)
+                volume_array_of_dicts.append(logical_disk_dictionary)
+                physical_disk_dictionary = Data.find_dictionary_in_array(self.physical_disk_array, "DeviceId",
+                                                                         disk_number)
+                volume_array_of_dicts.append(physical_disk_dictionary)
+                if logical_disk_dictionary is not None:
+                    volume_info_line += f" / {logical_disk_dictionary['BusType']} {physical_disk_dictionary['MediaType']}: {logical_disk_dictionary['Manufacturer']}, {logical_disk_dictionary['Model']}, SN: {logical_disk_dictionary['SerialNumber']} ({logical_disk_dictionary['HealthStatus']}))"
+                else:
+                    volume_info_line += ""
+            option = [str(option_number), volume_info_line, volume_array_of_dicts]
+            options.append(option)
+            option_number += 1
+        return options
+
+    def prepare_volume_details(self) -> {}:
         # load the data required for the "add_volume" subcommand
         results = {}
 
-        filer = Filer()
-        filer.load_volume_drive_details()
-        options = filer.create_volume_options()
+        self.load_volume_drive_details()
+        options = self.create_volume_options()
         # print(options)
 
         volumes_argument_help = "Volume that you wish to add"
@@ -195,7 +255,7 @@ class F:
             # it must also contain the logical disk dictionary
             if len(volume_result_array) > 1:
                 # Results contain Logical drive details
-                logical_disk_dictionary = volume_result_array[Filer.LOGICAL_DICT_INDEX]
+                logical_disk_dictionary = volume_result_array[F.LOGICAL_DICT_INDEX]
                 bus_type = logical_disk_dictionary['BusType']
                 if bus_type.lower() == 'usb':
                     volume_default_choice = volume_description
@@ -209,10 +269,9 @@ class F:
         results["volume_dictionary"] = volumes
         return results
 
-    @staticmethod
-    def add_subcommands_to_parser(parser):
-        file_type_categories = FileTypes.get_file_types_categories()
-        #print(f"file_type_categories: {file_type_categories}")
+    def add_subcommands_to_parser(self, parser):
+        file_categories = FileTypes.get_file_categories()
+        #print(f"file_categories: {file_categories}")
 
         subparsers = parser.add_subparsers(title='subcommands',
                                            description='valid subcommands',
@@ -234,7 +293,7 @@ class F:
         parser_search.add_argument("-s", "--search", metavar='Search',
         help=help_text)
         if type(parser) is not argparse.ArgumentParser:
-            parser_search.add_argument("-t", "--type", dest='type', metavar='Type', choices=file_type_categories, nargs='?', help="Type of files to be considered")
+            parser_search.add_argument("-c", "--category", dest='category', metavar='Category', choices=file_categories, nargs='?', help="Category of files to be considered")
         #parser_search.add_argument("-l", "--label2", dest='label2', metavar='Label', default=None, help="Label of the drive listing")
         parser_search.add_argument("-l", "--label", dest='label2', metavar='Label', default=None, help="Label of the drive listing")
         F.add_db_to_parser(parser_search)
@@ -251,7 +310,7 @@ class F:
             print(f"sys_argv_length: {sys_argv_length}")
             if sys_argv_length == 1:
                 # 1 argument == program name only
-                results = F.prepare_volume_details()
+                results = self.prepare_volume_details()
                 volumes_argument_help = results["volumes_argument_help"]
                 volume_choices = results["volume_choices"]
                 volume_default_choice = results["volume_default_choice"]
@@ -370,7 +429,7 @@ class F:
             description="Filer - File Cataloger"
         )
 
-        F.add_subcommands_to_parser(parser, )
+        f.add_subcommands_to_parser(parser)
 
         args=parser.parse_args()
 
@@ -383,6 +442,7 @@ class F:
         # Command finished so program finished
 
 if __name__ == "__main__":
+    F.start_logger()
     f = F()
     f.start()
 

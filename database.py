@@ -258,26 +258,26 @@ class Database:
         """
         self.find_filenames_search(filename, file_type, label, False)
 
-    def find_filenames_search(self, filename: str, file_type: str, label: str = None, like: bool = True):
+    def find_filenames_search(self, file_search: str, file_category: str, label: str = None, like: bool = True):
         sql_string = self.__sql_dictionary["find_filename_base"]
         sql_argument_array = []
         clause_added = False
 
-        if filename is not None and filename.count("%") == 0 and filename.count("_") == 0:
+        if file_search is not None and file_search.count("%") == 0 and file_search.count("_") == 0:
             # We can replace this SQL "like" with an exact match '=' as it doesn't contain 'like" special characters
             like = False
 
         # Filename clause
         if like:
             sql_string += " " + self.__sql_dictionary["find_filename_like_filename_clause"]
-            if filename is not None and filename != "":
-                sql_argument_array.append(filename)
+            if file_search is not None and file_search != "":
+                sql_argument_array.append(file_search)
             else:
                 sql_argument_array.append("%")
         else:
             sql_string += " " + self.__sql_dictionary["find_filename_exact_match_filename_clause"]
-            if filename is not None and filename != "":
-                sql_argument_array.append(filename)
+            if file_search is not None and file_search != "":
+                sql_argument_array.append(file_search)
             else:
                 print("Filename can't be empty for an exact match search")
                 exit()

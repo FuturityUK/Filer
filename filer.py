@@ -21,16 +21,10 @@ import argparse
 import os.path
 import collections.abc
 from system import System
-from data import Data
-from format import Format
 import socket
-import logging
+from f import F
 
 class Filer:
-
-    VOLUME_DICT_INDEX: int = 0
-    LOGICAL_DICT_INDEX: int = 1
-    PHYSICAL_DICT_INDEX: int = 2
 
     DEFAULT_TEMP_LISTING_FILE: str = 'filer.fwf'
 
@@ -42,6 +36,7 @@ class Filer:
         self.volumes_array = None
         self.partitions_array = None
         self.system = System()
+        self.f = F()
 
     def set_memory_stats(self, memory_stats):
         self.memory_stats = memory_stats
@@ -109,66 +104,19 @@ class Filer:
         print(f"Entering Interactive Mode ...")
         self.process_drive(args)
 
-    def load_volume_drive_details(self):
-        logging.info("Finding Logical Drives ...")
-        self.logical_disk_array = self.system.get_logical_drives_details()
-        # display_array_of_dictionaries(self.logical_disk_array)
-        # print(f"logical_disk_array: {self.logical_disk_array}")
-
-        logging.info("Finding Physical Drives ...")
-        self.physical_disk_array = self.system.get_physical_drives_details()
-        # print(f"physical_disk_array: {self.physical_disk_array}")
-
-        logging.info("Finding Volumes ...")
-        self.volumes_array = self.system.get_volumes(True)
-        # print(f"volumes: {self.volumes_array}")
-        # display_array_of_dictionaries(self.volumes_array)
-        # display_diff_dictionaries(volumes[0], volumes[1])
-
-        # print("Finding Partitions ...")
-        # self.partitions_array = self.system.get_partition_details()
-        # print(f"physical_disk_array: {self.partitions_array}")
-
-    def create_volume_options(self) -> []:
-        logging.info("Matching Volumes to Drives ...")
-        option_number = 1
-        options = []
-        for volume_dictionary in self.volumes_array:
-            volume_array_of_dicts = []
-            volume_array_of_dicts.append(volume_dictionary)
-            drive_letter = f'{volume_dictionary['DriveLetter']}:'
-            disk_number = self.system.get_disk_number_for_drive_letter(drive_letter)
-            # print(f"{drive_letter} is on drive {disk_number}")
-
-            volume_info_line = f"{volume_dictionary['DriveLetter']}: \"{volume_dictionary['FileSystemLabel']}\" {Format.format_storage_size(int(volume_dictionary['Size']), True, 1)}, {volume_dictionary['FileSystemType']} ({volume_dictionary['HealthStatus']})"
-            if len(disk_number.strip()) != 0:
-                logical_disk_dictionary = Data.find_dictionary_in_array(self.logical_disk_array, "DiskNumber",
-                                                                        disk_number)
-                volume_array_of_dicts.append(logical_disk_dictionary)
-                physical_disk_dictionary = Data.find_dictionary_in_array(self.physical_disk_array, "DeviceId",
-                                                                         disk_number)
-                volume_array_of_dicts.append(physical_disk_dictionary)
-                if logical_disk_dictionary is not None:
-                    volume_info_line += f" / {logical_disk_dictionary['BusType']} {physical_disk_dictionary['MediaType']}: {logical_disk_dictionary['Manufacturer']}, {logical_disk_dictionary['Model']}, SN: {logical_disk_dictionary['SerialNumber']} ({logical_disk_dictionary['HealthStatus']}))"
-                else:
-                    volume_info_line += ""
-            option = [str(option_number), volume_info_line, volume_array_of_dicts]
-            options.append(option)
-            option_number += 1
-        return options
 
     def get_values_for_import_listing(self, result_array: []) -> {}:
         import_listing_values = {}
         result_array_length = len(result_array)
 
         # Get values from the volume dictionary
-        volume_dictionary = result_array[self.VOLUME_DICT_INDEX]
+        volume_dictionary = result_array[F.VOLUME_DICT_INDEX]
         import_listing_values["drive_letter"] = volume_dictionary['DriveLetter']
         import_listing_values["label"] = volume_dictionary['FileSystemLabel']
 
         # Get values from the logical drive dictionary, but only if it exists
         if result_array_length > 1:
-            logical_disk_dictionary = result_array[self.LOGICAL_DICT_INDEX]
+            logical_disk_dictionary = result_array[F.LOGICAL_DICT_INDEX]
             import_listing_values["make"] = logical_disk_dictionary['Manufacturer']
             import_listing_values["model"] = logical_disk_dictionary['Model']
             import_listing_values["serial_number"] = logical_disk_dictionary['SerialNumber']
@@ -194,9 +142,8 @@ class Filer:
         temp_listing_filename = args.filename
 
         while True:
-            self.load_volume_drive_details()
-
-            options = self.create_volume_options()
+            self.f.load_volume_drive_details()
+            options = self.f.create_volume_options()
 
             # Add Rescan option
             options.append(System.OPTION_RESCAN)
@@ -317,7 +264,7 @@ class Filer:
 
         # If not, ask the user if they want to create a new database at the specified location (give the full path as well)
 
-        self.database = Database(database_filename, create_tables)
+        self.database = Database(database_filename)
         self.database.set_verbose_mode(args.verbose)
         if create_tables:
             self.database.create_database_structure()
@@ -328,6 +275,7 @@ class Filer:
         self.clean_up_and_quit()
 
 if __name__ == "__main__":
+    F.start_logger()
     filer = Filer()
     filer.start()
 

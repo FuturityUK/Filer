@@ -9,6 +9,7 @@ class Fgui:
         self.parser = GooeyParser(
             description="Filer - File Cataloger"
         )
+        self.f = F()
 
     @staticmethod
     def dumps(data):
@@ -63,7 +64,7 @@ class Fgui:
             const=10
         )
         """
-        F.add_subcommands_to_parser(self.parser)
+        self.f.add_subcommands_to_parser(self.parser)
 
     def seed(self, clear=None):
         logging.info(f"Seeding Argument Parser Values...")
@@ -71,7 +72,7 @@ class Fgui:
             clear = []
         if gooey_stdout():
             logging.debug(f"gooey_stdout detected")
-            results = F.prepare_volume_details()
+            results = self.f.prepare_volume_details()
             volume_choices = results["volume_choices"]
             volumes_argument_help = results["volumes_argument_help"]
             volume_default_choice = results["volume_default_choice"]
@@ -186,15 +187,7 @@ class Fgui:
         #f.process_args_and_call_subcommand(args)
 
 if __name__ == "__main__":
-    #logging.basicConfig()
-    logging.basicConfig(level=logging.INFO,
-    filename = "app.log",
-    encoding = "utf-8",
-    filemode = "a",
-    format = "{asctime} - {levelname} - {message}",
-    style = "{",
-    datefmt = "%Y-%m-%d %H:%M",
-    )
+    F.start_logger()
     fgui = Fgui()
     fgui.init()
     fgui.seed()

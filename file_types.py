@@ -1,6 +1,5 @@
 import os.path
 import urllib.request, urllib.error, urllib.parse
-from time import sleep
 import re
 import csv
 
@@ -149,7 +148,7 @@ class FileTypes:
         return temp_string
 
     @staticmethod
-    def get_file_types_categories() -> []:
+    def get_file_categories() -> []:
         file_types_categories = []
         with open(FileTypes.CSV_FILENAME, 'r', newline='', encoding='utf-8') as csv_file:
             csv_reader = csv.reader(csv_file, delimiter='|')
