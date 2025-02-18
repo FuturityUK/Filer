@@ -53,33 +53,39 @@ class F:
         self.logical_disk_array = None
         self.physical_disk_array = None
         self.volumes_array = None
-        self.volume_argument_details = {"volume_default_choice": None, "volume_choices": None}
+        #self.volume_argument_details = {"volume_choices": None, "volumes_argument_help": None, "volume_default_choice": None, "volume_dictionary": None }
+        self.volume_argument_details = {}
 
     def set_memory_stats(self, memory_stats):
         self.memory_stats = memory_stats
 
-    def clean_up_and_quit(self):
-        # Now that the subcommands have been run, close the database cleanly
-        self.database.close_database()
+    def clean_up(self):
+        # Now that the subcommands have been run
         if self.memory_stats:
             # Stop tracing memory allocations
             tracemalloc.stop()
-        # Exit normally
-        exit()
 
     def search(self, args: []):
+        logging.debug(f"### F.search() ###")
         print(f"Finding filenames:")
         search = args.search if "search" in args else None
         category = args.category if "category" in args else None
         label = args.label if "label" in args else None
         self.database.find_filenames_search(search, category, label)
 
+    def refresh_volumes(self, args: []):
+        logging.debug(f"### F.refresh_volumes() ###")
+        self.prepare_volume_details()
+        print(self.volume_argument_details)
+
     def add_volumes(self, args: []):
+        logging.debug(f"### F.add_volumes() ###")
         print(f"Adding volume:")
         #import_listing_values = self.get_values_for_import_listing(result_array)
         #self.display_import_listing_values(import_listing_values)
 
     def create(self, args: []):
+        logging.debug(f"### F.create() ###")
         database_filename = args.db
         abspath_database_filename = os.path.abspath(database_filename)
         directory_name = os.path.dirname(abspath_database_filename)
@@ -103,19 +109,23 @@ class F:
         self.database.create_database_structure()
 
     def upgrade(self):
+        logging.debug(f"### F.upgrade() ###")
         print(f"Upgrading database. This may take a while depending on the your database size.")
         self.database.upgrade_database()
         print(f"Upgrading finished.")
 
     def vacuum(self):
+        logging.debug(f"### F.vacuum() ###")
         print(f"Vacuuming database. This may take a while depending on the your database size.")
         self.database.vacuum()
         print(f"Vacuuming finished.")
 
     def reset(self, args: []):
+        logging.debug(f"### F.reset() ###")
         print(f"Not implemented yet")
 
     def import_listing(self, args: []):
+        logging.debug(f"### F.import_listing() ###")
         print(f"Import subcommand: Needs Further Testing !!!")
         powershell_filesystem_listing = PowerShellFilesystemListing(self.database, args.label, args.filename)
 
@@ -142,14 +152,14 @@ class F:
         powershell_filesystem_listing.import_listing()
 
     @staticmethod
-    def start_logger():
-        logging.basicConfig(level=logging.INFO,
+    def start_logger(logging_level):
+        logging.basicConfig(level=logging_level,
                             filename="app.log",
                             encoding="utf-8",
                             filemode="a",
                             format="{asctime} - {levelname} - {message}",
                             style="{",
-                            datefmt="%Y-%m-%d %H:%M",
+                            datefmt="%Y-%m-%d %H:%M"
                             )
         logging.info("*********************")
         logging.info("Application started: os.path.basename(__file__)")
@@ -192,6 +202,7 @@ class F:
                             help="Verbose output")
 
     def load_volume_drive_details(self):
+        logging.debug(f"### F.load_volume_drive_details() ###")
         logging.info("Finding Logical Drives ...")
         self.logical_disk_array = self.system.get_logical_drives_details()
         # display_array_of_dictionaries(self.logical_disk_array)
@@ -212,6 +223,7 @@ class F:
         # print(f"physical_disk_array: {self.partitions_array}")
 
     def create_volume_options(self) -> []:
+        logging.debug(f"### F.create_volume_options() ###")
         logging.info("Matching Volumes to Drives ...")
         option_number = 1
         options = []
@@ -242,10 +254,11 @@ class F:
         return options
 
     def prepare_volume_details(self) -> {}:
+        logging.debug(f"### F.prepare_volume_details() ###")
         # Prepare the volume details to be populated into the GUI version of the program
         logging.info(f"prepare_volume_details()")
         # load the data required for the "add_volume" subcommand
-        self.volume_argument_details = {}
+        self.volume_argument_details.clear()
 
         # Load volume details
         self.load_volume_drive_details()
@@ -281,6 +294,8 @@ class F:
         self.volume_argument_details["volume_dictionary"] = volumes
 
     def add_subcommands_to_parser(self, parser):
+        logging.debug(f"### F.add_subcommands_to_parser() ###")
+
         file_categories = FileTypes.get_file_categories()
         #print(f"file_categories: {file_categories}")
 
@@ -306,7 +321,7 @@ class F:
         if type(parser) is not argparse.ArgumentParser:
             parser_search.add_argument("-c", "--category", dest='category', metavar='Category', choices=file_categories, nargs='?', help="Category of files to be considered")
         #parser_search.add_argument("-l", "--label2", dest='label2', metavar='Label', default=None, help="Label of the drive listing")
-        parser_search.add_argument("-l", "--label", dest='label2', metavar='Label', default=None, help="Label of the drive listing")
+        parser_search.add_argument("--label", dest='label', metavar='Label', default=None, help="Label of the drive listing")
         F.add_db_to_parser(parser_search)
         F.add_verbose_to_parser(parser_search)
 
@@ -340,7 +355,7 @@ class F:
             F.add_argument(parser_add, "-l", "--label", dest='label', metavar='Label', help="Label of the drive listing. If provided it will override the volume label.")
             hostname = socket.gethostname()
             F.add_argument(parser_add, "-n", "--hostname", dest='hostname', metavar='Hostname', default=hostname,
-                                       help="Hostname of the machine containing the drive")
+                                          help="Hostname of the machine containing the drive")
             F.add_db_to_parser(parser_add)
             F.add_verbose_to_parser(parser_add)
 
@@ -350,14 +365,15 @@ class F:
         F.add_argument(parser_import, "label", metavar='Label', help="Label of the drive listing")
         F.add_argument(parser_import, "filename", metavar='Filename', widget='FileChooser',
                                    help="Filename (including path) of the listing in fixed width format to be processed. See PowerShell example")
-        F.add_argument(parser_import, "-m", "--make", dest='make', metavar='Make', default=None, help="Make of the drive")
-        F.add_argument(parser_import, "-o", "--model", dest='model', metavar='Model', default=None, help="Model of the drive")
-        F.add_argument(parser_import, "-s", "--serial", dest='serial', metavar='Serial Number', default=None, help="Serial number of the drive")
-        F.add_argument(parser_import, "-c", "--combined", dest='combined', metavar='Combined', default=None,
+        #F.add_argument(parser_import, "-m", "--make", dest='make', metavar='Make', default=None, help="Make of the drive")
+        F.add_argument(parser_import, "--make", dest='make', metavar='Make', help="Make of the drive")
+        F.add_argument(parser_import, "-o", "--model", dest='model', metavar='Model', help="Model of the drive")
+        F.add_argument(parser_import, "-s", "--serial", dest='serial', metavar='Serial Number', help="Serial number of the drive")
+        F.add_argument(parser_import, "-c", "--combined", dest='combined', metavar='Combined',
                                    help="Combined drive information string, in format \"make,model,serial-number\"")
-        F.add_argument(parser_import, "-n", "--hostname", dest='hostname', metavar='Hostname', default=None,
+        F.add_argument(parser_import, "-n", "--hostname", dest='hostname', metavar='Hostname',
                                    help="Hostname of the machine containing the drive")
-        F.add_argument(parser_import, "-p", "--prefix", dest='prefix', metavar='Prefix', default=None,
+        F.add_argument(parser_import, "-p", "--prefix", dest='prefix', metavar='Prefix',
                                    help="Prefix to remove from the start of each file's path. e.g. \"C:\\Users\\username\"")
         F.add_argument(parser_import, "-t", "--test", dest='test', metavar='Test', action="store_true",
                                    help="Test input file without modifying the database")
@@ -390,10 +406,13 @@ class F:
         F.add_verbose_to_parser(parser_reset)
 
     def process_args_and_call_subcommand(self, args):
-
-        # If 'create' subcommand specified, then we don't need to open the database
+        logging.debug(f"### F.process_args_and_call_subcommand() ###")
+        # If 'create' and 'refresh_volumes' subcommands are specified, then we don't need to open the database
         if args.subcommand == F.SUBCOMMAND_CREATE:
             self.create(args)
+
+        elif args.subcommand == F.SUBCOMMAND_REFRESH_VOLUMES:
+            self.refresh_volumes(args)
 
         else:
             # These subcommands all need a working database connection
@@ -433,11 +452,14 @@ class F:
 
             #print(f"Time in seconds: {end_time - start_time}")
 
+            # Close the database cleanly now that we have finished with it
+            self.database.close_database()
+
         # Clean up and exit
-        self.clean_up_and_quit()
-        print("")
+        self.clean_up()
 
     def start(self):
+        logging.debug(f"### F.start() ###")
 
         if self.memory_stats:
             # Start tracing memory allocations
@@ -460,7 +482,7 @@ class F:
         # Command finished so program finished
 
 if __name__ == "__main__":
-    F.start_logger()
+    F.start_logger(logging.DEBUG)
     f = F()
     f.start()
 

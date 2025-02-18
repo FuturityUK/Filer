@@ -3,7 +3,6 @@ import json
 
 from dyngooey import Gooey, GooeyParser, gooey_stdout, gooey_id
 
-
 # --------------------------------------------------------------------------- #
 
 def dumps(data):
@@ -101,6 +100,7 @@ def seed(parser, clear=[]):
     clear_before_run=True
 )
 def main(parser):
+    print("Wibble")
     if not gooey_stdout():
         args = parser.parse_args()
 

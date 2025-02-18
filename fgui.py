@@ -6,16 +6,21 @@ import logging
 class Fgui:
 
     def __init__(self):
+        logging.debug(f"### __init__() ###")
         self.parser = GooeyParser(
             description="Filer - File Cataloger"
         )
         self.f = F()
+        self.volume_argument_details = {}
+        self.counter = 69
 
     @staticmethod
     def dumps(data):
+        logging.debug(f"### dumps() ###")
         return json.dumps(data, indent=4, default=str)
 
     def init(self):
+        logging.debug(f"### init() ###")
         logging.info(f"Initialising Argument Parser Arguments...")
         """
         self.parser.add_argument(
@@ -67,7 +72,10 @@ class Fgui:
         self.f.add_subcommands_to_parser(self.parser)
 
     def seed(self, clear=None):
+        logging.debug(f"### seed() ###")
         logging.info(f"Seeding Argument Parser Values...")
+        self.counter += 1
+        logging.info(f"self.counter: {self.counter}")
         if clear is None:
             clear = []
         if gooey_stdout():
@@ -77,11 +85,19 @@ class Fgui:
             #  - None     => Clear/Initial value
             #  - not None => Dynamic value
             #  - missing  => Left alone
+            volume_default_choice = None
+            volume_choices = []
+            if len(self.volume_argument_details) != 0:
+                volume_default_choice = self.volume_argument_details["volume_default_choice"]
+                logging.debug(f"self.f.volume_argument_details[\"volume_default_choice\"]: {volume_default_choice}")
+                volume_choices = self.volume_argument_details["volume_choices"]
+                logging.debug(f"self.f.volume_argument_details[\"volume_choices\"]: {volume_choices}")
+
             dynamic_values = {
-                'volume': self.f.volume_argument_details["volume_default_choice"],
+                'volume': volume_default_choice,
                 'make6': "Hello World!",
                 'label': "Hello Neil!",
-                'label2': "Hello Caroline!",
+                'make': str(self.counter),
                 'test_required_1': None,  # This will be replaced with the initial value
                 # 'test_required_2' will be left alone
                 'test_optional_1': None,
@@ -96,7 +112,7 @@ class Fgui:
                 'test_optional_2': [
                     f'Random entry {i}' for i in range(__import__('random').randrange(30))
                 ],
-                'volume': self.f.volume_argument_details["volume_choices"]
+                'volume': volume_choices
             }
 
             logging.debug(f"_actions: {self.parser._actions}")
@@ -122,7 +138,7 @@ class Fgui:
 
     @staticmethod
     def process_actions(parser, seeds: {}, dynamic_values: {}, dynamic_items: {}) -> {}:
-        logging.debug(f"process_actions()")
+        logging.debug(f"### process_actions() ###")
 
         for action in parser._actions:
             logging.debug(f"action: {action}")
@@ -162,7 +178,6 @@ class Fgui:
 
         return seeds
 
-
     @Gooey(
             program_name='Filer',
             required_cols=1,
@@ -172,21 +187,29 @@ class Fgui:
             clear_before_run=False,# Was True
             show_stop_warning=False, # From test.py
             show_success_modal=False, # From test.py
-            show_failure_modal=False # From test.py
+            show_failure_modal=False, # From test.py
+            dump_build_config = True  # Dump the JSON Gooey uses to configure itself
+            #load_build_config = 'gooey_config.json'  # Loads a JSON Gooey-generated configuration
         )
     def main(self):
+        logging.debug(f"### main() ###")
+        print(f"START: len(f.volume_argument_details): {len(self.volume_argument_details)}")
         args = self.parser.parse_args()
         if not gooey_stdout():
             print(f"Program arguments:")
             print(f"{Fgui.dumps(vars(args))}")
 
+
         f = F()
-        #f.process_args_and_call_subcommand(args)
+        f.process_args_and_call_subcommand(args)
+        self.volume_argument_details = f.volume_argument_details
+        print(f"END  : len(f.volume_argument_details): {len(self.volume_argument_details)}")
 
 if __name__ == "__main__":
-    F.start_logger()
+    F.start_logger(logging.INFO)
     fgui = Fgui()
     fgui.init()
     fgui.seed()
     fgui.main()
+
 
