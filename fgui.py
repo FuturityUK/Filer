@@ -187,8 +187,8 @@ class Fgui:
             clear_before_run=False,# Was True
             show_stop_warning=False, # From test.py
             show_success_modal=False, # From test.py
-            show_failure_modal=False, # From test.py
-            dump_build_config = True  # Dump the JSON Gooey uses to configure itself
+            show_failure_modal=False # From test.py
+            #dump_build_config = True,  # Dump the JSON Gooey uses to configure itself
             #load_build_config = 'gooey_config.json'  # Loads a JSON Gooey-generated configuration
         )
     def main(self):
