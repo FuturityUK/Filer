@@ -4,13 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="- Moved common code to f.py&#10;- Loading of the system Volume information (which is a slow process) doesn't happen when the program is run. The user has to manually trigger it using the &quot;refresh-volumes&quot; subcommand which is only available in the GUI.">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/f.py" beforeDir="false" afterPath="$PROJECT_DIR$/f.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fgui.py" beforeDir="false" afterPath="$PROJECT_DIR$/fgui.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/test.py" afterDir="false" />
-    </list>
+    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="INSERT REFRESH_VOLUME TRUE / FALSE IN THAT SUBCOMMAND.&#10;HARDCODE INTO process_actions THAT WHEN IT SEES THAT REFRESH_VOLUME field = True, then populate VOLUME ARRAY.&#10;&#10;OR JUST STORE THE VOLUME DATA STRUCTURE IN A JSON FILE AND LOAD IT INTO THE SEED FUNCTION EVERY TIME. WOULD BE FASTER" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -96,22 +90,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1736868367160</updated>
-    </task>
-    <task id="LOCAL-00067" summary="Started work on System.does_path_listing_exit() to check if a file exists and give the user the option to delete it.">
-      <option name="closed" value="true" />
-      <created>1738445153819</created>
-      <option name="number" value="00067" />
-      <option name="presentableId" value="LOCAL-00067" />
-      <option name="project" value="LOCAL" />
-      <updated>1738445153819</updated>
-    </task>
-    <task id="LOCAL-00068" summary="Removed the Vacuum.bt file">
-      <option name="closed" value="true" />
-      <created>1738494785695</created>
-      <option name="number" value="00068" />
-      <option name="presentableId" value="LOCAL-00068" />
-      <option name="project" value="LOCAL" />
-      <updated>1738494785695</updated>
     </task>
     <task id="LOCAL-00069" summary="Removed the Vacuum.bt file">
       <option name="closed" value="true" />
@@ -489,7 +467,23 @@
       <option name="project" value="LOCAL" />
       <updated>1739897204423</updated>
     </task>
-    <option name="localTasksCounter" value="116" />
+    <task id="LOCAL-00116" summary="Still experimenting with ways to persist data.&#10;- Seeding fixed&#10;- Turned on the loading and saving of Gooey dumps, but the load and save only happen at the very start of the program.">
+      <option name="closed" value="true" />
+      <created>1739906450444</created>
+      <option name="number" value="00116" />
+      <option name="presentableId" value="LOCAL-00116" />
+      <option name="project" value="LOCAL" />
+      <updated>1739906450444</updated>
+    </task>
+    <task id="LOCAL-00117" summary="Still experimenting with ways to persist data.&#10;- Turned off Gooey Config backup dump and Load">
+      <option name="closed" value="true" />
+      <created>1739906637009</created>
+      <option name="number" value="00117" />
+      <option name="presentableId" value="LOCAL-00117" />
+      <option name="project" value="LOCAL" />
+      <updated>1739906637009</updated>
+    </task>
+    <option name="localTasksCounter" value="118" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -504,9 +498,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="File type line now split into extensions and description" />
-    <MESSAGE value="Extensions are now split into individual extensions together with their descriptions. More wikitext formatting correctly removed" />
-    <MESSAGE value="Finished file_types.py which now can download directly from the wikipedia website, cache the file locally and extract the extension data from it. It then stores the details in a csv file" />
     <MESSAGE value="changed name of cached file to file_types.wikitext" />
     <MESSAGE value="Work on search (find) GUI (not finished)" />
     <MESSAGE value="Find and Search subcommands now share the same code" />
@@ -529,6 +520,9 @@
     <MESSAGE value="Fixed the '%' character error as it needs to be escaped for the command line, but not for the GUI" />
     <MESSAGE value="Moved some common code from filer.py to f.py" />
     <MESSAGE value="- Moved common code to f.py&#10;- Loading of the system Volume information (which is a slow process) doesn't happen when the program is run. The user has to manually trigger it using the &quot;refresh-volumes&quot; subcommand which is only available in the GUI." />
-    <option name="LAST_COMMIT_MESSAGE" value="- Moved common code to f.py&#10;- Loading of the system Volume information (which is a slow process) doesn't happen when the program is run. The user has to manually trigger it using the &quot;refresh-volumes&quot; subcommand which is only available in the GUI." />
+    <MESSAGE value="Still experimenting with ways to persist data.&#10;- Seeding fixed&#10;- Turned on the loading and saving of Gooey dumps, but the load and save only happen at the very start of the program." />
+    <MESSAGE value="Still experimenting with ways to persist data.&#10;- Turned off Gooey Config backup dump and Load" />
+    <MESSAGE value="INSERT REFRESH_VOLUME TRUE / FALSE IN THAT SUBCOMMAND.&#10;HARDCODE INTO process_actions THAT WHEN IT SEES THAT REFRESH_VOLUME field = True, then populate VOLUME ARRAY.&#10;&#10;OR JUST STORE THE VOLUME DATA STRUCTURE IN A JSON FILE AND LOAD IT INTO THE SEED FUNCTION EVERY TIME. WOULD BE FASTER" />
+    <option name="LAST_COMMIT_MESSAGE" value="INSERT REFRESH_VOLUME TRUE / FALSE IN THAT SUBCOMMAND.&#10;HARDCODE INTO process_actions THAT WHEN IT SEES THAT REFRESH_VOLUME field = True, then populate VOLUME ARRAY.&#10;&#10;OR JUST STORE THE VOLUME DATA STRUCTURE IN A JSON FILE AND LOAD IT INTO THE SEED FUNCTION EVERY TIME. WOULD BE FASTER" />
   </component>
 </project>

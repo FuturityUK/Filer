@@ -199,7 +199,7 @@ class Fgui:
             print(f"Program arguments:")
             print(f"{Fgui.dumps(vars(args))}")
 
-
+        # Now process the args
         f = F()
         f.process_args_and_call_subcommand(args)
         self.volume_argument_details = f.volume_argument_details
