@@ -23,7 +23,6 @@ from system import System
 from file_types import FileTypes
 import time
 import socket
-import sys
 import logging
 from data import Data
 from format import Format
@@ -37,6 +36,7 @@ class F:
     DEFAULT_TEMP_LISTING_FILE: str = 'filer.fwf'
 
     SUBCOMMAND_SEARCH: str = 'search'
+    SUBCOMMAND_REFRESH_VOLUMES: str = 'refresh_volumes'
     SUBCOMMAND_ADD_VOLUME: str = 'add_volume'
     SUBCOMMAND_IMPORT: str = 'import'
     SUBCOMMAND_CREATE: str = 'create'
@@ -44,10 +44,16 @@ class F:
     SUBCOMMAND_VACUUM: str = 'vacuum'
     SUBCOMMAND_RESET: str = 'reset'
 
+    VOLUMES_ARGUMENT_HELP: str = "Volume that you wish to add"
+
     def __init__(self):
         self.database = None
         self.memory_stats = False
         self.system = System()
+        self.logical_disk_array = None
+        self.physical_disk_array = None
+        self.volumes_array = None
+        self.volume_argument_details = {"volume_default_choice": None, "volume_choices": None}
 
     def set_memory_stats(self, memory_stats):
         self.memory_stats = memory_stats
@@ -210,8 +216,8 @@ class F:
         option_number = 1
         options = []
         for volume_dictionary in self.volumes_array:
-            volume_array_of_dicts = []
-            volume_array_of_dicts.append(volume_dictionary)
+            # Initialise the volume_array_of_dicts with the volume_dictionary
+            volume_array_of_dicts = [volume_dictionary]
             drive_letter = f'{volume_dictionary['DriveLetter']}:'
             disk_number = self.system.get_disk_number_for_drive_letter(drive_letter)
             # print(f"{drive_letter} is on drive {disk_number}")
@@ -220,9 +226,11 @@ class F:
             if len(disk_number.strip()) != 0:
                 logical_disk_dictionary = Data.find_dictionary_in_array(self.logical_disk_array, "DiskNumber",
                                                                         disk_number)
+                # Append to the volume_array_of_dicts the logical_disk_dictionary
                 volume_array_of_dicts.append(logical_disk_dictionary)
                 physical_disk_dictionary = Data.find_dictionary_in_array(self.physical_disk_array, "DeviceId",
                                                                          disk_number)
+                # Append to the volume_array_of_dicts the physical_disk_dictionary
                 volume_array_of_dicts.append(physical_disk_dictionary)
                 if logical_disk_dictionary is not None:
                     volume_info_line += f" / {logical_disk_dictionary['BusType']} {physical_disk_dictionary['MediaType']}: {logical_disk_dictionary['Manufacturer']}, {logical_disk_dictionary['Model']}, SN: {logical_disk_dictionary['SerialNumber']} ({logical_disk_dictionary['HealthStatus']}))"
@@ -234,14 +242,18 @@ class F:
         return options
 
     def prepare_volume_details(self) -> {}:
+        # Prepare the volume details to be populated into the GUI version of the program
+        logging.info(f"prepare_volume_details()")
         # load the data required for the "add_volume" subcommand
-        results = {}
+        self.volume_argument_details = {}
 
+        # Load volume details
         self.load_volume_drive_details()
+        # Create options for the command line version
         options = self.create_volume_options()
         # print(options)
 
-        volumes_argument_help = "Volume that you wish to add"
+        volumes_argument_help = self.VOLUMES_ARGUMENT_HELP
         volumes = {}
         volume_choices = []
         volume_default_choice = None
@@ -263,11 +275,10 @@ class F:
             volumes[volume_description] = volume_result_array
             volume_choices.append(volume_description)
 
-        results["volume_choices"] = volume_choices
-        results["volumes_argument_help"] = volumes_argument_help
-        results["volume_default_choice"] = volume_default_choice
-        results["volume_dictionary"] = volumes
-        return results
+        self.volume_argument_details["volume_choices"] = volume_choices
+        self.volume_argument_details["volumes_argument_help"] = volumes_argument_help
+        self.volume_argument_details["volume_default_choice"] = volume_default_choice
+        self.volume_argument_details["volume_dictionary"] = volumes
 
     def add_subcommands_to_parser(self, parser):
         file_categories = FileTypes.get_file_categories()
@@ -302,23 +313,30 @@ class F:
         # Only add the 'add' subcommand to the GUI
         if type(parser) is not argparse.ArgumentParser:
             # create the parser for the "add" subcommand
+            parser_refresh = subparsers.add_parser(F.SUBCOMMAND_REFRESH_VOLUMES, help=F.SUBCOMMAND_REFRESH_VOLUMES+' help')
+
+        # Only add the 'add' subcommand to the GUI
+        if type(parser) is not argparse.ArgumentParser:
+            # create the parser for the "add" subcommand
             parser_add = subparsers.add_parser(F.SUBCOMMAND_ADD_VOLUME, help=F.SUBCOMMAND_ADD_VOLUME+' help')
 
             # Only populate the choices, if no arguments have been provided to the program
-            print(f"sys.argv: {sys.argv}")
-            sys_argv_length = len(sys.argv)
-            print(f"sys_argv_length: {sys_argv_length}")
-            if sys_argv_length == 1:
+            #print(f"sys.argv: {sys.argv}")
+            #sys_argv_length = len(sys.argv)
+            #print(f"sys_argv_length: {sys_argv_length}")
+            #if sys_argv_length == 1:
                 # 1 argument == program name only
-                results = self.prepare_volume_details()
-                volumes_argument_help = results["volumes_argument_help"]
-                volume_choices = results["volume_choices"]
-                volume_default_choice = results["volume_default_choice"]
-                F.add_argument(parser_add, "-q", "--volume", dest='volume', metavar='Volume', choices=volume_choices, nargs='?', default=volume_default_choice,
-                                       help=volumes_argument_help)
-            else:
-                F.add_argument(parser_add, "-q", "--volume", dest='volume', metavar='Volume',
-                                       help="Volume that you wish to add to the database")
+                #results = self.prepare_volume_details()
+                #volumes_argument_help = results["volumes_argument_help"]
+                #volume_choices = results["volume_choices"]
+                #volume_default_choice = results["volume_default_choice"]
+                #F.add_argument(parser_add, "-q", "--volume", dest='volume', metavar='Volume', choices=volume_choices, nargs='?', default=volume_default_choice, help=volumes_argument_help)
+                #F.add_argument(parser_add, "-q", "--volume", dest='volume', metavar='Volume', choices=[], nargs='?', default=None, help=self.VOLUMES_ARGUMENT_HELP)
+            #else:
+            #    F.add_argument(parser_add, "-q", "--volume", dest='volume', metavar='Volume',
+            #                           help="Volume that you wish to add to the database")
+            F.add_argument(parser_add, "-q", "--volume", dest='volume', metavar='Volume', choices=[], nargs='?',
+                           default=None, help=self.VOLUMES_ARGUMENT_HELP)
             F.add_argument(parser_add, "-l", "--label", dest='label', metavar='Label', help="Label of the drive listing. If provided it will override the volume label.")
             hostname = socket.gethostname()
             F.add_argument(parser_add, "-n", "--hostname", dest='hostname', metavar='Hostname', default=hostname,

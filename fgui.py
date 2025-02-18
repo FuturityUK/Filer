@@ -72,16 +72,13 @@ class Fgui:
             clear = []
         if gooey_stdout():
             logging.debug(f"gooey_stdout detected")
-            results = self.f.prepare_volume_details()
-            volume_choices = results["volume_choices"]
-            volumes_argument_help = results["volumes_argument_help"]
-            volume_default_choice = results["volume_default_choice"]
+
             # NOTE:
             #  - None     => Clear/Initial value
             #  - not None => Dynamic value
             #  - missing  => Left alone
             dynamic_values = {
-                'volume': volume_default_choice,
+                'volume': self.f.volume_argument_details["volume_default_choice"],
                 'make6': "Hello World!",
                 'label': "Hello Neil!",
                 'label2': "Hello Caroline!",
@@ -99,7 +96,7 @@ class Fgui:
                 'test_optional_2': [
                     f'Random entry {i}' for i in range(__import__('random').randrange(30))
                 ],
-                'volume': volume_choices
+                'volume': self.f.volume_argument_details["volume_choices"]
             }
 
             logging.debug(f"_actions: {self.parser._actions}")

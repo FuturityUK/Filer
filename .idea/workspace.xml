@@ -4,12 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Fixed the '%' character error as it needs to be escaped for the command line, but not for the GUI">
+    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Moved some common code from filer.py to f.py">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database.py" beforeDir="false" afterPath="$PROJECT_DIR$/database.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/f.py" beforeDir="false" afterPath="$PROJECT_DIR$/f.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/fgui.py" beforeDir="false" afterPath="$PROJECT_DIR$/fgui.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/filer.py" beforeDir="false" afterPath="$PROJECT_DIR$/filer.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -96,14 +94,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1736868367160</updated>
-    </task>
-    <task id="LOCAL-00065" summary="Refactored the execution of Powershell commands.&#10;Added option to specify the location of temporary file used when creating file listings in interactive mode.">
-      <option name="closed" value="true" />
-      <created>1738416942089</created>
-      <option name="number" value="00065" />
-      <option name="presentableId" value="LOCAL-00065" />
-      <option name="project" value="LOCAL" />
-      <updated>1738416942089</updated>
     </task>
     <task id="LOCAL-00066" summary="If the user tries to process a listing with the same label, they are given the option to replace the listing, or exit the processing of this listing.">
       <option name="closed" value="true" />
@@ -489,7 +479,15 @@
       <option name="project" value="LOCAL" />
       <updated>1739478879949</updated>
     </task>
-    <option name="localTasksCounter" value="114" />
+    <task id="LOCAL-00114" summary="Moved some common code from filer.py to f.py">
+      <option name="closed" value="true" />
+      <created>1739482488846</created>
+      <option name="number" value="00114" />
+      <option name="presentableId" value="LOCAL-00114" />
+      <option name="project" value="LOCAL" />
+      <updated>1739482488846</updated>
+    </task>
+    <option name="localTasksCounter" value="115" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -504,7 +502,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Added code to extract file extension information" />
     <MESSAGE value="Now downloads file types from the wiki page if a local copy doesn't already exist." />
     <MESSAGE value="File type line now split into extensions and description" />
     <MESSAGE value="Extensions are now split into individual extensions together with their descriptions. More wikitext formatting correctly removed" />
@@ -529,6 +526,7 @@
     <MESSAGE value="Moved finding the volume and drive information to its own function" />
     <MESSAGE value="The Volume choice is now populated after running a command and clicking on edit." />
     <MESSAGE value="Fixed the '%' character error as it needs to be escaped for the command line, but not for the GUI" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed the '%' character error as it needs to be escaped for the command line, but not for the GUI" />
+    <MESSAGE value="Moved some common code from filer.py to f.py" />
+    <option name="LAST_COMMIT_MESSAGE" value="Moved some common code from filer.py to f.py" />
   </component>
 </project>
