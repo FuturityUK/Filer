@@ -7,17 +7,19 @@ import gooey.gui.components.widgets as gooey_widgets
 import json
 import subprocess
 import sys
-
+import logging
 
 # --------------------------------------------------------------------------- #
 
 GOOEY_SEED_UI = "gooey-seed-ui"
 GOOEY_IGNORE = "--ignore-gooey"
 
-
+logger = logging.getLogger(__name__)
 # --------------------------------------------------------------------------- #
 
+
 def Gooey(**kwargs):
+    logger.debug(f"### Dyngooey.Gooey() ###")
     """Gooey decorator with forcibly enabled dynamic updates"""
     _kwargs = kwargs.copy()
     _kwargs.pop("poll_external_updates", None)
@@ -27,10 +29,12 @@ def Gooey(**kwargs):
 # --------------------------------------------------------------------------- #
 
 def gooey_stdout():
+    logger.debug(f"### Dyngooey.gooey_stdout() ###")
     """Helper to get "real stdout while seeding"""
     return __stdout
 
 def gooey_id(action):
+    logger.debug(f"### Dyngooey.gooey_id() ###")
     """Helper to get Gooey Widget Id from parser action"""
     # Matches against the first defined option, as in '-h' if both '-h' & '--help' provided
     # Falls back to dest for non optional parameters
@@ -56,6 +60,7 @@ if __stdout: sys.stdout = sys.stderr
 # NOTE: Below we will monkey patch Gooey's dynamic update function to
 #       supplement it with proper error feedback
 def __fetchDynamicProperties(target, encoding):
+    logger.info(f"### Dyngooey.__fetchDynamicProperties() ###")
     cmd = '{} {}'.format(target, " ".join([GOOEY_SEED_UI, GOOEY_IGNORE]))
     proc = subprocess.Popen(
         cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True
@@ -82,6 +87,7 @@ gooey_seeder.fetchDynamicProperties = __fetchDynamicProperties
 
 # TextContainer widget
 def __setTextContainerOptions(_self, options):
+    logger.info(f"### Dyngooey.__setTextContainerOptions() ###")
     default = _self._options.get("initial_value", "")
     if isinstance(options, str) or not isinstance(options, Iterable):
         value = options
@@ -94,6 +100,7 @@ setattr(gooey_widgets.bases.TextContainer, "setOptions", __setTextContainerOptio
 
 # CheckBox widget
 def __setCheckBoxOptions(_self, options):
+    logger.info(f"### Dyngooey.__setCheckBoxOptions() ###")
     default = _self._options.get("initial_value", bool(_self._meta["default"]))
     if isinstance(options, str) or not isinstance(options, Iterable):
         value = options
@@ -106,33 +113,72 @@ setattr(gooey_widgets.checkbox.CheckBox, "setOptions", __setCheckBoxOptions)
 
 # Dropdown widget
 def __setDropdownOptions(_self, options):
+    logger.info(f"### Dyngooey.__setDropdownOptions() ###")
+    logger.info("")
+    logger.info(f"_self: {_self.__dict__['info']['id']}")
+    logger.info(f"options: {options}")
+    logger.info(f"_self._options: {_self._options}")
+    logger.info("")
+
     _ = gooey_widgets.dropdown._
+    logger.info(f"_('select_option'): {_('select_option')}")
+
     get = lambda v,n: n if v is None else v
     default = _self._options.get("initial_value", None)
+    """
     if isinstance(options, str) or not isinstance(options, Iterable):
         value = get(options, default)
         if value is None:
             _self.widget.SetSelection(0)
         else:
             _self.setValue(value)
-    elif isinstance(options, list):
+    el
+    """
+    if isinstance(options, list):
+        logger.info("list")
         _self.widget.Clear()
         _self.widget.SetItems([_('select_option')] + get(options, []))
     elif isinstance(options, dict):
+        logger.info("dict")
+        items_array = []
         if "items" in options:
+            logger.info("dict-items")
             #with _self.retainSelection():
             _self.widget.Clear()
-            _self.widget.SetItems([_('select_option')] + get(options["items"], []))
+            items_array = [_('select_option')] + get(options["items"], [])
+            _self.widget.SetItems(items_array)
         if "value" in options:
+            logger.info("dict-value")
             value = get(options["value"], default)
+            logger.info("dict-value: " + str(value) + "")
+            logger.info(f"_self.widget: {_self.widget.__dict__}")
+            _self.widget.SetSelection(1)
+            for i in range(len(items_array)):
+                if items_array[i] == value:
+                    _self.widget.SetSelection(i)
+                    break
+            """
             if value is None:
                 _self.widget.SetSelection(0)
             else:
                 _self.setValue(value)
+            """
+    # Moved from the start of the IF statement to the bottom, because you can't set the
+    # DROPDOWN / CHOICE default, if the ITEMS / CHOICES haven't been populated yet.
+    elif isinstance(options, str) or not isinstance(options, Iterable):
+        logger.info("str or not Iterable")
+        value = get(options, default)
+        if value is None:
+            _self.widget.SetSelection(0)
+        else:
+            _self.setValue(value)
+    logger.info(f"### Dyngooey.__setDropdownOptions() - END ###")
+
 setattr(gooey_widgets.dropdown.Dropdown, "setOptions", __setDropdownOptions)
 
 # Listbox widget
 def __setListboxOptions(_self, options):
+    logger.info(f"### Dyngooey.__setListboxOptions() ###")
     get = lambda v,n: n if v is None else v
     default = _self._options.get("initial_value", None)
     if isinstance(options, str) or not isinstance(options, Iterable):

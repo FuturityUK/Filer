@@ -71,6 +71,20 @@ class F:
     def set_memory_stats(self, memory_stats):
         self.memory_stats = memory_stats
 
+    @staticmethod
+    def start_logger(logging_level):
+        logging.basicConfig(level=logging_level,
+                            filename="app.log",
+                            encoding="utf-8",
+                            filemode="a",
+                            format="{asctime} - {levelname} - {message}",
+                            style="{",
+                            datefmt="%Y-%m-%d %H:%M"
+                            )
+        logging.info("*********************")
+        logging.info("Application started: os.path.basename(__file__)")
+        logging.info("*********************")
+
     def clean_up(self):
         # Now that the subcommands have been run
         if self.memory_stats:
@@ -171,20 +185,6 @@ class F:
         powershell_filesystem_listing.save_to_database()
 
         powershell_filesystem_listing.import_listing()
-
-    @staticmethod
-    def start_logger(logging_level):
-        logging.basicConfig(level=logging_level,
-                            filename="app.log",
-                            encoding="utf-8",
-                            filemode="a",
-                            format="{asctime} - {levelname} - {message}",
-                            style="{",
-                            datefmt="%Y-%m-%d %H:%M"
-                            )
-        logging.info("*********************")
-        logging.info("Application started: os.path.basename(__file__)")
-        logging.info("*********************")
 
     @staticmethod
     def add_argument(parser, *temp_args, **temp_kwargs): # : Optional[Union[Iterable, dict]]
@@ -513,6 +513,7 @@ class F:
         # Command finished so program finished
 
 if __name__ == "__main__":
+    #my_logger = logging.getLogger(__name__)
     F.start_logger(logging.DEBUG)
     f = F()
     f.start()

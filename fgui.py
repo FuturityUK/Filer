@@ -20,53 +20,6 @@ class Fgui:
     def init(self):
         logging.debug(f"### init() ###")
         logging.info(f"Initialising Argument Parser Arguments...")
-        """
-        self.parser.add_argument(
-            'test_required_1',
-            gooey_options={
-                'initial_value': 'Initial values will be kept!'
-            }
-        )
-
-        self.parser.add_argument(
-            'test_required_2'
-        )
-
-        self.parser.add_argument(
-            '-t', '--test-optional-1',
-            dest='test_optional_1'
-        )
-
-        self.parser.add_argument(
-            '--test-optional-2',
-            dest='test_optional_2',
-            widget='Dropdown'
-        )
-
-        self.parser.add_argument(
-            '--test-optional-3',
-            dest='test_optional_3'
-        )
-
-        self.parser.add_argument(
-            '--test-store-true',
-            dest='test_store_true',
-            action='store_true'
-        )
-
-        self.parser.add_argument(
-            '--test-store-false',
-            dest='test_store_false',
-            action='store_false'
-        )
-
-        self.parser.add_argument(
-            '--test-store-const',
-            dest='test_store_const',
-            action='store_const',
-            const=10
-        )
-        """
         self.f.add_subcommands_to_parser(self.parser)
 
     def seed(self, clear=None):
@@ -91,8 +44,11 @@ class Fgui:
                 volume_choices = volume_argument_details["volume_choices"]
                 logging.info(f"volume_argument_details[\"volume_choices\"]: {volume_choices}")
 
+            baker = "Baker"
+
             dynamic_values = {
                 #'volume': volume_default_choice,
+                'volume': baker,
                 'make6': "Hello World!",
                 'label': "Hello Neil!",
                 'make': "Wibble Wobble",
@@ -111,7 +67,8 @@ class Fgui:
                 #'test_optional_2': [
                 #    f'Random entry {i}' for i in range(__import__('random').randrange(30))
                 #],
-                'volume': ["hello"]
+                #'volume': volume_choices
+                'volume': ["Neil", baker]
             }
             logging.info(f"dynamic_items: {dynamic_items}")
 
@@ -149,10 +106,10 @@ class Fgui:
                 # NOTE: Matches based on the dest value, but the 'seeds' dictionary uses:
                 # for non-optional parameters: the dest value
                 # for optional parameters: the first option string ('-h', when '-h' & '--help')
-                if action.dest in dynamic_values:
-                    action_seeds["value"] = dynamic_values[action.dest]
                 if action.dest in dynamic_items:
                     action_seeds["items"] = dynamic_items[action.dest]
+                if action.dest in dynamic_values:
+                    action_seeds["value"] = dynamic_values[action.dest]
 
                 #logging.info(f"action_seeds (after): {action_seeds}")
                 #logging.info(f"seeds (after): {seeds}")
@@ -186,7 +143,7 @@ class Fgui:
     def main(self):
         logging.debug(f"### main() ###")
         args = self.parser.parse_args()
-        """
+
         if not gooey_stdout():
             print(f"Program arguments:")
             print(f"{Fgui.dumps(vars(args))}")
@@ -194,13 +151,16 @@ class Fgui:
         # Now process the args
         f = F()
         f.process_args_and_call_subcommand(args)
-        """
+
 
 if __name__ == "__main__":
-    F.start_logger(logging.INFO)
+    #my_logger = logging.getLogger(__name__)
+    F.start_logger(logging.DEBUG)
     fgui = Fgui()
     fgui.init()
     fgui.seed()
     fgui.main()
+
+
 
 
