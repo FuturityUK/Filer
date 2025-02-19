@@ -120,9 +120,9 @@ def __setDropdownOptions(_self, options):
         _self.widget.SetItems([_('select_option')] + get(options, []))
     elif isinstance(options, dict):
         if "items" in options:
-            with _self.retainSelection():
-                _self.widget.Clear()
-                _self.widget.SetItems([_('select_option')] + get(options["items"], []))
+            #with _self.retainSelection():
+            _self.widget.Clear()
+            _self.widget.SetItems([_('select_option')] + get(options["items"], []))
         if "value" in options:
             value = get(options["value"], default)
             if value is None:

@@ -11,8 +11,6 @@ class Fgui:
             description="Filer - File Cataloger"
         )
         self.f = F()
-        self.volume_argument_details = {}
-        self.counter = 69
 
     @staticmethod
     def dumps(data):
@@ -74,8 +72,7 @@ class Fgui:
     def seed(self, clear=None):
         logging.debug(f"### seed() ###")
         logging.info(f"Seeding Argument Parser Values...")
-        self.counter += 1
-        logging.info(f"self.counter: {self.counter}")
+
         if clear is None:
             clear = []
         if gooey_stdout():
@@ -87,17 +84,18 @@ class Fgui:
             #  - missing  => Left alone
             volume_default_choice = None
             volume_choices = []
-            if len(self.volume_argument_details) != 0:
-                volume_default_choice = self.volume_argument_details["volume_default_choice"]
-                logging.debug(f"self.f.volume_argument_details[\"volume_default_choice\"]: {volume_default_choice}")
-                volume_choices = self.volume_argument_details["volume_choices"]
-                logging.debug(f"self.f.volume_argument_details[\"volume_choices\"]: {volume_choices}")
+            volume_argument_details = self.f.volume_argument_details
+            if len(volume_argument_details) != 0:
+                volume_default_choice = volume_argument_details["volume_default_choice"]
+                logging.info(f"volume_argument_details[\"volume_default_choice\"]: {volume_default_choice}")
+                volume_choices = volume_argument_details["volume_choices"]
+                logging.info(f"volume_argument_details[\"volume_choices\"]: {volume_choices}")
 
             dynamic_values = {
-                'volume': volume_default_choice,
+                #'volume': volume_default_choice,
                 'make6': "Hello World!",
                 'label': "Hello Neil!",
-                'make': str(self.counter),
+                'make': "Wibble Wobble",
                 'test_required_1': None,  # This will be replaced with the initial value
                 # 'test_required_2' will be left alone
                 'test_optional_1': None,
@@ -107,38 +105,33 @@ class Fgui:
                 # 'test_store_false' will be left alone
                 'test_store_const': None
             }
+            logging.info(f"dynamic_values: {dynamic_values}")
 
             dynamic_items = {
-                'test_optional_2': [
-                    f'Random entry {i}' for i in range(__import__('random').randrange(30))
-                ],
-                'volume': volume_choices
+                #'test_optional_2': [
+                #    f'Random entry {i}' for i in range(__import__('random').randrange(30))
+                #],
+                'volume': ["hello"]
             }
+            logging.info(f"dynamic_items: {dynamic_items}")
 
             logging.debug(f"_actions: {self.parser._actions}")
 
             seeds = {}
             seeds = self.process_actions(self.parser, seeds, dynamic_values, dynamic_items)
+            logging.info(f"seeds: {seeds}")
             logging.info(f"")
 
-            """
-            #self.parser._subparsers._actions[0].choices = {}
-            logging.info(f"_SubParsersAction: {self.parser._actions._SubParsersAction}")
-            #if self.parser._subparsers is not None:
-            if self.parser._actions._SubParsersAction is not None:
-                logging.info(f"_subparsers._actions: {self.parser._actions._SubParsersAction}")
-                logging.info(f"_subparsers._actions: {self.parser._subparsers._actions}")
-            """
-            logging.debug(f"seeds: {seeds}")
-            logging.debug(f"")
-            logging.debug(f"self.dumps(seeds): {self.dumps(seeds)}")
-            logging.debug(f"")
+            logging.info(f"self.dumps(seeds): {self.dumps(seeds)}")
+            logging.info(f"")
 
             print(self.dumps(seeds), file=gooey_stdout())
+            logging.info(f"Past the dump to gooey_stdout()")
+
 
     @staticmethod
     def process_actions(parser, seeds: {}, dynamic_values: {}, dynamic_items: {}) -> {}:
-        logging.debug(f"### process_actions() ###")
+        logging.info(f"### process_actions() ###")
 
         for action in parser._actions:
             logging.debug(f"action: {action}")
@@ -147,7 +140,7 @@ class Fgui:
             if action_type_name != "_SubParsersAction":
                 # Get the widget_id
                 widget_id = gooey_id(action)
-                logging.debug(f"widget_id: {widget_id}")
+                logging.info(f"widget_id: {widget_id}")
                 # Assign the dictionary value from the seeds array to the action_seeds dictionary if it exists, otherwise assign an empty dictionary
                 # The setdefault() method returns the value of the item with the specified key. If the key does not exist, insert the key, with the specified value
                 action_seeds = seeds.setdefault(widget_id, {})
@@ -159,7 +152,6 @@ class Fgui:
                 if action.dest in dynamic_values:
                     action_seeds["value"] = dynamic_values[action.dest]
                 if action.dest in dynamic_items:
-                    pass
                     action_seeds["items"] = dynamic_items[action.dest]
 
                 #logging.info(f"action_seeds (after): {action_seeds}")
@@ -193,8 +185,8 @@ class Fgui:
         )
     def main(self):
         logging.debug(f"### main() ###")
-        print(f"START: len(f.volume_argument_details): {len(self.volume_argument_details)}")
         args = self.parser.parse_args()
+        """
         if not gooey_stdout():
             print(f"Program arguments:")
             print(f"{Fgui.dumps(vars(args))}")
@@ -202,8 +194,7 @@ class Fgui:
         # Now process the args
         f = F()
         f.process_args_and_call_subcommand(args)
-        self.volume_argument_details = f.volume_argument_details
-        print(f"END  : len(f.volume_argument_details): {len(self.volume_argument_details)}")
+        """
 
 if __name__ == "__main__":
     F.start_logger(logging.INFO)

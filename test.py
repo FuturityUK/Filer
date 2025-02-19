@@ -76,9 +76,13 @@ def seed(parser, clear=[]):
         }
 
         dynamic_items = {
+
             'test_optional_2': [
-                f'Random entry {i}' for i in range(__import__('random').randrange(30))
-            ],
+                #f'Random entry {i}' for i in range(__import__('random').randrange(30))
+                "hello",
+                "world"
+            ]
+
         }
 
         seeds = {}
@@ -87,8 +91,7 @@ def seed(parser, clear=[]):
             if action.dest in dynamic_values:
                 action_seeds["value"] = dynamic_values[action.dest]
             if action.dest in dynamic_items:
-                pass
-                #action_seeds["items"] = dynamic_items[action.dest]
+                action_seeds["items"] = dynamic_items[action.dest]
 
         print(dumps(seeds), file=gooey_stdout())
 

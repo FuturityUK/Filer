@@ -26,6 +26,8 @@ import socket
 import logging
 from data import Data
 from format import Format
+from datetime import datetime
+import json
 
 class F:
 
@@ -46,6 +48,8 @@ class F:
 
     VOLUMES_ARGUMENT_HELP: str = "Volume that you wish to add"
 
+    VOLUME_ARGUMENT_DETAILS_FILENAME: str = "volume_argument_details.json"
+
     def __init__(self):
         self.database = None
         self.memory_stats = False
@@ -54,7 +58,15 @@ class F:
         self.physical_disk_array = None
         self.volumes_array = None
         #self.volume_argument_details = {"volume_choices": None, "volumes_argument_help": None, "volume_default_choice": None, "volume_dictionary": None }
-        self.volume_argument_details = {}
+
+        # Does the volume_argument_details file exist?
+
+        # Open the JSON file, or use an empty dictionary if it doesn't exist.
+        try:
+            with open(self.VOLUME_ARGUMENT_DETAILS_FILENAME) as read_file:
+                self.volume_argument_details = json.load(read_file)
+        except FileNotFoundError:
+            self.volume_argument_details = {}
 
     def set_memory_stats(self, memory_stats):
         self.memory_stats = memory_stats
@@ -76,7 +88,16 @@ class F:
     def refresh_volumes(self, args: []):
         logging.debug(f"### F.refresh_volumes() ###")
         self.prepare_volume_details()
-        print(self.volume_argument_details)
+        #print(self.volume_argument_details )
+        volume_default_choice = self.volume_argument_details["volume_default_choice"]
+        volume_choices = self.volume_argument_details["volume_choices"]
+        print(f"Volumes found:")
+        for volume_choice in volume_choices:
+            print(f"- {volume_choice}")
+        print()
+        print(f"Chosen Default Volume:")
+        print(f"- {volume_default_choice}")
+
 
     def add_volumes(self, args: []):
         logging.debug(f"### F.add_volumes() ###")
@@ -288,10 +309,17 @@ class F:
             volumes[volume_description] = volume_result_array
             volume_choices.append(volume_description)
 
+        now = datetime.now()
+        self.volume_argument_details["created"] = now.strftime('%Y-%m-%d %H:%M:%S')
         self.volume_argument_details["volume_choices"] = volume_choices
         self.volume_argument_details["volumes_argument_help"] = volumes_argument_help
         self.volume_argument_details["volume_default_choice"] = volume_default_choice
         self.volume_argument_details["volume_dictionary"] = volumes
+
+        logging.info(f"self.volume_argument_details[\"created\"]: {self.volume_argument_details["created"]}")
+        # Write data to a JSON file
+        with open(self.VOLUME_ARGUMENT_DETAILS_FILENAME, 'w') as write_file:
+            json.dump(self.volume_argument_details, write_file) # Warning seems to be a bug in PyCharm
 
     def add_subcommands_to_parser(self, parser):
         logging.debug(f"### F.add_subcommands_to_parser() ###")
@@ -350,8 +378,9 @@ class F:
             #else:
             #    F.add_argument(parser_add, "-q", "--volume", dest='volume', metavar='Volume',
             #                           help="Volume that you wish to add to the database")
-            F.add_argument(parser_add, "-q", "--volume", dest='volume', metavar='Volume', choices=[], nargs='?',
-                           default=None, help=self.VOLUMES_ARGUMENT_HELP)
+            #F.add_argument(parser_add, "--volume", dest='volume', metavar='Volume', choices=[],
+            F.add_argument(parser_add, "--volume", dest='volume', metavar='Volume', widget='Dropdown',
+                                       nargs='?', default=None, help=self.VOLUMES_ARGUMENT_HELP)
             F.add_argument(parser_add, "-l", "--label", dest='label', metavar='Label', help="Label of the drive listing. If provided it will override the volume label.")
             hostname = socket.gethostname()
             F.add_argument(parser_add, "-n", "--hostname", dest='hostname', metavar='Hostname', default=hostname,
@@ -359,6 +388,7 @@ class F:
             F.add_db_to_parser(parser_add)
             F.add_verbose_to_parser(parser_add)
 
+        """
         # create the parser for the "import" subcommand
         parser_import = subparsers.add_parser(F.SUBCOMMAND_IMPORT, help=F.SUBCOMMAND_IMPORT+' help')
         F.add_db_to_parser(parser_import)
@@ -404,6 +434,7 @@ class F:
                                              description='Warning: Using the "reset" subcommand will delete the specified database and replace it with an empty one.')
         F.add_db_to_parser(parser_reset)
         F.add_verbose_to_parser(parser_reset)
+        """
 
     def process_args_and_call_subcommand(self, args):
         logging.debug(f"### F.process_args_and_call_subcommand() ###")
