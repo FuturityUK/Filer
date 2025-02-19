@@ -47,8 +47,8 @@ class Fgui:
             baker = "Baker"
 
             dynamic_values = {
-                #'volume': volume_default_choice,
-                'volume': baker,
+                'volume': volume_default_choice,
+                #'volume': baker,
                 'make6': "Hello World!",
                 'label': "Hello Neil!",
                 'make': "Wibble Wobble",
@@ -67,8 +67,8 @@ class Fgui:
                 #'test_optional_2': [
                 #    f'Random entry {i}' for i in range(__import__('random').randrange(30))
                 #],
-                #'volume': volume_choices
-                'volume': ["Neil", baker]
+                'volume': volume_choices
+                #'volume': ["Neil", baker]
             }
             logging.info(f"dynamic_items: {dynamic_items}")
 
@@ -145,8 +145,10 @@ class Fgui:
         args = self.parser.parse_args()
 
         if not gooey_stdout():
-            print(f"Program arguments:")
-            print(f"{Fgui.dumps(vars(args))}")
+            pass
+            # Debug to show arguments past to the program
+            #print(f"Program arguments:")
+            #print(f"{Fgui.dumps(vars(args))}")
 
         # Now process the args
         f = F()

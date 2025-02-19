@@ -105,6 +105,7 @@ class F:
         #print(self.volume_argument_details )
         volume_default_choice = self.volume_argument_details["volume_default_choice"]
         volume_choices = self.volume_argument_details["volume_choices"]
+        print(f"")
         print(f"Volumes found:")
         for volume_choice in volume_choices:
             print(f"- {volume_choice}")
@@ -225,15 +226,18 @@ class F:
     def load_volume_drive_details(self):
         logging.debug(f"### F.load_volume_drive_details() ###")
         logging.info("Finding Logical Drives ...")
+        print(f"Finding Logical Drives ...")
         self.logical_disk_array = self.system.get_logical_drives_details()
         # display_array_of_dictionaries(self.logical_disk_array)
         # print(f"logical_disk_array: {self.logical_disk_array}")
 
         logging.info("Finding Physical Drives ...")
+        print(f"Finding Physical Drives ...")
         self.physical_disk_array = self.system.get_physical_drives_details()
         # print(f"physical_disk_array: {self.physical_disk_array}")
 
         logging.info("Finding Volumes ...")
+        print(f"Finding Volumes ...")
         self.volumes_array = self.system.get_volumes(True)
         # print(f"volumes: {self.volumes_array}")
         # display_array_of_dictionaries(self.volumes_array)
@@ -246,6 +250,7 @@ class F:
     def create_volume_options(self) -> []:
         logging.debug(f"### F.create_volume_options() ###")
         logging.info("Matching Volumes to Drives ...")
+        print(f"Matching Volumes to Drives ...")
         option_number = 1
         options = []
         for volume_dictionary in self.volumes_array:
