@@ -154,8 +154,8 @@ class Fgui:
             #print(f"{Fgui.dumps(vars(args))}")
 
         # Now process the args
-        f = F()
-        f.process_args_and_call_subcommand(args)
+        #f = F()
+        self.f.process_args_and_call_subcommand(self.parser, args)
 
 
 if __name__ == "__main__":
