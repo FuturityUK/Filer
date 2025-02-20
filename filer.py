@@ -23,6 +23,7 @@ import collections.abc
 from system import System
 import socket
 from f import F
+import logging
 
 class Filer:
 
@@ -275,7 +276,7 @@ class Filer:
         self.clean_up_and_quit()
 
 if __name__ == "__main__":
-    F.start_logger()
+    F.start_logger(logging.debug)
     filer = Filer()
     filer.start()
 

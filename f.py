@@ -72,6 +72,11 @@ class F:
         self.memory_stats = memory_stats
 
     @staticmethod
+    def dumps(data):
+        logging.debug(f"### dumps() ###")
+        return json.dumps(data, indent=4, default=str)
+
+    @staticmethod
     def start_logger(logging_level):
         logging.basicConfig(level=logging_level,
                             filename="app.log",
@@ -119,7 +124,7 @@ class F:
         logging.info("******************************************")
         sys.exit(level)
 
-    def subcommand_search(self, args: []):
+    def subcommand_file_search(self, args: []):
         logging.debug(f"### F.search() ###")
         self.print_message_based_on_parser(None, "Finding filenames:")
         self.print_message_based_on_parser(None, "")
@@ -157,6 +162,8 @@ class F:
     def subcommand_add_volumes(self, args: []):
         logging.debug(f"### F.subcommand_add_volumes() ###")
         print(f"Adding volume:")
+        print(f"Program arguments:")
+        print(f"{self.dumps(vars(args))}")
         #import_listing_values = self.get_values_for_import_listing(result_array)
         #self.display_import_listing_values(import_listing_values)
 
@@ -332,7 +339,6 @@ class F:
         options = self.create_volume_options()
         # print(options)
 
-        #add_volumes_argument_help = self.ADD_VOLUMES_ARGUMENT_HELP
         volumes = {}
         volume_choices = []
         volume_default_choice = None
@@ -357,7 +363,6 @@ class F:
         now = datetime.now()
         self.volume_argument_details["created"] = now.strftime('%Y-%m-%d %H:%M:%S')
         self.volume_argument_details["volume_choices"] = volume_choices
-        #self.volume_argument_details["add_volumes_argument_help"] = add_volumes_argument_help
         self.volume_argument_details["volume_default_choice"] = volume_default_choice
         self.volume_argument_details["volume_dictionary"] = volumes
 
@@ -506,10 +511,8 @@ class F:
         # If 'create' and 'refresh_volumes' subcommands are specified, then we don't need to open the database
         if args.subcommand == F.SUBCOMMAND_CREATE_DATABASE:
             self.subcommand_create_database(args)
-
         elif args.subcommand == F.SUBCOMMAND_REFRESH_VOLUMES:
             self.subcommand_refresh_volumes(args)
-
         else:
             # These subcommands all need a working database connection
             # The following subcommands all require a database
@@ -523,14 +526,14 @@ class F:
                 exit(2)
 
             self.database = Database(database_filename)
-
             if "verbose" in args:
                 self.database.set_verbose_mode(args.verbose)
-
             start_time = time.time()
 
             if args.subcommand == F.SUBCOMMAND_FILE_SEARCH:
-                self.subcommand_search(args)
+                self.subcommand_file_search(args)
+            elif args.subcommand == F.SUBCOMMAND_ADD_VOLUME:
+                self.subcommand_add_volumes(args)
 
             elif args.subcommand == F.SUBCOMMAND_IMPORT:
                 self.import_listing(args)

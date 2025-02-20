@@ -13,11 +13,6 @@ class Fgui:
         )
         self.f = F(self.parser)
 
-    @staticmethod
-    def dumps(data):
-        logging.debug(f"### dumps() ###")
-        return json.dumps(data, indent=4, default=str)
-
     def init(self):
         logging.debug(f"### init() ###")
         logging.info(f"Initialising Argument Parser Arguments...")
@@ -76,10 +71,10 @@ class Fgui:
             logging.info(f"seeds: {seeds}")
             logging.info(f"")
 
-            logging.info(f"self.dumps(seeds): {self.dumps(seeds)}")
+            logging.info(f"self.dumps(seeds): {F.dumps(seeds)}")
             logging.info(f"")
 
-            print(self.dumps(seeds), file=gooey_stdout())
+            print(F.dumps(seeds), file=gooey_stdout())
             logging.info(f"Past the dump to gooey_stdout()")
 
 
@@ -151,7 +146,7 @@ class Fgui:
             pass
             # Debug to show arguments past to the program
             #print(f"Program arguments:")
-            #print(f"{Fgui.dumps(vars(args))}")
+            #print(f"{F.dumps(vars(args))}")
 
         # Now process the args
         #f = F()

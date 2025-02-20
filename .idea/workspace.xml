@@ -4,12 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Added F.print_message_based_on_parser(parser, argumentparser_message, non_argumentparser_message)&#10;- Provide it with the parser&#10;- it'll print &quot;argumentparser_message&quot; for the standard ArgumentParser&#10;- it'll print &quot;non_argumentparser_message&quot; for any other parser type">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database.py" beforeDir="false" afterPath="$PROJECT_DIR$/database.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dyngooey.py" beforeDir="false" afterPath="$PROJECT_DIR$/dyngooey.py" afterDir="false" />
+    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="dyngooey.py&#10;- Disabled logging as no longer required&#10;&#10;database.py&#10;- Now returns the results to the calling function to display, rather that handle the displaying itself.&#10;&#10;f.py&#10;- Added F.exit_cleanly()&#10;- Provides better error handling&#10;&#10;Made parser a F instance variable so that i don't have to keep passing it between functions.">
       <change beforePath="$PROJECT_DIR$/f.py" beforeDir="false" afterPath="$PROJECT_DIR$/f.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/fgui.py" beforeDir="false" afterPath="$PROJECT_DIR$/fgui.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/filer.py" beforeDir="false" afterPath="$PROJECT_DIR$/filer.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -99,14 +97,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1736868367160</updated>
-    </task>
-    <task id="LOCAL-00079" summary="Moved code handling different arguments into their own functions.">
-      <option name="closed" value="true" />
-      <created>1738514366441</created>
-      <option name="number" value="00079" />
-      <option name="presentableId" value="LOCAL-00079" />
-      <option name="project" value="LOCAL" />
-      <updated>1738514366441</updated>
     </task>
     <task id="LOCAL-00080" summary="Optimised the System.select_option() method.">
       <option name="closed" value="true" />
@@ -492,7 +482,15 @@
       <option name="project" value="LOCAL" />
       <updated>1740073670707</updated>
     </task>
-    <option name="localTasksCounter" value="128" />
+    <task id="LOCAL-00128" summary="dyngooey.py&#10;- Disabled logging as no longer required&#10;&#10;database.py&#10;- Now returns the results to the calling function to display, rather that handle the displaying itself.&#10;&#10;f.py&#10;- Added F.exit_cleanly()&#10;- Provides better error handling&#10;&#10;Made parser a F instance variable so that i don't have to keep passing it between functions.">
+      <option name="closed" value="true" />
+      <created>1740077511496</created>
+      <option name="number" value="00128" />
+      <option name="presentableId" value="LOCAL-00128" />
+      <option name="project" value="LOCAL" />
+      <updated>1740077511506</updated>
+    </task>
+    <option name="localTasksCounter" value="129" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -507,7 +505,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Added DBVersion &quot;2&quot; upgrade SQL.&#10;It's not being run yet though." />
     <MESSAGE value="Database.upgrade_database() now cycles through the SQL create and upgrade SQL in order" />
     <MESSAGE value="Database.upgrade_database() now works" />
     <MESSAGE value="filer.py: Split up code into functions that can be used by other programs&#10;f.py: Only scan volumes and add choices for argparse if no arguments provided to program" />
@@ -532,6 +529,7 @@
     <MESSAGE value="Added header descriptions for the subcommand actions by using groups." />
     <MESSAGE value="Added proper tab names (from instead of the subcommand names)" />
     <MESSAGE value="Added F.print_message_based_on_parser(parser, argumentparser_message, non_argumentparser_message)&#10;- Provide it with the parser&#10;- it'll print &quot;argumentparser_message&quot; for the standard ArgumentParser&#10;- it'll print &quot;non_argumentparser_message&quot; for any other parser type" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added F.print_message_based_on_parser(parser, argumentparser_message, non_argumentparser_message)&#10;- Provide it with the parser&#10;- it'll print &quot;argumentparser_message&quot; for the standard ArgumentParser&#10;- it'll print &quot;non_argumentparser_message&quot; for any other parser type" />
+    <MESSAGE value="dyngooey.py&#10;- Disabled logging as no longer required&#10;&#10;database.py&#10;- Now returns the results to the calling function to display, rather that handle the displaying itself.&#10;&#10;f.py&#10;- Added F.exit_cleanly()&#10;- Provides better error handling&#10;&#10;Made parser a F instance variable so that i don't have to keep passing it between functions." />
+    <option name="LAST_COMMIT_MESSAGE" value="dyngooey.py&#10;- Disabled logging as no longer required&#10;&#10;database.py&#10;- Now returns the results to the calling function to display, rather that handle the displaying itself.&#10;&#10;f.py&#10;- Added F.exit_cleanly()&#10;- Provides better error handling&#10;&#10;Made parser a F instance variable so that i don't have to keep passing it between functions." />
   </component>
 </project>
