@@ -11,7 +11,7 @@ class Fgui:
             #description="Filer - File Cataloger",
             description='Some words'#, formatter_class=CustomHelpFormatter
         )
-        self.f = F()
+        self.f = F(self.parser)
 
     @staticmethod
     def dumps(data):
@@ -155,7 +155,7 @@ class Fgui:
 
         # Now process the args
         #f = F()
-        self.f.process_args_and_call_subcommand(self.parser, args)
+        self.f.process_args_and_call_subcommand(args)
 
 
 if __name__ == "__main__":

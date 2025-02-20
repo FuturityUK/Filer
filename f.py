@@ -13,6 +13,7 @@ input_filename = "C:\\Data\\ws1,e.fwf"
 output_filename = "C:\\Data\\ws1,e.csv.txt"
 database_filename = "I:\\FileProcessorDatabase\\database.sqlite"
 """
+import sys
 
 from file_system_processors import PowerShellFilesystemListing
 from database import Database
@@ -48,13 +49,14 @@ class F:
 
     VOLUME_ARGUMENT_DETAILS_FILENAME: str = "volume_argument_details.json"
 
-    def __init__(self):
+    def __init__(self, parser):
         self.database = None
         self.memory_stats = False
         self.system = System()
         self.logical_disk_array = None
         self.physical_disk_array = None
         self.volumes_array = None
+        self.parser = parser
         #self.volume_argument_details = {"volume_choices": None, "volumes_argument_help": None, "volume_default_choice": None, "volume_dictionary": None }
 
         # Does the volume_argument_details file exist?
@@ -79,16 +81,19 @@ class F:
                             style="{",
                             datefmt="%Y-%m-%d %H:%M"
                             )
-        logging.info("*********************")
-        logging.info("Application started: os.path.basename(__file__)")
-        logging.info("*********************")
+        logging.info("******************************************")
+        logging.info(f"Application started: {os.path.basename(__file__)}")
+        logging.info("******************************************")
 
-    @staticmethod
-    def print_message_based_on_parser(parser, argumentparser_message, non_argumentparser_message):
-        if type(parser) is argparse.ArgumentParser:
-            print(argumentparser_message)
+    def get_message_based_on_parser(self, argumentparser_message, non_argumentparser_message):
+        if type(self.parser) is argparse.ArgumentParser:
+            return argumentparser_message
         else:
-            print(non_argumentparser_message)
+            return non_argumentparser_message
+
+    def print_message_based_on_parser(self, argumentparser_message, non_argumentparser_message):
+        message = self.get_message_based_on_parser(argumentparser_message, non_argumentparser_message)
+        print(message)
 
     def clean_up(self):
         # Now that the subcommands have been run
@@ -96,13 +101,43 @@ class F:
             # Stop tracing memory allocations
             tracemalloc.stop()
 
+    def exit_cleanly(self, level, argumentparser_message: str = None, non_argumentparser_message: str = None):
+        if non_argumentparser_message is None:
+            non_argumentparser_message = argumentparser_message
+        message = self.get_message_based_on_parser(argumentparser_message, non_argumentparser_message)
+        if level == 0:
+            logging.info("Application ended successfully")
+            logging.info(message)
+            print(message)
+        else:
+            logging.critical("Application ended with errors:")
+            logging.critical(message)
+            print(f"ERROR: {message}")
+        self.clean_up()
+        logging.info("******************************************")
+        logging.info(f"Application ended: {os.path.basename(__file__)}")
+        logging.info("******************************************")
+        sys.exit(level)
+
     def subcommand_search(self, args: []):
         logging.debug(f"### F.search() ###")
-        print(f"Finding filenames:")
+        self.print_message_based_on_parser(None, "Finding filenames:")
+        self.print_message_based_on_parser(None, "")
         search = args.search if "search" in args else None
         category = args.category if "category" in args else None
         label = args.label if "label" in args else None
-        self.database.find_filenames_search(search, category, label)
+        if search is None and category is None and label is None:
+            self.exit_cleanly(2, "No search terms provided")
+        select_result = self.database.find_filenames_search(search, category, label)
+        rows_found = 0
+        for row in select_result:
+            print(f"{row[1]}, {row[0]}")
+            rows_found += 1
+        # Print a blank row if we are in the GUI and rows were found
+        if rows_found != 0:
+            self.print_message_based_on_parser(None, "")
+        # Print the number of row found in the GUI
+        self.print_message_based_on_parser(None, f"{rows_found} results found")
 
     def subcommand_refresh_volumes(self, args: []):
         logging.debug(f"### F.refresh_volumes() ###")
@@ -409,8 +444,6 @@ class F:
         F.add_db_to_parser(subparser_create_database_group, True)
         #F.add_verbose_to_parser(subparser_create_database_group)
 
-
-
     def add_subcommands_to_parser(self, parser):
         logging.debug(f"### F.add_subcommands_to_parser() ###")
 
@@ -419,7 +452,6 @@ class F:
                                            required=True,
                                            dest='subcommand',
                                            help='additional help')
-
         self.add_search_subcommand_to_parser(subparsers)
         self.add_add_volume_subcommand_to_parser(subparsers)
         self.add_refresh_volumes_subcommand_to_parser(subparsers)
@@ -469,7 +501,7 @@ class F:
         F.add_verbose_to_parser(parser_reset)
         """
 
-    def process_args_and_call_subcommand(self, parser, args):
+    def process_args_and_call_subcommand(self, args):
         logging.debug(f"### F.process_args_and_call_subcommand() ###")
         # If 'create' and 'refresh_volumes' subcommands are specified, then we don't need to open the database
         if args.subcommand == F.SUBCOMMAND_CREATE_DATABASE:
@@ -487,7 +519,7 @@ class F:
                 # Database file doesn't exist
                 # Ask user if they want to create a new database file?
                 print(f"Database file doesn't exist at location: \"{os.path.abspath(database_filename)}\"")
-                self.print_message_based_on_parser(parser, "Please create the Database using the 'create' subcommand.", "Please create the Database using the 'Create Database' action.")
+                self.print_message_based_on_parser("Please create the Database using the 'create' subcommand.", "Please create the Database using the 'Create Database' action.")
                 exit(2)
 
             self.database = Database(database_filename)
@@ -529,25 +561,25 @@ class F:
             # Start tracing memory allocations
             tracemalloc.start()
 
-        parser=argparse.ArgumentParser(
-            description="Filer - File Cataloger"
-        )
+        f.add_subcommands_to_parser(self.parser)
 
-        f.add_subcommands_to_parser(parser)
-
-        args=parser.parse_args()
+        args=self.parser.parse_args()
 
         # Debug
         #print(f"args: '{args}'")
         #print(f"subcommand: '{args.subcommand}'")
         #quit()
 
-        self.process_args_and_call_subcommand(parser, args)
+        self.process_args_and_call_subcommand(args)
         # Command finished so program finished
 
 if __name__ == "__main__":
     #my_logger = logging.getLogger(__name__)
+
     F.start_logger(logging.DEBUG)
-    f = F()
+    new_parser = argparse.ArgumentParser(
+        description="Filer - File Cataloger"
+    )
+    f = F(new_parser)
     f.start()
 

@@ -14,6 +14,7 @@ import logging
 GOOEY_SEED_UI = "gooey-seed-ui"
 GOOEY_IGNORE = "--ignore-gooey"
 
+logging.getLogger(__name__).disabled = True
 logger = logging.getLogger(__name__)
 # --------------------------------------------------------------------------- #
 

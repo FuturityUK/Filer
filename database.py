@@ -253,7 +253,7 @@ class Database:
                 [filename, label]
             )
         """
-        self.find_filenames_search(filename, file_type, label, False)
+        return self.find_filenames_search(filename, file_type, label, False)
 
     def find_filenames_search(self, file_search: str, file_category: str, label: str = None, like: bool = True):
         sql_string = self.__sql_dictionary["find_filename_base"]
@@ -293,23 +293,25 @@ class Database:
         # Run the SQL
         logging.debug(f"sql_string: {sql_string}")
         logging.debug(f"sql_argument_array: {sql_argument_array}")
-        self.find_filenames( sql_string, sql_argument_array )
+        return self.find_filenames( sql_string, sql_argument_array )
 
     def find_filenames(self,
                        sql: str,
                        parameters: Optional[Union[Iterable, dict]] = None):
-        result_array = []
         logging.debug(f"SQL Query: \"{sql}\"")
         logging.debug(f"filename: \"{parameters}\"")
         self.execute(sql,
                      parameters
                      )
-        rows_found = 0
+        #rows_found = 0
         select_result = self.fetch_all_results()
+        """
         for row in select_result:
             print(f"{row[1]}, {row[0]}")
             rows_found += 1
         logging.debug(f"{rows_found} results found")
+        """
+        return select_result
 
     def find_drive_id(self, make: str, model: str, serial_number: str):
         logging.debug(f"SQL Query: \"{self.__sql_dictionary["find_drive_id"]}\"")
