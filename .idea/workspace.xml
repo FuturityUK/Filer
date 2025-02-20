@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Added the code to call the Add Volumes action (subcommand)">
+    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Improved argument help formatting">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/f.py" beforeDir="false" afterPath="$PROJECT_DIR$/f.py" afterDir="false" />
     </list>
@@ -63,6 +63,7 @@
     "Python.logtest.executor": "Run",
     "Python.main.executor": "Run",
     "Python.powershell.executor": "Run",
+    "Python.print.executor": "Run",
     "Python.sql.executor": "Run",
     "Python.subparser_demo.executor": "Run",
     "Python.system.executor": "Run",
@@ -96,14 +97,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1736868367160</updated>
-    </task>
-    <task id="LOCAL-00081" summary="Changed the System.select_option() method's defaults for Y / N to provide True / False results.">
-      <option name="closed" value="true" />
-      <created>1738518389946</created>
-      <option name="number" value="00081" />
-      <option name="presentableId" value="LOCAL-00081" />
-      <option name="project" value="LOCAL" />
-      <updated>1738518389946</updated>
     </task>
     <task id="LOCAL-00082" summary="Changed Version format instructions in the To Do file">
       <option name="closed" value="true" />
@@ -489,7 +482,15 @@
       <option name="project" value="LOCAL" />
       <updated>1740078300712</updated>
     </task>
-    <option name="localTasksCounter" value="130" />
+    <task id="LOCAL-00130" summary="Improved argument help formatting">
+      <option name="closed" value="true" />
+      <created>1740079778883</created>
+      <option name="number" value="00130" />
+      <option name="presentableId" value="LOCAL-00130" />
+      <option name="project" value="LOCAL" />
+      <updated>1740079778883</updated>
+    </task>
+    <option name="localTasksCounter" value="131" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -504,7 +505,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Database.upgrade_database() now works" />
     <MESSAGE value="filer.py: Split up code into functions that can be used by other programs&#10;f.py: Only scan volumes and add choices for argparse if no arguments provided to program" />
     <MESSAGE value="Added dyngooey.py as a way of resetting choices after running subcommands" />
     <MESSAGE value="Still loads more debug required to work out how it works and then find a solutions (dictionary of subcommands, containing dictionary of default values)" />
@@ -529,6 +529,7 @@
     <MESSAGE value="Added F.print_message_based_on_parser(parser, argumentparser_message, non_argumentparser_message)&#10;- Provide it with the parser&#10;- it'll print &quot;argumentparser_message&quot; for the standard ArgumentParser&#10;- it'll print &quot;non_argumentparser_message&quot; for any other parser type" />
     <MESSAGE value="dyngooey.py&#10;- Disabled logging as no longer required&#10;&#10;database.py&#10;- Now returns the results to the calling function to display, rather that handle the displaying itself.&#10;&#10;f.py&#10;- Added F.exit_cleanly()&#10;- Provides better error handling&#10;&#10;Made parser a F instance variable so that i don't have to keep passing it between functions." />
     <MESSAGE value="Added the code to call the Add Volumes action (subcommand)" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added the code to call the Add Volumes action (subcommand)" />
+    <MESSAGE value="Improved argument help formatting" />
+    <option name="LAST_COMMIT_MESSAGE" value="Improved argument help formatting" />
   </component>
 </project>

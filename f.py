@@ -29,6 +29,7 @@ from data import Data
 from format import Format
 from datetime import datetime
 import json
+from print import Print
 
 class F:
 
@@ -166,7 +167,8 @@ class F:
         print(f"{self.dumps(vars(args))}")
         print("")
         if len(self.volume_argument_details) != 0:
-            print(f"self.volume_argument_details[\"volume_dictionary\"]: {self.volume_argument_details['volume_dictionary']}")
+            print(f"self.volume_argument_details[\"volume_dictionary\"]:")
+            Print.print_dictionary(self.volume_argument_details['volume_dictionary'])
             print("")
             print(f"self.volume_argument_details[\"volume_choices\"]: {self.volume_argument_details['volume_choices']}")
             print("")
@@ -177,6 +179,32 @@ class F:
             volume_choice = args.volume
             if volume_choice not in self.volume_argument_details["volume_choices"]:
                 print(f"Volume description \"{volume_choice}\" not found in the list of available volumes.")
+            else:
+                for volume_option, volume in self.volume_argument_details["volume_dictionary"].items():
+                    print(f"{volume_option}: {volume}")
+                    print(f"")
+
+            """
+            volume_dictionary = self.volume_argument_details["volume_dictionary"][volume_choice]
+            volume_label = volume_dictionary[0]
+            volume_drive_letter = volume_dictionary[1]
+            volume_filesystem_label = volume_dictionary[2]
+            volume_filesystem_type = volume_dictionary[3]
+            volume_health_status = volume_dictionary[4]
+            volume_size = volume_dictionary[5]
+            volume_serial_number = volume_dictionary[6]
+            volume_physical_disk_number = volume_dictionary[7]
+            print(f"volume_label: {volume_label}")
+            print(f"volume_drive_letter: {volume_drive_letter}")
+            print(f"volume_filesystem_label: {volume_filesystem_label}")
+            print(f"volume_filesystem_type: {volume_filesystem_type}")
+            print(f"volume_health_status: {volume_health_status}")
+            print(f"volume_size: {volume_size}")
+            print(f"volume_serial_number: {volume_serial_number}")
+            print(f"volume_physical_disk_number: {volume_physical_disk_number}")
+            print("")
+            print("Adding volume to database:")
+            """
 
         #import_listing_values = self.get_values_for_import_listing(result_array)
         #self.display_import_listing_values(import_listing_values)
