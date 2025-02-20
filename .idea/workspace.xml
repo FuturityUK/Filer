@@ -4,9 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Improved argument help formatting">
+    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Slowly unpacking the self.volume_argument_details[&quot;volume_dictionary&quot;].items()">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/f.py" beforeDir="false" afterPath="$PROJECT_DIR$/f.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -97,14 +96,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1736868367160</updated>
-    </task>
-    <task id="LOCAL-00082" summary="Changed Version format instructions in the To Do file">
-      <option name="closed" value="true" />
-      <created>1738518577424</created>
-      <option name="number" value="00082" />
-      <option name="presentableId" value="LOCAL-00082" />
-      <option name="project" value="LOCAL" />
-      <updated>1738518577424</updated>
     </task>
     <task id="LOCAL-00083" summary="Program split into argument version and interactive version.">
       <option name="closed" value="true" />
@@ -490,7 +481,15 @@
       <option name="project" value="LOCAL" />
       <updated>1740079778883</updated>
     </task>
-    <option name="localTasksCounter" value="131" />
+    <task id="LOCAL-00131" summary="Slowly unpacking the self.volume_argument_details[&quot;volume_dictionary&quot;].items()">
+      <option name="closed" value="true" />
+      <created>1740082515079</created>
+      <option name="number" value="00131" />
+      <option name="presentableId" value="LOCAL-00131" />
+      <option name="project" value="LOCAL" />
+      <updated>1740082515079</updated>
+    </task>
+    <option name="localTasksCounter" value="132" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -505,7 +504,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="filer.py: Split up code into functions that can be used by other programs&#10;f.py: Only scan volumes and add choices for argparse if no arguments provided to program" />
     <MESSAGE value="Added dyngooey.py as a way of resetting choices after running subcommands" />
     <MESSAGE value="Still loads more debug required to work out how it works and then find a solutions (dictionary of subcommands, containing dictionary of default values)" />
     <MESSAGE value="More arguments testing" />
@@ -530,6 +528,7 @@
     <MESSAGE value="dyngooey.py&#10;- Disabled logging as no longer required&#10;&#10;database.py&#10;- Now returns the results to the calling function to display, rather that handle the displaying itself.&#10;&#10;f.py&#10;- Added F.exit_cleanly()&#10;- Provides better error handling&#10;&#10;Made parser a F instance variable so that i don't have to keep passing it between functions." />
     <MESSAGE value="Added the code to call the Add Volumes action (subcommand)" />
     <MESSAGE value="Improved argument help formatting" />
-    <option name="LAST_COMMIT_MESSAGE" value="Improved argument help formatting" />
+    <MESSAGE value="Slowly unpacking the self.volume_argument_details[&quot;volume_dictionary&quot;].items()" />
+    <option name="LAST_COMMIT_MESSAGE" value="Slowly unpacking the self.volume_argument_details[&quot;volume_dictionary&quot;].items()" />
   </component>
 </project>

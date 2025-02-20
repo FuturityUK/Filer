@@ -180,12 +180,12 @@ class F:
             if volume_choice not in self.volume_argument_details["volume_choices"]:
                 print(f"Volume description \"{volume_choice}\" not found in the list of available volumes.")
             else:
-                for volume_option, volume in self.volume_argument_details["volume_dictionary"].items():
-                    print(f"{volume_option}: {volume}")
+                for volume_option, volume_dictionary in self.volume_argument_details["volume_dictionary"].items():
+                    print(f"{volume_option}: {volume_dictionary}")
                     print(f"")
 
+                volume_dictionary = self.volume_argument_details["volume_dictionary"][volume_choice]
             """
-            volume_dictionary = self.volume_argument_details["volume_dictionary"][volume_choice]
             volume_label = volume_dictionary[0]
             volume_drive_letter = volume_dictionary[1]
             volume_filesystem_label = volume_dictionary[2]
