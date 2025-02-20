@@ -145,7 +145,7 @@ class F:
         self.print_message_based_on_parser(None, f"{rows_found} results found")
 
     def subcommand_refresh_volumes(self, args: []):
-        logging.debug(f"### F.refresh_volumes() ###")
+        logging.debug("### F.refresh_volumes() ###")
         self.prepare_volume_details()
         #print(self.volume_argument_details )
         volume_default_choice = self.volume_argument_details["volume_default_choice"]
@@ -160,10 +160,24 @@ class F:
 
 
     def subcommand_add_volumes(self, args: []):
-        logging.debug(f"### F.subcommand_add_volumes() ###")
-        print(f"Adding volume:")
-        print(f"Program arguments:")
+        logging.debug("### F.subcommand_add_volumes() ###")
+        print("Adding volume:")
+        print("Program arguments:")
         print(f"{self.dumps(vars(args))}")
+        print("")
+        if len(self.volume_argument_details) != 0:
+            print(f"self.volume_argument_details[\"volume_dictionary\"]: {self.volume_argument_details['volume_dictionary']}")
+            print("")
+            print(f"self.volume_argument_details[\"volume_choices\"]: {self.volume_argument_details['volume_choices']}")
+            print("")
+            print(f"self.volume_argument_details[\"volume_default_choice\"]: {self.volume_argument_details['volume_default_choice']}")
+            print("")
+            print(f"self.volume_argument_details[\"created\"]: {self.volume_argument_details['created']}")
+            print(f"")
+            volume_choice = args.volume
+            if volume_choice not in self.volume_argument_details["volume_choices"]:
+                print(f"Volume description \"{volume_choice}\" not found in the list of available volumes.")
+
         #import_listing_values = self.get_values_for_import_listing(result_array)
         #self.display_import_listing_values(import_listing_values)
 
@@ -386,11 +400,10 @@ class F:
             description='Search for files based on search strings'
         )
         help_text = '''Search string to be found within filenames
-         - if search doesn't include '%' or '_' characters, then it is a fast exact case-sensitive search
-         - if search includes '%' or '_' characters, then it is a slower pattern match case-insensitive search
-         - '%' wildcard matches any sequence of zero or more characters
-         - '_' wildcard matches exactly one character
-         '''
+- if search doesn't include '%' or '_' characters, then it is a fast exact case-sensitive search
+- if search includes '%' or '_' characters, then it is a slower pattern match case-insensitive search
+- '%' wildcard matches any sequence of zero or more characters
+- '_' wildcard matches exactly one character'''
         if type(subparsers) is argparse.ArgumentParser:
             help_text = help_text.replace(r"%", r"%%")
         F.add_argument(subparser_search_group, "-s", "--search", metavar='Search', help=help_text)
@@ -401,8 +414,7 @@ class F:
         F.add_db_to_parser(subparser_search_group)
         #F.add_verbose_to_parser(subparser_search_group)
 
-    @staticmethod
-    def add_add_volume_subcommand_to_parser(subparsers):
+    def add_add_volume_subcommand_to_parser(self, subparsers):
         logging.debug(f"### F.add_add_volume_subcommand_to_parser() ###")
         # Only add the 'add' subcommand to the GUI
         if type(subparsers) is not argparse.ArgumentParser:
@@ -412,8 +424,13 @@ class F:
                 'Add Volume Files to Database',
                 description='Add Files on a selected Volume to the Database'
             )
+            help_text = f'''Volume that you wish to add.
+- If you don't see your volume, please use the {self.get_message_based_on_parser("'refresh_volumes' subcommand", "'Refresh Volumes List' action.")}
+- Values last updated: {self.volume_argument_details["created"]}'''
+            if type(subparsers) is argparse.ArgumentParser:
+                help_text = help_text.replace(r"%", r"%%")
             F.add_argument(subparser_add_volume_group, "--volume", dest='volume', metavar='Volume', widget='Dropdown',
-                                       nargs='?', default=None, help="Volume that you wish to add. If you don't see your volume, please use 'refresh_volumes'")
+                                       nargs='?', default=None, help=help_text)
             F.add_argument(subparser_add_volume_group, "-l", "--label", dest='label', metavar='Label', help="Label of the drive listing. If provided it will override the volume label.")
             hostname = socket.gethostname()
             F.add_argument(subparser_add_volume_group, "-n", "--hostname", dest='hostname', metavar='Hostname', default=hostname,
