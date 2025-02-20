@@ -37,11 +37,11 @@ class F:
 
     DEFAULT_TEMP_LISTING_FILE: str = 'filer.fwf'
 
-    SUBCOMMAND_SEARCH: str = 'search'
-    SUBCOMMAND_REFRESH_VOLUMES: str = 'refresh_volumes'
-    SUBCOMMAND_ADD_VOLUME: str = 'add_volume'
+    SUBCOMMAND_FILE_SEARCH: str = 'search'
+    SUBCOMMAND_REFRESH_VOLUMES: str = 'refresh'
+    SUBCOMMAND_ADD_VOLUME: str = 'add'
     SUBCOMMAND_IMPORT: str = 'import'
-    SUBCOMMAND_CREATE: str = 'create'
+    SUBCOMMAND_CREATE_DATABASE: str = 'create'
     SUBCOMMAND_UPGRADE: str = 'upgrade'
     SUBCOMMAND_VACUUM: str = 'vacuum'
     SUBCOMMAND_RESET: str = 'reset'
@@ -83,13 +83,20 @@ class F:
         logging.info("Application started: os.path.basename(__file__)")
         logging.info("*********************")
 
+    @staticmethod
+    def print_message_based_on_parser(parser, argumentparser_message, non_argumentparser_message):
+        if type(parser) is argparse.ArgumentParser:
+            print(argumentparser_message)
+        else:
+            print(non_argumentparser_message)
+
     def clean_up(self):
         # Now that the subcommands have been run
         if self.memory_stats:
             # Stop tracing memory allocations
             tracemalloc.stop()
 
-    def search(self, args: []):
+    def subcommand_search(self, args: []):
         logging.debug(f"### F.search() ###")
         print(f"Finding filenames:")
         search = args.search if "search" in args else None
@@ -97,7 +104,7 @@ class F:
         label = args.label if "label" in args else None
         self.database.find_filenames_search(search, category, label)
 
-    def refresh_volumes(self, args: []):
+    def subcommand_refresh_volumes(self, args: []):
         logging.debug(f"### F.refresh_volumes() ###")
         self.prepare_volume_details()
         #print(self.volume_argument_details )
@@ -112,14 +119,14 @@ class F:
         print(f"- {volume_default_choice}")
 
 
-    def add_volumes(self, args: []):
-        logging.debug(f"### F.add_volumes() ###")
+    def subcommand_add_volumes(self, args: []):
+        logging.debug(f"### F.subcommand_add_volumes() ###")
         print(f"Adding volume:")
         #import_listing_values = self.get_values_for_import_listing(result_array)
         #self.display_import_listing_values(import_listing_values)
 
-    def create(self, args: []):
-        logging.debug(f"### F.create() ###")
+    def subcommand_create_database(self, args: []):
+        logging.debug(f"### F.subcommand_create_database() ###")
         database_filename = args.db
         abspath_database_filename = os.path.abspath(database_filename)
         directory_name = os.path.dirname(abspath_database_filename)
@@ -331,8 +338,8 @@ class F:
         file_categories = FileTypes.get_file_categories()
         #print(f"file_categories: {file_categories}")
 
-        subparser_search = subparsers.add_parser(F.SUBCOMMAND_SEARCH,
-                                            help=F.SUBCOMMAND_SEARCH+' help', prog='File Search',
+        subparser_search = subparsers.add_parser(F.SUBCOMMAND_FILE_SEARCH,
+                                            help=F.SUBCOMMAND_FILE_SEARCH+' help', prog='File Search',
                                             description='Search for files based on search strings')
         subparser_search_group = subparser_search.add_argument_group(
             'Search for files',
@@ -347,12 +354,12 @@ class F:
         if type(subparsers) is argparse.ArgumentParser:
             help_text = help_text.replace(r"%", r"%%")
         F.add_argument(subparser_search_group, "-s", "--search", metavar='Search', help=help_text)
-        if type(subparsers) is not argparse.ArgumentParser:
-            F.add_argument(subparser_search_group, "-c", "--category", dest='category', metavar='Category', choices=file_categories, nargs='?', help="Category of files to be considered")
-        #F.add_argument(subparser_search_group, "-l", "--label2", dest='label2', metavar='Label', default=None, help="Label of the drive listing")
+        # ADD BACK WHEN FUNCTIONALITY IMPLEMENTED
+        #if type(subparsers) is not argparse.ArgumentParser:
+        #    F.add_argument(subparser_search_group, "-c", "--category", dest='category', metavar='Category', choices=file_categories, nargs='?', help="Category of files to be considered")
         F.add_argument(subparser_search_group, "-l", "--label", dest='label', metavar='Label', default=None, help="Label of the drive listing")
         F.add_db_to_parser(subparser_search_group)
-        F.add_verbose_to_parser(subparser_search_group)
+        #F.add_verbose_to_parser(subparser_search_group)
 
     @staticmethod
     def add_add_volume_subcommand_to_parser(subparsers):
@@ -385,10 +392,23 @@ class F:
                 'Refresh Volumes List',
                 description='Refresh the List of Volumes that appear on the "Add_Volumes" action page.'
             )
-            F.add_argument(subparser_refresh_volumes_group, "-n", "--hostname", dest='hostname', metavar='Hostname',
+            F.add_argument(subparser_refresh_volumes_group, "-i", "--invisible", dest='invisible', metavar='Invisible',
                            action='store_true',
-                           help="Do you want to refresh the volumes?", gooey_options = {'visible': False})
-            #subparser_refresh_volumes_group.add_argument('-somecrocodile', action='store_true', help='Nothing to see here, move along.')
+                           help="Invisible checkbox", gooey_options = {'visible': False})
+
+    @staticmethod
+    def add_create_database_subcommand_to_parser(subparsers):
+        logging.debug(f"### F.add_create_database_subcommand_to_parser() ###")
+        subparser_create_database = subparsers.add_parser(F.SUBCOMMAND_CREATE_DATABASE,
+                                              help=F.SUBCOMMAND_CREATE_DATABASE+' help', prog='Create Database',
+                                              description='Create a new database')
+        subparser_create_database_group = subparser_create_database.add_argument_group(
+            'Create Database',
+            description='Create a new database.'
+        )
+        F.add_db_to_parser(subparser_create_database_group, True)
+        #F.add_verbose_to_parser(subparser_create_database_group)
+
 
 
     def add_subcommands_to_parser(self, parser):
@@ -403,16 +423,17 @@ class F:
         self.add_search_subcommand_to_parser(subparsers)
         self.add_add_volume_subcommand_to_parser(subparsers)
         self.add_refresh_volumes_subcommand_to_parser(subparsers)
+        self.add_create_database_subcommand_to_parser(subparsers)
 
         """
         # create the parser for the "import" subcommand
         parser_import = subparsers.add_parser(F.SUBCOMMAND_IMPORT, help=F.SUBCOMMAND_IMPORT+' help')
         F.add_db_to_parser(parser_import)
-        F.add_argument(parser_import, "-l", "label", metavar='Label', help="Label of the drive listing")
-        F.add_argument(parser_import, "filename", metavar='Filename', widget='FileChooser',
+        F.add_argument(parser_import, "-l", "--label", metavar='Label', help="Label of the drive listing")
+        F.add_argument(parser_import, "-f", "--filename", metavar='Filename', widget='FileChooser',
                                    help="Filename (including path) of the listing in fixed width format to be processed. See PowerShell example")
         #F.add_argument(parser_import, "-m", "--make", dest='make', metavar='Make', default=None, help="Make of the drive")
-        F.add_argument(parser_import, "--make", dest='make', metavar='Make', help="Make of the drive")
+        F.add_argument(parser_import, "-m", "--make", dest='make', metavar='Make', help="Make of the drive")
         F.add_argument(parser_import, "-o", "--model", dest='model', metavar='Model', help="Model of the drive")
         F.add_argument(parser_import, "-s", "--serial", dest='serial', metavar='Serial Number', help="Serial number of the drive")
         F.add_argument(parser_import, "-c", "--combined", dest='combined', metavar='Combined',
@@ -425,11 +446,7 @@ class F:
                                    help="Test input file without modifying the database")
         F.add_verbose_to_parser(parser_import)
 
-        parser_create = subparsers.add_parser(F.SUBCOMMAND_CREATE,
-                                              help=F.SUBCOMMAND_CREATE+' help',
-                                              description='Create an empty database')
-        F.add_db_to_parser(parser_create, True)
-        F.add_verbose_to_parser(parser_create)
+
 
         # create the parser for the "vacuum" subcommand
         parser_upgrade = subparsers.add_parser(F.SUBCOMMAND_UPGRADE,
@@ -452,14 +469,14 @@ class F:
         F.add_verbose_to_parser(parser_reset)
         """
 
-    def process_args_and_call_subcommand(self, args):
+    def process_args_and_call_subcommand(self, parser, args):
         logging.debug(f"### F.process_args_and_call_subcommand() ###")
         # If 'create' and 'refresh_volumes' subcommands are specified, then we don't need to open the database
-        if args.subcommand == F.SUBCOMMAND_CREATE:
-            self.create(args)
+        if args.subcommand == F.SUBCOMMAND_CREATE_DATABASE:
+            self.subcommand_create_database(args)
 
         elif args.subcommand == F.SUBCOMMAND_REFRESH_VOLUMES:
-            self.refresh_volumes(args)
+            self.subcommand_refresh_volumes(args)
 
         else:
             # These subcommands all need a working database connection
@@ -470,7 +487,7 @@ class F:
                 # Database file doesn't exist
                 # Ask user if they want to create a new database file?
                 print(f"Database file doesn't exist at location: \"{os.path.abspath(database_filename)}\"")
-                print(f"Please create the Database using the \'create\' subcommand.")
+                self.print_message_based_on_parser(parser, "Please create the Database using the 'create' subcommand.", "Please create the Database using the 'Create Database' action.")
                 exit(2)
 
             self.database = Database(database_filename)
@@ -480,8 +497,8 @@ class F:
 
             start_time = time.time()
 
-            if args.subcommand == F.SUBCOMMAND_SEARCH:
-                self.search(args)
+            if args.subcommand == F.SUBCOMMAND_FILE_SEARCH:
+                self.subcommand_search(args)
 
             elif args.subcommand == F.SUBCOMMAND_IMPORT:
                 self.import_listing(args)
@@ -525,7 +542,7 @@ class F:
         #print(f"subcommand: '{args.subcommand}'")
         #quit()
 
-        self.process_args_and_call_subcommand(args)
+        self.process_args_and_call_subcommand(parser, args)
         # Command finished so program finished
 
 if __name__ == "__main__":
