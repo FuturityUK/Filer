@@ -46,8 +46,6 @@ class F:
     SUBCOMMAND_VACUUM: str = 'vacuum'
     SUBCOMMAND_RESET: str = 'reset'
 
-    VOLUMES_ARGUMENT_HELP: str = "Volume that you wish to add"
-
     VOLUME_ARGUMENT_DETAILS_FILENAME: str = "volume_argument_details.json"
 
     def __init__(self):
@@ -292,7 +290,7 @@ class F:
         options = self.create_volume_options()
         # print(options)
 
-        volumes_argument_help = self.VOLUMES_ARGUMENT_HELP
+        #add_volumes_argument_help = self.ADD_VOLUMES_ARGUMENT_HELP
         volumes = {}
         volume_choices = []
         volume_default_choice = None
@@ -317,7 +315,7 @@ class F:
         now = datetime.now()
         self.volume_argument_details["created"] = now.strftime('%Y-%m-%d %H:%M:%S')
         self.volume_argument_details["volume_choices"] = volume_choices
-        self.volume_argument_details["volumes_argument_help"] = volumes_argument_help
+        #self.volume_argument_details["add_volumes_argument_help"] = add_volumes_argument_help
         self.volume_argument_details["volume_default_choice"] = volume_default_choice
         self.volume_argument_details["volume_dictionary"] = volumes
 
@@ -326,11 +324,81 @@ class F:
         with open(self.VOLUME_ARGUMENT_DETAILS_FILENAME, 'w') as write_file:
             json.dump(self.volume_argument_details, write_file) # Warning seems to be a bug in PyCharm
 
-    def add_subcommands_to_parser(self, parser):
-        logging.debug(f"### F.add_subcommands_to_parser() ###")
+    @staticmethod
+    def add_search_subcommand_to_parser(subparsers):
+        logging.debug(f"### F.add_search_subcommand_to_parser() ###")
 
         file_categories = FileTypes.get_file_categories()
         #print(f"file_categories: {file_categories}")
+
+        subparser_search = subparsers.add_parser(F.SUBCOMMAND_SEARCH,
+                                            help=F.SUBCOMMAND_SEARCH+' help',
+                                            description='Search for files based on search strings (slower than "find")')
+        subparser_search_group = subparser_search.add_argument_group(
+            'Just Crocodile Things',
+            description='There are 13 species of crocodiles, so there are many different ' +
+                        'sizes of crocodile. The smallest crocodile is the dwarf crocodile. ' +
+                        'It grows to about 5.6 feet (1.7 meters) in length and weighs 13 to 15 pounds '
+        )
+        help_text = '''Search string to be found within filenames
+         - if search doesn't include '%' or '_' characters, then it is a fast exact case-sensitive search
+         - if search includes '%' or '_' characters, then it is a slower pattern match case-insensitive search
+         - '%' wildcard matches any sequence of zero or more characters
+         - '_' wildcard matches exactly one character
+         '''
+        if type(subparsers) is argparse.ArgumentParser:
+            help_text = help_text.replace(r"%", r"%%")
+        F.add_argument(subparser_search_group, "-s", "--search", metavar='Search', help=help_text)
+        if type(subparsers) is not argparse.ArgumentParser:
+            F.add_argument(subparser_search_group, "-c", "--category", dest='category', metavar='Category', choices=file_categories, nargs='?', help="Category of files to be considered")
+        #F.add_argument(subparser_search_group, "-l", "--label2", dest='label2', metavar='Label', default=None, help="Label of the drive listing")
+        F.add_argument(subparser_search_group, "--label", dest='label', metavar='Label', default=None, help="Label of the drive listing")
+        F.add_db_to_parser(subparser_search_group)
+        F.add_verbose_to_parser(subparser_search_group)
+
+    @staticmethod
+    def add_add_volume_subcommand_to_parser(subparsers):
+        logging.debug(f"### F.add_add_volume_subcommand_to_parser() ###")
+        # Only add the 'add' subcommand to the GUI
+        if type(subparsers) is not argparse.ArgumentParser:
+            # create the parser for the "add" subcommand
+            subparser_add_volume = subparsers.add_parser(F.SUBCOMMAND_ADD_VOLUME, help=F.SUBCOMMAND_ADD_VOLUME+' help')
+            subparser_add_volume_group = subparser_add_volume.add_argument_group(
+                'Just Crocodile Things',
+                description='There are 13 species of crocodiles, so there are many different ' +
+                            'sizes of crocodile. The smallest crocodile is the dwarf crocodile. ' +
+                            'It grows to about 5.6 feet (1.7 meters) in length and weighs 13 to 15 pounds '
+            )
+            F.add_argument(subparser_add_volume_group, "--volume", dest='volume', metavar='Volume', widget='Dropdown',
+                                       nargs='?', default=None, help="Volume that you wish to add. If you don't see your volume, please use 'refresh_volumes'")
+            F.add_argument(subparser_add_volume_group, "-l", "--label", dest='label', metavar='Label', help="Label of the drive listing. If provided it will override the volume label.")
+            hostname = socket.gethostname()
+            F.add_argument(subparser_add_volume_group, "-n", "--hostname", dest='hostname', metavar='Hostname', default=hostname,
+                                          help="Hostname of the machine containing the drive")
+            F.add_db_to_parser(subparser_add_volume_group)
+            F.add_verbose_to_parser(subparser_add_volume_group)
+
+    @staticmethod
+    def add_refresh_volumes_subcommand_to_parser(subparsers):
+        logging.debug(f"### F.add_refresh_volumes_subcommand_to_parser() ###")
+        # Only add the 'add' subcommand to the GUI
+        if type(subparsers) is not argparse.ArgumentParser:
+            # create the parser for the "add" subcommand
+            subparser_refresh_volumes = subparsers.add_parser(F.SUBCOMMAND_REFRESH_VOLUMES, help=F.SUBCOMMAND_REFRESH_VOLUMES+' help')
+            subparser_refresh_volumes_group = subparser_refresh_volumes.add_argument_group(
+                'Just Crocodile Things',
+                description='There are 13 species of crocodiles, so there are many different ' +
+                            'sizes of crocodile. The smallest crocodile is the dwarf crocodile. ' +
+                            'It grows to about 5.6 feet (1.7 meters) in length and weighs 13 to 15 pounds '
+            )
+            F.add_argument(subparser_refresh_volumes_group, "-n", "--hostname", dest='hostname', metavar='Hostname',
+                           action='store_true',
+                           help="Do you want to refresh the volumes?")
+            #subparser_refresh_volumes_group.add_argument('-somecrocodile', action='store_true', help='Nothing to see here, move along.')
+
+
+    def add_subcommands_to_parser(self, parser):
+        logging.debug(f"### F.add_subcommands_to_parser() ###")
 
         subparsers = parser.add_subparsers(title='subcommands',
                                            description='valid subcommands',
@@ -338,60 +406,9 @@ class F:
                                            dest='subcommand',
                                            help='additional help')
 
-        parser_search = subparsers.add_parser(F.SUBCOMMAND_SEARCH,
-                                            help=F.SUBCOMMAND_SEARCH+' help',
-                                            description='Search for files based on search strings (slower than "find")')
-        help_text = '''Search string to be found within filenames
-         - if search doesn't include '%' or '_' characters, then it is a fast exact case-sensitive search
-         - if search includes '%' or '_' characters, then it is a slower pattern match case-insensitive search
-         - '%' wildcard matches any sequence of zero or more characters
-         - '_' wildcard matches exactly one character
-         '''
-        if type(parser) is argparse.ArgumentParser:
-            help_text = help_text.replace(r"%", r"%%")
-        parser_search.add_argument("-s", "--search", metavar='Search',
-        help=help_text)
-        if type(parser) is not argparse.ArgumentParser:
-            parser_search.add_argument("-c", "--category", dest='category', metavar='Category', choices=file_categories, nargs='?', help="Category of files to be considered")
-        #parser_search.add_argument("-l", "--label2", dest='label2', metavar='Label', default=None, help="Label of the drive listing")
-        parser_search.add_argument("--label", dest='label', metavar='Label', default=None, help="Label of the drive listing")
-        F.add_db_to_parser(parser_search)
-        F.add_verbose_to_parser(parser_search)
-
-        # Only add the 'add' subcommand to the GUI
-        if type(parser) is not argparse.ArgumentParser:
-            # create the parser for the "add" subcommand
-            parser_refresh = subparsers.add_parser(F.SUBCOMMAND_REFRESH_VOLUMES, help=F.SUBCOMMAND_REFRESH_VOLUMES+' help')
-
-        # Only add the 'add' subcommand to the GUI
-        if type(parser) is not argparse.ArgumentParser:
-            # create the parser for the "add" subcommand
-            parser_add = subparsers.add_parser(F.SUBCOMMAND_ADD_VOLUME, help=F.SUBCOMMAND_ADD_VOLUME+' help')
-
-            # Only populate the choices, if no arguments have been provided to the program
-            #print(f"sys.argv: {sys.argv}")
-            #sys_argv_length = len(sys.argv)
-            #print(f"sys_argv_length: {sys_argv_length}")
-            #if sys_argv_length == 1:
-                # 1 argument == program name only
-                #results = self.prepare_volume_details()
-                #volumes_argument_help = results["volumes_argument_help"]
-                #volume_choices = results["volume_choices"]
-                #volume_default_choice = results["volume_default_choice"]
-                #F.add_argument(parser_add, "-q", "--volume", dest='volume', metavar='Volume', choices=volume_choices, nargs='?', default=volume_default_choice, help=volumes_argument_help)
-                #F.add_argument(parser_add, "-q", "--volume", dest='volume', metavar='Volume', choices=[], nargs='?', default=None, help=self.VOLUMES_ARGUMENT_HELP)
-            #else:
-            #    F.add_argument(parser_add, "-q", "--volume", dest='volume', metavar='Volume',
-            #                           help="Volume that you wish to add to the database")
-            #F.add_argument(parser_add, "--volume", dest='volume', metavar='Volume', choices=[],
-            F.add_argument(parser_add, "--volume", dest='volume', metavar='Volume', widget='Dropdown',
-                                       nargs='?', default=None, help=self.VOLUMES_ARGUMENT_HELP)
-            F.add_argument(parser_add, "-l", "--label", dest='label', metavar='Label', help="Label of the drive listing. If provided it will override the volume label.")
-            hostname = socket.gethostname()
-            F.add_argument(parser_add, "-n", "--hostname", dest='hostname', metavar='Hostname', default=hostname,
-                                          help="Hostname of the machine containing the drive")
-            F.add_db_to_parser(parser_add)
-            F.add_verbose_to_parser(parser_add)
+        self.add_search_subcommand_to_parser(subparsers)
+        self.add_add_volume_subcommand_to_parser(subparsers)
+        self.add_refresh_volumes_subcommand_to_parser(subparsers)
 
         """
         # create the parser for the "import" subcommand

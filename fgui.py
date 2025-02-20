@@ -8,7 +8,8 @@ class Fgui:
     def __init__(self):
         logging.debug(f"### __init__() ###")
         self.parser = GooeyParser(
-            description="Filer - File Cataloger"
+            #description="Filer - File Cataloger",
+            description='Some words'#, formatter_class=CustomHelpFormatter
         )
         self.f = F()
 
@@ -127,6 +128,7 @@ class Fgui:
 
         return seeds
 
+
     @Gooey(
             program_name='Filer',
             required_cols=1,
@@ -140,6 +142,7 @@ class Fgui:
             #dump_build_config = True,  # Dump the JSON Gooey uses to configure itself
             #load_build_config = 'gooey_config.json'  # Loads a JSON Gooey-generated configuration
         )
+    #@Gooey(optional_cols=2, program_name="Subparser Layout Demo")
     def main(self):
         logging.debug(f"### main() ###")
         args = self.parser.parse_args()
@@ -147,8 +150,8 @@ class Fgui:
         if not gooey_stdout():
             pass
             # Debug to show arguments past to the program
-            #print(f"Program arguments:")
-            #print(f"{Fgui.dumps(vars(args))}")
+            print(f"Program arguments:")
+            print(f"{Fgui.dumps(vars(args))}")
 
         # Now process the args
         f = F()

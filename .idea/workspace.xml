@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="dyngooey.py&#10;- now selects the default value in the dropdown / choices">
+    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="The Volumes dropdown menu now works">
+      <change afterPath="$PROJECT_DIR$/subparser_demo.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/f.py" beforeDir="false" afterPath="$PROJECT_DIR$/f.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/fgui.py" beforeDir="false" afterPath="$PROJECT_DIR$/fgui.py" afterDir="false" />
     </list>
@@ -64,6 +66,7 @@
     "Python.main.executor": "Run",
     "Python.powershell.executor": "Run",
     "Python.sql.executor": "Run",
+    "Python.subparser_demo.executor": "Run",
     "Python.system.executor": "Run",
     "Python.test.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
@@ -94,14 +97,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1736868367160</updated>
-    </task>
-    <task id="LOCAL-00073" summary="Changed the &quot;like&quot; subcommand so that it displays the &quot;label&quot;">
-      <option name="closed" value="true" />
-      <created>1738498795777</created>
-      <option name="number" value="00073" />
-      <option name="presentableId" value="LOCAL-00073" />
-      <option name="project" value="LOCAL" />
-      <updated>1738498795777</updated>
     </task>
     <task id="LOCAL-00074" summary="Changed the &quot;find&quot; subcommand so that it displays the &quot;label&quot;">
       <option name="closed" value="true" />
@@ -487,7 +482,15 @@
       <option name="project" value="LOCAL" />
       <updated>1740000811275</updated>
     </task>
-    <option name="localTasksCounter" value="122" />
+    <task id="LOCAL-00122" summary="The Volumes dropdown menu now works">
+      <option name="closed" value="true" />
+      <created>1740001320454</created>
+      <option name="number" value="00122" />
+      <option name="presentableId" value="LOCAL-00122" />
+      <option name="project" value="LOCAL" />
+      <updated>1740001320454</updated>
+    </task>
+    <option name="localTasksCounter" value="123" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -502,7 +505,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Find and Search subcommands now share the same code" />
     <MESSAGE value="Fixed passing *args and **kwargs" />
     <MESSAGE value="add_argument() now strips out Gooey 'widget' attributes if non GUI versions running.&#10;Started migrating add_argument native functions over to custom F.add_argument() function." />
     <MESSAGE value="Database 'create' subcommand works, but should really be moved to the Database class" />
@@ -527,6 +529,7 @@
     <MESSAGE value="INSERT REFRESH_VOLUME TRUE / FALSE IN THAT SUBCOMMAND.&#10;HARDCODE INTO process_actions THAT WHEN IT SEES THAT REFRESH_VOLUME field = True, then populate VOLUME ARRAY.&#10;&#10;OR JUST STORE THE VOLUME DATA STRUCTURE IN A JSON FILE AND LOAD IT INTO THE SEED FUNCTION EVERY TIME. WOULD BE FASTER" />
     <MESSAGE value="dyngooey.py&#10;- commented out &quot;with _self.retainSelection()&quot; as it had an indexing issue.&#10;&#10;f.py&#10;- now saves the volume information to a file when the &quot;refresh volumes&quot; subcommand run&#10;- now loads the volume information previously save if it is available&#10;&#10;fgui.py&#10;- further tests to set choice (dropdown) values" />
     <MESSAGE value="dyngooey.py&#10;- now selects the default value in the dropdown / choices" />
-    <option name="LAST_COMMIT_MESSAGE" value="dyngooey.py&#10;- now selects the default value in the dropdown / choices" />
+    <MESSAGE value="The Volumes dropdown menu now works" />
+    <option name="LAST_COMMIT_MESSAGE" value="The Volumes dropdown menu now works" />
   </component>
 </project>
