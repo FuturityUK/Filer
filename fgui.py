@@ -1,5 +1,3 @@
-from tarfile import TruncatedHeaderError
-
 from f import F
 import json
 from dyngooey import Gooey, GooeyParser, gooey_stdout, gooey_id
@@ -51,10 +49,6 @@ class Fgui:
 
             dynamic_values = {
                 'volume': volume_default_choice,
-                #'volume': baker,
-                'make6': "Hello World!",
-                'label': "Hello Neil!",
-                'make': "Wibble Wobble",
                 'test_required_1': None,  # This will be replaced with the initial value
                 # 'test_required_2' will be left alone
                 'test_optional_1': None,
@@ -141,7 +135,7 @@ class Fgui:
             #fullscreen=True,
             show_restart_button=False,
             hide_progress_msg=True,
-            clear_before_run=False,# Was True
+            clear_before_run=True,# Was True
             show_stop_warning=False, # From test.py
             show_success_modal=False, # From test.py
             show_failure_modal=False # From test.py
@@ -156,8 +150,8 @@ class Fgui:
         if not gooey_stdout():
             pass
             # Debug to show arguments past to the program
-            print(f"Program arguments:")
-            print(f"{Fgui.dumps(vars(args))}")
+            #print(f"Program arguments:")
+            #print(f"{Fgui.dumps(vars(args))}")
 
         # Now process the args
         f = F()

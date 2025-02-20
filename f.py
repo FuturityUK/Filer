@@ -332,7 +332,7 @@ class F:
         #print(f"file_categories: {file_categories}")
 
         subparser_search = subparsers.add_parser(F.SUBCOMMAND_SEARCH,
-                                            help=F.SUBCOMMAND_SEARCH+' help',
+                                            help=F.SUBCOMMAND_SEARCH+' help', prog='File Search',
                                             description='Search for files based on search strings')
         subparser_search_group = subparser_search.add_argument_group(
             'Search for files',
@@ -350,7 +350,7 @@ class F:
         if type(subparsers) is not argparse.ArgumentParser:
             F.add_argument(subparser_search_group, "-c", "--category", dest='category', metavar='Category', choices=file_categories, nargs='?', help="Category of files to be considered")
         #F.add_argument(subparser_search_group, "-l", "--label2", dest='label2', metavar='Label', default=None, help="Label of the drive listing")
-        F.add_argument(subparser_search_group, "--label", dest='label', metavar='Label', default=None, help="Label of the drive listing")
+        F.add_argument(subparser_search_group, "-l", "--label", dest='label', metavar='Label', default=None, help="Label of the drive listing")
         F.add_db_to_parser(subparser_search_group)
         F.add_verbose_to_parser(subparser_search_group)
 
@@ -360,7 +360,7 @@ class F:
         # Only add the 'add' subcommand to the GUI
         if type(subparsers) is not argparse.ArgumentParser:
             # create the parser for the "add" subcommand
-            subparser_add_volume = subparsers.add_parser(F.SUBCOMMAND_ADD_VOLUME, help=F.SUBCOMMAND_ADD_VOLUME+' help', description='Add Files on a selected Volume to the Database')
+            subparser_add_volume = subparsers.add_parser(F.SUBCOMMAND_ADD_VOLUME, help=F.SUBCOMMAND_ADD_VOLUME+' help', prog='Add Volume Files', description='Add Files on a selected Volume to the Database')
             subparser_add_volume_group = subparser_add_volume.add_argument_group(
                 'Add Volume Files to Database',
                 description='Add Files on a selected Volume to the Database'
@@ -380,7 +380,7 @@ class F:
         # Only add the 'add' subcommand to the GUI
         if type(subparsers) is not argparse.ArgumentParser:
             # create the parser for the "add" subcommand
-            subparser_refresh_volumes = subparsers.add_parser(F.SUBCOMMAND_REFRESH_VOLUMES, help=F.SUBCOMMAND_REFRESH_VOLUMES+' help', description='Refresh the List of Volumes that appear on the "Add_Volumes" action page.')
+            subparser_refresh_volumes = subparsers.add_parser(F.SUBCOMMAND_REFRESH_VOLUMES, help=F.SUBCOMMAND_REFRESH_VOLUMES+' help', prog='Refresh Volumes List', description='Refresh the List of Volumes that appear on the "Add_Volumes" action page.')
             subparser_refresh_volumes_group = subparser_refresh_volumes.add_argument_group(
                 'Refresh Volumes List',
                 description='Refresh the List of Volumes that appear on the "Add_Volumes" action page.'
@@ -408,7 +408,7 @@ class F:
         # create the parser for the "import" subcommand
         parser_import = subparsers.add_parser(F.SUBCOMMAND_IMPORT, help=F.SUBCOMMAND_IMPORT+' help')
         F.add_db_to_parser(parser_import)
-        F.add_argument(parser_import, "label", metavar='Label', help="Label of the drive listing")
+        F.add_argument(parser_import, "-l", "label", metavar='Label', help="Label of the drive listing")
         F.add_argument(parser_import, "filename", metavar='Filename', widget='FileChooser',
                                    help="Filename (including path) of the listing in fixed width format to be processed. See PowerShell example")
         #F.add_argument(parser_import, "-m", "--make", dest='make', metavar='Make', default=None, help="Make of the drive")

@@ -7,6 +7,7 @@ from typing import (
     Optional,
 )
 from sql import SQLDictionary
+import logging
 
 
 class Database:
@@ -22,17 +23,13 @@ class Database:
         self.__verbose = False
         return
 
-    def __vprint(self, string: str):
-        if self.__verbose:
-            print(string)
-
     def set_test(self, test: bool):
         self.__dry_run_mode = test
 
     def set_verbose_mode(self, verbose: bool):
         self.__verbose = verbose
         if self.__verbose:
-            self.__connection.set_trace_callback(print)
+            self.__connection.set_trace_callback(logging.debug)
         else:
             self.__connection.set_trace_callback(None)
 
@@ -46,13 +43,13 @@ class Database:
         try:
             sqlite3.enable_callback_tracebacks(True)
             # database_path_string = 'file:'+path+'?mode=rw'
-            # __vprint__(f"database_path_string: {database_path_string}")
+            # logging.debug(f"database_path_string: {database_path_string}")
             self.__connection = sqlite3.connect(path)
             # if os.path.isfile(path):
             if self.__connection is not None:
-                self.__vprint("Connection to SQLite DB successful")
+                logging.debug("Connection to SQLite DB successful")
             else:
-                self.__vprint("Connection to SQLite DB failed")
+                logging.debug("Connection to SQLite DB failed")
                 raise sqlite3.OperationalError("Connection to SQLite DB failed")
         except sqlite3.OperationalError as e:
             print(f"sqlite3.OperationalError: '{e}'")
@@ -77,11 +74,11 @@ class Database:
     def my_decorator(self, original_function):
         def wrapper(*args, **kwargs):
             if not self.__dry_run_mode:
-                print(f"Calling {self.__cursor.execute.__name__} with args: {args}, kwargs: {kwargs}")
+                logging.debug(f"Calling {self.__cursor.execute.__name__} with args: {args}, kwargs: {kwargs}")
                 # Call the original function
                 result = original_function(*args, **kwargs)
                 # Log the return value
-                print(f"{original_function.__name__} returned: {result}")
+                logging.debug(f"{original_function.__name__} returned: {result}")
                 # Return the result
                 return result
         return wrapper
@@ -101,7 +98,7 @@ class Database:
         :param parameters: Parameters to use in that statement - an iterable for ``where id = ?``
           parameters, or a dictionary for ``where id = :id``
         """
-        self.__vprint(sql)
+        logging.debug(sql)
         try:
             if parameters is not None:
                 return self.__cursor.execute(sql, parameters)
@@ -123,7 +120,7 @@ class Database:
         Execute SQL statement and return a ``sqlite3.Cursor``.
         :param sql: SQL statement to execute
         """
-        self.__vprint(sql)
+        logging.debug(sql)
         try:
             return self.__cursor.executescript(sql)
         except sqlite3.Error as err:
@@ -167,8 +164,8 @@ class Database:
         self.commit()
 
     def create_database_structure(self):
-        print(f"Creating database.")
-        self.__vprint(f"SQL Query: \"{self.__sql_dictionary["create_database_tables_and_indexes"]}\"")
+        logging.info(f"Creating database.")
+        logging.debug(f"SQL Query: \"{self.__sql_dictionary["create_database_tables_and_indexes"]}\"")
         self.executescript(self.__sql_dictionary["create_database_tables_and_indexes"])
         self.commit()
         print(f"Database created.")
@@ -178,23 +175,23 @@ class Database:
         while True:
             # Loop until all upgrades have been applied
             '''
-            print(f"SQL Query: \"{self.__sql_dictionary["does_database_information_table_exist"]}\"")
+            logging.debug(f"SQL Query: \"{self.__sql_dictionary["does_database_information_table_exist"]}\"")
             self.execute(self.__sql_dictionary["does_database_information_table_exist"])
             rows_found = 0
             select_result = self.fetch_all_results()
             for row in select_result:
-                #print(f"{row[0]}")
+                #logging.debug(f"{row[0]}")
                 rows_found += 1
-            print(f"{rows_found} results found")
+            logging.debug(f"{rows_found} results found")
             if rows_found == 0:
                 # DatabaseVersion table doesn't exist, so this must be the initial version 1 database
                 db_version = 1
             else:
             '''
             # DatabaseVersion table does exist, so load the version of the database
-            #print(f"SQL Query: \"{self.__sql_dictionary["find_db_version"]}\"")
+            #logging.debug(f"SQL Query: \"{self.__sql_dictionary["find_db_version"]}\"")
             result = self.execute(self.__sql_dictionary["find_db_version"])
-            #print(f"type(result): {type(result)}")
+            #logging.debug(f"type(result): {type(result)}")
             if type(result) is sqlite3.OperationalError:
                 print("DatabaseInformation table doesn't exist, so this must be database version 1")
                 db_version = 1
@@ -203,9 +200,9 @@ class Database:
                 select_result = self.fetch_all_results()
                 for row in select_result:
                     db_version = int(row[0])
-                    #print(f"db_version: {db_version}")
+                    #logging.debug(f"db_version: {db_version}")
                     rows_found += 1
-                #print(f"{rows_found} results found")
+                #logging.debug(f"{rows_found} results found")
 
                 if rows_found == 0:
                     # DBVersion not found
@@ -237,7 +234,7 @@ class Database:
                     else:
                         upgrade_sql = self.__sql_dictionary[sql_dictionary_key]
                         print(f"Upgrading database to version {new_db_version}.")
-                        self.__vprint(f"SQL Query: \"{upgrade_sql}\"")
+                        logging.debug(f"SQL Query: \"{upgrade_sql}\"")
                         self.executescript(upgrade_sql)
                         self.commit()
                         print(f"Database upgraded to version {new_db_version} complete.")
@@ -294,16 +291,16 @@ class Database:
         sql_string += " " + self.__sql_dictionary["find_filename_post"]
 
         # Run the SQL
-        print(f"sql_string: {sql_string}")
-        print(f"sql_argument_array: {sql_argument_array}")
+        logging.debug(f"sql_string: {sql_string}")
+        logging.debug(f"sql_argument_array: {sql_argument_array}")
         self.find_filenames( sql_string, sql_argument_array )
 
     def find_filenames(self,
                        sql: str,
                        parameters: Optional[Union[Iterable, dict]] = None):
         result_array = []
-        self.__vprint(f"SQL Query: \"{sql}\"")
-        self.__vprint(f"filename: \"{parameters}\"")
+        logging.debug(f"SQL Query: \"{sql}\"")
+        logging.debug(f"filename: \"{parameters}\"")
         self.execute(sql,
                      parameters
                      )
@@ -312,11 +309,11 @@ class Database:
         for row in select_result:
             print(f"{row[1]}, {row[0]}")
             rows_found += 1
-        self.__vprint(f"{rows_found} results found")
+        logging.debug(f"{rows_found} results found")
 
     def find_drive_id(self, make: str, model: str, serial_number: str):
-        self.__vprint(f"SQL Query: \"{self.__sql_dictionary["find_drive_id"]}\"")
-        self.__vprint(f"make: \"{make}\", model: \"{model}\", serial_number: \"{serial_number}\"")
+        logging.debug(f"SQL Query: \"{self.__sql_dictionary["find_drive_id"]}\"")
+        logging.debug(f"make: \"{make}\", model: \"{model}\", serial_number: \"{serial_number}\"")
         self.execute(self.__sql_dictionary["find_drive_id"],
                      (make, model, serial_number)
                      )
@@ -327,23 +324,23 @@ class Database:
             #print(row[0])
             drive_ids.append(row[0])
             rows_found += 1
-        self.__vprint(f"{rows_found} results found")
+        logging.debug(f"{rows_found} results found")
         return drive_ids
 
     def insert_drive(self, make: str, model: str, serial_number: str, hostname: str):
-        self.__vprint(f"SQL Query: \"{self.__sql_dictionary["insert_drive"]}\"")
-        self.__vprint(
+        logging.debug(f"SQL Query: \"{self.__sql_dictionary["insert_drive"]}\"")
+        logging.debug(
             f"make: \"{make}\", model: \"{model}\", serial_number: \"{serial_number}\", hostname: \"{hostname}\"")
         self.execute(self.__sql_dictionary["insert_drive"],
                      (make, model, serial_number, hostname)
                      )
         drive_id = self.get_last_row_id()
-        self.__vprint(f"New row driveid: \"{drive_id}\"")
+        logging.debug(f"New row driveid: \"{drive_id}\"")
         return drive_id
 
     def find_filesystem_id(self, label: str):
-        self.__vprint(f"SQL Query: \"{self.__sql_dictionary["find_filesystem_id"]}\"")
-        self.__vprint(f"label: \"{label}\"")
+        logging.debug(f"SQL Query: \"{self.__sql_dictionary["find_filesystem_id"]}\"")
+        logging.debug(f"label: \"{label}\"")
         self.execute(self.__sql_dictionary["find_filesystem_id"],
                      [label]  # Use [] as a single parameter
                      )
@@ -354,36 +351,36 @@ class Database:
             #print(row[0])
             filesystem_ids.append(row[0])
             rows_found += 1
-        self.__vprint(f"{rows_found} results found")
+        logging.debug(f"{rows_found} results found")
         return filesystem_ids
 
     def insert_filesystem(self, label: str, drive_id: int, date: int):
-        self.__vprint(f"SQL Query: \"{self.__sql_dictionary["insert_filesystem"]}\"")
-        self.__vprint(f"label: \"{label}\", drive_id: \"{drive_id}\", date: \"{date}\"")
+        logging.debug(f"SQL Query: \"{self.__sql_dictionary["insert_filesystem"]}\"")
+        logging.debug(f"label: \"{label}\", drive_id: \"{drive_id}\", date: \"{date}\"")
         self.execute(self.__sql_dictionary["insert_filesystem"],
                      (label, drive_id, date)
                      )
         filesystem_id = self.get_last_row_id()
-        self.__vprint(f"New row filesystem_id: \"{filesystem_id}\"")
+        logging.debug(f"New row filesystem_id: \"{filesystem_id}\"")
         return filesystem_id
 
     def delete_filesystem_listing(self, filesystem_id: int):
-        self.__vprint(f"SQL Query: \"{self.__sql_dictionary["delete_filesystem"]}\"")
-        self.__vprint(f"filesystem_id: \"{filesystem_id}\"")
+        logging.debug(f"SQL Query: \"{self.__sql_dictionary["delete_filesystem"]}\"")
+        logging.debug(f"filesystem_id: \"{filesystem_id}\"")
         self.execute(self.__sql_dictionary["delete_filesystem"],
                      [filesystem_id]  # [] as a single parameter
                      )
 
     def delete_filesystem_listing_entries(self, filesystem_id: int):
-        self.__vprint(f"SQL Query: \"{self.__sql_dictionary["delete_filesystem_entries"]}\"")
-        self.__vprint(f"filesystem_id: \"{filesystem_id}\"")
+        logging.debug(f"SQL Query: \"{self.__sql_dictionary["delete_filesystem_entries"]}\"")
+        logging.debug(f"filesystem_id: \"{filesystem_id}\"")
         self.execute(self.__sql_dictionary["delete_filesystem_entries"],
                      [filesystem_id]  # [] as a single parameter
                      )
 
     def update_filesystem_date(self, filesystem_id: int, date: int):
-        self.__vprint(f"SQL Query: \"{self.__sql_dictionary["update_filesystem"]}\"")
-        self.__vprint(f"filesystem_id: \"{filesystem_id}\", date: \"{date}\"")
+        logging.debug(f"SQL Query: \"{self.__sql_dictionary["update_filesystem"]}\"")
+        logging.debug(f"filesystem_id: \"{filesystem_id}\", date: \"{date}\"")
         self.execute(self.__sql_dictionary["update_filesystem"],
                      (filesystem_id, date)  # () as a multiple parameters
                      )
@@ -398,4 +395,4 @@ class Database:
 
 ### Class Test ###
 # database = Database("I:\\FileProcessorDatabase\\database.sqlite")
-# print(f"sql_dictionary: {database.sql_dictionary}")
+# logging.debug(f"sql_dictionary: {database.sql_dictionary}")
