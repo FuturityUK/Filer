@@ -4,8 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="The Volumes dropdown menu now works">
-      <change afterPath="$PROJECT_DIR$/subparser_demo.py" afterDir="false" />
+    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Added header descriptions for the subcommand actions by using groups.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/f.py" beforeDir="false" afterPath="$PROJECT_DIR$/f.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/fgui.py" beforeDir="false" afterPath="$PROJECT_DIR$/fgui.py" afterDir="false" />
@@ -97,14 +96,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1736868367160</updated>
-    </task>
-    <task id="LOCAL-00074" summary="Changed the &quot;find&quot; subcommand so that it displays the &quot;label&quot;">
-      <option name="closed" value="true" />
-      <created>1738498989057</created>
-      <option name="number" value="00074" />
-      <option name="presentableId" value="LOCAL-00074" />
-      <option name="project" value="LOCAL" />
-      <updated>1738498989057</updated>
     </task>
     <task id="LOCAL-00075" summary="Modified README">
       <option name="closed" value="true" />
@@ -490,7 +481,15 @@
       <option name="project" value="LOCAL" />
       <updated>1740001320454</updated>
     </task>
-    <option name="localTasksCounter" value="123" />
+    <task id="LOCAL-00123" summary="Added header descriptions for the subcommand actions by using groups.">
+      <option name="closed" value="true" />
+      <created>1740061517399</created>
+      <option name="number" value="00123" />
+      <option name="presentableId" value="LOCAL-00123" />
+      <option name="project" value="LOCAL" />
+      <updated>1740061517399</updated>
+    </task>
+    <option name="localTasksCounter" value="124" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -505,7 +504,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Fixed passing *args and **kwargs" />
     <MESSAGE value="add_argument() now strips out Gooey 'widget' attributes if non GUI versions running.&#10;Started migrating add_argument native functions over to custom F.add_argument() function." />
     <MESSAGE value="Database 'create' subcommand works, but should really be moved to the Database class" />
     <MESSAGE value="Added DBVersion &quot;2&quot; upgrade SQL.&#10;It's not being run yet though." />
@@ -530,6 +528,7 @@
     <MESSAGE value="dyngooey.py&#10;- commented out &quot;with _self.retainSelection()&quot; as it had an indexing issue.&#10;&#10;f.py&#10;- now saves the volume information to a file when the &quot;refresh volumes&quot; subcommand run&#10;- now loads the volume information previously save if it is available&#10;&#10;fgui.py&#10;- further tests to set choice (dropdown) values" />
     <MESSAGE value="dyngooey.py&#10;- now selects the default value in the dropdown / choices" />
     <MESSAGE value="The Volumes dropdown menu now works" />
-    <option name="LAST_COMMIT_MESSAGE" value="The Volumes dropdown menu now works" />
+    <MESSAGE value="Added header descriptions for the subcommand actions by using groups." />
+    <option name="LAST_COMMIT_MESSAGE" value="Added header descriptions for the subcommand actions by using groups." />
   </component>
 </project>

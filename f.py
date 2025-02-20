@@ -333,12 +333,10 @@ class F:
 
         subparser_search = subparsers.add_parser(F.SUBCOMMAND_SEARCH,
                                             help=F.SUBCOMMAND_SEARCH+' help',
-                                            description='Search for files based on search strings (slower than "find")')
+                                            description='Search for files based on search strings')
         subparser_search_group = subparser_search.add_argument_group(
-            'Just Crocodile Things',
-            description='There are 13 species of crocodiles, so there are many different ' +
-                        'sizes of crocodile. The smallest crocodile is the dwarf crocodile. ' +
-                        'It grows to about 5.6 feet (1.7 meters) in length and weighs 13 to 15 pounds '
+            'Search for files',
+            description='Search for files based on search strings'
         )
         help_text = '''Search string to be found within filenames
          - if search doesn't include '%' or '_' characters, then it is a fast exact case-sensitive search
@@ -362,12 +360,10 @@ class F:
         # Only add the 'add' subcommand to the GUI
         if type(subparsers) is not argparse.ArgumentParser:
             # create the parser for the "add" subcommand
-            subparser_add_volume = subparsers.add_parser(F.SUBCOMMAND_ADD_VOLUME, help=F.SUBCOMMAND_ADD_VOLUME+' help')
+            subparser_add_volume = subparsers.add_parser(F.SUBCOMMAND_ADD_VOLUME, help=F.SUBCOMMAND_ADD_VOLUME+' help', description='Add Files on a selected Volume to the Database')
             subparser_add_volume_group = subparser_add_volume.add_argument_group(
-                'Just Crocodile Things',
-                description='There are 13 species of crocodiles, so there are many different ' +
-                            'sizes of crocodile. The smallest crocodile is the dwarf crocodile. ' +
-                            'It grows to about 5.6 feet (1.7 meters) in length and weighs 13 to 15 pounds '
+                'Add Volume Files to Database',
+                description='Add Files on a selected Volume to the Database'
             )
             F.add_argument(subparser_add_volume_group, "--volume", dest='volume', metavar='Volume', widget='Dropdown',
                                        nargs='?', default=None, help="Volume that you wish to add. If you don't see your volume, please use 'refresh_volumes'")
@@ -384,16 +380,14 @@ class F:
         # Only add the 'add' subcommand to the GUI
         if type(subparsers) is not argparse.ArgumentParser:
             # create the parser for the "add" subcommand
-            subparser_refresh_volumes = subparsers.add_parser(F.SUBCOMMAND_REFRESH_VOLUMES, help=F.SUBCOMMAND_REFRESH_VOLUMES+' help')
+            subparser_refresh_volumes = subparsers.add_parser(F.SUBCOMMAND_REFRESH_VOLUMES, help=F.SUBCOMMAND_REFRESH_VOLUMES+' help', description='Refresh the List of Volumes that appear on the "Add_Volumes" action page.')
             subparser_refresh_volumes_group = subparser_refresh_volumes.add_argument_group(
-                'Just Crocodile Things',
-                description='There are 13 species of crocodiles, so there are many different ' +
-                            'sizes of crocodile. The smallest crocodile is the dwarf crocodile. ' +
-                            'It grows to about 5.6 feet (1.7 meters) in length and weighs 13 to 15 pounds '
+                'Refresh Volumes List',
+                description='Refresh the List of Volumes that appear on the "Add_Volumes" action page.'
             )
             F.add_argument(subparser_refresh_volumes_group, "-n", "--hostname", dest='hostname', metavar='Hostname',
                            action='store_true',
-                           help="Do you want to refresh the volumes?")
+                           help="Do you want to refresh the volumes?", gooey_options = {'visible': False})
             #subparser_refresh_volumes_group.add_argument('-somecrocodile', action='store_true', help='Nothing to see here, move along.')
 
 

@@ -1,3 +1,5 @@
+from tarfile import TruncatedHeaderError
+
 from f import F
 import json
 from dyngooey import Gooey, GooeyParser, gooey_stdout, gooey_id
@@ -130,11 +132,15 @@ class Fgui:
 
 
     @Gooey(
-            program_name='Filer',
+            program_name='Filer', # Overrides name pulled from sys.argv[0]
+            program_description = 'Filer - File Cataloger', # Overrides the description pulled from ArgumentParser
             required_cols=1,
             optional_cols=1,
-            #navigation='TABBED',
-            default_size=(1000, 1000),
+            navigation='TABBED',
+            default_size=(1024, 768),
+            #fullscreen=True,
+            show_restart_button=False,
+            hide_progress_msg=True,
             clear_before_run=False,# Was True
             show_stop_warning=False, # From test.py
             show_success_modal=False, # From test.py
