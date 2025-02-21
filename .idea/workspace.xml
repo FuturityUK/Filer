@@ -6,6 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Slowly unpacking the self.volume_argument_details[&quot;volume_dictionary&quot;].items()">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/f.py" beforeDir="false" afterPath="$PROJECT_DIR$/f.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/fgui.py" beforeDir="false" afterPath="$PROJECT_DIR$/fgui.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -50,31 +52,31 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Python.database.executor": "Run",
-    "Python.dyngooey.executor": "Run",
-    "Python.f.executor": "Run",
-    "Python.fgui.executor": "Run",
-    "Python.file_system_processors.executor": "Run",
-    "Python.file_types.executor": "Run",
-    "Python.filer.executor": "Run",
-    "Python.logtest.executor": "Run",
-    "Python.main.executor": "Run",
-    "Python.powershell.executor": "Run",
-    "Python.print.executor": "Run",
-    "Python.sql.executor": "Run",
-    "Python.subparser_demo.executor": "Run",
-    "Python.system.executor": "Run",
-    "Python.test.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "master",
-    "ignore.virus.scanning.warn.message": "true",
-    "run.code.analysis.last.selected.profile": "aDefault",
-    "settings.editor.selected.configurable": "settings.sync"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Python.database.executor&quot;: &quot;Run&quot;,
+    &quot;Python.dyngooey.executor&quot;: &quot;Run&quot;,
+    &quot;Python.f.executor&quot;: &quot;Run&quot;,
+    &quot;Python.fgui.executor&quot;: &quot;Run&quot;,
+    &quot;Python.file_system_processors.executor&quot;: &quot;Run&quot;,
+    &quot;Python.file_types.executor&quot;: &quot;Run&quot;,
+    &quot;Python.filer.executor&quot;: &quot;Run&quot;,
+    &quot;Python.logtest.executor&quot;: &quot;Run&quot;,
+    &quot;Python.main.executor&quot;: &quot;Run&quot;,
+    &quot;Python.powershell.executor&quot;: &quot;Run&quot;,
+    &quot;Python.print.executor&quot;: &quot;Run&quot;,
+    &quot;Python.sql.executor&quot;: &quot;Run&quot;,
+    &quot;Python.subparser_demo.executor&quot;: &quot;Run&quot;,
+    &quot;Python.system.executor&quot;: &quot;Run&quot;,
+    &quot;Python.test.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;aDefault&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;settings.sync&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\Neil.FUTURITY\PycharmProjects\Filer\scripts" />
@@ -84,7 +86,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-python-sdk-a5bc9544c897-aa17d162503b-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-243.23654.177" />
+        <option value="bundled-python-sdk-fc1d50d2d915-aa17d162503b-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-243.24978.54" />
       </set>
     </attachedChunks>
   </component>
@@ -96,14 +98,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1736868367160</updated>
-    </task>
-    <task id="LOCAL-00083" summary="Program split into argument version and interactive version.">
-      <option name="closed" value="true" />
-      <created>1738701571132</created>
-      <option name="number" value="00083" />
-      <option name="presentableId" value="LOCAL-00083" />
-      <option name="project" value="LOCAL" />
-      <updated>1738701571132</updated>
     </task>
     <task id="LOCAL-00084" summary="Created fgui.py with is a GUI wrapper around f.py command line version.">
       <option name="closed" value="true" />
@@ -489,7 +483,15 @@
       <option name="project" value="LOCAL" />
       <updated>1740082515079</updated>
     </task>
-    <option name="localTasksCounter" value="132" />
+    <task id="LOCAL-00132" summary="Slowly unpacking the self.volume_argument_details[&quot;volume_dictionary&quot;].items()">
+      <option name="closed" value="true" />
+      <created>1740087330039</created>
+      <option name="number" value="00132" />
+      <option name="presentableId" value="LOCAL-00132" />
+      <option name="project" value="LOCAL" />
+      <updated>1740087330039</updated>
+    </task>
+    <option name="localTasksCounter" value="133" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">

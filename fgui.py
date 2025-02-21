@@ -1,11 +1,13 @@
 from f import F
-import json
 from dyngooey import Gooey, GooeyParser, gooey_stdout, gooey_id
 import logging
+import sys
+import os
+import json
 
 class Fgui:
 
-    def __init__(self):
+    def __init__(self, database_filename: str = None):
         logging.debug(f"### __init__() ###")
         self.parser = GooeyParser(
             #description="Filer - File Cataloger",
@@ -13,10 +15,25 @@ class Fgui:
         )
         self.f = F(self.parser)
 
+        self.stored_args = {}
+        # get the script name without the extension & use it to build up
+        # the json filename
+        script_name = os.path.splitext(os.path.basename(__file__))[0]
+        self.args_filename = "{}-args.json".format(script_name)
+
+        if database_filename is not None:
+            self.database_filename = database_filename
+
     def init(self):
         logging.debug(f"### init() ###")
         logging.info(f"Initialising Argument Parser Arguments...")
         self.f.add_subcommands_to_parser(self.parser)
+
+        # Read in the prior arguments as a dictionary
+        if os.path.isfile(self.args_filename):
+            with open(self.args_filename) as data_file:
+                self.stored_args = json.load(data_file)
+        #self.parser.set_defaults(**self.stored_args)
 
     def seed(self, clear=None):
         logging.debug(f"### seed() ###")
@@ -44,6 +61,7 @@ class Fgui:
 
             dynamic_values = {
                 'volume': volume_default_choice,
+                #'db': self.database_filename,
                 'test_required_1': None,  # This will be replaced with the initial value
                 # 'test_required_2' will be left alone
                 'test_optional_1': None,
@@ -139,24 +157,70 @@ class Fgui:
         )
     #@Gooey(optional_cols=2, program_name="Subparser Layout Demo")
     def main(self):
-        logging.debug(f"### main() ###")
+        logging.info(f"### main() ###")
         args = self.parser.parse_args()
 
+        """
+        temp_args = self.stored_args.copy()
+        for key, value in vars(args).items():
+            temp_args[key] = value
+        """
         if not gooey_stdout():
             pass
             # Debug to show arguments past to the program
             #print(f"Program arguments:")
             #print(f"{F.dumps(vars(args))}")
 
+            subcommand = args.subcommand
+            print(f"subcommand: {subcommand}")
+            print(f"")
+
+            subcommand_args = vars(args).copy()
+            print(f"subcommand_args: {subcommand_args}")
+            print(f"")
+
+            del subcommand_args['subcommand']
+            print(f"subcommand_args['subcommand']: {subcommand_args}")
+            print(f"")
+
+            self.stored_args[subcommand] = subcommand_args
+            print(f"self.stored_args{self.stored_args}")
+            print(f"")
+
+            # Store the values of the arguments so we have them next time we run
+            with open(self.args_filename, 'w') as data_file:
+                # Using vars(args) returns the data as a dictionary
+                json.dump(self.stored_args, data_file)
+
         # Now process the args
         #f = F()
         self.f.process_args_and_call_subcommand(args)
 
-
 if __name__ == "__main__":
     #my_logger = logging.getLogger(__name__)
     F.start_logger(logging.DEBUG)
-    fgui = Fgui()
+    logging.info(f"### __main__ ###")
+    # total arguments
+    n = len(sys.argv)
+    logging.debug(f"Total arguments passed: {n}")
+
+    # Arguments passed
+    logging.debug(f"Name of Python script: {sys.argv[0]}")
+
+    logging.debug("Arguments passed:")
+    for i in range(1, n):
+        logging.debug(f"- {sys.argv[i]}")
+
+    db_filename = None
+    if len(sys.argv) == 3 and sys.argv[1] == "gooey-seed-ui":
+        logging.debug(f"IN GOOEY SEED UI")
+        db_filename = sys.argv[2]
+    elif len(sys.argv) == 2 and sys.argv[1] != "gooey-seed-ui":
+        db_filename = sys.argv[1]
+
+
+
+    fgui = Fgui(db_filename)
     fgui.init()
     fgui.seed()
     fgui.main()

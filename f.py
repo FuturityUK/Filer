@@ -37,6 +37,7 @@ class F:
     LOGICAL_DICT_INDEX: int = 1
     PHYSICAL_DICT_INDEX: int = 2
 
+    DEFAULT_DATABASE_FILENAME: str = 'database.sqlite'
     DEFAULT_TEMP_LISTING_FILE: str = 'filer.fwf'
 
     SUBCOMMAND_FILE_SEARCH: str = 'search'
@@ -49,6 +50,7 @@ class F:
     SUBCOMMAND_RESET: str = 'reset'
 
     VOLUME_ARGUMENT_DETAILS_FILENAME: str = "volume_argument_details.json"
+    CONFIGURATION_FILENAME: str = "configuration.json"
 
     def __init__(self, parser):
         self.database = None
@@ -59,8 +61,6 @@ class F:
         self.volumes_array = None
         self.parser = parser
         #self.volume_argument_details = {"volume_choices": None, "volumes_argument_help": None, "volume_default_choice": None, "volume_dictionary": None }
-
-        # Does the volume_argument_details file exist?
 
         # Open the JSON file, or use an empty dictionary if it doesn't exist.
         try:
@@ -290,20 +290,22 @@ class F:
     @staticmethod
     def add_db_to_parser(parser, create: bool=False):
         #print(f"Parser type: {type(parser)}")
+        """
         if type(parser) is argparse.ArgumentParser:
-            F.add_argument(parser, "-d", "--db", dest='db', default="database.sqlite",
+            F.add_argument(parser, "-d", "--db", dest='db', default=F.DEFAULT_DATABASE_FILENAME,
                             help="database filename (including path if necessary). Default='database.sqlite' in the current directory.")
         else:
-            if create:
-                F.add_argument(parser, "-d", "--db", dest='db', default="database.sqlite",
-                                    widget = 'FileSaver',
-                                    metavar='Database Filename',
-                                    help="Database filename (including path if necessary). Default='database.sqlite' in the current directory.")
-            else:
-                F.add_argument(parser, "-d", "--db", dest='db', default="database.sqlite",
-                                    widget = 'FileChooser',
-                                    metavar='Database Filename',
-                                    help="Database filename (including path if necessary). Default='database.sqlite' in the current directory.")
+        """
+        if create:
+            F.add_argument(parser, "-d", "--db", dest='db', default=F.DEFAULT_DATABASE_FILENAME,
+                                widget = 'FileSaver',
+                                metavar='Database Filename',
+                                help="Database filename (including path if necessary). Default='database.sqlite' in the current directory.")
+        else:
+            F.add_argument(parser, "-d", "--db", dest='db', default=F.DEFAULT_DATABASE_FILENAME,
+                                widget = 'FileChooser',
+                                metavar='Database Filename',
+                                help="Database filename (including path if necessary). Default='database.sqlite' in the current directory.")
 
     @staticmethod
     def add_verbose_to_parser(parser, create: bool = False):
