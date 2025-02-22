@@ -7,6 +7,9 @@ import json
 
 class Fgui:
 
+    CONFIGURATION_FILENAME: str = "filer.json"
+    CONFIGURATION_STORED_ARGS = "stored_args"
+
     def __init__(self, database_filename: str = None):
         logging.debug(f"### __init__() ###")
         self.parser = GooeyParser(
@@ -15,24 +18,66 @@ class Fgui:
         )
         self.f = F(self.parser)
 
-        self.stored_args = {}
-        # get the script name without the extension & use it to build up
-        # the json filename
-        script_name = os.path.splitext(os.path.basename(__file__))[0]
-        self.args_filename = "{}-args.json".format(script_name)
+        # Read in the prior arguments as a dictionary
+        self.configuration = {self.CONFIGURATION_STORED_ARGS: {}}
+        if os.path.isfile(self.CONFIGURATION_FILENAME):
+            with open(self.CONFIGURATION_FILENAME) as data_file:
+                self.configuration = json.load(data_file)
 
         if database_filename is not None:
-            self.database_filename = database_filename
+            if F.SUBCOMMAND_SELECT_DATABASE not in self.configuration[self.CONFIGURATION_STORED_ARGS]:
+                self.configuration[self.CONFIGURATION_STORED_ARGS][F.SUBCOMMAND_SELECT_DATABASE] = {}
+            self.configuration[self.CONFIGURATION_STORED_ARGS][F.SUBCOMMAND_SELECT_DATABASE]["db"] = database_filename
+            logging.debug(f"self.configuration: {self.configuration}")
+            # Store the modified configuration with the new database_filename
+            self.store_configuration()
+
+        # get the script name without the extension & use it to build up
+        # the json filename
+        #script_name = os.path.splitext(os.path.basename(__file__))[0]
+        #self.args_filename = "{}-args.json".format(script_name)
+
+    def store_configuration(self, args=None):
+        logging.debug(f"### store_configuration() ###")
+        logging.info(f"Storing configuration...")
+
+        if args is not None:
+            # A subcommand has been run so store its arguments
+            subcommand = args.subcommand
+            print(f"subcommand: {subcommand}")
+            print(f"")
+
+            subcommand_args = vars(args).copy()
+            print(f"subcommand_args: {subcommand_args}")
+            print(f"")
+
+            # Remove the 'subcommand' key / value pair from the subcommand_args
+            if "subcommand" in subcommand_args:
+                del subcommand_args['subcommand']
+                print(f"Subcommand arguments (minus subcommand): {subcommand_args}")
+                print(f"")
+
+            # Remove the old arguments last submitted for this subcommand
+            if subcommand in self.configuration[self.CONFIGURATION_STORED_ARGS]:
+                del self.configuration[self.CONFIGURATION_STORED_ARGS][subcommand]
+                print(f"subcommand_args['subcommand']: {subcommand_args}")
+                print(f"")
+
+            # Store the new arguments for this subcommand
+            self.configuration[self.CONFIGURATION_STORED_ARGS][subcommand] = subcommand_args
+            print(f"self.configuration: {self.configuration}")
+            print(f"")
+
+        # Store the values of the arguments so we have them next time we run
+        with open(self.CONFIGURATION_FILENAME, 'w') as data_file:
+            # Using vars(args) returns the data as a dictionary
+            json.dump(self.configuration, data_file)
 
     def init(self):
         logging.debug(f"### init() ###")
         logging.info(f"Initialising Argument Parser Arguments...")
         self.f.add_subcommands_to_parser(self.parser)
 
-        # Read in the prior arguments as a dictionary
-        if os.path.isfile(self.args_filename):
-            with open(self.args_filename) as data_file:
-                self.stored_args = json.load(data_file)
         #self.parser.set_defaults(**self.stored_args)
 
     def seed(self, clear=None):
@@ -57,11 +102,19 @@ class Fgui:
                 volume_choices = volume_argument_details["volume_choices"]
                 logging.info(f"volume_argument_details[\"volume_choices\"]: {volume_choices}")
 
-            baker = "Baker"
+            database_filename = F.DEFAULT_DATABASE_FILENAME
+            logging.debug(f"self.configuration: {self.configuration}")
+            if F.SUBCOMMAND_SELECT_DATABASE in self.configuration[self.CONFIGURATION_STORED_ARGS]:
+                logging.debug(f"{F.SUBCOMMAND_SELECT_DATABASE} found in self.configuration[self.CONFIGURATION_STORED_ARGS]")
+                if "db" in self.configuration[self.CONFIGURATION_STORED_ARGS][F.SUBCOMMAND_SELECT_DATABASE]:
+                    logging.debug(
+                        f"'db' found in self.configuration[self.CONFIGURATION_STORED_ARGS][F.SUBCOMMAND_SELECT_DATABASE]")
+                    database_filename = self.configuration[self.CONFIGURATION_STORED_ARGS][F.SUBCOMMAND_SELECT_DATABASE]["db"]
+                    logging.info(f"database_filename: {database_filename}")
 
             dynamic_values = {
                 'volume': volume_default_choice,
-                #'db': self.database_filename,
+                'db': database_filename,
                 'test_required_1': None,  # This will be replaced with the initial value
                 # 'test_required_2' will be left alone
                 'test_optional_1': None,
@@ -169,27 +222,7 @@ class Fgui:
             # Debug to show arguments past to the program
             #print(f"Program arguments:")
             #print(f"{F.dumps(vars(args))}")
-
-            subcommand = args.subcommand
-            print(f"subcommand: {subcommand}")
-            print(f"")
-
-            subcommand_args = vars(args).copy()
-            print(f"subcommand_args: {subcommand_args}")
-            print(f"")
-
-            del subcommand_args['subcommand']
-            print(f"subcommand_args['subcommand']: {subcommand_args}")
-            print(f"")
-
-            self.stored_args[subcommand] = subcommand_args
-            print(f"self.stored_args{self.stored_args}")
-            print(f"")
-
-            # Store the values of the arguments so we have them next time we run
-            with open(self.args_filename, 'w') as data_file:
-                # Using vars(args) returns the data as a dictionary
-                json.dump(self.stored_args, data_file)
+            self.store_configuration(args)
 
         # Now process the args
         #f = F()
@@ -199,6 +232,7 @@ if __name__ == "__main__":
     #my_logger = logging.getLogger(__name__)
     F.start_logger(logging.DEBUG)
     logging.info(f"### __main__ ###")
+
     # total arguments
     n = len(sys.argv)
     logging.debug(f"Total arguments passed: {n}")
@@ -212,12 +246,13 @@ if __name__ == "__main__":
 
     db_filename = None
     if len(sys.argv) == 3 and sys.argv[1] == "gooey-seed-ui":
-        logging.debug(f"IN GOOEY SEED UI")
-        db_filename = sys.argv[2]
+        # In 'gooey-seed-ui' so don't do anything
+        logging.debug(f"In 'gooey-seed-ui' mode, so don't set the db_filename")
+        #db_filename = sys.argv[2]
     elif len(sys.argv) == 2 and sys.argv[1] != "gooey-seed-ui":
+        # Not in "gooey-seed-ui" yet, so if an argument set, that's the db_filename
         db_filename = sys.argv[1]
-
-
+        logging.debug(f"Not 'gooey-seed-ui' mode, so set the db_filename to {db_filename}")
 
     fgui = Fgui(db_filename)
     fgui.init()
