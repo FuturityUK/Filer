@@ -45,6 +45,7 @@ class F:
     SUBCOMMAND_ADD_VOLUME: str = 'add'
     SUBCOMMAND_IMPORT: str = 'import'
     SUBCOMMAND_CREATE_DATABASE: str = 'create'
+    SUBCOMMAND_DATABASE: str = 'database'
     SUBCOMMAND_UPGRADE: str = 'upgrade'
     SUBCOMMAND_VACUUM: str = 'vacuum'
     SUBCOMMAND_RESET: str = 'reset'

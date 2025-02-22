@@ -4,11 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Slowly unpacking the self.volume_argument_details[&quot;volume_dictionary&quot;].items()">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/f.py" beforeDir="false" afterPath="$PROJECT_DIR$/f.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fgui.py" beforeDir="false" afterPath="$PROJECT_DIR$/fgui.py" afterDir="false" />
-    </list>
+    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Saves arguments last used in actions. &#10;Needs to fill in the values as defaults" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -98,14 +94,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1736868367160</updated>
-    </task>
-    <task id="LOCAL-00084" summary="Created fgui.py with is a GUI wrapper around f.py command line version.">
-      <option name="closed" value="true" />
-      <created>1738774008298</created>
-      <option name="number" value="00084" />
-      <option name="presentableId" value="LOCAL-00084" />
-      <option name="project" value="LOCAL" />
-      <updated>1738774008298</updated>
     </task>
     <task id="LOCAL-00085" summary="Better looking GUI, but the &quot;create&quot; database subcommand needs to be implemented, as well as the other subcommands warning the user if the database doesn't exist.">
       <option name="closed" value="true" />
@@ -491,7 +479,15 @@
       <option name="project" value="LOCAL" />
       <updated>1740087330039</updated>
     </task>
-    <option name="localTasksCounter" value="133" />
+    <task id="LOCAL-00133" summary="Saves arguments last used in actions. &#10;Needs to fill in the values as defaults">
+      <option name="closed" value="true" />
+      <created>1740169917136</created>
+      <option name="number" value="00133" />
+      <option name="presentableId" value="LOCAL-00133" />
+      <option name="project" value="LOCAL" />
+      <updated>1740169917136</updated>
+    </task>
+    <option name="localTasksCounter" value="134" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -506,7 +502,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Added dyngooey.py as a way of resetting choices after running subcommands" />
     <MESSAGE value="Still loads more debug required to work out how it works and then find a solutions (dictionary of subcommands, containing dictionary of default values)" />
     <MESSAGE value="More arguments testing" />
     <MESSAGE value="label2's value on the search subcommand is successfully reset to its initial value after being changes and started" />
@@ -531,6 +526,7 @@
     <MESSAGE value="Added the code to call the Add Volumes action (subcommand)" />
     <MESSAGE value="Improved argument help formatting" />
     <MESSAGE value="Slowly unpacking the self.volume_argument_details[&quot;volume_dictionary&quot;].items()" />
-    <option name="LAST_COMMIT_MESSAGE" value="Slowly unpacking the self.volume_argument_details[&quot;volume_dictionary&quot;].items()" />
+    <MESSAGE value="Saves arguments last used in actions. &#10;Needs to fill in the values as defaults" />
+    <option name="LAST_COMMIT_MESSAGE" value="Saves arguments last used in actions. &#10;Needs to fill in the values as defaults" />
   </component>
 </project>
