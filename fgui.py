@@ -137,7 +137,6 @@ class Fgui:
 
         return seeds
 
-
     @Gooey(
             program_name='Filer', # Overrides name pulled from sys.argv[0]
             program_description = 'Filer - File Cataloger', # Overrides the description pulled from ArgumentParser

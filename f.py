@@ -40,15 +40,15 @@ class F:
     DEFAULT_DATABASE_FILENAME: str = 'database.sqlite'
     DEFAULT_TEMP_LISTING_FILE: str = 'filer.fwf'
 
-    SUBCOMMAND_FILE_SEARCH: str = 'search'
-    SUBCOMMAND_REFRESH_VOLUMES: str = 'refresh'
-    SUBCOMMAND_ADD_VOLUME: str = 'add'
-    SUBCOMMAND_IMPORT: str = 'import'
-    SUBCOMMAND_CREATE_DATABASE: str = 'create'
-    SUBCOMMAND_DATABASE: str = 'database'
-    SUBCOMMAND_UPGRADE: str = 'upgrade'
-    SUBCOMMAND_VACUUM: str = 'vacuum'
-    SUBCOMMAND_RESET: str = 'reset'
+    SUBCOMMAND_FILE_SEARCH: str = 'file_search'
+    SUBCOMMAND_REFRESH_VOLUMES: str = 'refresh_volumes'
+    SUBCOMMAND_ADD_VOLUME: str = 'add_volume'
+    SUBCOMMAND_IMPORT_VOLUME: str = 'import_volume'
+    SUBCOMMAND_CREATE_DATABASE: str = 'create_db'
+    SUBCOMMAND_SELECT_DATABASE: str = 'select_db'
+    SUBCOMMAND_UPGRADE_DATABASE: str = 'upgrade_db'
+    SUBCOMMAND_VACUUM_DATABASE: str = 'vacuum_db'
+    SUBCOMMAND_RESET_DATABASE: str = 'reset_db'
 
     VOLUME_ARGUMENT_DETAILS_FILENAME: str = "volume_argument_details.json"
     CONFIGURATION_FILENAME: str = "configuration.json"
@@ -61,14 +61,14 @@ class F:
         self.physical_disk_array = None
         self.volumes_array = None
         self.parser = parser
-        #self.volume_argument_details = {"volume_choices": None, "volumes_argument_help": None, "volume_default_choice": None, "volume_dictionary": None }
 
         # Open the JSON file, or use an empty dictionary if it doesn't exist.
         try:
             with open(self.VOLUME_ARGUMENT_DETAILS_FILENAME) as read_file:
                 self.volume_argument_details = json.load(read_file)
         except FileNotFoundError:
-            self.volume_argument_details = {}
+            self.volume_argument_details = {"volume_choices": None, "volumes_argument_help": None, "volume_default_choice": None, "volume_dictionary": None, "created": None }
+
 
     def set_memory_stats(self, memory_stats):
         self.memory_stats = memory_stats
@@ -160,7 +160,6 @@ class F:
         print(f"Chosen Default Volume:")
         print(f"- {volume_default_choice}")
 
-
     def subcommand_add_volumes(self, args: []):
         logging.debug("### F.subcommand_add_volumes() ###")
         print("Adding volume:")
@@ -210,9 +209,8 @@ class F:
         #import_listing_values = self.get_values_for_import_listing(result_array)
         #self.display_import_listing_values(import_listing_values)
 
-    def subcommand_create_database(self, args: []):
-        logging.debug(f"### F.subcommand_create_database() ###")
-        database_filename = args.db
+    @staticmethod
+    def does_database_directory_exist(database_filename):
         abspath_database_filename = os.path.abspath(database_filename)
         directory_name = os.path.dirname(abspath_database_filename)
         # Does the directory exist where we want to create the database?
@@ -221,17 +219,28 @@ class F:
             print("The directory must exist before a new database can be created there.")
             exit(2)
 
-        if os.path.isfile(database_filename):
-            # Database file doesn't exist
-            # Ask user if they want to create a new database file?
-            print(f"Database file already exists at location: \"{os.path.abspath(database_filename)}\"")
-            print(f"To empty the database, use the \'{F.SUBCOMMAND_RESET}\' subcommand.")
-            exit(2)
+    def subcommand_select_database(self, args: []):
+        logging.debug(f"### F.subcommand_select_database() ###")
+        database_filename = args.db
+        F.does_database_directory_exist(database_filename)
+        if not os.path.isfile(database_filename):
+            print(f"Database file does not exists at location: \"{os.path.abspath(database_filename)}\"")
+            self.database = Database(database_filename)
+            if "verbose" in args:
+                self.database.set_verbose_mode(args.verbose)
+            self.database.create_database_structure()
 
+    def subcommand_create_database(self, args: []):
+        logging.debug(f"### F.subcommand_create_database() ###")
+        database_filename = args.db
+        F.does_database_directory_exist(database_filename)
+        if os.path.isfile(database_filename):
+            print(f"Database file already exists at location: \"{os.path.abspath(database_filename)}\"")
+            print(f"To empty the database, use the \'{F.SUBCOMMAND_RESET_DATABASE}\' subcommand.")
+            exit(2)
         self.database = Database(database_filename)
         if "verbose" in args:
             self.database.set_verbose_mode(args.verbose)
-
         self.database.create_database_structure()
 
     def upgrade(self):
@@ -512,7 +521,7 @@ class F:
 
         """
         # create the parser for the "import" subcommand
-        parser_import = subparsers.add_parser(F.SUBCOMMAND_IMPORT, help=F.SUBCOMMAND_IMPORT+' help')
+        parser_import = subparsers.add_parser(F.SUBCOMMAND_IMPORT_VOLUME, help=F.SUBCOMMAND_IMPORT_VOLUME+' help')
         F.add_db_to_parser(parser_import)
         F.add_argument(parser_import, "-l", "--label", metavar='Label', help="Label of the drive listing")
         F.add_argument(parser_import, "-f", "--filename", metavar='Filename', widget='FileChooser',
@@ -534,21 +543,21 @@ class F:
 
 
         # create the parser for the "vacuum" subcommand
-        parser_upgrade = subparsers.add_parser(F.SUBCOMMAND_UPGRADE,
-                                              help=F.SUBCOMMAND_UPGRADE+' help',
+        parser_upgrade = subparsers.add_parser(F.SUBCOMMAND_UPGRADE_DATABASE,
+                                              help=F.SUBCOMMAND_UPGRADE_DATABASE+' help',
                                               description='The UPGRADE subcommand upgrades the database file to the latest structure needed for this program to work.')
         F.add_db_to_parser(parser_upgrade)
         F.add_verbose_to_parser(parser_upgrade)
 
         # create the parser for the "vacuum" subcommand
-        parser_vacuum = subparsers.add_parser(F.SUBCOMMAND_VACUUM,
-                                              help=F.SUBCOMMAND_VACUUM+' help',
+        parser_vacuum = subparsers.add_parser(F.SUBCOMMAND_VACUUM_DATABASE,
+                                              help=F.SUBCOMMAND_VACUUM_DATABASE+' help',
                                               description='The VACUUM subcommand rebuilds the database file by reading the current file and writing the content into a new file. As a result it repacking it into a minimal amount of disk space and defragments it which ensures that each table and index is largely stored contiguously. Depending on the size of the database it can take some time to do perform.')
         F.add_db_to_parser(parser_vacuum)
         F.add_verbose_to_parser(parser_vacuum)
 
-        parser_reset = subparsers.add_parser(F.SUBCOMMAND_RESET,
-                                             help=F.SUBCOMMAND_RESET+' help',
+        parser_reset = subparsers.add_parser(F.SUBCOMMAND_RESET_DATABASE,
+                                             help=F.SUBCOMMAND_RESET_DATABASE+' help',
                                              description='Warning: Using the "reset" subcommand will delete the specified database and replace it with an empty one.')
         F.add_db_to_parser(parser_reset)
         F.add_verbose_to_parser(parser_reset)
@@ -557,7 +566,9 @@ class F:
     def process_args_and_call_subcommand(self, args):
         logging.debug(f"### F.process_args_and_call_subcommand() ###")
         # If 'create' and 'refresh_volumes' subcommands are specified, then we don't need to open the database
-        if args.subcommand == F.SUBCOMMAND_CREATE_DATABASE:
+        if args.subcommand == F.SUBCOMMAND_SELECT_DATABASE:
+            self.subcommand_select_database(args)
+        elif args.subcommand == F.SUBCOMMAND_CREATE_DATABASE:
             self.subcommand_create_database(args)
         elif args.subcommand == F.SUBCOMMAND_REFRESH_VOLUMES:
             self.subcommand_refresh_volumes(args)
@@ -583,16 +594,16 @@ class F:
             elif args.subcommand == F.SUBCOMMAND_ADD_VOLUME:
                 self.subcommand_add_volumes(args)
 
-            elif args.subcommand == F.SUBCOMMAND_IMPORT:
+            elif args.subcommand == F.SUBCOMMAND_IMPORT_VOLUME:
                 self.import_listing(args)
 
-            elif args.subcommand == F.SUBCOMMAND_UPGRADE:
+            elif args.subcommand == F.SUBCOMMAND_UPGRADE_DATABASE:
                 self.upgrade()
 
-            elif args.subcommand == F.SUBCOMMAND_VACUUM:
+            elif args.subcommand == F.SUBCOMMAND_VACUUM_DATABASE:
                 self.vacuum()
 
-            elif args.subcommand == F.SUBCOMMAND_RESET:
+            elif args.subcommand == F.SUBCOMMAND_RESET_DATABASE:
                 self.reset(args)
 
             end_time = time.time()

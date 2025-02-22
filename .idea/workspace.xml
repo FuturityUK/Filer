@@ -4,7 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Saves arguments last used in actions. &#10;Needs to fill in the values as defaults" />
+    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Started adding the select database option">
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/f.py" beforeDir="false" afterPath="$PROJECT_DIR$/f.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/fgui.py" beforeDir="false" afterPath="$PROJECT_DIR$/fgui.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -31,12 +36,12 @@
     &quot;assignee&quot;: &quot;FuturityUK&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/FuturityUK/Filer&quot;,
-    &quot;accountId&quot;: &quot;bf24ea4b-c4fb-478d-a615-f16c1d4f9975&quot;
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/FuturityUK/Filer.git",
+    "accountId": "23ac875c-01ab-481f-83b9-3222b502990b"
   }
-}</component>
+}]]></component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 6
 }</component>
@@ -48,31 +53,31 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Python.database.executor&quot;: &quot;Run&quot;,
-    &quot;Python.dyngooey.executor&quot;: &quot;Run&quot;,
-    &quot;Python.f.executor&quot;: &quot;Run&quot;,
-    &quot;Python.fgui.executor&quot;: &quot;Run&quot;,
-    &quot;Python.file_system_processors.executor&quot;: &quot;Run&quot;,
-    &quot;Python.file_types.executor&quot;: &quot;Run&quot;,
-    &quot;Python.filer.executor&quot;: &quot;Run&quot;,
-    &quot;Python.logtest.executor&quot;: &quot;Run&quot;,
-    &quot;Python.main.executor&quot;: &quot;Run&quot;,
-    &quot;Python.powershell.executor&quot;: &quot;Run&quot;,
-    &quot;Python.print.executor&quot;: &quot;Run&quot;,
-    &quot;Python.sql.executor&quot;: &quot;Run&quot;,
-    &quot;Python.subparser_demo.executor&quot;: &quot;Run&quot;,
-    &quot;Python.system.executor&quot;: &quot;Run&quot;,
-    &quot;Python.test.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;run.code.analysis.last.selected.profile&quot;: &quot;aDefault&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;settings.sync&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Python.database.executor": "Run",
+    "Python.dyngooey.executor": "Run",
+    "Python.f.executor": "Run",
+    "Python.fgui.executor": "Run",
+    "Python.file_system_processors.executor": "Run",
+    "Python.file_types.executor": "Run",
+    "Python.filer.executor": "Run",
+    "Python.logtest.executor": "Run",
+    "Python.main.executor": "Run",
+    "Python.powershell.executor": "Run",
+    "Python.print.executor": "Run",
+    "Python.sql.executor": "Run",
+    "Python.subparser_demo.executor": "Run",
+    "Python.system.executor": "Run",
+    "Python.test.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "master",
+    "ignore.virus.scanning.warn.message": "true",
+    "run.code.analysis.last.selected.profile": "aDefault",
+    "settings.editor.selected.configurable": "com.intellij.pycharm.community.ide.impl.configuration.PythonContentEntriesConfigurable"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\Neil.FUTURITY\PycharmProjects\Filer\scripts" />
@@ -502,7 +507,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Still loads more debug required to work out how it works and then find a solutions (dictionary of subcommands, containing dictionary of default values)" />
     <MESSAGE value="More arguments testing" />
     <MESSAGE value="label2's value on the search subcommand is successfully reset to its initial value after being changes and started" />
     <MESSAGE value="Now works on the widget's dest value rather than the '-' or '--' commandline option as they may be duplicated over many subcommands. the 'dest's can be made unique." />
@@ -527,6 +531,7 @@
     <MESSAGE value="Improved argument help formatting" />
     <MESSAGE value="Slowly unpacking the self.volume_argument_details[&quot;volume_dictionary&quot;].items()" />
     <MESSAGE value="Saves arguments last used in actions. &#10;Needs to fill in the values as defaults" />
-    <option name="LAST_COMMIT_MESSAGE" value="Saves arguments last used in actions. &#10;Needs to fill in the values as defaults" />
+    <MESSAGE value="Started adding the select database option" />
+    <option name="LAST_COMMIT_MESSAGE" value="Started adding the select database option" />
   </component>
 </project>
