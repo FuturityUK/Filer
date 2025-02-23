@@ -178,9 +178,6 @@ class F:
     def subcommand_add_volumes(self, args: []):
         logging.debug("### F.subcommand_add_volumes() ###")
         print("Adding volume:")
-        print("Program arguments:")
-        print(f"{self.dumps(vars(args))}")
-        print("")
         if len(self.volume_argument_details) != 0:
             print(f"self.volume_argument_details[\"volume_dictionary\"]:")
             Print.print_dictionary(self.volume_argument_details['volume_dictionary'])
@@ -200,6 +197,9 @@ class F:
                     print(f"")
 
                 volume_dictionary = self.volume_argument_details["volume_dictionary"][volume_choice]
+                print(f"Chosen volume_dictionary: {volume_dictionary}")
+                print(f"")
+
             """
             volume_label = volume_dictionary[0]
             volume_drive_letter = volume_dictionary[1]

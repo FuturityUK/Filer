@@ -4,10 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Arguments are now stored when subcommand run.&#10;An alternative database can be specified on the command line in the format:&#10;- python.exe fgui.py &quot;I:\Filer\database.sqlite&quot;">
+    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="database location now updated in the configuration arguments if it's changed in any of the subcommands">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/f.py" beforeDir="false" afterPath="$PROJECT_DIR$/f.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fgui.py" beforeDir="false" afterPath="$PROJECT_DIR$/fgui.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -101,14 +100,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1736868367160</updated>
-    </task>
-    <task id="LOCAL-00088" summary="Now downloads file types from the wiki page if a local copy doesn't already exist.">
-      <option name="closed" value="true" />
-      <created>1738939936320</created>
-      <option name="number" value="00088" />
-      <option name="presentableId" value="LOCAL-00088" />
-      <option name="project" value="LOCAL" />
-      <updated>1738939936320</updated>
     </task>
     <task id="LOCAL-00089" summary="Now downloads file types from the wiki page if a local copy doesn't already exist.">
       <option name="closed" value="true" />
@@ -494,7 +485,15 @@
       <option name="project" value="LOCAL" />
       <updated>1740259343342</updated>
     </task>
-    <option name="localTasksCounter" value="137" />
+    <task id="LOCAL-00137" summary="database location now updated in the configuration arguments if it's changed in any of the subcommands">
+      <option name="closed" value="true" />
+      <created>1740316579925</created>
+      <option name="number" value="00137" />
+      <option name="presentableId" value="LOCAL-00137" />
+      <option name="project" value="LOCAL" />
+      <updated>1740316579925</updated>
+    </task>
+    <option name="localTasksCounter" value="138" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -524,7 +523,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="label2's value on the search subcommand is successfully reset to its initial value after being changes and started" />
     <MESSAGE value="Now works on the widget's dest value rather than the '-' or '--' commandline option as they may be duplicated over many subcommands. the 'dest's can be made unique." />
     <MESSAGE value="Dynamic values have to match:&#10; for non optional parameters it needs to match the parameter name (which is the dest name).&#10; for optional parameters it needs to match the either the first '-' or '--' parameter, whichever is defined first, or the dest parameter if the former doesn't exist." />
     <MESSAGE value="Removed Gooey 1.2 alpha imports" />
@@ -549,6 +547,7 @@
     <MESSAGE value="Saves arguments last used in actions. &#10;Needs to fill in the values as defaults" />
     <MESSAGE value="Started adding the select database option" />
     <MESSAGE value="Arguments are now stored when subcommand run.&#10;An alternative database can be specified on the command line in the format:&#10;- python.exe fgui.py &quot;I:\Filer\database.sqlite&quot;" />
-    <option name="LAST_COMMIT_MESSAGE" value="Arguments are now stored when subcommand run.&#10;An alternative database can be specified on the command line in the format:&#10;- python.exe fgui.py &quot;I:\Filer\database.sqlite&quot;" />
+    <MESSAGE value="database location now updated in the configuration arguments if it's changed in any of the subcommands" />
+    <option name="LAST_COMMIT_MESSAGE" value="database location now updated in the configuration arguments if it's changed in any of the subcommands" />
   </component>
 </project>
