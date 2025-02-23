@@ -25,9 +25,9 @@ class Fgui:
                 self.configuration = json.load(data_file)
 
         if database_filename is not None:
-            if F.SUBCOMMAND_SELECT_DATABASE not in self.configuration[self.CONFIGURATION_STORED_ARGS]:
-                self.configuration[self.CONFIGURATION_STORED_ARGS][F.SUBCOMMAND_SELECT_DATABASE] = {}
-            self.configuration[self.CONFIGURATION_STORED_ARGS][F.SUBCOMMAND_SELECT_DATABASE]["db"] = database_filename
+            if F.SUBCMD_SELECT_DATABASE not in self.configuration[self.CONFIGURATION_STORED_ARGS]:
+                self.configuration[self.CONFIGURATION_STORED_ARGS][F.SUBCMD_SELECT_DATABASE] = {}
+            self.configuration[self.CONFIGURATION_STORED_ARGS][F.SUBCMD_SELECT_DATABASE]["db"] = database_filename
             logging.debug(f"self.configuration: {self.configuration}")
             # Store the modified configuration with the new database_filename
             self.store_configuration()
@@ -81,26 +81,26 @@ class Fgui:
             #  - missing  => Left alone
             volume_default_choice = None
             volume_choices = []
-            volume_argument_details = self.f.volume_argument_details
-            if len(volume_argument_details) != 0:
-                volume_default_choice = volume_argument_details["volume_default_choice"]
-                logging.info(f"volume_argument_details[\"volume_default_choice\"]: {volume_default_choice}")
-                volume_choices = volume_argument_details["volume_choices"]
-                logging.info(f"volume_argument_details[\"volume_choices\"]: {volume_choices}")
+            if len(self.f.volume_argument_details) != 0:
+                volume_default_choice = self.f.volume_argument_details[self.f.VOL_ARG_DETAILS_DEFAULT_CHOICE]
+                logging.info(f"self.f.volume_argument_details[\"{self.f.VOL_ARG_DETAILS_DEFAULT_CHOICE}\"]: {volume_default_choice}")
+                volume_choices = self.f.volume_argument_details[self.f.VOL_ARG_DETAILS_CHOICES]
+                logging.info(f"self.f.volume_argument_details[\"{self.f.VOL_ARG_DETAILS_CHOICES}\"]: {volume_choices}")
 
             database_filename = F.DEFAULT_DATABASE_FILENAME
             logging.debug(f"self.configuration: {self.configuration}")
-            if F.SUBCOMMAND_SELECT_DATABASE in self.configuration[self.CONFIGURATION_STORED_ARGS]:
-                logging.debug(f"{F.SUBCOMMAND_SELECT_DATABASE} found in self.configuration[self.CONFIGURATION_STORED_ARGS]")
-                if "db" in self.configuration[self.CONFIGURATION_STORED_ARGS][F.SUBCOMMAND_SELECT_DATABASE]:
+            if F.SUBCMD_SELECT_DATABASE in self.configuration[self.CONFIGURATION_STORED_ARGS]:
+                logging.debug(f"{F.SUBCMD_SELECT_DATABASE} found in self.configuration[self.CONFIGURATION_STORED_ARGS]")
+                if "db" in self.configuration[self.CONFIGURATION_STORED_ARGS][F.SUBCMD_SELECT_DATABASE]:
                     logging.debug(
-                        f"'db' found in self.configuration[self.CONFIGURATION_STORED_ARGS][F.SUBCOMMAND_SELECT_DATABASE]")
-                    database_filename = self.configuration[self.CONFIGURATION_STORED_ARGS][F.SUBCOMMAND_SELECT_DATABASE]["db"]
+                        f"'db' found in self.configuration[self.CONFIGURATION_STORED_ARGS][F.SUBCMD_SELECT_DATABASE]")
+                    database_filename = self.configuration[self.CONFIGURATION_STORED_ARGS][F.SUBCMD_SELECT_DATABASE]["db"]
                     logging.info(f"database_filename: {database_filename}")
 
             dynamic_values = {
                 'volume': volume_default_choice,
                 'db': database_filename,
+                'add_label': None,
                 'test_required_1': None,  # This will be replaced with the initial value
                 # 'test_required_2' will be left alone
                 'test_optional_1': None,
@@ -204,13 +204,13 @@ class Fgui:
             temp_args[key] = value
         """
         if not gooey_stdout():
-            pass
             # Debug to show arguments past to the program
-            print(f"Program arguments:")
-            print(f"{F.dumps(vars(args))}")
+            #print(f"Program arguments:")
+            #print(f"{F.dumps(vars(args))}")
+
             if 'db' in args:
-                self.configuration[self.CONFIGURATION_STORED_ARGS][F.SUBCOMMAND_SELECT_DATABASE]["db"] = args.db
-                logging.info(f'self.configuration[self.CONFIGURATION_STORED_ARGS][F.SUBCOMMAND_SELECT_DATABASE]["db"]: {self.configuration[self.CONFIGURATION_STORED_ARGS][F.SUBCOMMAND_SELECT_DATABASE]["db"]}')
+                self.configuration[self.CONFIGURATION_STORED_ARGS][F.SUBCMD_SELECT_DATABASE]["db"] = args.db
+                logging.info(f'self.configuration[self.CONFIGURATION_STORED_ARGS][F.SUBCMD_SELECT_DATABASE]["db"]: {self.configuration[self.CONFIGURATION_STORED_ARGS][F.SUBCMD_SELECT_DATABASE]["db"]}')
             self.store_configuration(args)
 
         # Now process the args

@@ -6,6 +6,7 @@ import time
 import tracemalloc
 from datetime import datetime
 from database import Database
+import logging
 
 class PowerShellFilesystemListing:
     """ Class to convert the output from the PowerShell Get-ChildItem command into a CSV database form """
@@ -38,7 +39,7 @@ class PowerShellFilesystemListing:
             # Input file doesn't exist
             print(f"Listing file doesn't exist at location: \"{os.path.abspath(input_filename)}\"")
             print("Exiting")
-            exit(2)
+            exit(1)
 
     def __vprint(self, string: str):
         if self.__verbose:
@@ -172,7 +173,7 @@ class PowerShellFilesystemListing:
                 print("Error: More than one drive_id found for the Make, Model and Serial Number specified.")
                 print("Exiting.")
                 self.__database.close_database()
-                exit(2)
+                exit(1)
 
     def get_filesystem_id(self):
         self.__vprint("get_filesystem_id()")
@@ -180,9 +181,15 @@ class PowerShellFilesystemListing:
         if self.__make is None and self.__model is None and self.__serial_number is None:
             self.__vprint("Drive ignored as Label isn't specified")
         else:
+            # As we are no longer interactive we will use the listing file's creation time
+            # self.__choose_filesystem_date()
+            self.__date = int(os.path.getmtime(self.__input_filename))
+            # Are their any other entries in the database with this label already?
             filesystem_ids = self.__database.find_filesystem_id(self.__label)
-            if len(filesystem_ids) == 1:
-                # drive_id found
+            if len(filesystem_ids) >= 1:
+                # drive_id(s) found
+                # For now don't delete anything, just warn the user that they will have to toggle the "remove previous label"
+                """
                 filesystem_id = filesystem_ids[0]
                 selection = None
                 while selection not in {"1", "2"}:
@@ -193,7 +200,6 @@ class PowerShellFilesystemListing:
                     if selection == "1":
                         self.__database.delete_filesystem_listing_entries(filesystem_id)
                         # Now that the entries for the filesystem have been deleted, update the date
-                        self.__choose_filesystem_date()
                         self.__database.update_filesystem_date(self.__date, filesystem_id)
                         return filesystem_id
                     elif selection == "2":
@@ -202,18 +208,20 @@ class PowerShellFilesystemListing:
                         #print("Existing.")
                         #exit()
                 return filesystem_ids[0]
+                """
+                print(f"Error: There are {len(filesystem_ids)} entries in the database with the Label specified.")
+                exit(1)
             elif len(filesystem_ids) == 0:
                 # No drive_id found so create one
-                self.__choose_filesystem_date()
                 return self.__database.insert_filesystem(self.__label, drive_id, self.__date)
             else:
                 # More than 1 drive_id found so error
                 print("Error: More than one filesystem_id found for the Label specified.")
                 print("Exiting.")
                 self.__database.close_database()
-                exit(2)
+                exit(1)
 
-    def import_listing(self):
+    def import_listing(self, print_progress_every: int = 10000):
         self.__vprint("Recording listing details.")
         # Check if records exist first and warn user if they do.
         filesystem_id = self.get_filesystem_id()
@@ -221,7 +229,7 @@ class PowerShellFilesystemListing:
         self.__vprint(f"filesystem_id: {filesystem_id}")
         if filesystem_id is None:
             # No filesystem_id returned so likely that it already existed and user didn't want to replace it
-            return False
+            return None
         self.__vprint("Processing listing file.")
         header_line_processed = False
         next_line_field_widths = False
@@ -263,10 +271,14 @@ class PowerShellFilesystemListing:
             input_file_stats = os.stat(self.__input_filename)
             input_file_size_bytes = input_file_stats.st_size
             input_file_processed_bytes = 0
+            entries_inserted = 0
 
             for filelineno, line in enumerate(open(self.__input_filename, encoding="utf-8")):
                 line_number += 1
                 input_file_processed_bytes += len(line) +1 # +1 for \n line terminator (HANDLE \r\n in future)
+
+                #if line_number % print_progress_every == 0:
+                #    print(f'Processing line {line_number} of {input_file_size_bytes} bytes')
 
                 line_right_strip = line.rstrip()
                 # print("Line loaded")
@@ -276,7 +288,7 @@ class PowerShellFilesystemListing:
                     if line_right_strip.startswith("Mode"):
                         # Must be the first line containing text, so much be the header
                         field_headers = line_right_strip.split()
-                        print(field_headers)
+                        #print(field_headers)
                         if self.__processing_mode == self.PROCESSING_MODE_CSV:
                             writer.writelines([field_headers]) # Wrap inside a list to stop writer delimiting each char
                             # csv_file.flush()
@@ -300,7 +312,7 @@ class PowerShellFilesystemListing:
                     for i in range(line_length):
                         last_char = char
                         char = line[i]
-                        print(char, end="")
+                        #print(char, end="")
                         if (last_char == ' ') and (char == '-'):
                             field_length = i - char_offset
                             char_offset = i
@@ -377,6 +389,7 @@ class PowerShellFilesystemListing:
                                 id_of_inserted_row = self.__db_insert_filesystem_entry(filesystem_id, 1736028193, None,
                                                         None, 1, 0, 0,
                                                         1, 1, 0, entity_parent_directory, entity_parent_directory)
+                                entries_inserted += 1
                                 last_saved_directory_name = entity_parent_directory
                                 last_saved_directory_id = id_of_inserted_row
                                 directory_dictionary[entity_parent_directory] = id_of_inserted_row
@@ -389,6 +402,7 @@ class PowerShellFilesystemListing:
                             id_of_inserted_row = self.__db_insert_filesystem_entry(filesystem_id, unix_timestamp, byte_size, parent_file_system_entry_id,
                                                          mode_is_directory, mode_is_archive, mode_is_read_only, mode_is_hidden,
                                                          mode_is_system, mode_is_link, entity_name, full_name)
+                            entries_inserted += 1
                             if mode_is_directory:
                                 last_saved_directory_name = full_name
                                 last_saved_directory_id = id_of_inserted_row
@@ -407,7 +421,7 @@ class PowerShellFilesystemListing:
 
                         time_taken_ms = (time.time() - processing_data_lines_start_time)*1000
 
-                    if (lines_processed % 10000 == 0):
+                    if (lines_processed % print_progress_every == 0):
                         #print(f"Processed: {lines_processed} lines, in {int(time_taken_ms)}ms = {int((lines_processed / time_taken_ms) * 1000)} lines/s, LS: {hits_last_saved_directory} {int(hits_last_saved_directory / (hits_last_saved_directory + hits_directory_dictionary + hits_database) * 100)}%, DD: {hits_directory_dictionary}, DB: {hits_database}")
                         #print(f"Processed: {int(input_file_processed_bytes*1000/input_file_size_bytes)/10}% {lines_processed} lines, in {int(time_taken_ms)}ms = {int((lines_processed / time_taken_ms) * 1000)} lines/s, LS: {hits_last_saved_directory}, DD: {hits_directory_dictionary}, DB: {hits_database}")
                         bytes_remaining_to_process = input_file_size_bytes - input_file_processed_bytes
@@ -425,12 +439,11 @@ class PowerShellFilesystemListing:
                     #     # Closing the connection
                     #     self.__database_connection.close()
                     #     exit()
-
+        print(f"Entries Inserted (inc added top level): {entries_inserted}")
         print(f"Processed: {lines_processed} lines, in {int(time_taken_ms)}ms = {int((lines_processed / time_taken_ms)) * 1000} lines/s")
         self.display_memory_stats()
         # Commit changes to the database
         self.__database.commit()
-        print("File Processed")
         return True
 
     def directory_sizes_clear(self):
@@ -463,4 +476,8 @@ class FilesystemDatabase:
     def __init__(self, database_directory):
         print("__init__()")
         self.database_directory = database_directory
+
+if __name__ == "__main__":
+    #my_logger = logging.getLogger(__name__)
+    logging.info(f"### __main__ ###")
 

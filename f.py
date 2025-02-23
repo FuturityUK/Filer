@@ -33,24 +33,33 @@ from print import Print
 
 class F:
 
-    VOLUME_DICT_INDEX: int = 0
-    LOGICAL_DICT_INDEX: int = 1
-    PHYSICAL_DICT_INDEX: int = 2
+    EXIT_OK: int = 0 #
+    EXIT_ERROR: int = 1 #
 
     DEFAULT_DATABASE_FILENAME: str = 'database.sqlite'
     DEFAULT_TEMP_LISTING_FILE: str = 'filer.fwf'
 
-    SUBCOMMAND_FILE_SEARCH: str = 'file_search'
-    SUBCOMMAND_REFRESH_VOLUMES: str = 'refresh_volumes'
-    SUBCOMMAND_ADD_VOLUME: str = 'add_volume'
-    SUBCOMMAND_IMPORT_VOLUME: str = 'import_volume'
-    SUBCOMMAND_CREATE_DATABASE: str = 'create_db'
-    SUBCOMMAND_SELECT_DATABASE: str = 'select_db'
-    SUBCOMMAND_UPGRADE_DATABASE: str = 'upgrade_db'
-    SUBCOMMAND_VACUUM_DATABASE: str = 'vacuum_db'
-    SUBCOMMAND_RESET_DATABASE: str = 'reset_db'
+    SUBCMD_FILE_SEARCH: str = 'file_search'
+    SUBCMD_REFRESH_VOLUMES: str = 'refresh_volumes'
+    SUBCMD_ADD_VOLUME: str = 'add_volume'
+    SUBCMD_IMPORT_VOLUME: str = 'import_volume'
+    SUBCMD_CREATE_DATABASE: str = 'create_db'
+    SUBCMD_SELECT_DATABASE: str = 'select_db'
+    SUBCMD_UPGRADE_DATABASE: str = 'upgrade_db'
+    SUBCMD_VACUUM_DATABASE: str = 'vacuum_db'
+    SUBCMD_RESET_DATABASE: str = 'reset_db'
 
-    VOLUME_ARGUMENT_DETAILS_FILENAME: str = "volume_argument_details.json"
+    VOL_ARG_DETAILS_CHOICES: str = 'choices'
+    VOL_ARG_DETAILS_DEFAULT_CHOICE: str = 'default_choice'
+    VOL_ARG_DETAILS_CREATED: str = 'created'
+    VOL_ARG_DETAILS_VOLUMES: str = 'volumes'
+    VOL_ARG_DETAILS_VOLUMES_VOLUME_DICT_IDX: int = 0
+    VOL_ARG_DETAILS_VOLUMES_LOGICAL_DICT_IDX: int = 1
+    VOL_ARG_DETAILS_VOLUMES_PHYSICAL_DICT_IDX: int = 2
+
+    VOL_ARG_DETAILS_FILENAME: str = "volume_argument_details.json"
+
+    PROGRESS_INSERT_FREQUENCY: int = 10000
 
     def __init__(self, parser):
         self.database = None
@@ -63,10 +72,10 @@ class F:
 
         # Open the JSON file, or use an empty dictionary if it doesn't exist.
         try:
-            with open(self.VOLUME_ARGUMENT_DETAILS_FILENAME) as read_file:
+            with open(self.VOL_ARG_DETAILS_FILENAME) as read_file:
                 self.volume_argument_details = json.load(read_file)
         except FileNotFoundError:
-            self.volume_argument_details = {"volume_choices": [], "volumes_argument_help": None, "volume_default_choice": None, "volume_dictionary": {}, "created": "" }
+            self.volume_argument_details = {self.VOL_ARG_DETAILS_CHOICES: [], self.VOL_ARG_DETAILS_DEFAULT_CHOICE: None, self.VOL_ARG_DETAILS_VOLUMES: {}, self.VOL_ARG_DETAILS_CREATED: "" }
 
     def set_memory_stats(self, memory_stats):
         self.memory_stats = memory_stats
@@ -123,7 +132,7 @@ class F:
         logging.info(f"Application ended: {os.path.basename(__file__)}")
         logging.info("******************************************")
         sys.exit(level)
-        
+
     @staticmethod
     def does_database_directory_exist(database_filename):
         abspath_database_filename = os.path.abspath(database_filename)
@@ -145,11 +154,11 @@ class F:
         logging.debug(f"### F.search() ###")
         self.print_message_based_on_parser(None, "Finding filenames:")
         self.print_message_based_on_parser(None, "")
-        search = args.search if "search" in args else None
+        search = args.search # if "search" in args else None
         category = args.category if "category" in args else None
-        label = args.label if "label" in args else None
+        label = args.label # if "label" in args else None
         if search is None and category is None and label is None:
-            self.exit_cleanly(2, "No search terms provided")
+            self.exit_cleanly(self.EXIT_ERROR, "No search terms provided")
         select_result = self.database.find_filenames_search(search, category, label)
         rows_found = 0
         for row in select_result:
@@ -165,8 +174,8 @@ class F:
         logging.debug("### F.refresh_volumes() ###")
         self.prepare_volume_details()
         #print(self.volume_argument_details )
-        volume_default_choice = self.volume_argument_details["volume_default_choice"]
-        volume_choices = self.volume_argument_details["volume_choices"]
+        volume_default_choice = self.volume_argument_details[self.VOL_ARG_DETAILS_DEFAULT_CHOICE]
+        volume_choices = self.volume_argument_details[self.VOL_ARG_DETAILS_CHOICES]
         print(f"")
         print(f"Volumes found:")
         for volume_choice in volume_choices:
@@ -175,54 +184,97 @@ class F:
         print(f"Chosen Default Volume:")
         print(f"- {volume_default_choice}")
 
+    @staticmethod
+    def get_values_for_volume_array(result_array: []) -> {}:
+        import_listing_values = {}
+        result_array_length = len(result_array)
+        # Get values from the volume dictionary
+        volume_dictionary = result_array[F.VOL_ARG_DETAILS_VOLUMES_VOLUME_DICT_IDX]
+        import_listing_values["drive_letter"] = volume_dictionary['DriveLetter']
+        import_listing_values["label"] = volume_dictionary['FileSystemLabel']
+
+        # Get values from the logical drive dictionary, but only if it exists
+        if result_array_length > 1:
+            logical_disk_dictionary = result_array[F.VOL_ARG_DETAILS_VOLUMES_LOGICAL_DICT_IDX]
+            import_listing_values["make"] = logical_disk_dictionary['Manufacturer']
+            import_listing_values["model"] = logical_disk_dictionary['Model']
+            import_listing_values["serial_number"] = logical_disk_dictionary['SerialNumber']
+        else:
+            import_listing_values["make"] = ""
+            import_listing_values["model"] = ""
+            import_listing_values["serial_number"] = ""
+
+        import_listing_values["hostname"] = socket.gethostname()
+        return import_listing_values
+
     def subcommand_add_volumes(self, args: []):
         logging.debug("### F.subcommand_add_volumes() ###")
         print("Adding volume:")
-        if len(self.volume_argument_details) != 0:
-            print(f"self.volume_argument_details[\"volume_dictionary\"]:")
-            Print.print_dictionary(self.volume_argument_details['volume_dictionary'])
-            print("")
-            print(f"self.volume_argument_details[\"volume_choices\"]: {self.volume_argument_details['volume_choices']}")
-            print("")
-            print(f"self.volume_argument_details[\"volume_default_choice\"]: {self.volume_argument_details['volume_default_choice']}")
-            print("")
-            print(f"self.volume_argument_details[\"created\"]: {self.volume_argument_details['created']}")
-            print(f"")
-            volume_choice = args.volume
-            if volume_choice not in self.volume_argument_details["volume_choices"]:
-                print(f"Volume description \"{volume_choice}\" not found in the list of available volumes.")
-            else:
-                for volume_option, volume_dictionary in self.volume_argument_details["volume_dictionary"].items():
-                    print(f"{volume_option}: {volume_dictionary}")
-                    print(f"")
-
-                volume_dictionary = self.volume_argument_details["volume_dictionary"][volume_choice]
-                print(f"Chosen volume_dictionary: {volume_dictionary}")
+        #if len(self.volume_argument_details) != 0:
+        """
+        print(f"self.volume_argument_details[\"{self.VOL_ARG_DETAILS_VOLUMES}\"]:")
+        Print.print_dictionary(self.volume_argument_details[self.VOL_ARG_DETAILS_VOLUMES])
+        print("")
+        print(f"self.volume_argument_details[\"{self.VOL_ARG_DETAILS_CHOICES}\"]: {self.volume_argument_details[self.VOL_ARG_DETAILS_CHOICES]}")
+        print("")
+        print(f"self.volume_argument_details[\"{self.VOL_ARG_DETAILS_DEFAULT_CHOICE}\"]: {self.volume_argument_details[self.VOL_ARG_DETAILS_DEFAULT_CHOICE]}")
+        print("")
+        print(f"self.volume_argument_details[\"{self.VOL_ARG_DETAILS_CREATED}\"]: {self.volume_argument_details[self.VOL_ARG_DETAILS_CREATED]}")
+        print(f"")
+        """
+        volume_choice = args.volume
+        if volume_choice not in self.volume_argument_details[self.VOL_ARG_DETAILS_CHOICES]:
+            message= f"Volume description \"{volume_choice}\" not found in the list of available volumes."
+            self.exit_cleanly(self.EXIT_ERROR, message, message)
+        else:
+            """
+            for volume_option, volume_dictionary in self.volume_argument_details[self.VOL_ARG_DETAILS_VOLUMES].items():
+                print(f"{volume_option}: {volume_dictionary}")
                 print(f"")
-
             """
-            volume_label = volume_dictionary[0]
-            volume_drive_letter = volume_dictionary[1]
-            volume_filesystem_label = volume_dictionary[2]
-            volume_filesystem_type = volume_dictionary[3]
-            volume_health_status = volume_dictionary[4]
-            volume_size = volume_dictionary[5]
-            volume_serial_number = volume_dictionary[6]
-            volume_physical_disk_number = volume_dictionary[7]
-            print(f"volume_label: {volume_label}")
-            print(f"volume_drive_letter: {volume_drive_letter}")
-            print(f"volume_filesystem_label: {volume_filesystem_label}")
-            print(f"volume_filesystem_type: {volume_filesystem_type}")
-            print(f"volume_health_status: {volume_health_status}")
-            print(f"volume_size: {volume_size}")
-            print(f"volume_serial_number: {volume_serial_number}")
-            print(f"volume_physical_disk_number: {volume_physical_disk_number}")
-            print("")
-            print("Adding volume to database:")
-            """
+            volume_array = self.volume_argument_details[self.VOL_ARG_DETAILS_VOLUMES][volume_choice]
+            #print(f"Chosen volume_dictionary:")
+            #Print.print_array_of_dictionaries(volume_array)
+            print(f"")
+            import_listing_values = self.get_values_for_volume_array(volume_array)
+            #print(f"import_listing_values:")
+            #Print.print_dictionary(import_listing_values)
+            #print(f"")
+            #print('Processing Volume:')
+            label = import_listing_values["label"]
+            if args.label is not None:
+                label = args.label
+            print(f'Drive: "{import_listing_values["drive_letter"]}:"')
+            print(f'Label: "{label}"')
+            print(f'Hostname: "{import_listing_values["hostname"]}"')
+            print(f'Make: "{import_listing_values["make"]}"')
+            print(f'Model: "{import_listing_values["model"]}"')
+            print(f'Serial: "{import_listing_values["serial_number"]}"')
 
-        #import_listing_values = self.get_values_for_import_listing(result_array)
-        #self.display_import_listing_values(import_listing_values)
+            print('')
+            print('Generating the Volume Listing ...')
+            output = self.system.create_path_listing(import_listing_values["drive_letter"] + ':\\',
+                                                     self.DEFAULT_TEMP_LISTING_FILE)
+            # print(f"create_path_listing output: {output}")
+            print('Processing the Volume Listing ...')
+            powershell_filesystem_listing = PowerShellFilesystemListing(self.database, label,
+                                                                        self.DEFAULT_TEMP_LISTING_FILE)
+            if args.verbose is not None:
+                powershell_filesystem_listing.set_verbose(args.verbose)
+            #if args.test is not None:
+            #    powershell_filesystem_listing.set_test(args.test)
+
+            powershell_filesystem_listing.set_make(import_listing_values["make"])
+            powershell_filesystem_listing.set_model(import_listing_values["model"])
+            powershell_filesystem_listing.set_serial_number(import_listing_values["serial_number"])
+            # powershell_filesystem_listing.set_combined(args.combined)
+            powershell_filesystem_listing.set_hostname(import_listing_values["hostname"])
+            # powershell_filesystem_listing.set_prefix(args.prefix)
+            powershell_filesystem_listing.set_memory_stats(self.memory_stats)
+            powershell_filesystem_listing.save_to_database()
+            import_listing_success = powershell_filesystem_listing.import_listing(self.PROGRESS_INSERT_FREQUENCY)
+            if import_listing_success:
+                print(f"Volume {import_listing_values["drive_letter"]}: Added Successfully...")
 
     def subcommand_select_database(self, args: []):
         logging.debug(f"### F.subcommand_select_database() ###")
@@ -241,7 +293,7 @@ class F:
         F.does_database_directory_exist(database_filename)
         if os.path.isfile(database_filename):
             print(f"Database file already exists at location: \"{os.path.abspath(database_filename)}\"")
-            print(f"To empty the database, use the \'{F.SUBCOMMAND_RESET_DATABASE}\' subcommand.")
+            print(f"To empty the database, use the \'{F.SUBCMD_RESET_DATABASE}\' subcommand.")
             exit(2)
         self.create_database(args, database_filename)
 
@@ -268,8 +320,8 @@ class F:
 
         if args.verbose is not None:
             powershell_filesystem_listing.set_verbose(args.verbose)
-        if args.test is not None:
-            powershell_filesystem_listing.set_test(args.test)
+        #if args.test is not None:
+        #    powershell_filesystem_listing.set_test(args.test)
         if args.make is not None:
             powershell_filesystem_listing.set_make(args.make)
         if args.model is not None:
@@ -404,16 +456,16 @@ class F:
         volume_choices = []
         volume_default_choice = None
         for option in options:
-            volume_description = option[System.OPTION_DESCRIPTION_INDEX]
+            volume_description = option[System.OPT_DESCRIPTION_IDX]
             # print(f"volume_description: {volume_description}")
-            volume_result_array = option[System.OPTION_RESULT_INDEX]
+            volume_result_array = option[System.OPT_RESULT_IDX]
             # print(f"volume_result: {volume_result_array}")
 
             # If the volume_result_array > 1 then as well as the Volume dictionary,
             # it must also contain the logical disk dictionary
             if len(volume_result_array) > 1:
                 # Results contain Logical drive details
-                logical_disk_dictionary = volume_result_array[F.LOGICAL_DICT_INDEX]
+                logical_disk_dictionary = volume_result_array[F.VOL_ARG_DETAILS_VOLUMES_LOGICAL_DICT_IDX]
                 bus_type = logical_disk_dictionary['BusType']
                 if bus_type.lower() == 'usb':
                     volume_default_choice = volume_description
@@ -422,14 +474,14 @@ class F:
             volume_choices.append(volume_description)
 
         now = datetime.now()
-        self.volume_argument_details["created"] = now.strftime('%Y-%m-%d %H:%M:%S')
-        self.volume_argument_details["volume_choices"] = volume_choices
-        self.volume_argument_details["volume_default_choice"] = volume_default_choice
-        self.volume_argument_details["volume_dictionary"] = volumes
+        self.volume_argument_details[self.VOL_ARG_DETAILS_CREATED] = now.strftime('%Y-%m-%d %H:%M:%S')
+        self.volume_argument_details[self.VOL_ARG_DETAILS_CHOICES] = volume_choices
+        self.volume_argument_details[self.VOL_ARG_DETAILS_DEFAULT_CHOICE] = volume_default_choice
+        self.volume_argument_details[self.VOL_ARG_DETAILS_VOLUMES] = volumes
 
-        logging.info(f"self.volume_argument_details[\"created\"]: {self.volume_argument_details["created"]}")
+        logging.info(f"self.volume_argument_details[\"created\"]: {self.volume_argument_details[self.VOL_ARG_DETAILS_CREATED]}")
         # Write data to a JSON file
-        with open(self.VOLUME_ARGUMENT_DETAILS_FILENAME, 'w') as write_file:
+        with open(self.VOL_ARG_DETAILS_FILENAME, 'w') as write_file:
             json.dump(self.volume_argument_details, write_file) # Warning seems to be a bug in PyCharm
 
     @staticmethod
@@ -439,8 +491,8 @@ class F:
         file_categories = FileTypes.get_file_categories()
         #print(f"file_categories: {file_categories}")
 
-        subparser_search = subparsers.add_parser(F.SUBCOMMAND_FILE_SEARCH,
-                                            help=F.SUBCOMMAND_FILE_SEARCH+' help', prog='File Search',
+        subparser_search = subparsers.add_parser(F.SUBCMD_FILE_SEARCH,
+                                            help=F.SUBCMD_FILE_SEARCH+' help', prog='File Search',
                                             description='Search for files based on search strings')
         subparser_search_group = subparser_search.add_argument_group(
             'Search for files',
@@ -453,7 +505,7 @@ class F:
 - '_' wildcard matches exactly one character'''
         if type(subparsers) is argparse.ArgumentParser:
             help_text = help_text.replace(r"%", r"%%")
-        F.add_argument(subparser_search_group, "-s", "--search", metavar='Search', help=help_text)
+        F.add_argument(subparser_search_group, "-s", "--search", metavar='Search', default=None, help=help_text)
         # ADD BACK WHEN FUNCTIONALITY IMPLEMENTED
         #if type(subparsers) is not argparse.ArgumentParser:
         #    F.add_argument(subparser_search_group, "-c", "--category", dest='category', metavar='Category', choices=file_categories, nargs='?', help="Category of files to be considered")
@@ -466,19 +518,19 @@ class F:
         # Only add the 'add' subcommand to the GUI
         if type(subparsers) is not argparse.ArgumentParser:
             # create the parser for the "add" subcommand
-            subparser_add_volume = subparsers.add_parser(F.SUBCOMMAND_ADD_VOLUME, help=F.SUBCOMMAND_ADD_VOLUME+' help', prog='Add Volume Files', description='Add Files on a selected Volume to the Database')
+            subparser_add_volume = subparsers.add_parser(F.SUBCMD_ADD_VOLUME, help=F.SUBCMD_ADD_VOLUME+' help', prog='Add Volume Files', description='Add Files on a selected Volume to the Database')
             subparser_add_volume_group = subparser_add_volume.add_argument_group(
                 'Add Volume Files to Database',
                 description='Add Files on a selected Volume to the Database'
             )
             help_text = f'''Volume that you wish to add.
 - If you don't see your volume, please use the {self.get_message_based_on_parser("'refresh_volumes' subcommand", "'Refresh Volumes List' action.")}
-- Values last updated: {self.volume_argument_details["created"]}'''
+- Values last updated: {self.volume_argument_details[self.VOL_ARG_DETAILS_CREATED]}'''
             if type(subparsers) is argparse.ArgumentParser:
                 help_text = help_text.replace(r"%", r"%%")
             F.add_argument(subparser_add_volume_group, "--volume", dest='volume', metavar='Volume', widget='Dropdown',
                                        nargs='?', default=None, help=help_text)
-            F.add_argument(subparser_add_volume_group, "-l", "--label", dest='label', metavar='Label', help="Label of the drive listing. If provided it will override the volume label.")
+            F.add_argument(subparser_add_volume_group, "-l", "--label", dest='label', metavar='Label', default=None, help="Label of the drive listing. If provided it will override the volume label.")
             hostname = socket.gethostname()
             F.add_argument(subparser_add_volume_group, "-n", "--hostname", dest='hostname', metavar='Hostname', default=hostname,
                                           help="Hostname of the machine containing the drive")
@@ -491,20 +543,20 @@ class F:
         # Only add the 'add' subcommand to the GUI
         if type(subparsers) is not argparse.ArgumentParser:
             # create the parser for the "add" subcommand
-            subparser_refresh_volumes = subparsers.add_parser(F.SUBCOMMAND_REFRESH_VOLUMES, help=F.SUBCOMMAND_REFRESH_VOLUMES+' help', prog='Refresh Volumes List', description='Refresh the List of Volumes that appear on the "Add_Volumes" action page.')
+            subparser_refresh_volumes = subparsers.add_parser(F.SUBCMD_REFRESH_VOLUMES, help=F.SUBCMD_REFRESH_VOLUMES+' help', prog='Refresh Volumes List', description='Refresh the List of Volumes that appear on the "Add_Volumes" action page.')
             subparser_refresh_volumes_group = subparser_refresh_volumes.add_argument_group(
                 'Refresh Volumes List',
                 description='Refresh the List of Volumes that appear on the "Add_Volumes" action page.'
             )
             F.add_argument(subparser_refresh_volumes_group, "-i", "--invisible", dest='invisible', metavar='Invisible',
-                           action='store_true',
+                           action='store_true', default=True,
                            help="Invisible checkbox", gooey_options = {'visible': False})
 
     @staticmethod
     def add_subcommand_create_database_arguments_to_parser(subparsers):
         logging.debug(f"### F.add_subcommand_create_database_arguments_to_parser() ###")
-        subparser_create_database = subparsers.add_parser(F.SUBCOMMAND_CREATE_DATABASE,
-                                              help=F.SUBCOMMAND_CREATE_DATABASE+' help', prog='Create Database',
+        subparser_create_database = subparsers.add_parser(F.SUBCMD_CREATE_DATABASE,
+                                              help=F.SUBCMD_CREATE_DATABASE+' help', prog='Create Database',
                                               description='Create a new database')
         subparser_create_database_group = subparser_create_database.add_argument_group(
             'Create Database',
@@ -516,8 +568,8 @@ class F:
     @staticmethod
     def add_subcommand_select_database_arguments_to_parser(subparsers):
         logging.debug(f"### F.add_subcommand_select_database_arguments_to_parser() ###")
-        subparser_select_database = subparsers.add_parser(F.SUBCOMMAND_SELECT_DATABASE,
-                                              help=F.SUBCOMMAND_SELECT_DATABASE+' help', prog='Select Database',
+        subparser_select_database = subparsers.add_parser(F.SUBCMD_SELECT_DATABASE,
+                                              help=F.SUBCMD_SELECT_DATABASE+' help', prog='Select Database',
                                               description='Select the database you wish to use, including the path to the database file.')
         subparser_select_database_group = subparser_select_database.add_argument_group(
             'Select Database',
@@ -547,7 +599,7 @@ class F:
 
         """
         # create the parser for the "import" subcommand
-        parser_import = subparsers.add_parser(F.SUBCOMMAND_IMPORT_VOLUME, help=F.SUBCOMMAND_IMPORT_VOLUME+' help')
+        parser_import = subparsers.add_parser(F.SUBCMD_IMPORT_VOLUME, help=F.SUBCMD_IMPORT_VOLUME+' help')
         F.add_db_argument_to_parser(parser_import)
         F.add_argument(parser_import, "-l", "--label", metavar='Label', help="Label of the drive listing")
         F.add_argument(parser_import, "-f", "--filename", metavar='Filename', widget='FileChooser',
@@ -569,21 +621,21 @@ class F:
 
 
         # create the parser for the "vacuum" subcommand
-        parser_upgrade = subparsers.add_parser(F.SUBCOMMAND_UPGRADE_DATABASE,
-                                              help=F.SUBCOMMAND_UPGRADE_DATABASE+' help',
+        parser_upgrade = subparsers.add_parser(F.SUBCMD_UPGRADE_DATABASE,
+                                              help=F.SUBCMD_UPGRADE_DATABASE+' help',
                                               description='The UPGRADE subcommand upgrades the database file to the latest structure needed for this program to work.')
         F.add_db_argument_to_parser(parser_upgrade)
         F.add_verbose_argument_to_parser(parser_upgrade)
 
         # create the parser for the "vacuum" subcommand
-        parser_vacuum = subparsers.add_parser(F.SUBCOMMAND_VACUUM_DATABASE,
-                                              help=F.SUBCOMMAND_VACUUM_DATABASE+' help',
+        parser_vacuum = subparsers.add_parser(F.SUBCMD_VACUUM_DATABASE,
+                                              help=F.SUBCMD_VACUUM_DATABASE+' help',
                                               description='The VACUUM subcommand rebuilds the database file by reading the current file and writing the content into a new file. As a result it repacking it into a minimal amount of disk space and defragments it which ensures that each table and index is largely stored contiguously. Depending on the size of the database it can take some time to do perform.')
         F.add_db_argument_to_parser(parser_vacuum)
         F.add_verbose_argument_to_parser(parser_vacuum)
 
-        parser_reset = subparsers.add_parser(F.SUBCOMMAND_RESET_DATABASE,
-                                             help=F.SUBCOMMAND_RESET_DATABASE+' help',
+        parser_reset = subparsers.add_parser(F.SUBCMD_RESET_DATABASE,
+                                             help=F.SUBCMD_RESET_DATABASE+' help',
                                              description='Warning: Using the "reset" subcommand will delete the specified database and replace it with an empty one.')
         F.add_db_argument_to_parser(parser_reset)
         F.add_verbose_argument_to_parser(parser_reset)
@@ -592,11 +644,11 @@ class F:
     def process_args_and_call_subcommand(self, args):
         logging.debug(f"### F.process_args_and_call_subcommand() ###")
         # If 'create' and 'refresh_volumes' subcommands are specified, then we don't need to open the database
-        if args.subcommand == F.SUBCOMMAND_SELECT_DATABASE:
+        if args.subcommand == F.SUBCMD_SELECT_DATABASE:
             self.subcommand_select_database(args)
-        elif args.subcommand == F.SUBCOMMAND_CREATE_DATABASE:
+        elif args.subcommand == F.SUBCMD_CREATE_DATABASE:
             self.subcommand_create_database(args)
-        elif args.subcommand == F.SUBCOMMAND_REFRESH_VOLUMES:
+        elif args.subcommand == F.SUBCMD_REFRESH_VOLUMES:
             self.subcommand_refresh_volumes(args)
         else:
             # These subcommands all need a working database connection
@@ -615,21 +667,21 @@ class F:
                 self.database.set_verbose_mode(args.verbose)
             start_time = time.time()
 
-            if args.subcommand == F.SUBCOMMAND_FILE_SEARCH:
+            if args.subcommand == F.SUBCMD_FILE_SEARCH:
                 self.subcommand_file_search(args)
-            elif args.subcommand == F.SUBCOMMAND_ADD_VOLUME:
+            elif args.subcommand == F.SUBCMD_ADD_VOLUME:
                 self.subcommand_add_volumes(args)
 
-            elif args.subcommand == F.SUBCOMMAND_IMPORT_VOLUME:
+            elif args.subcommand == F.SUBCMD_IMPORT_VOLUME:
                 self.subcommand_import_listing(args)
 
-            elif args.subcommand == F.SUBCOMMAND_UPGRADE_DATABASE:
+            elif args.subcommand == F.SUBCMD_UPGRADE_DATABASE:
                 self.subcommand_upgrade_database()
 
-            elif args.subcommand == F.SUBCOMMAND_VACUUM_DATABASE:
+            elif args.subcommand == F.SUBCMD_VACUUM_DATABASE:
                 self.subcommand_vacuum_database()
 
-            elif args.subcommand == F.SUBCOMMAND_RESET_DATABASE:
+            elif args.subcommand == F.SUBCMD_RESET_DATABASE:
                 self.subcommand_reset_database(args)
 
             end_time = time.time()
@@ -662,12 +714,11 @@ class F:
         # Command finished so program finished
 
 if __name__ == "__main__":
-    #my_logger = logging.getLogger(__name__)
 
+    #my_logger = logging.getLogger(__name__)
     F.start_logger(logging.DEBUG)
     new_parser = argparse.ArgumentParser(
         description="Filer - File Cataloger"
     )
     f = F(new_parser)
     f.start()
-

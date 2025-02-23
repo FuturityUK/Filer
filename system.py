@@ -90,10 +90,10 @@ class Windows:
                 #print("Cleared Dictionary")
             else:
                 # Values for dictionary
-                colon_index = line.find(':')
-                #print(f"colon_index: {colon_index}")
-                key = line[:colon_index].strip()
-                value = line[colon_index+1:].strip()
+                colon_IDX = line.find(':')
+                #print(f"colon_IDX: {colon_IDX}")
+                key = line[:colon_IDX].strip()
+                value = line[colon_IDX+1:].strip()
                 #print(f"key: {key}")
                 #print(f"value: {value}")
                 dictionary_results[key] = value
@@ -211,19 +211,19 @@ class Linux:
 class System:
     """ Class to execute System commands """
 
-    OPTION_CHAR_INDEX: int = 0
-    OPTION_DESCRIPTION_INDEX: int = 1
-    OPTION_RESULT_INDEX: int = 2
+    OPT_CHAR_IDX: int = 0
+    OPT_DESCRIPTION_IDX: int = 1
+    OPT_RESULT_IDX: int = 2
 
-    OPTION_RESCAN_CHAR: str = 'R'
-    OPTION_EXIT_CHAR: str = 'E'
-    OPTION_PROCEED_CHAR: str = 'P'
-    OPTION_CHANGE_LABEL_CHAR: str = 'C'
+    OPT_RESCAN_CHAR: str = 'R'
+    OPT_EXIT_CHAR: str = 'E'
+    OPT_PROCEED_CHAR: str = 'P'
+    OPT_CHANGE_LABEL_CHAR: str = 'C'
 
-    OPTION_RESCAN: [] = [OPTION_RESCAN_CHAR, 'Rescan', OPTION_RESCAN_CHAR]
-    OPTION_EXIT: [] = [OPTION_EXIT_CHAR, 'Exit', OPTION_EXIT_CHAR]
-    OPTION_PROCEED: [] = [OPTION_PROCEED_CHAR, 'Proceed', OPTION_PROCEED_CHAR]
-    OPTION_CHANGE_LABEL: [] = [OPTION_CHANGE_LABEL_CHAR, 'Change', OPTION_CHANGE_LABEL_CHAR]
+    OPT_RESCAN: [] = [OPT_RESCAN_CHAR, 'Rescan', OPT_RESCAN_CHAR]
+    OPT_EXIT: [] = [OPT_EXIT_CHAR, 'Exit', OPT_EXIT_CHAR]
+    OPT_PROCEED: [] = [OPT_PROCEED_CHAR, 'Proceed', OPT_PROCEED_CHAR]
+    OPT_CHANGE_LABEL: [] = [OPT_CHANGE_LABEL_CHAR, 'Change', OPT_CHANGE_LABEL_CHAR]
 
     def __init__(self):
         self.windows = self.is_windows()
@@ -403,15 +403,15 @@ class System:
         while internal_selection not in options or internal_selection.lower() not in options:
             internal_selections=[]
             for index, option in enumerate(options):
-                print(f"{option[System.OPTION_CHAR_INDEX]}) - {option[System.OPTION_DESCRIPTION_INDEX]}")
-                internal_selections.append(option[System.OPTION_CHAR_INDEX])
+                print(f"{option[System.OPT_CHAR_IDX]}) - {option[System.OPT_DESCRIPTION_IDX]}")
+                internal_selections.append(option[System.OPT_CHAR_IDX])
             internal_selection = input(f"Options: {internal_selections}? ")
             # If we have been provided results, return the result matching the internal_selection
             for index, option in enumerate(options):
                 # print(f"{internal_selection.lower()} ?? {option.lower()}")
-                if internal_selection.lower() == option[System.OPTION_CHAR_INDEX].lower():
+                if internal_selection.lower() == option[System.OPT_CHAR_IDX].lower():
                     # Return the result for this selection
-                    return option[System.OPTION_RESULT_INDEX]
+                    return option[System.OPT_RESULT_IDX]
         # We couldn't find a result for this selection, so return the selection itself
         return internal_selection
 

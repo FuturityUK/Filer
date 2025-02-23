@@ -4,9 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="database location now updated in the configuration arguments if it's changed in any of the subcommands">
+    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Started work on &quot;add_volume_files&quot;">
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/f.py" beforeDir="false" afterPath="$PROJECT_DIR$/f.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/fgui.py" beforeDir="false" afterPath="$PROJECT_DIR$/fgui.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/file_system_processors.py" beforeDir="false" afterPath="$PROJECT_DIR$/file_system_processors.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/filer.py" beforeDir="false" afterPath="$PROJECT_DIR$/filer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/system.py" beforeDir="false" afterPath="$PROJECT_DIR$/system.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -53,6 +58,7 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Python.Fgui.executor": "Run",
     "Python.database.executor": "Run",
     "Python.dyngooey.executor": "Run",
     "Python.f.executor": "Run",
@@ -73,7 +79,7 @@
     "git-widget-placeholder": "master",
     "ignore.virus.scanning.warn.message": "true",
     "run.code.analysis.last.selected.profile": "aDefault",
-    "settings.editor.selected.configurable": "vcs.Git"
+    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
   }
 }]]></component>
   <component name="RecentsManager">
@@ -100,14 +106,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1736868367160</updated>
-    </task>
-    <task id="LOCAL-00089" summary="Now downloads file types from the wiki page if a local copy doesn't already exist.">
-      <option name="closed" value="true" />
-      <created>1738940140510</created>
-      <option name="number" value="00089" />
-      <option name="presentableId" value="LOCAL-00089" />
-      <option name="project" value="LOCAL" />
-      <updated>1738940140510</updated>
     </task>
     <task id="LOCAL-00090" summary="File type line now split into extensions and description">
       <option name="closed" value="true" />
@@ -493,7 +491,15 @@
       <option name="project" value="LOCAL" />
       <updated>1740316579925</updated>
     </task>
-    <option name="localTasksCounter" value="138" />
+    <task id="LOCAL-00138" summary="Started work on &quot;add_volume_files&quot;">
+      <option name="closed" value="true" />
+      <created>1740317100895</created>
+      <option name="number" value="00138" />
+      <option name="presentableId" value="LOCAL-00138" />
+      <option name="project" value="LOCAL" />
+      <updated>1740317100895</updated>
+    </task>
+    <option name="localTasksCounter" value="139" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -523,7 +529,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Now works on the widget's dest value rather than the '-' or '--' commandline option as they may be duplicated over many subcommands. the 'dest's can be made unique." />
     <MESSAGE value="Dynamic values have to match:&#10; for non optional parameters it needs to match the parameter name (which is the dest name).&#10; for optional parameters it needs to match the either the first '-' or '--' parameter, whichever is defined first, or the dest parameter if the former doesn't exist." />
     <MESSAGE value="Removed Gooey 1.2 alpha imports" />
     <MESSAGE value="Moved finding the volume and drive information to its own function" />
@@ -548,6 +553,7 @@
     <MESSAGE value="Started adding the select database option" />
     <MESSAGE value="Arguments are now stored when subcommand run.&#10;An alternative database can be specified on the command line in the format:&#10;- python.exe fgui.py &quot;I:\Filer\database.sqlite&quot;" />
     <MESSAGE value="database location now updated in the configuration arguments if it's changed in any of the subcommands" />
-    <option name="LAST_COMMIT_MESSAGE" value="database location now updated in the configuration arguments if it's changed in any of the subcommands" />
+    <MESSAGE value="Started work on &quot;add_volume_files&quot;" />
+    <option name="LAST_COMMIT_MESSAGE" value="Started work on &quot;add_volume_files&quot;" />
   </component>
 </project>

@@ -27,7 +27,7 @@ import logging
 
 class Filer:
 
-    DEFAULT_TEMP_LISTING_FILE: str = 'filer.fwf'
+
 
     def __init__(self):
         self.database = None
@@ -37,7 +37,10 @@ class Filer:
         self.volumes_array = None
         self.partitions_array = None
         self.system = System()
-        self.f = F()
+        new_parser = argparse.ArgumentParser(
+            description="Filer - File Cataloger"
+        )
+        self.f = F(new_parser)
 
     def set_memory_stats(self, memory_stats):
         self.memory_stats = memory_stats
@@ -105,30 +108,6 @@ class Filer:
         print(f"Entering Interactive Mode ...")
         self.process_drive(args)
 
-
-    def get_values_for_import_listing(self, result_array: []) -> {}:
-        import_listing_values = {}
-        result_array_length = len(result_array)
-
-        # Get values from the volume dictionary
-        volume_dictionary = result_array[F.VOLUME_DICT_INDEX]
-        import_listing_values["drive_letter"] = volume_dictionary['DriveLetter']
-        import_listing_values["label"] = volume_dictionary['FileSystemLabel']
-
-        # Get values from the logical drive dictionary, but only if it exists
-        if result_array_length > 1:
-            logical_disk_dictionary = result_array[F.LOGICAL_DICT_INDEX]
-            import_listing_values["make"] = logical_disk_dictionary['Manufacturer']
-            import_listing_values["model"] = logical_disk_dictionary['Model']
-            import_listing_values["serial_number"] = logical_disk_dictionary['SerialNumber']
-        else:
-            import_listing_values["make"] = ""
-            import_listing_values["model"] = ""
-            import_listing_values["serial_number"] = ""
-
-        import_listing_values["hostname"] = socket.gethostname()
-        return import_listing_values
-
     @staticmethod
     def display_import_listing_values(import_listing_values: {}):
         print("Information to be saved into the database:")
@@ -168,7 +147,7 @@ class Filer:
             elif isinstance(result_array, collections.abc.Sequence):
                 # display_array_of_dictionaries(result_array)
 
-                import_listing_values = self.get_values_for_import_listing(result_array)
+                import_listing_values = self.f.get_values_for_volume_array(result_array)
 
                 while True:
                     self.display_import_listing_values(import_listing_values)
@@ -227,7 +206,7 @@ class Filer:
         #    prog='Filer',
         #    epilog='Text at the bottom of help',
             description="Filer - File Cataloger")
-        parser.add_argument("-f", "--filename", default="tmp_listing.fwf", help="filename (including path) that will be used when creating temporary listing files. Default: '"+self.DEFAULT_TEMP_LISTING_FILE+"'")
+        parser.add_argument("-f", "--filename", default="tmp_listing.fwf", help="filename (including path) that will be used when creating temporary listing files. Default: '"+self.f.DEFAULT_TEMP_LISTING_FILE+"'")
         parser.add_argument("-t", "--test", action="store_true", help="test input file without modifying the database")
         self.add_db_and_verbose_to_parser(parser)
 
@@ -276,7 +255,6 @@ class Filer:
         self.clean_up_and_quit()
 
 if __name__ == "__main__":
-    F.start_logger(logging.debug)
+    F.start_logger(logging.DEBUG)
     filer = Filer()
     filer.start()
-
