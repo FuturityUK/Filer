@@ -143,11 +143,10 @@ class F:
             print("The directory must exist before a new database can be created there.")
             exit(2)
 
-    def create_database(self, args: [], database_filename):
+    def create_database(self, database_filename, verbose: bool = False):
         logging.debug(f"### F.create_database() ###")
         self.database = Database(database_filename)
-        if "verbose" in args:
-            self.database.set_verbose_mode(args.verbose)
+        self.database.set_verbose_mode(verbose)
         self.database.create_database_structure()
 
     def subcommand_file_search(self, args: []):
@@ -276,16 +275,20 @@ class F:
             if import_listing_success:
                 print(f"Volume {import_listing_values["drive_letter"]}: Added Successfully...")
 
-    def subcommand_select_database(self, args: []):
-        logging.debug(f"### F.subcommand_select_database() ###")
-        database_filename = args.db
+    def select_database(self, database_filename, verbose):
         F.does_database_directory_exist(database_filename)
         if not os.path.isfile(database_filename):
             print(f"Database file does not exists at location: \"{os.path.abspath(database_filename)}\"")
             print(f"Creating database file...")
-            self.create_database(args, database_filename)
+            self.create_database(database_filename, verbose)
         else:
             self.database = Database(database_filename)
+
+    def subcommand_select_database(self, args: []):
+        logging.debug(f"### F.subcommand_select_database() ###")
+        database_filename = args.db
+        verbose = args.verbose if "verbose" in args else False
+        self.select_database(database_filename, verbose)
 
     def subcommand_create_database(self, args: []):
         logging.debug(f"### F.subcommand_create_database() ###")
@@ -295,7 +298,8 @@ class F:
             print(f"Database file already exists at location: \"{os.path.abspath(database_filename)}\"")
             print(f"To empty the database, use the \'{F.SUBCMD_RESET_DATABASE}\' subcommand.")
             exit(2)
-        self.create_database(args, database_filename)
+        verbose = args.verbose if "verbose" in args else False
+        self.create_database(database_filename, verbose)
 
     def subcommand_upgrade_database(self):
         logging.debug(f"### F.upgrade() ###")
@@ -646,6 +650,17 @@ class F:
         F.add_verbose_argument_to_parser(parser_reset)
         """
 
+    def connect_to_database(self, database_filename):
+        if not os.path.isfile(database_filename):
+            # Database file doesn't exist
+            # Ask user if they want to create a new database file?
+            print(f"Database file doesn't exist at location: \"{os.path.abspath(database_filename)}\"")
+            self.print_message_based_on_parser("Please create the Database using the 'create' subcommand.",
+                                               "Please create the Database using the 'Create Database' action.")
+            exit(2)
+
+        self.database = Database(database_filename)
+
     def process_args_and_call_subcommand(self, args):
         logging.debug(f"### F.process_args_and_call_subcommand() ###")
         # If 'create' and 'refresh_volumes' subcommands are specified, then we don't need to open the database
@@ -658,16 +673,8 @@ class F:
         else:
             # These subcommands all need a working database connection
             # The following subcommands all require a database
-            database_filename = args.db
+            self.connect_to_database(args.db)
 
-            if not os.path.isfile(database_filename):
-                # Database file doesn't exist
-                # Ask user if they want to create a new database file?
-                print(f"Database file doesn't exist at location: \"{os.path.abspath(database_filename)}\"")
-                self.print_message_based_on_parser("Please create the Database using the 'create' subcommand.", "Please create the Database using the 'Create Database' action.")
-                exit(2)
-
-            self.database = Database(database_filename)
             if "verbose" in args:
                 self.database.set_verbose_mode(args.verbose)
             start_time = time.time()

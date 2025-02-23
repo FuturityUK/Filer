@@ -24,6 +24,7 @@ class Fgui:
             with open(self.CONFIGURATION_FILENAME) as data_file:
                 self.configuration = json.load(data_file)
 
+        # If the database parameter has been specified, then the user wishes has told use to create a database in a non default location
         if database_filename is not None:
             if F.SUBCMD_SELECT_DATABASE not in self.configuration[self.CONFIGURATION_STORED_ARGS]:
                 self.configuration[self.CONFIGURATION_STORED_ARGS][F.SUBCMD_SELECT_DATABASE] = {}
@@ -31,6 +32,8 @@ class Fgui:
             logging.debug(f"self.configuration: {self.configuration}")
             # Store the modified configuration with the new database_filename
             self.store_configuration()
+
+
 
         # get the script name without the extension & use it to build up
         # the json filename

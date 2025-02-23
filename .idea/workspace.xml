@@ -4,9 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Major changes, but is finally adding volumes.">
+    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Add_volume label is reset after every submission">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/f.py" beforeDir="false" afterPath="$PROJECT_DIR$/f.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/fgui.py" beforeDir="false" afterPath="$PROJECT_DIR$/fgui.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -101,14 +102,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1736868367160</updated>
-    </task>
-    <task id="LOCAL-00091" summary="Extensions are now split into individual extensions together with their descriptions. More wikitext formatting correctly removed">
-      <option name="closed" value="true" />
-      <created>1738960695135</created>
-      <option name="number" value="00091" />
-      <option name="presentableId" value="LOCAL-00091" />
-      <option name="project" value="LOCAL" />
-      <updated>1738960695135</updated>
     </task>
     <task id="LOCAL-00092" summary="Finished file_types.py which now can download directly from the wikipedia website, cache the file locally and extract the extension data from it. It then stores the details in a csv file">
       <option name="closed" value="true" />
@@ -494,7 +487,15 @@
       <option name="project" value="LOCAL" />
       <updated>1740335929150</updated>
     </task>
-    <option name="localTasksCounter" value="140" />
+    <task id="LOCAL-00140" summary="Add_volume label is reset after every submission">
+      <option name="closed" value="true" />
+      <created>1740337382039</created>
+      <option name="number" value="00140" />
+      <option name="presentableId" value="LOCAL-00140" />
+      <option name="project" value="LOCAL" />
+      <updated>1740337382039</updated>
+    </task>
+    <option name="localTasksCounter" value="141" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -524,7 +525,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Removed Gooey 1.2 alpha imports" />
     <MESSAGE value="Moved finding the volume and drive information to its own function" />
     <MESSAGE value="The Volume choice is now populated after running a command and clicking on edit." />
     <MESSAGE value="Fixed the '%' character error as it needs to be escaped for the command line, but not for the GUI" />
@@ -549,6 +549,7 @@
     <MESSAGE value="database location now updated in the configuration arguments if it's changed in any of the subcommands" />
     <MESSAGE value="Started work on &quot;add_volume_files&quot;" />
     <MESSAGE value="Major changes, but is finally adding volumes." />
-    <option name="LAST_COMMIT_MESSAGE" value="Major changes, but is finally adding volumes." />
+    <MESSAGE value="Add_volume label is reset after every submission" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add_volume label is reset after every submission" />
   </component>
 </project>
