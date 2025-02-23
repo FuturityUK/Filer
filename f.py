@@ -290,13 +290,18 @@ class F:
 
     @staticmethod
     def add_argument(parser, *temp_args, **temp_kwargs): # : Optional[Union[Iterable, dict]]
+        #logging.debug(f"### F.create_volume_options() ###")
         #parser.add_argument(temp_args, temp_kwargs)
-        if type(parser) is argparse.ArgumentParser:
+        #logging.debug(f"type(parser): {type(parser)}")
+        #logging.debug(f"BEFORE: temp_kwargs: {temp_kwargs}")
+        if type(parser) is argparse.ArgumentParser or type(parser) is argparse._ArgumentGroup:
             # Remove GooeyParser parameters as they aren't compatible with the ArgumentParser
+            #logging.debug(f"== argparse.ArgumentParser")
             temp_kwargs.pop("metavar", None)
             temp_kwargs.pop("widget", None)
-        #print(f"temp_args: {temp_args}")
-        #print(f"temp_kwargs: {temp_kwargs}")
+            temp_kwargs.pop("gooey_options", None)
+            temp_kwargs.pop("prog", None)
+        #logging.debug(f"AFTER : temp_kwargs: {temp_kwargs}")
         parser.add_argument( *temp_args, **temp_kwargs )
 
     @staticmethod
@@ -513,12 +518,16 @@ class F:
         logging.debug(f"### F.add_subcommand_select_database_arguments_to_parser() ###")
         subparser_select_database = subparsers.add_parser(F.SUBCOMMAND_SELECT_DATABASE,
                                               help=F.SUBCOMMAND_SELECT_DATABASE+' help', prog='Select Database',
-                                              description='Select the database you wish to use')
+                                              description='Select the database you wish to use, including the path to the database file.')
         subparser_select_database_group = subparser_select_database.add_argument_group(
             'Select Database',
-            description='Select the database you wish to use.'
+            description='Select the database you wish to use, including the path to the database file.'
         )
-        F.add_db_argument_to_parser(subparser_select_database_group, False)
+        F.add_argument(subparser_select_database_group, "db", default=F.DEFAULT_DATABASE_FILENAME,
+                       widget='FileChooser',
+                       metavar='Database Filename',
+                       help="Database filename (including the path if not in the current directory). Default='database.sqlite' in the current directory.")
+        #F.add_db_argument_to_parser(subparser_select_database_group, False)
         #F.add_verbose_argument_to_parser(subparser_create_database_group)
 
     def add_subcommands_to_parser(self, parser):

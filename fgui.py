@@ -44,29 +44,15 @@ class Fgui:
         if args is not None:
             # A subcommand has been run so store its arguments
             subcommand = args.subcommand
-            print(f"subcommand: {subcommand}")
-            print(f"")
-
             subcommand_args = vars(args).copy()
-            print(f"subcommand_args: {subcommand_args}")
-            print(f"")
-
             # Remove the 'subcommand' key / value pair from the subcommand_args
             if "subcommand" in subcommand_args:
                 del subcommand_args['subcommand']
-                print(f"Subcommand arguments (minus subcommand): {subcommand_args}")
-                print(f"")
-
             # Remove the old arguments last submitted for this subcommand
             if subcommand in self.configuration[self.CONFIGURATION_STORED_ARGS]:
                 del self.configuration[self.CONFIGURATION_STORED_ARGS][subcommand]
-                print(f"subcommand_args['subcommand']: {subcommand_args}")
-                print(f"")
-
             # Store the new arguments for this subcommand
             self.configuration[self.CONFIGURATION_STORED_ARGS][subcommand] = subcommand_args
-            print(f"self.configuration: {self.configuration}")
-            print(f"")
 
         # Store the values of the arguments so we have them next time we run
         with open(self.CONFIGURATION_FILENAME, 'w') as data_file:
@@ -220,8 +206,11 @@ class Fgui:
         if not gooey_stdout():
             pass
             # Debug to show arguments past to the program
-            #print(f"Program arguments:")
-            #print(f"{F.dumps(vars(args))}")
+            print(f"Program arguments:")
+            print(f"{F.dumps(vars(args))}")
+            if 'db' in args:
+                self.configuration[self.CONFIGURATION_STORED_ARGS][F.SUBCOMMAND_SELECT_DATABASE]["db"] = args.db
+                logging.info(f'self.configuration[self.CONFIGURATION_STORED_ARGS][F.SUBCOMMAND_SELECT_DATABASE]["db"]: {self.configuration[self.CONFIGURATION_STORED_ARGS][F.SUBCOMMAND_SELECT_DATABASE]["db"]}')
             self.store_configuration(args)
 
         # Now process the args
@@ -245,6 +234,7 @@ if __name__ == "__main__":
         logging.debug(f"- {sys.argv[i]}")
 
     db_filename = None
+    """
     if len(sys.argv) == 3 and sys.argv[1] == "gooey-seed-ui":
         # In 'gooey-seed-ui' so don't do anything
         logging.debug(f"In 'gooey-seed-ui' mode, so don't set the db_filename")
@@ -253,7 +243,7 @@ if __name__ == "__main__":
         # Not in "gooey-seed-ui" yet, so if an argument set, that's the db_filename
         db_filename = sys.argv[1]
         logging.debug(f"Not 'gooey-seed-ui' mode, so set the db_filename to {db_filename}")
-
+    """
     fgui = Fgui(db_filename)
     fgui.init()
     fgui.seed()
