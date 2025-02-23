@@ -242,8 +242,8 @@ class F:
             #print(f"")
             #print('Processing Volume:')
             label = import_listing_values["label"]
-            if args.label is not None:
-                label = args.label
+            if args.add_label is not None:
+                label = args.add_label
             print(f'Drive: "{import_listing_values["drive_letter"]}:"')
             print(f'Label: "{label}"')
             print(f'Hostname: "{import_listing_values["hostname"]}"')
@@ -530,7 +530,12 @@ class F:
                 help_text = help_text.replace(r"%", r"%%")
             F.add_argument(subparser_add_volume_group, "--volume", dest='volume', metavar='Volume', widget='Dropdown',
                                        nargs='?', default=None, help=help_text)
-            F.add_argument(subparser_add_volume_group, "-l", "--label", dest='label', metavar='Label', default=None, help="Label of the drive listing. If provided it will override the volume label.")
+            #F.add_argument(subparser_add_volume_group, "-l", "--label", dest='label', metavar='Label', default=None, help="Label of the drive listing. If provided it will override the volume label.",
+            F.add_argument(subparser_add_volume_group, "--add_label", dest='add_label', metavar='Label',
+                                          default=None,
+                                          help="Label of the drive listing. If provided it will override the volume label.",
+                                          #gooey_options={ 'initial_value': "Hell" }
+                           )
             hostname = socket.gethostname()
             F.add_argument(subparser_add_volume_group, "-n", "--hostname", dest='hostname', metavar='Hostname', default=hostname,
                                           help="Hostname of the machine containing the drive")
