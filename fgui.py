@@ -2,13 +2,8 @@ from f import F
 from dyngooey import Gooey, GooeyParser, gooey_stdout, gooey_id
 import logging
 import sys
-import os
-import json
 
 class Fgui:
-
-    CONFIGURATION_FILENAME: str = "filer.json"
-    CONFIGURATION_STORED_ARGS = "stored_args"
 
     def __init__(self, database_filename: str = None):
         logging.debug(f"### __init__() ###")
@@ -16,70 +11,7 @@ class Fgui:
             #description="Filer - File Cataloger",
             description='Some words'#, formatter_class=CustomHelpFormatter
         )
-        self.f = F(self.parser)
-
-        # Read in the prior arguments as a dictionary
-        self.configuration = {self.CONFIGURATION_STORED_ARGS: {}}
-        if os.path.isfile(self.CONFIGURATION_FILENAME):
-            with open(self.CONFIGURATION_FILENAME) as data_file:
-                self.configuration = json.load(data_file)
-
-        # If the database parameter has been specified, then the user wishes has told use to create a database in a non default location
-        if database_filename is not None:
-            self.set_database_filename(database_filename)
-
-        # Get the stored database filename. Note that if it isn't defined yet, it will be set to the default
-        stored_database_filename = self.get_database_filename()
-        """
-            if F.SUBCMD_SELECT_DATABASE not in self.configuration[self.CONFIGURATION_STORED_ARGS]:
-                self.configuration[self.CONFIGURATION_STORED_ARGS][F.SUBCMD_SELECT_DATABASE] = {}
-            self.configuration[self.CONFIGURATION_STORED_ARGS][F.SUBCMD_SELECT_DATABASE]["db"] = database_filename
-            logging.debug(f"self.configuration: {self.configuration}")
-            # Store the modified configuration with the new database_filename
-        """
-        # get the script name without the extension & use it to build up
-        # the json filename
-        #script_name = os.path.splitext(os.path.basename(__file__))[0]
-        #self.args_filename = "{}-args.json".format(script_name)
-
-    def get_database_filename(self):
-        logging.debug(f"### get_database_filename() ###")
-        if F.SUBCMD_SELECT_DATABASE not in self.configuration[self.CONFIGURATION_STORED_ARGS]:
-            # Database_filename hasn't been stored in the configuration file yet
-            logging.debug(f"Database_filename hasn't been stored in the configuration file yet, so store default default.")
-            self.set_database_filename(F.DEFAULT_DATABASE_FILENAME)
-        return self.configuration[self.CONFIGURATION_STORED_ARGS][F.SUBCMD_SELECT_DATABASE]["db"]
-
-    def set_database_filename(self, database_filename: str):
-        logging.debug(f"### set_database_filename() ###")
-        logging.debug(f"database_filename: {database_filename}")
-        if F.SUBCMD_SELECT_DATABASE not in self.configuration[self.CONFIGURATION_STORED_ARGS]:
-            self.configuration[self.CONFIGURATION_STORED_ARGS][F.SUBCMD_SELECT_DATABASE] = {}
-        self.configuration[self.CONFIGURATION_STORED_ARGS][F.SUBCMD_SELECT_DATABASE]["db"] = database_filename
-        logging.debug(f"self.configuration: {self.configuration}")
-        self.store_configuration()
-
-    def store_configuration(self, args=None):
-        logging.debug(f"### store_configuration() ###")
-        logging.info(f"Storing configuration...")
-
-        if args is not None:
-            # A subcommand has been run so store its arguments
-            subcommand = args.subcommand
-            subcommand_args = vars(args).copy()
-            # Remove the 'subcommand' key / value pair from the subcommand_args
-            if "subcommand" in subcommand_args:
-                del subcommand_args['subcommand']
-            # Remove the old arguments last submitted for this subcommand
-            if subcommand in self.configuration[self.CONFIGURATION_STORED_ARGS]:
-                del self.configuration[self.CONFIGURATION_STORED_ARGS][subcommand]
-            # Store the new arguments for this subcommand
-            self.configuration[self.CONFIGURATION_STORED_ARGS][subcommand] = subcommand_args
-
-        # Store the values of the arguments so we have them next time we run
-        with open(self.CONFIGURATION_FILENAME, 'w') as data_file:
-            # Using vars(args) returns the data as a dictionary
-            json.dump(self.configuration, data_file)
+        self.f = F(self.parser, database_filename)
 
     def init(self):
         logging.debug(f"### init() ###")
@@ -103,25 +35,16 @@ class Fgui:
             #  - missing  => Left alone
             volume_default_choice = None
             volume_choices = []
-            if len(self.f.volume_argument_details) != 0:
-                volume_default_choice = self.f.volume_argument_details[self.f.VOL_ARG_DETAILS_DEFAULT_CHOICE]
-                logging.info(f"self.f.volume_argument_details[\"{self.f.VOL_ARG_DETAILS_DEFAULT_CHOICE}\"]: {volume_default_choice}")
-                volume_choices = self.f.volume_argument_details[self.f.VOL_ARG_DETAILS_CHOICES]
-                logging.info(f"self.f.volume_argument_details[\"{self.f.VOL_ARG_DETAILS_CHOICES}\"]: {volume_choices}")
-
-            database_filename = F.DEFAULT_DATABASE_FILENAME
-            logging.debug(f"self.configuration: {self.configuration}")
-            if F.SUBCMD_SELECT_DATABASE in self.configuration[self.CONFIGURATION_STORED_ARGS]:
-                logging.debug(f"{F.SUBCMD_SELECT_DATABASE} found in self.configuration[self.CONFIGURATION_STORED_ARGS]")
-                if "db" in self.configuration[self.CONFIGURATION_STORED_ARGS][F.SUBCMD_SELECT_DATABASE]:
-                    logging.debug(
-                        f"'db' found in self.configuration[self.CONFIGURATION_STORED_ARGS][F.SUBCMD_SELECT_DATABASE]")
-                    database_filename = self.configuration[self.CONFIGURATION_STORED_ARGS][F.SUBCMD_SELECT_DATABASE]["db"]
-                    logging.info(f"database_filename: {database_filename}")
+            vol_details = self.f.configuration[self.f.CONFIG_VOL_DETAILS]
+            if len(vol_details) != 0:
+                volume_default_choice = vol_details[self.f.VOL_ARG_DETAILS_DEFAULT_CHOICE]
+                logging.info(f"vol_details[\"{self.f.VOL_ARG_DETAILS_DEFAULT_CHOICE}\"]: {volume_default_choice}")
+                volume_choices = vol_details[self.f.VOL_ARG_DETAILS_CHOICES]
+                logging.info(f"vol_details\"{self.f.VOL_ARG_DETAILS_CHOICES}\"]: {volume_choices}")
 
             dynamic_values = {
                 'volume': volume_default_choice,
-                'db': database_filename,
+                'db': self.f.database_filename,
                 'add_label': None,
                 'test_required_1': None,  # This will be replaced with the initial value
                 # 'test_required_2' will be left alone
@@ -226,14 +149,10 @@ class Fgui:
             temp_args[key] = value
         """
         if not gooey_stdout():
+            pass
             # Debug to show arguments past to the program
             #print(f"Program arguments:")
             #print(f"{F.dumps(vars(args))}")
-
-            if 'db' in args:
-                self.configuration[self.CONFIGURATION_STORED_ARGS][F.SUBCMD_SELECT_DATABASE]["db"] = args.db
-                logging.info(f'self.configuration[self.CONFIGURATION_STORED_ARGS][F.SUBCMD_SELECT_DATABASE]["db"]: {self.configuration[self.CONFIGURATION_STORED_ARGS][F.SUBCMD_SELECT_DATABASE]["db"]}')
-            self.store_configuration(args)
 
         # Now process the args
         #f = F()
@@ -265,11 +184,7 @@ if __name__ == "__main__":
 
     db_filename = None
     if len(sys.argv) >= 2:
-        if sys.argv[1] == "gooey-seed-ui":
-            logging.debug(f"In 'gooey-seed-ui' mode")
-        else:
-            # Not in "gooey-seed-ui" yet, so if an argument set, that's the db_filename
-            logging.debug(f"Not in 'gooey-seed-ui' mode")
+        if sys.argv[1].startswith("-"):
             option = sys.argv[1]
             if option == "-h" or option == "--help":
                 print_help_and_exit()

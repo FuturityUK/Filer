@@ -33,6 +33,9 @@ from print import Print
 
 class F:
 
+    SHOW_DB_FILENAME_ARG_IN_GUI: bool = True
+    PROGRESS_INSERT_FREQUENCY: int = 10000
+
     EXIT_OK: int = 0 #
     EXIT_ERROR: int = 1 #
 
@@ -57,11 +60,11 @@ class F:
     VOL_ARG_DETAILS_VOLUMES_LOGICAL_DICT_IDX: int = 1
     VOL_ARG_DETAILS_VOLUMES_PHYSICAL_DICT_IDX: int = 2
 
-    VOL_ARG_DETAILS_FILENAME: str = "volume_argument_details.json"
+    CONFIG_FILENAME: str = "filer.json"
+    CONFIG_ARGS = "args"
+    CONFIG_VOL_DETAILS = "volume_details"
 
-    PROGRESS_INSERT_FREQUENCY: int = 10000
-
-    def __init__(self, parser):
+    def __init__(self, parser, database_filename: str = None):
         self.database = None
         self.memory_stats = False
         self.system = System()
@@ -69,13 +72,66 @@ class F:
         self.physical_disk_array = None
         self.volumes_array = None
         self.parser = parser
+        self.configuration = { self.CONFIG_ARGS: {} }
 
-        # Open the JSON file, or use an empty dictionary if it doesn't exist.
-        try:
-            with open(self.VOL_ARG_DETAILS_FILENAME) as read_file:
-                self.volume_argument_details = json.load(read_file)
-        except FileNotFoundError:
-            self.volume_argument_details = {self.VOL_ARG_DETAILS_CHOICES: [], self.VOL_ARG_DETAILS_DEFAULT_CHOICE: None, self.VOL_ARG_DETAILS_VOLUMES: {}, self.VOL_ARG_DETAILS_CREATED: "" }
+        self.load_configuration()
+
+        # If the database parameter has been specified, then the user wishes has told use to create a database in a non default location
+        if database_filename is not None:
+            self.set_database_filename_in_configuration(database_filename)
+
+        # Get the stored database filename. Note that if it isn't defined yet, it will be set to the default
+        self.database_filename = self.get_database_filename_in_configuration()
+
+    def load_configuration(self):
+        # Read in the prior arguments as a dictionary
+        if os.path.isfile( self.CONFIG_FILENAME ):
+            with open( self.CONFIG_FILENAME ) as data_file:
+                self.configuration = json.load(data_file)
+        if self.CONFIG_ARGS not in self.configuration:
+            self.configuration[self.CONFIG_ARGS] = {}
+        if self.CONFIG_VOL_DETAILS not in self.configuration:
+            self.configuration[self.CONFIG_VOL_DETAILS] = { self.VOL_ARG_DETAILS_CHOICES: [], self.VOL_ARG_DETAILS_DEFAULT_CHOICE: None,
+                                        self.VOL_ARG_DETAILS_VOLUMES: {}, self.VOL_ARG_DETAILS_CREATED: ""}
+    
+    def get_database_filename_in_configuration(self):
+        logging.debug(f"### get_database_filename() ###")
+        if F.SUBCMD_SELECT_DATABASE not in self.configuration[self.CONFIG_ARGS]:
+            # Database_filename hasn't been stored in the configuration file yet
+            logging.debug(f"Database_filename hasn't been stored in the configuration file yet, so store default default.")
+            self.set_database_filename_in_configuration(F.DEFAULT_DATABASE_FILENAME)
+        return self.configuration[self.CONFIG_ARGS][F.SUBCMD_SELECT_DATABASE]["db"]
+
+    def set_database_filename_in_configuration(self, database_filename: str):
+        logging.debug(f"### set_database_filename() ###")
+        logging.debug(f"database_filename: {database_filename}")
+        if F.SUBCMD_SELECT_DATABASE not in self.configuration[self.CONFIG_ARGS]:
+            self.configuration[self.CONFIG_ARGS][F.SUBCMD_SELECT_DATABASE] = {}
+        self.configuration[self.CONFIG_ARGS][F.SUBCMD_SELECT_DATABASE]["db"] = database_filename
+        logging.debug(f"self.configuration: {self.configuration}")
+        self.store_configuration()
+
+    def store_configuration(self, args=None):
+        logging.debug(f"### store_configuration() ###")
+        logging.info(f"Storing configuration...")
+
+        if args is not None:
+            # A subcommand has been run so store its arguments
+            subcommand = args.subcommand
+            subcommand_args = vars(args).copy()
+            # Remove the 'subcommand' key / value pair from the subcommand_args
+            if "subcommand" in subcommand_args:
+                del subcommand_args['subcommand']
+            # Remove the old arguments last submitted for this subcommand
+            if subcommand in self.configuration[self.CONFIG_ARGS]:
+                del self.configuration[self.CONFIG_ARGS][subcommand]
+            # Store the new arguments for this subcommand
+            self.configuration[self.CONFIG_ARGS][subcommand] = subcommand_args
+
+        # Store the values of the arguments so we have them next time we run
+        with open(self.CONFIG_FILENAME, 'w') as data_file:
+            # Using vars(args) returns the data as a dictionary
+            json.dump(self.configuration, data_file)
 
     def set_memory_stats(self, memory_stats):
         self.memory_stats = memory_stats
@@ -173,8 +229,8 @@ class F:
         logging.debug("### F.refresh_volumes() ###")
         self.prepare_volume_details()
         #print(self.volume_argument_details )
-        volume_default_choice = self.volume_argument_details[self.VOL_ARG_DETAILS_DEFAULT_CHOICE]
-        volume_choices = self.volume_argument_details[self.VOL_ARG_DETAILS_CHOICES]
+        volume_default_choice = self.configuration[self.CONFIG_VOL_DETAILS][self.VOL_ARG_DETAILS_DEFAULT_CHOICE]
+        volume_choices = self.configuration[self.CONFIG_VOL_DETAILS][self.VOL_ARG_DETAILS_CHOICES]
         print(f"")
         print(f"Volumes found:")
         for volume_choice in volume_choices:
@@ -222,7 +278,7 @@ class F:
         print(f"")
         """
         volume_choice = args.volume
-        if volume_choice not in self.volume_argument_details[self.VOL_ARG_DETAILS_CHOICES]:
+        if volume_choice not in self.configuration[self.CONFIG_VOL_DETAILS][self.VOL_ARG_DETAILS_CHOICES]:
             message= f"Volume description \"{volume_choice}\" not found in the list of available volumes."
             self.exit_cleanly(self.EXIT_ERROR, message, message)
         else:
@@ -231,7 +287,7 @@ class F:
                 print(f"{volume_option}: {volume_dictionary}")
                 print(f"")
             """
-            volume_array = self.volume_argument_details[self.VOL_ARG_DETAILS_VOLUMES][volume_choice]
+            volume_array = self.configuration[self.CONFIG_VOL_DETAILS][self.VOL_ARG_DETAILS_VOLUMES][volume_choice]
             #print(f"Chosen volume_dictionary:")
             #Print.print_array_of_dictionaries(volume_array)
             print(f"")
@@ -373,12 +429,12 @@ class F:
             F.add_argument(parser, "--db", dest='db', default=F.DEFAULT_DATABASE_FILENAME,
                                 widget = 'FileSaver',
                                 metavar='Database Filename',
-                                help="Database filename (including path if necessary). Default='database.sqlite' in the current directory.", gooey_options = {'visible': False})
+                                help="Database filename (including path if necessary). Default='database.sqlite' in the current directory.", gooey_options = {'visible': F.SHOW_DB_FILENAME_ARG_IN_GUI})
         else:
             F.add_argument(parser, "--db", dest='db', default=F.DEFAULT_DATABASE_FILENAME,
                                 widget = 'FileChooser',
                                 metavar='Database Filename',
-                                help="Database filename (including path if necessary). Default='database.sqlite' in the current directory.", gooey_options = {'visible': False})
+                                help="Database filename (including path if necessary). Default='database.sqlite' in the current directory.", gooey_options = {'visible': F.SHOW_DB_FILENAME_ARG_IN_GUI})
 
     @staticmethod
     def add_verbose_argument_to_parser(parser, create: bool = False):
@@ -448,7 +504,7 @@ class F:
         # Prepare the volume details to be populated into the GUI version of the program
         logging.info(f"prepare_volume_details()")
         # load the data required for the "add_volume" subcommand
-        self.volume_argument_details.clear()
+        self.configuration[self.CONFIG_VOL_DETAILS].clear()
 
         # Load volume details
         self.load_volume_drive_details()
@@ -478,15 +534,14 @@ class F:
             volume_choices.append(volume_description)
 
         now = datetime.now()
-        self.volume_argument_details[self.VOL_ARG_DETAILS_CREATED] = now.strftime('%Y-%m-%d %H:%M:%S')
-        self.volume_argument_details[self.VOL_ARG_DETAILS_CHOICES] = volume_choices
-        self.volume_argument_details[self.VOL_ARG_DETAILS_DEFAULT_CHOICE] = volume_default_choice
-        self.volume_argument_details[self.VOL_ARG_DETAILS_VOLUMES] = volumes
+        self.configuration[self.CONFIG_VOL_DETAILS][self.VOL_ARG_DETAILS_CREATED] = now.strftime('%Y-%m-%d %H:%M:%S')
+        self.configuration[self.CONFIG_VOL_DETAILS][self.VOL_ARG_DETAILS_CHOICES] = volume_choices
+        self.configuration[self.CONFIG_VOL_DETAILS][self.VOL_ARG_DETAILS_DEFAULT_CHOICE] = volume_default_choice
+        self.configuration[self.CONFIG_VOL_DETAILS][self.VOL_ARG_DETAILS_VOLUMES] = volumes
 
-        logging.info(f"self.volume_argument_details[\"created\"]: {self.volume_argument_details[self.VOL_ARG_DETAILS_CREATED]}")
-        # Write data to a JSON file
-        with open(self.VOL_ARG_DETAILS_FILENAME, 'w') as write_file:
-            json.dump(self.volume_argument_details, write_file) # Warning seems to be a bug in PyCharm
+        logging.info(f"self.volume_argument_details[\"created\"]: {self.configuration[self.CONFIG_VOL_DETAILS][self.VOL_ARG_DETAILS_CREATED]}")
+        # Store Volume details
+        self.store_configuration()
 
     @staticmethod
     def add_subcommand_file_search_arguments_to_parser(subparsers):
@@ -529,7 +584,7 @@ class F:
             )
             help_text = f'''Volume that you wish to add.
 - If you don't see your volume, please use the {self.get_message_based_on_parser("'refresh_volumes' subcommand", "'Refresh Volumes List' action.")}
-- Values last updated: {self.volume_argument_details[self.VOL_ARG_DETAILS_CREATED]}'''
+- Values last updated: {self.configuration[self.CONFIG_VOL_DETAILS][self.VOL_ARG_DETAILS_CREATED]}'''
             if type(subparsers) is argparse.ArgumentParser:
                 help_text = help_text.replace(r"%", r"%%")
             F.add_argument(subparser_add_volume_group, "--volume", dest='volume', metavar='Volume', widget='Dropdown',
@@ -663,6 +718,15 @@ class F:
 
     def process_args_and_call_subcommand(self, args):
         logging.debug(f"### F.process_args_and_call_subcommand() ###")
+
+        # Save the configuration first, as processing the arguments may result in an error
+        if 'db' in args:
+            self.database_filename = args['db']
+            self.configuration[self.CONFIG_ARGS][F.SUBCMD_SELECT_DATABASE]["db"] = args.db
+            logging.info(
+                f'self.configuration[self.CONFIGURATION_STORED_ARGS][F.SUBCMD_SELECT_DATABASE]["db"]: {self.configuration[self.CONFIG_ARGS][F.SUBCMD_SELECT_DATABASE]["db"]}')
+        self.store_configuration(args)
+
         # If 'create' and 'refresh_volumes' subcommands are specified, then we don't need to open the database
         if args.subcommand == F.SUBCMD_SELECT_DATABASE:
             self.subcommand_select_database(args)

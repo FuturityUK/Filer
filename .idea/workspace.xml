@@ -4,8 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Started work on changing database initialisation.&#10;- From now on, if the database doesn't exist, it is automatically created.&#10;- This way we can rely on the database being there, and can populate dropdowns etc, with useful values.">
+    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Fgui.py arguments added for help and setting alternative Database filename / path.&#10;Database subcommands turned off for the moment">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/f.py" beforeDir="false" afterPath="$PROJECT_DIR$/f.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/fgui.py" beforeDir="false" afterPath="$PROJECT_DIR$/fgui.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -101,14 +102,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1736868367160</updated>
-    </task>
-    <task id="LOCAL-00093" summary="changed name of cached file to file_types.wikitext">
-      <option name="closed" value="true" />
-      <created>1738963292672</created>
-      <option name="number" value="00093" />
-      <option name="presentableId" value="LOCAL-00093" />
-      <option name="project" value="LOCAL" />
-      <updated>1738963292672</updated>
     </task>
     <task id="LOCAL-00094" summary="Work on search (find) GUI (not finished)">
       <option name="closed" value="true" />
@@ -494,7 +487,15 @@
       <option name="project" value="LOCAL" />
       <updated>1740339740647</updated>
     </task>
-    <option name="localTasksCounter" value="142" />
+    <task id="LOCAL-00142" summary="Fgui.py arguments added for help and setting alternative Database filename / path.&#10;Database subcommands turned off for the moment">
+      <option name="closed" value="true" />
+      <created>1740402141190</created>
+      <option name="number" value="00142" />
+      <option name="presentableId" value="LOCAL-00142" />
+      <option name="project" value="LOCAL" />
+      <updated>1740402141190</updated>
+    </task>
+    <option name="localTasksCounter" value="143" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -524,7 +525,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="The Volume choice is now populated after running a command and clicking on edit." />
     <MESSAGE value="Fixed the '%' character error as it needs to be escaped for the command line, but not for the GUI" />
     <MESSAGE value="Moved some common code from filer.py to f.py" />
     <MESSAGE value="- Moved common code to f.py&#10;- Loading of the system Volume information (which is a slow process) doesn't happen when the program is run. The user has to manually trigger it using the &quot;refresh-volumes&quot; subcommand which is only available in the GUI." />
@@ -549,6 +549,7 @@
     <MESSAGE value="Major changes, but is finally adding volumes." />
     <MESSAGE value="Add_volume label is reset after every submission" />
     <MESSAGE value="Started work on changing database initialisation.&#10;- From now on, if the database doesn't exist, it is automatically created.&#10;- This way we can rely on the database being there, and can populate dropdowns etc, with useful values." />
-    <option name="LAST_COMMIT_MESSAGE" value="Started work on changing database initialisation.&#10;- From now on, if the database doesn't exist, it is automatically created.&#10;- This way we can rely on the database being there, and can populate dropdowns etc, with useful values." />
+    <MESSAGE value="Fgui.py arguments added for help and setting alternative Database filename / path.&#10;Database subcommands turned off for the moment" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fgui.py arguments added for help and setting alternative Database filename / path.&#10;Database subcommands turned off for the moment" />
   </component>
 </project>
