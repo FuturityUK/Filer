@@ -4,9 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Add_volume label is reset after every submission">
+    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Started work on changing database initialisation.&#10;- From now on, if the database doesn't exist, it is automatically created.&#10;- This way we can rely on the database being there, and can populate dropdowns etc, with useful values.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/f.py" beforeDir="false" afterPath="$PROJECT_DIR$/f.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/fgui.py" beforeDir="false" afterPath="$PROJECT_DIR$/fgui.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -52,32 +51,32 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Python.Fgui.executor": "Run",
-    "Python.database.executor": "Run",
-    "Python.dyngooey.executor": "Run",
-    "Python.f.executor": "Run",
-    "Python.fgui.executor": "Run",
-    "Python.file_system_processors.executor": "Run",
-    "Python.file_types.executor": "Run",
-    "Python.filer.executor": "Run",
-    "Python.logtest.executor": "Run",
-    "Python.main.executor": "Run",
-    "Python.powershell.executor": "Run",
-    "Python.print.executor": "Run",
-    "Python.sql.executor": "Run",
-    "Python.subparser_demo.executor": "Run",
-    "Python.system.executor": "Run",
-    "Python.test.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "master",
-    "ignore.virus.scanning.warn.message": "true",
-    "run.code.analysis.last.selected.profile": "aDefault",
-    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Python.Fgui.executor&quot;: &quot;Run&quot;,
+    &quot;Python.database.executor&quot;: &quot;Run&quot;,
+    &quot;Python.dyngooey.executor&quot;: &quot;Run&quot;,
+    &quot;Python.f.executor&quot;: &quot;Run&quot;,
+    &quot;Python.fgui.executor&quot;: &quot;Run&quot;,
+    &quot;Python.file_system_processors.executor&quot;: &quot;Run&quot;,
+    &quot;Python.file_types.executor&quot;: &quot;Run&quot;,
+    &quot;Python.filer.executor&quot;: &quot;Run&quot;,
+    &quot;Python.logtest.executor&quot;: &quot;Run&quot;,
+    &quot;Python.main.executor&quot;: &quot;Run&quot;,
+    &quot;Python.powershell.executor&quot;: &quot;Run&quot;,
+    &quot;Python.print.executor&quot;: &quot;Run&quot;,
+    &quot;Python.sql.executor&quot;: &quot;Run&quot;,
+    &quot;Python.subparser_demo.executor&quot;: &quot;Run&quot;,
+    &quot;Python.system.executor&quot;: &quot;Run&quot;,
+    &quot;Python.test.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;aDefault&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\Neil.FUTURITY\PycharmProjects\Filer\scripts" />
@@ -102,14 +101,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1736868367160</updated>
-    </task>
-    <task id="LOCAL-00092" summary="Finished file_types.py which now can download directly from the wikipedia website, cache the file locally and extract the extension data from it. It then stores the details in a csv file">
-      <option name="closed" value="true" />
-      <created>1738963162329</created>
-      <option name="number" value="00092" />
-      <option name="presentableId" value="LOCAL-00092" />
-      <option name="project" value="LOCAL" />
-      <updated>1738963162329</updated>
     </task>
     <task id="LOCAL-00093" summary="changed name of cached file to file_types.wikitext">
       <option name="closed" value="true" />
@@ -495,7 +486,15 @@
       <option name="project" value="LOCAL" />
       <updated>1740337382039</updated>
     </task>
-    <option name="localTasksCounter" value="141" />
+    <task id="LOCAL-00141" summary="Started work on changing database initialisation.&#10;- From now on, if the database doesn't exist, it is automatically created.&#10;- This way we can rely on the database being there, and can populate dropdowns etc, with useful values.">
+      <option name="closed" value="true" />
+      <created>1740339740647</created>
+      <option name="number" value="00141" />
+      <option name="presentableId" value="LOCAL-00141" />
+      <option name="project" value="LOCAL" />
+      <updated>1740339740647</updated>
+    </task>
+    <option name="localTasksCounter" value="142" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -525,7 +524,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Moved finding the volume and drive information to its own function" />
     <MESSAGE value="The Volume choice is now populated after running a command and clicking on edit." />
     <MESSAGE value="Fixed the '%' character error as it needs to be escaped for the command line, but not for the GUI" />
     <MESSAGE value="Moved some common code from filer.py to f.py" />
@@ -550,6 +548,7 @@
     <MESSAGE value="Started work on &quot;add_volume_files&quot;" />
     <MESSAGE value="Major changes, but is finally adding volumes." />
     <MESSAGE value="Add_volume label is reset after every submission" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add_volume label is reset after every submission" />
+    <MESSAGE value="Started work on changing database initialisation.&#10;- From now on, if the database doesn't exist, it is automatically created.&#10;- This way we can rely on the database being there, and can populate dropdowns etc, with useful values." />
+    <option name="LAST_COMMIT_MESSAGE" value="Started work on changing database initialisation.&#10;- From now on, if the database doesn't exist, it is automatically created.&#10;- This way we can rely on the database being there, and can populate dropdowns etc, with useful values." />
   </component>
 </project>

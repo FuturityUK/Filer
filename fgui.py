@@ -26,19 +26,38 @@ class Fgui:
 
         # If the database parameter has been specified, then the user wishes has told use to create a database in a non default location
         if database_filename is not None:
+            self.set_database_filename(database_filename)
+
+        # Get the stored database filename. Note that if it isn't defined yet, it will be set to the default
+        stored_database_filename = self.get_database_filename()
+        """
             if F.SUBCMD_SELECT_DATABASE not in self.configuration[self.CONFIGURATION_STORED_ARGS]:
                 self.configuration[self.CONFIGURATION_STORED_ARGS][F.SUBCMD_SELECT_DATABASE] = {}
             self.configuration[self.CONFIGURATION_STORED_ARGS][F.SUBCMD_SELECT_DATABASE]["db"] = database_filename
             logging.debug(f"self.configuration: {self.configuration}")
             # Store the modified configuration with the new database_filename
-            self.store_configuration()
-
-
-
+        """
         # get the script name without the extension & use it to build up
         # the json filename
         #script_name = os.path.splitext(os.path.basename(__file__))[0]
         #self.args_filename = "{}-args.json".format(script_name)
+
+    def get_database_filename(self):
+        logging.debug(f"### get_database_filename() ###")
+        if F.SUBCMD_SELECT_DATABASE not in self.configuration[self.CONFIGURATION_STORED_ARGS]:
+            # Database_filename hasn't been stored in the configuration file yet
+            logging.debug(f"Database_filename hasn't been stored in the configuration file yet, so store default default.")
+            self.set_database_filename(F.DEFAULT_DATABASE_FILENAME)
+        return self.configuration[self.CONFIGURATION_STORED_ARGS][F.SUBCMD_SELECT_DATABASE]["db"]
+
+    def set_database_filename(self, database_filename: str):
+        logging.debug(f"### set_database_filename() ###")
+        logging.debug(f"database_filename: {database_filename}")
+        if F.SUBCMD_SELECT_DATABASE not in self.configuration[self.CONFIGURATION_STORED_ARGS]:
+            self.configuration[self.CONFIGURATION_STORED_ARGS][F.SUBCMD_SELECT_DATABASE] = {}
+        self.configuration[self.CONFIGURATION_STORED_ARGS][F.SUBCMD_SELECT_DATABASE]["db"] = database_filename
+        logging.debug(f"self.configuration: {self.configuration}")
+        self.store_configuration()
 
     def store_configuration(self, args=None):
         logging.debug(f"### store_configuration() ###")
@@ -220,6 +239,14 @@ class Fgui:
         #f = F()
         self.f.process_args_and_call_subcommand(args)
 
+def print_help_and_exit():
+    print("Filer - File Cataloger")
+    print("Usage: filer.py [options]")
+    print("Options:")
+    print("  -h, --help                    show this help message and exit")
+    print("  -d, --db <database_filename>  specify the database filename")
+    sys.exit(0)
+
 if __name__ == "__main__":
     #my_logger = logging.getLogger(__name__)
     F.start_logger(logging.DEBUG)
@@ -237,16 +264,24 @@ if __name__ == "__main__":
         logging.debug(f"- {sys.argv[i]}")
 
     db_filename = None
-    """
-    if len(sys.argv) == 3 and sys.argv[1] == "gooey-seed-ui":
-        # In 'gooey-seed-ui' so don't do anything
-        logging.debug(f"In 'gooey-seed-ui' mode, so don't set the db_filename")
-        #db_filename = sys.argv[2]
-    elif len(sys.argv) == 2 and sys.argv[1] != "gooey-seed-ui":
-        # Not in "gooey-seed-ui" yet, so if an argument set, that's the db_filename
-        db_filename = sys.argv[1]
-        logging.debug(f"Not 'gooey-seed-ui' mode, so set the db_filename to {db_filename}")
-    """
+    if len(sys.argv) >= 2:
+        if sys.argv[1] == "gooey-seed-ui":
+            logging.debug(f"In 'gooey-seed-ui' mode")
+        else:
+            # Not in "gooey-seed-ui" yet, so if an argument set, that's the db_filename
+            logging.debug(f"Not in 'gooey-seed-ui' mode")
+            option = sys.argv[1]
+            if option == "-h" or option == "--help":
+                print_help_and_exit()
+            elif option == "-d" or option == "--db":
+                print("'--db' option detected")
+                if len(sys.argv) >= 3:
+                    db_filename = sys.argv[2]
+                    print(f"db_filename: {db_filename}")
+            else:
+                print("Unrecognised option.")
+                print_help_and_exit()
+
     fgui = Fgui(db_filename)
     fgui.init()
     fgui.seed()

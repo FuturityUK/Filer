@@ -373,12 +373,12 @@ class F:
             F.add_argument(parser, "--db", dest='db', default=F.DEFAULT_DATABASE_FILENAME,
                                 widget = 'FileSaver',
                                 metavar='Database Filename',
-                                help="Database filename (including path if necessary). Default='database.sqlite' in the current directory.")
+                                help="Database filename (including path if necessary). Default='database.sqlite' in the current directory.", gooey_options = {'visible': False})
         else:
             F.add_argument(parser, "--db", dest='db', default=F.DEFAULT_DATABASE_FILENAME,
                                 widget = 'FileChooser',
                                 metavar='Database Filename',
-                                help="Database filename (including path if necessary). Default='database.sqlite' in the current directory.")
+                                help="Database filename (including path if necessary). Default='database.sqlite' in the current directory.", gooey_options = {'visible': False})
 
     @staticmethod
     def add_verbose_argument_to_parser(parser, create: bool = False):
@@ -602,8 +602,8 @@ class F:
         self.add_subcommand_file_search_arguments_to_parser(subparsers)
         self.add_subcommand_add_volume_arguments_to_parser(subparsers)
         self.add_subcommand_refresh_volumes_arguments_to_parser(subparsers)
-        self.add_subcommand_create_database_arguments_to_parser(subparsers)
-        self.add_subcommand_select_database_arguments_to_parser(subparsers)
+        #self.add_subcommand_create_database_arguments_to_parser(subparsers)
+        #self.add_subcommand_select_database_arguments_to_parser(subparsers)
 
 
         """
