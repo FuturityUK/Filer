@@ -153,6 +153,7 @@ class Fgui:
             # Debug to show arguments past to the program
             #print(f"Program arguments:")
             #print(f"{F.dumps(vars(args))}")
+            #print(f"")
 
         # Now process the args
         #f = F()
@@ -189,12 +190,17 @@ if __name__ == "__main__":
             if option == "-h" or option == "--help":
                 print_help_and_exit()
             elif option == "-d" or option == "--db":
-                print("'--db' option detected")
+                #print("'--db' option detected")
                 if len(sys.argv) >= 3:
                     db_filename = sys.argv[2]
                     print(f"db_filename: {db_filename}")
+                else:
+                    print("<database_filename> not specified.")
+                    print("")
+                    print_help_and_exit()
             else:
                 print("Unrecognised option.")
+                print("")
                 print_help_and_exit()
 
     fgui = Fgui(db_filename)

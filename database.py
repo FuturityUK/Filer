@@ -98,7 +98,7 @@ class Database:
         :param parameters: Parameters to use in that statement - an iterable for ``where id = ?``
           parameters, or a dictionary for ``where id = :id``
         """
-        logging.debug(sql)
+        #logging.debug(sql)
         try:
             if parameters is not None:
                 return self.__cursor.execute(sql, parameters)
