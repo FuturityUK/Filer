@@ -76,6 +76,7 @@
 }</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Neil.FUTURITY\PycharmProjects\Filer\raw\images\readme-images" />
       <recent name="C:\Users\Neil.FUTURITY\PycharmProjects\Filer\scripts" />
       <recent name="C:\Users\Neil.FUTURITY\PycharmProjects\Filer" />
     </key>
@@ -98,22 +99,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1736868367160</updated>
-    </task>
-    <task id="LOCAL-00100" summary="Database.upgrade_database() now cycles through the SQL create and upgrade SQL in order">
-      <option name="closed" value="true" />
-      <created>1739129157280</created>
-      <option name="number" value="00100" />
-      <option name="presentableId" value="LOCAL-00100" />
-      <option name="project" value="LOCAL" />
-      <updated>1739129157280</updated>
-    </task>
-    <task id="LOCAL-00101" summary="Database.upgrade_database() now works">
-      <option name="closed" value="true" />
-      <created>1739133899654</created>
-      <option name="number" value="00101" />
-      <option name="presentableId" value="LOCAL-00101" />
-      <option name="project" value="LOCAL" />
-      <updated>1739133899654</updated>
     </task>
     <task id="LOCAL-00102" summary="filer.py: Split up code into functions that can be used by other programs&#10;f.py: Only scan volumes and add choices for argparse if no arguments provided to program">
       <option name="closed" value="true" />
@@ -491,7 +476,23 @@
       <option name="project" value="LOCAL" />
       <updated>1740494237309</updated>
     </task>
-    <option name="localTasksCounter" value="149" />
+    <task id="LOCAL-00149" summary="Added an example image">
+      <option name="closed" value="true" />
+      <created>1740494353022</created>
+      <option name="number" value="00149" />
+      <option name="presentableId" value="LOCAL-00149" />
+      <option name="project" value="LOCAL" />
+      <updated>1740494353022</updated>
+    </task>
+    <task id="LOCAL-00150" summary="Added an example image">
+      <option name="closed" value="true" />
+      <created>1740494605553</created>
+      <option name="number" value="00150" />
+      <option name="presentableId" value="LOCAL-00150" />
+      <option name="project" value="LOCAL" />
+      <updated>1740494605553</updated>
+    </task>
+    <option name="localTasksCounter" value="151" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">

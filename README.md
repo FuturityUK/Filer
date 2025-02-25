@@ -33,7 +33,7 @@ Install the following `pip` packages:
 Note that currently the `master` branch in GitHub is  work in progress and may not work. 
 I haven't created a separate development branch yet and then merging it with the `master` branch when its release ready. 
 
-### Usage  
+### Usage
 
 For now, just use the GUI interface. 
 
