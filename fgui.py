@@ -1,3 +1,4 @@
+from add_args import AddArgs
 from f import F
 from dyngooey import Gooey, GooeyParser, gooey_stdout, gooey_id
 import logging
@@ -32,7 +33,7 @@ class Fgui:
             #  - missing  => Left alone
 
             # Load labels
-            label_choices = [""]
+            label_choices = [AddArgs.SUBCMD_FILE_SEARCH_LABEL_ALL_LABELS]
             label_choices = [*label_choices, *self.f.database.find_filesystem_labels()]
             logging.debug(f"label_choices: {label_choices}")
             label_choice = self.f.get_configuration_value(self.f.CONFIG_CHOSEN_LABEL, None)
@@ -52,6 +53,7 @@ class Fgui:
                 'volume': volume_default_choice,
                 'db': self.f.database_filename,
                 'label': label_choice,
+                'results': AddArgs.SUBCMD_FILE_SEARCH_RESULTS_DEFAULT_CHOICE,
                 'test_required_1': None,  # This will be replaced with the initial value
                 # 'test_required_2' will be left alone
                 'test_optional_1': None,
@@ -68,7 +70,8 @@ class Fgui:
                 #    f'Random entry {i}' for i in range(__import__('random').randrange(30))
                 #],
                 'volume': volume_choices,
-                'label': label_choices
+                'label': label_choices,
+                'results': AddArgs.SUBCMD_FILE_SEARCH_RESULTS_CHOICES
                 #'volume': ["Neil", baker]
             }
             logging.info(f"dynamic_items: {dynamic_items}")

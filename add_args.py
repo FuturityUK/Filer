@@ -19,6 +19,10 @@ class AddArgs:
     SUBCMD_VACUUM_DATABASE: str = 'vacuum_db'
     SUBCMD_RESET_DATABASE: str = 'reset_db'
 
+    SUBCMD_FILE_SEARCH_LABEL_ALL_LABELS: str = ' '
+    SUBCMD_FILE_SEARCH_RESULTS_DEFAULT_CHOICE: str = '100'
+    SUBCMD_FILE_SEARCH_RESULTS_CHOICES: list = ['100', '250', '500', '1000', '10000', '100000']
+
     DEFAULT_DATABASE_FILENAME: str = 'AddArgs.DEFAULT_DATABASE_FILENAME'
 
     def __init__(self, f):
@@ -166,13 +170,16 @@ class AddArgs:
 - To find all files, use a % by itself.'''
         if AddArgs.is_std_argument_parser(subparsers):
             help_text = help_text.replace(r"%", r"%%")
-        AddArgs.add_argument(subparser_search_group, "-s", "--search", metavar='Search', default=None, help=help_text)
+        AddArgs.add_argument(subparser_search_group, "-s", "--search", metavar='Search', default="%", help=help_text)
         # ADD BACK WHEN FUNCTIONALITY IMPLEMENTED
         #if not AddArgs.is_std_argument_parser(subparsers):
         #    AddArgs.add_argument(subparser_search_group, "-c", "--category", dest='category', metavar='Category', choices=file_categories, nargs='?', help="Category of files to be considered")
         AddArgs.add_argument(subparser_search_group, "-l", "--label", dest='label', metavar='Label',
-                             widget = 'Dropdown', nargs = '?', default = None,
+                             widget = 'Dropdown', const='all', nargs = '?', default = None,
                              help="Label of the drive listing")
+        AddArgs.add_argument(subparser_search_group, dest='results', metavar='Results',
+                             widget = 'Dropdown', const='all', nargs = '?', default = AddArgs.SUBCMD_FILE_SEARCH_RESULTS_DEFAULT_CHOICE, choices=AddArgs.SUBCMD_FILE_SEARCH_RESULTS_CHOICES,
+                             help="Max number of results to display.")
         AddArgs.add_db_argument_to_parser(subparser_search_group)
         #AddArgs.add_verbose_argument_to_parser(subparser_search_group)
 

@@ -4,14 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Removed &quot;Select Option&quot; from the dropdown lists">
-      <change afterPath="$PROJECT_DIR$/scripts/delete_generated_files.bat" afterDir="false" />
+    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Tested version">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/add_args.py" beforeDir="false" afterPath="$PROJECT_DIR$/add_args.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/database.py" beforeDir="false" afterPath="$PROJECT_DIR$/database.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/f.py" beforeDir="false" afterPath="$PROJECT_DIR$/f.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/fgui.py" beforeDir="false" afterPath="$PROJECT_DIR$/fgui.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/file_system_processors.py" beforeDir="false" afterPath="$PROJECT_DIR$/file_system_processors.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sql.py" beforeDir="false" afterPath="$PROJECT_DIR$/sql.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -107,14 +106,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1736868367160</updated>
-    </task>
-    <task id="LOCAL-00104" summary="Still loads more debug required to work out how it works and then find a solutions (dictionary of subcommands, containing dictionary of default values)">
-      <option name="closed" value="true" />
-      <created>1739225215590</created>
-      <option name="number" value="00104" />
-      <option name="presentableId" value="LOCAL-00104" />
-      <option name="project" value="LOCAL" />
-      <updated>1739225215590</updated>
     </task>
     <task id="LOCAL-00105" summary="More arguments testing">
       <option name="closed" value="true" />
@@ -500,7 +491,15 @@
       <option name="project" value="LOCAL" />
       <updated>1740496100324</updated>
     </task>
-    <option name="localTasksCounter" value="153" />
+    <task id="LOCAL-00153" summary="Tested version">
+      <option name="closed" value="true" />
+      <created>1740506671664</created>
+      <option name="number" value="00153" />
+      <option name="presentableId" value="LOCAL-00153" />
+      <option name="project" value="LOCAL" />
+      <updated>1740506671664</updated>
+    </task>
+    <option name="localTasksCounter" value="154" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -530,7 +529,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="dyngooey.py&#10;- commented out &quot;with _self.retainSelection()&quot; as it had an indexing issue.&#10;&#10;f.py&#10;- now saves the volume information to a file when the &quot;refresh volumes&quot; subcommand run&#10;- now loads the volume information previously save if it is available&#10;&#10;fgui.py&#10;- further tests to set choice (dropdown) values" />
     <MESSAGE value="dyngooey.py&#10;- now selects the default value in the dropdown / choices" />
     <MESSAGE value="The Volumes dropdown menu now works" />
     <MESSAGE value="Added header descriptions for the subcommand actions by using groups." />
@@ -555,6 +553,7 @@
     <MESSAGE value="Initial README.md" />
     <MESSAGE value="Added an example image" />
     <MESSAGE value="Removed &quot;Select Option&quot; from the dropdown lists" />
-    <option name="LAST_COMMIT_MESSAGE" value="Removed &quot;Select Option&quot; from the dropdown lists" />
+    <MESSAGE value="Tested version" />
+    <option name="LAST_COMMIT_MESSAGE" value="Tested version" />
   </component>
 </project>

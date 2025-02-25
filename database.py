@@ -240,7 +240,7 @@ class Database:
                         print(f"Database upgraded to version {new_db_version} complete.")
         self.commit()
 
-    def find_filenames_exact_match(self, filename: str, file_type: str, label: str = None):
+    def find_filenames_exact_match(self, filename: str, file_type: str, label: str = None, results: int = None):
         """
         if label is None:
             self.find_filenames(
@@ -253,9 +253,9 @@ class Database:
                 [filename, label]
             )
         """
-        return self.find_filenames_search(filename, file_type, label, False)
+        return self.find_filenames_search(filename, file_type, label, results, False)
 
-    def find_filenames_search(self, file_search: str, file_category: str, label: str = None, like: bool = True):
+    def find_filenames_search(self, file_search: str, file_category: str, label: str = None, results: int = None, like: bool = True):
         sql_string = self.__sql_dictionary["find_filename_base"]
         sql_argument_array = []
         clause_added = False
@@ -288,7 +288,14 @@ class Database:
             sql_argument_array.append(label)
 
         # Add table join
-        sql_string += " " + self.__sql_dictionary["find_filename_post"]
+        sql_string += " " + self.__sql_dictionary["find_filename_join"]
+
+        # Limit results clause
+        if results is not None:
+            sql_string += self.__sql_dictionary["find_filename_limit_clause"]
+            sql_argument_array.append(results)
+
+        sql_string += ";"
 
         # Run the SQL
         logging.debug(f"sql_string: {sql_string}")

@@ -168,8 +168,12 @@ class SQLDictionary:
                 fs.Label = ?
             '''
 
-        self.sql_dictionary["find_filename_post"] = '''
-                AND fse.FileSystemID = fs.FileSystemID;
+        self.sql_dictionary["find_filename_join"] = '''
+                AND fse.FileSystemID = fs.FileSystemID
+            '''
+
+        self.sql_dictionary["find_filename_limit_clause"] = '''
+                LIMIT ?
             '''
 
         self.sql_dictionary["find_filename_like_with_label"] = '''

@@ -176,14 +176,22 @@ class F:
         search = args.search # if "search" in args else None
         category = args.category if "category" in args else None
         label = args.label # if "label" in args else None
+        label = None if label == AddArgs.SUBCMD_FILE_SEARCH_LABEL_ALL_LABELS else label
+        results = 0
+        try:
+            results = int(args.results) # if "results" in args else None
+        except ValueError:
+            # Handle the exception
+            self.exit_cleanly(self.EXIT_ERROR, f'Results value "{args.results}" is not an integer!')
         if search is None and category is None and label is None:
             self.exit_cleanly(self.EXIT_ERROR, "No search terms provided")
         self.print_message_based_on_parser(None, f"Finding files & dirs matching:")
         if search is not None and search != "": self.print_message_based_on_parser(None, f" - search: '{search}'")
         #if category is not None and category != "": self.print_message_based_on_parser(None, f" - category: '{category}'")
         if label is not None and label != "": self.print_message_based_on_parser(None, f" - label: '{label}'")
+        self.print_message_based_on_parser(None, f" - results: '{results}'")
         self.print_message_based_on_parser(None, "")
-        select_result = self.database.find_filenames_search(search, category, label)
+        select_result = self.database.find_filenames_search(search, category, label, results)
         rows_found = 0
         for row in select_result:
             if label is not None and row[1] == label:
@@ -502,10 +510,13 @@ class F:
 
         database_changed = False
         if 'db' in args:
-            #self.configuration[self.CONFIG_ARGS][AddArgs.SUBCMD_SELECT_DATABASE]["db"] = args.db
             self.set_configuration_value(self.CONFIG_DATABASE_FILENAME, args.db, self.DEFAULT_DATABASE_FILENAME)
             database_changed = True
             logging.debug(f"database_filename: {args.db}'")
+
+        if 'label' in args:
+            self.set_configuration_value(self.CONFIG_CHOSEN_LABEL, args.label, None)
+            logging.debug(f"label: {args.label}'")
 
         # Save the configuration first, as selecting the database or processing the arguments may result in an error
         self.store_configuration(args)
