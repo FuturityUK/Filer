@@ -4,10 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="- Argument code mostly moved to add_args.py&#10;- Some common code in fgui.py moved to f.py&#10;- Basic checks to see if label exists in the database when adding a volume (no error yet)">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Initial README.md">
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/to_do.txt" beforeDir="false" afterPath="$PROJECT_DIR$/to_do.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -102,14 +100,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1736868367160</updated>
-    </task>
-    <task id="LOCAL-00098" summary="Database 'create' subcommand works, but should really be moved to the Database class">
-      <option name="closed" value="true" />
-      <created>1739115263485</created>
-      <option name="number" value="00098" />
-      <option name="presentableId" value="LOCAL-00098" />
-      <option name="project" value="LOCAL" />
-      <updated>1739115263485</updated>
     </task>
     <task id="LOCAL-00099" summary="Added DBVersion &quot;2&quot; upgrade SQL.&#10;It's not being run yet though.">
       <option name="closed" value="true" />
@@ -495,7 +485,15 @@
       <option name="project" value="LOCAL" />
       <updated>1740488388939</updated>
     </task>
-    <option name="localTasksCounter" value="147" />
+    <task id="LOCAL-00147" summary="Initial README.md">
+      <option name="closed" value="true" />
+      <created>1740493708621</created>
+      <option name="number" value="00147" />
+      <option name="presentableId" value="LOCAL-00147" />
+      <option name="project" value="LOCAL" />
+      <updated>1740493708621</updated>
+    </task>
+    <option name="localTasksCounter" value="148" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -525,7 +523,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Still experimenting with ways to persist data.&#10;- Seeding fixed&#10;- Turned on the loading and saving of Gooey dumps, but the load and save only happen at the very start of the program." />
     <MESSAGE value="Still experimenting with ways to persist data.&#10;- Turned off Gooey Config backup dump and Load" />
     <MESSAGE value="INSERT REFRESH_VOLUME TRUE / FALSE IN THAT SUBCOMMAND.&#10;HARDCODE INTO process_actions THAT WHEN IT SEES THAT REFRESH_VOLUME field = True, then populate VOLUME ARRAY.&#10;&#10;OR JUST STORE THE VOLUME DATA STRUCTURE IN A JSON FILE AND LOAD IT INTO THE SEED FUNCTION EVERY TIME. WOULD BE FASTER" />
     <MESSAGE value="dyngooey.py&#10;- commented out &quot;with _self.retainSelection()&quot; as it had an indexing issue.&#10;&#10;f.py&#10;- now saves the volume information to a file when the &quot;refresh volumes&quot; subcommand run&#10;- now loads the volume information previously save if it is available&#10;&#10;fgui.py&#10;- further tests to set choice (dropdown) values" />
@@ -550,6 +547,7 @@
     <MESSAGE value="Configuration storage functions moved to f.py&#10;Volume details now stored in the configuration file." />
     <MESSAGE value="First Tidy version" />
     <MESSAGE value="- Argument code mostly moved to add_args.py&#10;- Some common code in fgui.py moved to f.py&#10;- Basic checks to see if label exists in the database when adding a volume (no error yet)" />
-    <option name="LAST_COMMIT_MESSAGE" value="- Argument code mostly moved to add_args.py&#10;- Some common code in fgui.py moved to f.py&#10;- Basic checks to see if label exists in the database when adding a volume (no error yet)" />
+    <MESSAGE value="Initial README.md" />
+    <option name="LAST_COMMIT_MESSAGE" value="Initial README.md" />
   </component>
 </project>
