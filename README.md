@@ -48,3 +48,5 @@ If you prefer that the database is stored somewhere else, you can specify its lo
 
     python fgui.py -d <database_filename>
 
+Note that after you have specified the database filename (and path) once, it's stored in the configuration 
+file, and you don't need to specify it again.
