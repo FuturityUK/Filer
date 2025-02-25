@@ -4,12 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="First Tidy version">
-      <change afterPath="$PROJECT_DIR$/add_args.py" afterDir="false" />
+    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="- Argument code mostly moved to add_args.py&#10;- Some common code in fgui.py moved to f.py&#10;- Basic checks to see if label exists in the database when adding a volume (no error yet)">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database.py" beforeDir="false" afterPath="$PROJECT_DIR$/database.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/f.py" beforeDir="false" afterPath="$PROJECT_DIR$/f.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fgui.py" beforeDir="false" afterPath="$PROJECT_DIR$/fgui.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/to_do.txt" beforeDir="false" afterPath="$PROJECT_DIR$/to_do.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -104,14 +102,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1736868367160</updated>
-    </task>
-    <task id="LOCAL-00097" summary="add_argument() now strips out Gooey 'widget' attributes if non GUI versions running.&#10;Started migrating add_argument native functions over to custom F.add_argument() function.">
-      <option name="closed" value="true" />
-      <created>1739114101341</created>
-      <option name="number" value="00097" />
-      <option name="presentableId" value="LOCAL-00097" />
-      <option name="project" value="LOCAL" />
-      <updated>1739114101341</updated>
     </task>
     <task id="LOCAL-00098" summary="Database 'create' subcommand works, but should really be moved to the Database class">
       <option name="closed" value="true" />
@@ -497,7 +487,15 @@
       <option name="project" value="LOCAL" />
       <updated>1740425578186</updated>
     </task>
-    <option name="localTasksCounter" value="146" />
+    <task id="LOCAL-00146" summary="- Argument code mostly moved to add_args.py&#10;- Some common code in fgui.py moved to f.py&#10;- Basic checks to see if label exists in the database when adding a volume (no error yet)">
+      <option name="closed" value="true" />
+      <created>1740488388939</created>
+      <option name="number" value="00146" />
+      <option name="presentableId" value="LOCAL-00146" />
+      <option name="project" value="LOCAL" />
+      <updated>1740488388939</updated>
+    </task>
+    <option name="localTasksCounter" value="147" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -527,7 +525,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="- Moved common code to f.py&#10;- Loading of the system Volume information (which is a slow process) doesn't happen when the program is run. The user has to manually trigger it using the &quot;refresh-volumes&quot; subcommand which is only available in the GUI." />
     <MESSAGE value="Still experimenting with ways to persist data.&#10;- Seeding fixed&#10;- Turned on the loading and saving of Gooey dumps, but the load and save only happen at the very start of the program." />
     <MESSAGE value="Still experimenting with ways to persist data.&#10;- Turned off Gooey Config backup dump and Load" />
     <MESSAGE value="INSERT REFRESH_VOLUME TRUE / FALSE IN THAT SUBCOMMAND.&#10;HARDCODE INTO process_actions THAT WHEN IT SEES THAT REFRESH_VOLUME field = True, then populate VOLUME ARRAY.&#10;&#10;OR JUST STORE THE VOLUME DATA STRUCTURE IN A JSON FILE AND LOAD IT INTO THE SEED FUNCTION EVERY TIME. WOULD BE FASTER" />
@@ -552,6 +549,7 @@
     <MESSAGE value="Fgui.py arguments added for help and setting alternative Database filename / path.&#10;Database subcommands turned off for the moment" />
     <MESSAGE value="Configuration storage functions moved to f.py&#10;Volume details now stored in the configuration file." />
     <MESSAGE value="First Tidy version" />
-    <option name="LAST_COMMIT_MESSAGE" value="First Tidy version" />
+    <MESSAGE value="- Argument code mostly moved to add_args.py&#10;- Some common code in fgui.py moved to f.py&#10;- Basic checks to see if label exists in the database when adding a volume (no error yet)" />
+    <option name="LAST_COMMIT_MESSAGE" value="- Argument code mostly moved to add_args.py&#10;- Some common code in fgui.py moved to f.py&#10;- Basic checks to see if label exists in the database when adding a volume (no error yet)" />
   </component>
 </project>

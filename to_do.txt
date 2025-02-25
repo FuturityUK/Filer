@@ -5,6 +5,10 @@ To DO:
 - Option to force deletion of a Volume's filesystem with a label if it already exists.
   - Perhaps with Popup warning box with Yes / No, or OK / cancel?
 
+- PopUp Boxes to ask user questions
+  - Using "from formlayout import fedit"
+  - Example: https://github.com/chriskiehl/Gooey/issues/222
+
 - visual disk
 make vpool
 model vdisk
