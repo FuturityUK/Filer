@@ -15,10 +15,7 @@ class Fgui:
 
     def init(self):
         logging.debug(f"### init() ###")
-        logging.info(f"Initialising Argument Parser Arguments...")
-        self.f.add_subcommands_to_parser(self.parser)
-
-        #self.parser.set_defaults(**self.stored_args)
+        self.f.init()
 
     def seed(self, clear=None):
         logging.debug(f"### seed() ###")
@@ -143,21 +140,15 @@ class Fgui:
         logging.info(f"### main() ###")
         args = self.parser.parse_args()
 
-        """
-        temp_args = self.stored_args.copy()
-        for key, value in vars(args).items():
-            temp_args[key] = value
-        """
         if not gooey_stdout():
             pass
             # Debug to show arguments past to the program
-            #print(f"Program arguments:")
-            #print(f"{F.dumps(vars(args))}")
-            #print(f"")
+            print(f"Program arguments:")
+            print(f"{F.dumps(vars(args))}")
+            print(f"")
 
         # Now process the args
-        #f = F()
-        self.f.process_args_and_call_subcommand(args)
+        self.f.main()
 
 def print_help_and_exit():
     print("Filer - File Cataloger")

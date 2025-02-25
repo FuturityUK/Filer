@@ -340,6 +340,13 @@ class Database:
         logging.debug(f"New row driveid: \"{drive_id}\"")
         return drive_id
 
+    def does_label_exists(self, label: str):
+        filesystem_ids = self.find_filesystem_id(label)
+        if len(filesystem_ids) > 0:
+            return True
+        else:
+            return False
+
     def find_filesystem_id(self, label: str):
         logging.debug(f"SQL Query: \"{self.__sql_dictionary["find_filesystem_id"]}\"")
         logging.debug(f"label: \"{label}\"")

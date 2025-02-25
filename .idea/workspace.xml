@@ -4,7 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Configuration storage functions moved to f.py&#10;Volume details now stored in the configuration file.">
+    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="First Tidy version">
+      <change afterPath="$PROJECT_DIR$/add_args.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/database.py" beforeDir="false" afterPath="$PROJECT_DIR$/database.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/f.py" beforeDir="false" afterPath="$PROJECT_DIR$/f.py" afterDir="false" />
@@ -103,22 +104,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1736868367160</updated>
-    </task>
-    <task id="LOCAL-00095" summary="Find and Search subcommands now share the same code">
-      <option name="closed" value="true" />
-      <created>1739030224284</created>
-      <option name="number" value="00095" />
-      <option name="presentableId" value="LOCAL-00095" />
-      <option name="project" value="LOCAL" />
-      <updated>1739030224284</updated>
-    </task>
-    <task id="LOCAL-00096" summary="Fixed passing *args and **kwargs">
-      <option name="closed" value="true" />
-      <created>1739035631960</created>
-      <option name="number" value="00096" />
-      <option name="presentableId" value="LOCAL-00096" />
-      <option name="project" value="LOCAL" />
-      <updated>1739035631960</updated>
     </task>
     <task id="LOCAL-00097" summary="add_argument() now strips out Gooey 'widget' attributes if non GUI versions running.&#10;Started migrating add_argument native functions over to custom F.add_argument() function.">
       <option name="closed" value="true" />
@@ -496,7 +481,23 @@
       <option name="project" value="LOCAL" />
       <updated>1740419225577</updated>
     </task>
-    <option name="localTasksCounter" value="144" />
+    <task id="LOCAL-00144" summary="First Tidy version">
+      <option name="closed" value="true" />
+      <created>1740425555735</created>
+      <option name="number" value="00144" />
+      <option name="presentableId" value="LOCAL-00144" />
+      <option name="project" value="LOCAL" />
+      <updated>1740425555735</updated>
+    </task>
+    <task id="LOCAL-00145" summary="First Tidy version">
+      <option name="closed" value="true" />
+      <created>1740425578186</created>
+      <option name="number" value="00145" />
+      <option name="presentableId" value="LOCAL-00145" />
+      <option name="project" value="LOCAL" />
+      <updated>1740425578186</updated>
+    </task>
+    <option name="localTasksCounter" value="146" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -526,7 +527,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Moved some common code from filer.py to f.py" />
     <MESSAGE value="- Moved common code to f.py&#10;- Loading of the system Volume information (which is a slow process) doesn't happen when the program is run. The user has to manually trigger it using the &quot;refresh-volumes&quot; subcommand which is only available in the GUI." />
     <MESSAGE value="Still experimenting with ways to persist data.&#10;- Seeding fixed&#10;- Turned on the loading and saving of Gooey dumps, but the load and save only happen at the very start of the program." />
     <MESSAGE value="Still experimenting with ways to persist data.&#10;- Turned off Gooey Config backup dump and Load" />
@@ -551,6 +551,7 @@
     <MESSAGE value="Started work on changing database initialisation.&#10;- From now on, if the database doesn't exist, it is automatically created.&#10;- This way we can rely on the database being there, and can populate dropdowns etc, with useful values." />
     <MESSAGE value="Fgui.py arguments added for help and setting alternative Database filename / path.&#10;Database subcommands turned off for the moment" />
     <MESSAGE value="Configuration storage functions moved to f.py&#10;Volume details now stored in the configuration file." />
-    <option name="LAST_COMMIT_MESSAGE" value="Configuration storage functions moved to f.py&#10;Volume details now stored in the configuration file." />
+    <MESSAGE value="First Tidy version" />
+    <option name="LAST_COMMIT_MESSAGE" value="First Tidy version" />
   </component>
 </project>

@@ -21,7 +21,6 @@ import tracemalloc
 import argparse
 import os.path
 from system import System
-from file_types import FileTypes
 import time
 import socket
 import logging
@@ -30,6 +29,7 @@ from format import Format
 from datetime import datetime
 import json
 #from print import Print
+from add_args import AddArgs
 
 class F:
 
@@ -41,16 +41,6 @@ class F:
 
     DEFAULT_DATABASE_FILENAME: str = 'database.sqlite'
     DEFAULT_TEMP_LISTING_FILE: str = 'filer.fwf.tmp'
-
-    SUBCMD_FILE_SEARCH: str = 'file_search'
-    SUBCMD_REFRESH_VOLUMES: str = 'refresh_volumes'
-    SUBCMD_ADD_VOLUME: str = 'add_volume'
-    SUBCMD_IMPORT_VOLUME: str = 'import_volume'
-    SUBCMD_CREATE_DATABASE: str = 'create_db'
-    SUBCMD_SELECT_DATABASE: str = 'select_db'
-    SUBCMD_UPGRADE_DATABASE: str = 'upgrade_db'
-    SUBCMD_VACUUM_DATABASE: str = 'vacuum_db'
-    SUBCMD_RESET_DATABASE: str = 'reset_db'
 
     VOL_ARG_DETAILS_CHOICES: str = 'choices'
     VOL_ARG_DETAILS_DEFAULT_CHOICE: str = 'default_choice'
@@ -97,18 +87,18 @@ class F:
     
     def get_database_filename_in_configuration(self):
         logging.debug(f"### get_database_filename() ###")
-        if F.SUBCMD_SELECT_DATABASE not in self.configuration[self.CONFIG_ARGS]:
+        if AddArgs.SUBCMD_SELECT_DATABASE not in self.configuration[self.CONFIG_ARGS]:
             # Database_filename hasn't been stored in the configuration file yet
             logging.debug(f"Database_filename hasn't been stored in the configuration file yet, so store default default.")
             self.set_database_filename_in_configuration(F.DEFAULT_DATABASE_FILENAME)
-        return self.configuration[self.CONFIG_ARGS][F.SUBCMD_SELECT_DATABASE]["db"]
+        return self.configuration[self.CONFIG_ARGS][AddArgs.SUBCMD_SELECT_DATABASE]["db"]
 
     def set_database_filename_in_configuration(self, database_filename: str):
         logging.debug(f"### set_database_filename() ###")
         logging.debug(f"database_filename: {database_filename}")
-        if F.SUBCMD_SELECT_DATABASE not in self.configuration[self.CONFIG_ARGS]:
-            self.configuration[self.CONFIG_ARGS][F.SUBCMD_SELECT_DATABASE] = {}
-        self.configuration[self.CONFIG_ARGS][F.SUBCMD_SELECT_DATABASE]["db"] = database_filename
+        if AddArgs.SUBCMD_SELECT_DATABASE not in self.configuration[self.CONFIG_ARGS]:
+            self.configuration[self.CONFIG_ARGS][AddArgs.SUBCMD_SELECT_DATABASE] = {}
+        self.configuration[self.CONFIG_ARGS][AddArgs.SUBCMD_SELECT_DATABASE]["db"] = database_filename
         logging.debug(f"self.configuration: {self.configuration}")
         self.store_configuration()
 
@@ -139,7 +129,7 @@ class F:
 
     @staticmethod
     def dumps(data):
-        logging.debug(f"### dumps() ###")
+        logging.debug("### dumps() ###")
         return json.dumps(data, indent=4, default=str)
 
     @staticmethod
@@ -156,14 +146,8 @@ class F:
         logging.info(f"Application started: {os.path.basename(__file__)}")
         logging.info("******************************************")
 
-    def get_message_based_on_parser(self, argumentparser_message, non_argumentparser_message):
-        if type(self.parser) is argparse.ArgumentParser:
-            return argumentparser_message
-        else:
-            return non_argumentparser_message
-
     def print_message_based_on_parser(self, argumentparser_message, non_argumentparser_message):
-        message = self.get_message_based_on_parser(argumentparser_message, non_argumentparser_message)
+        message = AddArgs.get_message_based_on_parser(self.parser, argumentparser_message, non_argumentparser_message)
         print(message)
 
     def clean_up(self):
@@ -175,7 +159,7 @@ class F:
     def exit_cleanly(self, level, argumentparser_message: str = None, non_argumentparser_message: str = None):
         if non_argumentparser_message is None:
             non_argumentparser_message = argumentparser_message
-        message = self.get_message_based_on_parser(argumentparser_message, non_argumentparser_message)
+        message = AddArgs.get_message_based_on_parser(self.parser, argumentparser_message, non_argumentparser_message)
         if level == 0:
             logging.info("Application ended successfully")
             logging.info(message)
@@ -300,6 +284,12 @@ class F:
             print(f'Make: "{import_listing_values["make"]}"')
             print(f'Model: "{import_listing_values["model"]}"')
             print(f'Serial: "{import_listing_values["serial_number"]}"')
+            print('')
+
+            # Check if Label exists in the Database
+            if self.database.does_label_exists(label):
+                print(f'Label "{label}" already exists in the Database!')
+                pass
 
             print('')
             print('Generating the Volume Listing ...')
@@ -362,7 +352,7 @@ class F:
         F.does_database_directory_exist(database_filename)
         if os.path.isfile(database_filename):
             print(f"Database file already exists at location: \"{os.path.abspath(database_filename)}\"")
-            print(f"To empty the database, use the \'{F.SUBCMD_RESET_DATABASE}\' subcommand.")
+            print(f"To empty the database, use the \'{AddArgs.SUBCMD_RESET_DATABASE}\' subcommand.")
             exit(2)
         print(f"Creating database file...")
         self.database = Database(database_filename)
@@ -414,49 +404,6 @@ class F:
         powershell_filesystem_listing.save_to_database()
 
         powershell_filesystem_listing.import_listing()
-
-    @staticmethod
-    def add_argument(parser, *temp_args, **temp_kwargs): # : Optional[Union[Iterable, dict]]
-        #logging.debug(f"### F.create_volume_options() ###")
-        #parser.add_argument(temp_args, temp_kwargs)
-        #logging.debug(f"type(parser): {type(parser)}")
-        #logging.debug(f"BEFORE: temp_kwargs: {temp_kwargs}")
-        if type(parser) is argparse.ArgumentParser or type(parser) is argparse._ArgumentGroup:
-            # Remove GooeyParser parameters as they aren't compatible with the ArgumentParser
-            #logging.debug(f"== argparse.ArgumentParser")
-            temp_kwargs.pop("metavar", None)
-            temp_kwargs.pop("widget", None)
-            temp_kwargs.pop("gooey_options", None)
-            temp_kwargs.pop("prog", None)
-        #logging.debug(f"AFTER : temp_kwargs: {temp_kwargs}")
-        parser.add_argument( *temp_args, **temp_kwargs )
-
-    @staticmethod
-    def add_db_argument_to_parser(parser, create: bool=False):
-        #print(f"Parser type: {type(parser)}")
-        """
-        if type(parser) is argparse.ArgumentParser:
-            F.add_argument(parser, "-d", "--db", dest='db', default=F.DEFAULT_DATABASE_FILENAME,
-                            help="database filename (including path if necessary). Default='database.sqlite' in the current directory.")
-        else:
-        """
-        if create:
-            F.add_argument(parser, "--db", dest='db', default=F.DEFAULT_DATABASE_FILENAME,
-                                widget = 'FileSaver',
-                                metavar='Database Filename',
-                                help="Database filename (including path if necessary). Default='database.sqlite' in the current directory.", gooey_options = {'visible': F.SHOW_DB_FILENAME_ARG_IN_GUI})
-        else:
-            F.add_argument(parser, "--db", dest='db', default=F.DEFAULT_DATABASE_FILENAME,
-                                widget = 'FileChooser',
-                                metavar='Database Filename',
-                                help="Database filename (including path if necessary). Default='database.sqlite' in the current directory.", gooey_options = {'visible': F.SHOW_DB_FILENAME_ARG_IN_GUI})
-
-    @staticmethod
-    def add_verbose_argument_to_parser(parser, create: bool = False):
-        F.add_argument(parser, "-v", "--verbose", dest='verbose', default=False,
-                            action="store_true",
-                            metavar='Verbose',
-                            help="Verbose output")
 
     def load_volume_drive_details(self):
         logging.debug(f"### F.load_volume_drive_details() ###")
@@ -558,167 +505,6 @@ class F:
         # Store Volume details
         self.store_configuration()
 
-    @staticmethod
-    def add_subcommand_file_search_arguments_to_parser(subparsers):
-        logging.debug(f"### F.add_subcommand_file_search_arguments_to_parser() ###")
-
-        file_categories = FileTypes.get_file_categories()
-        #print(f"file_categories: {file_categories}")
-
-        subparser_search = subparsers.add_parser(F.SUBCMD_FILE_SEARCH,
-                                            help=F.SUBCMD_FILE_SEARCH+' help', prog='File Search',
-                                            description='Search for files based on search strings')
-        subparser_search_group = subparser_search.add_argument_group(
-            'Search for files',
-            description='Search for files based on search strings'
-        )
-        help_text = '''Search string to be found within filenames
-- if search doesn't include '%' or '_' characters, then it is a fast exact case-sensitive search
-- if search includes '%' or '_' characters, then it is a slower pattern match case-insensitive search
-- '%' wildcard matches any sequence of zero or more characters
-- '_' wildcard matches exactly one character'''
-        if type(subparsers) is argparse.ArgumentParser:
-            help_text = help_text.replace(r"%", r"%%")
-        F.add_argument(subparser_search_group, "-s", "--search", metavar='Search', default=None, help=help_text)
-        # ADD BACK WHEN FUNCTIONALITY IMPLEMENTED
-        #if type(subparsers) is not argparse.ArgumentParser:
-        #    F.add_argument(subparser_search_group, "-c", "--category", dest='category', metavar='Category', choices=file_categories, nargs='?', help="Category of files to be considered")
-        F.add_argument(subparser_search_group, "-l", "--label", dest='label', metavar='Label', default=None, help="Label of the drive listing")
-        F.add_db_argument_to_parser(subparser_search_group)
-        #F.add_verbose_argument_to_parser(subparser_search_group)
-
-    def add_subcommand_add_volume_arguments_to_parser(self, subparsers):
-        logging.debug(f"### F.add_subcommand_add_volume_arguments_to_parser() ###")
-        # Only add the 'add' subcommand to the GUI
-        if type(subparsers) is not argparse.ArgumentParser:
-            # create the parser for the "add" subcommand
-            subparser_add_volume = subparsers.add_parser(F.SUBCMD_ADD_VOLUME, help=F.SUBCMD_ADD_VOLUME+' help', prog='Add Volume Files', description='Add Files on a selected Volume to the Database')
-            subparser_add_volume_group = subparser_add_volume.add_argument_group(
-                'Add Volume Files to Database',
-                description='Add Files on a selected Volume to the Database'
-            )
-            help_text = f'''Volume that you wish to add.
-- If you don't see your volume, please use the {self.get_message_based_on_parser("'refresh_volumes' subcommand", "'Refresh Volumes List' action.")}
-- Values last updated: {self.configuration[self.CONFIG_VOL_DETAILS][self.VOL_ARG_DETAILS_CREATED]}'''
-            if type(subparsers) is argparse.ArgumentParser:
-                help_text = help_text.replace(r"%", r"%%")
-            F.add_argument(subparser_add_volume_group, "--volume", dest='volume', metavar='Volume', widget='Dropdown',
-                                       nargs='?', default=None, help=help_text)
-            #F.add_argument(subparser_add_volume_group, "-l", "--label", dest='label', metavar='Label', default=None, help="Label of the drive listing. If provided it will override the volume label.",
-            F.add_argument(subparser_add_volume_group, "--add_label", dest='add_label', metavar='Label',
-                                          default=None,
-                                          help="Label of the drive listing. If provided it will override the volume label.",
-                                          #gooey_options={ 'initial_value': "Hell" }
-                           )
-            hostname = socket.gethostname()
-            F.add_argument(subparser_add_volume_group, "-n", "--hostname", dest='hostname', metavar='Hostname', default=hostname,
-                                          help="Hostname of the machine containing the drive")
-            F.add_db_argument_to_parser(subparser_add_volume_group)
-            F.add_verbose_argument_to_parser(subparser_add_volume_group)
-
-    @staticmethod
-    def add_subcommand_refresh_volumes_arguments_to_parser(subparsers):
-        logging.debug(f"### F.add_subcommand_refresh_volumes_arguments_to_parser() ###")
-        # Only add the 'add' subcommand to the GUI
-        if type(subparsers) is not argparse.ArgumentParser:
-            # create the parser for the "add" subcommand
-            subparser_refresh_volumes = subparsers.add_parser(F.SUBCMD_REFRESH_VOLUMES, help=F.SUBCMD_REFRESH_VOLUMES+' help', prog='Refresh Volumes List', description='Refresh the List of Volumes that appear on the "Add_Volumes" action page.')
-            subparser_refresh_volumes_group = subparser_refresh_volumes.add_argument_group(
-                'Refresh Volumes List',
-                description='Refresh the List of Volumes that appear on the "Add_Volumes" action page.'
-            )
-            F.add_argument(subparser_refresh_volumes_group, "-i", "--invisible", dest='invisible', metavar='Invisible',
-                           action='store_true', default=True,
-                           help="Invisible checkbox", gooey_options = {'visible': False})
-
-    @staticmethod
-    def add_subcommand_create_database_arguments_to_parser(subparsers):
-        logging.debug(f"### F.add_subcommand_create_database_arguments_to_parser() ###")
-        subparser_create_database = subparsers.add_parser(F.SUBCMD_CREATE_DATABASE,
-                                              help=F.SUBCMD_CREATE_DATABASE+' help', prog='Create Database',
-                                              description='Create a new database')
-        subparser_create_database_group = subparser_create_database.add_argument_group(
-            'Create Database',
-            description='Create a new database.'
-        )
-        F.add_db_argument_to_parser(subparser_create_database_group, True)
-        #F.add_verbose_argument_to_parser(subparser_create_database_group)
-
-    @staticmethod
-    def add_subcommand_select_database_arguments_to_parser(subparsers):
-        logging.debug(f"### F.add_subcommand_select_database_arguments_to_parser() ###")
-        subparser_select_database = subparsers.add_parser(F.SUBCMD_SELECT_DATABASE,
-                                              help=F.SUBCMD_SELECT_DATABASE+' help', prog='Select Database',
-                                              description='Select the database you wish to use, including the path to the database file.')
-        subparser_select_database_group = subparser_select_database.add_argument_group(
-            'Select Database',
-            description='Select the database you wish to use, including the path to the database file.'
-        )
-        F.add_argument(subparser_select_database_group, "db", default=F.DEFAULT_DATABASE_FILENAME,
-                       widget='FileChooser',
-                       metavar='Database Filename',
-                       help="Database filename (including the path if not in the current directory). Default='database.sqlite' in the current directory.")
-        #F.add_db_argument_to_parser(subparser_select_database_group, False)
-        #F.add_verbose_argument_to_parser(subparser_create_database_group)
-
-    def add_subcommands_to_parser(self, parser):
-        logging.debug(f"### F.add_subcommands_to_parser() ###")
-
-        subparsers = parser.add_subparsers(title='subcommands',
-                                           description='valid subcommands',
-                                           required=True,
-                                           dest='subcommand',
-                                           help='additional help')
-        self.add_subcommand_file_search_arguments_to_parser(subparsers)
-        self.add_subcommand_add_volume_arguments_to_parser(subparsers)
-        self.add_subcommand_refresh_volumes_arguments_to_parser(subparsers)
-        #self.add_subcommand_create_database_arguments_to_parser(subparsers)
-        #self.add_subcommand_select_database_arguments_to_parser(subparsers)
-
-
-        """
-        # create the parser for the "import" subcommand
-        parser_import = subparsers.add_parser(F.SUBCMD_IMPORT_VOLUME, help=F.SUBCMD_IMPORT_VOLUME+' help')
-        F.add_db_argument_to_parser(parser_import)
-        F.add_argument(parser_import, "-l", "--label", metavar='Label', help="Label of the drive listing")
-        F.add_argument(parser_import, "-f", "--filename", metavar='Filename', widget='FileChooser',
-                                   help="Filename (including path) of the listing in fixed width format to be processed. See PowerShell example")
-        #F.add_argument(parser_import, "-m", "--make", dest='make', metavar='Make', default=None, help="Make of the drive")
-        F.add_argument(parser_import, "-m", "--make", dest='make', metavar='Make', help="Make of the drive")
-        F.add_argument(parser_import, "-o", "--model", dest='model', metavar='Model', help="Model of the drive")
-        F.add_argument(parser_import, "-s", "--serial", dest='serial', metavar='Serial Number', help="Serial number of the drive")
-        F.add_argument(parser_import, "-c", "--combined", dest='combined', metavar='Combined',
-                                   help="Combined drive information string, in format \"make,model,serial-number\"")
-        F.add_argument(parser_import, "-n", "--hostname", dest='hostname', metavar='Hostname',
-                                   help="Hostname of the machine containing the drive")
-        F.add_argument(parser_import, "-p", "--prefix", dest='prefix', metavar='Prefix',
-                                   help="Prefix to remove from the start of each file's path. e.g. \"C:\\Users\\username\"")
-        F.add_argument(parser_import, "-t", "--test", dest='test', metavar='Test', action="store_true",
-                                   help="Test input file without modifying the database")
-        F.add_verbose_argument_to_parser(parser_import)
-
-
-
-        # create the parser for the "vacuum" subcommand
-        parser_upgrade = subparsers.add_parser(F.SUBCMD_UPGRADE_DATABASE,
-                                              help=F.SUBCMD_UPGRADE_DATABASE+' help',
-                                              description='The UPGRADE subcommand upgrades the database file to the latest structure needed for this program to work.')
-        F.add_db_argument_to_parser(parser_upgrade)
-        F.add_verbose_argument_to_parser(parser_upgrade)
-
-        # create the parser for the "vacuum" subcommand
-        parser_vacuum = subparsers.add_parser(F.SUBCMD_VACUUM_DATABASE,
-                                              help=F.SUBCMD_VACUUM_DATABASE+' help',
-                                              description='The VACUUM subcommand rebuilds the database file by reading the current file and writing the content into a new file. As a result it repacking it into a minimal amount of disk space and defragments it which ensures that each table and index is largely stored contiguously. Depending on the size of the database it can take some time to do perform.')
-        F.add_db_argument_to_parser(parser_vacuum)
-        F.add_verbose_argument_to_parser(parser_vacuum)
-
-        parser_reset = subparsers.add_parser(F.SUBCMD_RESET_DATABASE,
-                                             help=F.SUBCMD_RESET_DATABASE+' help',
-                                             description='Warning: Using the "reset" subcommand will delete the specified database and replace it with an empty one.')
-        F.add_db_argument_to_parser(parser_reset)
-        F.add_verbose_argument_to_parser(parser_reset)
-        """
 
     def process_args_and_call_subcommand(self, args):
         logging.debug(f"### F.process_args_and_call_subcommand() ###")
@@ -726,10 +512,10 @@ class F:
         database_changed = False
         if 'db' in args:
             self.database_filename = args.db
-            self.configuration[self.CONFIG_ARGS][F.SUBCMD_SELECT_DATABASE]["db"] = args.db
+            self.configuration[self.CONFIG_ARGS][AddArgs.SUBCMD_SELECT_DATABASE]["db"] = args.db
             database_changed = True
             logging.info(
-                f'self.configuration[self.CONFIGURATION_STORED_ARGS][F.SUBCMD_SELECT_DATABASE]["db"]: {self.configuration[self.CONFIG_ARGS][F.SUBCMD_SELECT_DATABASE]["db"]}')
+                f'self.configuration[self.CONFIGURATION_STORED_ARGS][F.SUBCMD_SELECT_DATABASE]["db"]: {self.configuration[self.CONFIG_ARGS][AddArgs.SUBCMD_SELECT_DATABASE]["db"]}')
 
         # Save the configuration first, as processing the arguments may result in an error
         self.store_configuration(args)
@@ -739,11 +525,11 @@ class F:
             self.select_database(self.database_filename, self.verbose)
 
         # If 'create' and 'refresh_volumes' subcommands are specified, then we don't need to open the database
-        if args.subcommand == F.SUBCMD_SELECT_DATABASE:
+        if args.subcommand == AddArgs.SUBCMD_SELECT_DATABASE:
             self.subcommand_select_database(args)
-        elif args.subcommand == F.SUBCMD_CREATE_DATABASE:
+        elif args.subcommand == AddArgs.SUBCMD_CREATE_DATABASE:
             self.subcommand_create_database(args)
-        elif args.subcommand == F.SUBCMD_REFRESH_VOLUMES:
+        elif args.subcommand == AddArgs.SUBCMD_REFRESH_VOLUMES:
             self.subcommand_refresh_volumes(args)
         else:
             # These subcommands all need a working database connection
@@ -752,21 +538,21 @@ class F:
                 self.database.set_verbose_mode(args.verbose)
             start_time = time.time()
 
-            if args.subcommand == F.SUBCMD_FILE_SEARCH:
+            if args.subcommand == AddArgs.SUBCMD_FILE_SEARCH:
                 self.subcommand_file_search(args)
-            elif args.subcommand == F.SUBCMD_ADD_VOLUME:
+            elif args.subcommand == AddArgs.SUBCMD_ADD_VOLUME:
                 self.subcommand_add_volumes(args)
 
-            elif args.subcommand == F.SUBCMD_IMPORT_VOLUME:
+            elif args.subcommand == AddArgs.SUBCMD_IMPORT_VOLUME:
                 self.subcommand_import_listing(args)
 
-            elif args.subcommand == F.SUBCMD_UPGRADE_DATABASE:
+            elif args.subcommand == AddArgs.SUBCMD_UPGRADE_DATABASE:
                 self.subcommand_upgrade_database()
 
-            elif args.subcommand == F.SUBCMD_VACUUM_DATABASE:
+            elif args.subcommand == AddArgs.SUBCMD_VACUUM_DATABASE:
                 self.subcommand_vacuum_database()
 
-            elif args.subcommand == F.SUBCMD_RESET_DATABASE:
+            elif args.subcommand == AddArgs.SUBCMD_RESET_DATABASE:
                 self.subcommand_reset_database(args)
 
             end_time = time.time()
@@ -779,24 +565,27 @@ class F:
         # Clean up and exit
         self.clean_up()
 
-    def start(self):
-        logging.debug(f"### F.start() ###")
+    def init(self):
+        logging.debug(f"### init() ###")
 
         if self.memory_stats:
             # Start tracing memory allocations
             tracemalloc.start()
 
-        f.add_subcommands_to_parser(self.parser)
+        logging.info(f"Initialising Argument Parser Arguments...")
+        AddArgs.add_subcommands_to_parser(self.parser)
 
-        args=self.parser.parse_args()
+        # self.parser.set_defaults(**self.stored_args)
 
-        # Debug
-        #print(f"args: '{args}'")
-        #print(f"subcommand: '{args.subcommand}'")
-        #quit()
-
+    def main(self):
+        logging.info(f"### main() ###")
+        args = self.parser.parse_args()
         self.process_args_and_call_subcommand(args)
-        # Command finished so program finished
+
+    def start(self):
+        logging.debug(f"### F.start() ###")
+        self.init()
+        self.main()
 
 if __name__ == "__main__":
 

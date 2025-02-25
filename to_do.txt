@@ -1,9 +1,9 @@
 To DO:
 
-- release tags?
-  - Format = vX.Y.Z (where X = Major number, Y = Minor number, Z = Patch number)
+- Add subcommand to delete filesystems with a label.
 
-- powershell, add commands to prevent result truncation
+- Option to force deletion of a Volume's filesystem with a label if it already exists.
+  - Perhaps with Popup warning box with Yes / No, or OK / cancel?
 
 - visual disk
 make vpool
