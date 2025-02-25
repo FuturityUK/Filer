@@ -5,7 +5,7 @@ A disk cataloger utility to store, search and deduplicate disk and directory lis
 Data is stored within a Sqlite3 database, which allows you to export the database in CSV should you wish to use the data elsewhere.
 
 <p align="center">
-    <img src="https://github.com/chriskiehl/GooeyImages/raw/images/readme-images/1-0-4-title-card.png" />
+    <img src="raw/images/readme-images/example-v0.3.0.png" />
 </p>
 
 Table of Contents
@@ -28,7 +28,6 @@ Download and uncompress the latest release into a directory. Releases are known 
 
 Install the following `pip` packages:
 
-    pip install Gooey
     pip install Gooey
 
 Note that currently the `master` branch in GitHub is  work in progress and may not work. 
