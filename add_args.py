@@ -194,9 +194,9 @@ class AddArgs:
                                        nargs='?', default=None, help=help_text)
             #AddArgs.add_argument(subparser_add_volume_group, "-l", "--label", dest='label', metavar='Label', default=None, help="Label of the drive listing. If provided it will override the volume label.",
             AddArgs.add_argument(subparser_add_volume_group, "--add_label", dest='add_label', metavar='Label',
-                                          default=None,
-                                          help="Label of the drive listing. If left blank, the volume's label will be used instead.'",
-                                          gooey_options={ 'initial_value': "" }
+                                          widget = 'Dropdown', nargs = '?', default = None,
+                                          help="Label of the drive listing. If left blank, the volume's label will be used instead.'"
+                                          # gooey_options={ 'initial_value': "" }
                            )
             hostname = socket.gethostname()
             AddArgs.add_argument(subparser_add_volume_group, "-n", "--hostname", dest='hostname', metavar='Hostname', default=hostname,

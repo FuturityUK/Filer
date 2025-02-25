@@ -30,6 +30,11 @@ class Fgui:
             #  - None     => Clear/Initial value
             #  - not None => Dynamic value
             #  - missing  => Left alone
+
+            # Load labels
+            label_choices = [""]
+            label_choices = [*label_choices, *self.f.database.find_filesystem_labels()]
+
             volume_default_choice = None
             volume_choices = []
             vol_details = self.f.configuration[self.f.CONFIG_VOL_DETAILS]
@@ -42,7 +47,6 @@ class Fgui:
             dynamic_values = {
                 'volume': volume_default_choice,
                 'db': self.f.database_filename,
-                'add_label': None,
                 'test_required_1': None,  # This will be replaced with the initial value
                 # 'test_required_2' will be left alone
                 'test_optional_1': None,
@@ -58,7 +62,8 @@ class Fgui:
                 #'test_optional_2': [
                 #    f'Random entry {i}' for i in range(__import__('random').randrange(30))
                 #],
-                'volume': volume_choices
+                'volume': volume_choices,
+                'add_label': label_choices
                 #'volume': ["Neil", baker]
             }
             logging.info(f"dynamic_items: {dynamic_items}")

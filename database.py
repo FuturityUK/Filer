@@ -347,6 +347,19 @@ class Database:
         else:
             return False
 
+    def find_filesystem_labels(self):
+        logging.debug(f"SQL Query: \"{self.__sql_dictionary["find_filesystem_id"]}\"")
+        self.execute(self.__sql_dictionary["find_filesystem_ids"])
+        filesystem_labels = []
+        rows_found = 0
+        select_result = self.fetch_all_results()
+        for row in select_result:
+            #print(row[0])
+            filesystem_labels.append(row[0])
+            rows_found += 1
+        logging.debug(f"{rows_found} results found")
+        return filesystem_labels
+
     def find_filesystem_id(self, label: str):
         logging.debug(f"SQL Query: \"{self.__sql_dictionary["find_filesystem_id"]}\"")
         logging.debug(f"label: \"{label}\"")

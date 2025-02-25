@@ -192,6 +192,11 @@ class SQLDictionary:
                 VALUES (?, ?, ?, ?);    
             '''
 
+        self.sql_dictionary["find_filesystem_ids"] = '''
+                SELECT Label 
+                FROM FileSystems;    
+            '''
+
         self.sql_dictionary["find_filesystem_id"] = '''
                 SELECT FileSystemID 
                 FROM FileSystems

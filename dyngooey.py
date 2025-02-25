@@ -122,7 +122,7 @@ def __setDropdownOptions(_self, options):
     logger.info("")
 
     _ = gooey_widgets.dropdown._
-    logger.info(f"_('select_option'): {_('select_option')}")
+    #logger.info(f"_('select_option'): {_('select_option')}")
 
     get = lambda v,n: n if v is None else v
     default = _self._options.get("initial_value", None)
@@ -138,7 +138,8 @@ def __setDropdownOptions(_self, options):
     if isinstance(options, list):
         logger.info("list")
         _self.widget.Clear()
-        _self.widget.SetItems([_('select_option')] + get(options, []))
+        #_self.widget.SetItems([_('select_option')] + get(options, []))
+        _self.widget.SetItems(get(options, []))
     elif isinstance(options, dict):
         logger.info("dict")
         items_array = []
@@ -146,7 +147,8 @@ def __setDropdownOptions(_self, options):
             logger.info("dict-items")
             #with _self.retainSelection():
             _self.widget.Clear()
-            items_array = [_('select_option')] + get(options["items"], [])
+            #items_array = [_('select_option')] + get(options["items"], [])
+            items_array = get(options["items"], [])
             _self.widget.SetItems(items_array)
         if "value" in options:
             logger.info("dict-value")

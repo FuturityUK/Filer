@@ -4,7 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Added an example image" />
+    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Added an example image">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/add_args.py" beforeDir="false" afterPath="$PROJECT_DIR$/add_args.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database.py" beforeDir="false" afterPath="$PROJECT_DIR$/database.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dyngooey.py" beforeDir="false" afterPath="$PROJECT_DIR$/dyngooey.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/fgui.py" beforeDir="false" afterPath="$PROJECT_DIR$/fgui.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sql.py" beforeDir="false" afterPath="$PROJECT_DIR$/sql.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -99,14 +106,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1736868367160</updated>
-    </task>
-    <task id="LOCAL-00102" summary="filer.py: Split up code into functions that can be used by other programs&#10;f.py: Only scan volumes and add choices for argparse if no arguments provided to program">
-      <option name="closed" value="true" />
-      <created>1739211336787</created>
-      <option name="number" value="00102" />
-      <option name="presentableId" value="LOCAL-00102" />
-      <option name="project" value="LOCAL" />
-      <updated>1739211336787</updated>
     </task>
     <task id="LOCAL-00103" summary="Added dyngooey.py as a way of resetting choices after running subcommands">
       <option name="closed" value="true" />
@@ -492,7 +491,15 @@
       <option name="project" value="LOCAL" />
       <updated>1740494605553</updated>
     </task>
-    <option name="localTasksCounter" value="151" />
+    <task id="LOCAL-00151" summary="Added an example image">
+      <option name="closed" value="true" />
+      <created>1740494784098</created>
+      <option name="number" value="00151" />
+      <option name="presentableId" value="LOCAL-00151" />
+      <option name="project" value="LOCAL" />
+      <updated>1740494784099</updated>
+    </task>
+    <option name="localTasksCounter" value="152" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
