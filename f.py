@@ -34,13 +34,15 @@ from add_args import AddArgs
 class F:
 
     SHOW_DB_FILENAME_ARG_IN_GUI: bool = False
+    SHOW_DB_SELECTION: bool = False
+    SHOW_SUBMITTED_ARGS: bool = False
     PROGRESS_INSERT_FREQUENCY: int = 10000
 
     EXIT_OK: int = 0 #
     EXIT_ERROR: int = 1 #
 
     DEFAULT_DATABASE_FILENAME: str = 'database.sqlite'
-    DEFAULT_TEMP_LISTING_FILE: str = 'filer.fwf.tmp'
+    DEFAULT_TEMP_LISTING_FILE: str = 'filer.fwf'
 
     VOL_ARG_DETAILS_CHOICES: str = 'choices'
     VOL_ARG_DETAILS_DEFAULT_CHOICE: str = 'default_choice'
@@ -53,24 +55,22 @@ class F:
     CONFIG_FILENAME: str = "filer.json"
     CONFIG_ARGS = "args"
     CONFIG_VOL_DETAILS = "volume_details"
+    CONFIG_DATABASE_FILENAME = "database_filename"
+    CONFIG_CHOSEN_LABEL = "chosen_label"
 
-    def __init__(self, parser, database_filename: str = None):
-        self.database = None
-        self.memory_stats = False
-        self.system = System()
-        self.logical_disk_array = None
-        self.physical_disk_array = None
-        self.volumes_array = None
+    def __init__(self, parser, database_filename_argument: str = None):
+        self.database = self.logical_disk_array = self.physical_disk_array = self.volumes_array = None
+        self.memory_stats = self.verbose = False
         self.parser = parser
+        self.system = System()
+
         self.configuration = { self.CONFIG_ARGS: {} }
         self.load_configuration()
-        self.verbose = False
-
         # If the database parameter has been specified, then the user wishes has told use to create a database in a non default location
-        if database_filename is not None:
-            self.set_database_filename_in_configuration(database_filename)
+        if database_filename_argument is not None:
+            self.set_configuration_value( self.CONFIG_DATABASE_FILENAME, database_filename_argument, self.DEFAULT_DATABASE_FILENAME )
         # Get the stored database filename. Note that if it isn't defined yet, it will be set to the default
-        self.database_filename = self.get_database_filename_in_configuration()
+        self.database_filename = self.get_configuration_value( self.CONFIG_DATABASE_FILENAME, self.DEFAULT_DATABASE_FILENAME )
         # The following subcommands all require a database
         self.select_database(self.database_filename, self.verbose)
 
@@ -85,21 +85,12 @@ class F:
             self.configuration[self.CONFIG_VOL_DETAILS] = { self.VOL_ARG_DETAILS_CHOICES: [], self.VOL_ARG_DETAILS_DEFAULT_CHOICE: None,
                                         self.VOL_ARG_DETAILS_VOLUMES: {}, self.VOL_ARG_DETAILS_CREATED: ""}
     
-    def get_database_filename_in_configuration(self):
-        logging.debug(f"### get_database_filename() ###")
-        if AddArgs.SUBCMD_SELECT_DATABASE not in self.configuration[self.CONFIG_ARGS]:
-            # Database_filename hasn't been stored in the configuration file yet
-            logging.debug(f"Database_filename hasn't been stored in the configuration file yet, so store default default.")
-            self.set_database_filename_in_configuration(F.DEFAULT_DATABASE_FILENAME)
-        return self.configuration[self.CONFIG_ARGS][AddArgs.SUBCMD_SELECT_DATABASE]["db"]
+    def get_configuration_value(self, key: str, default_value: str = None):
+        if key not in self.configuration: self.set_configuration_value(key, default_value)
+        return self.configuration[key]
 
-    def set_database_filename_in_configuration(self, database_filename: str):
-        logging.debug(f"### set_database_filename() ###")
-        logging.debug(f"database_filename: {database_filename}")
-        if AddArgs.SUBCMD_SELECT_DATABASE not in self.configuration[self.CONFIG_ARGS]:
-            self.configuration[self.CONFIG_ARGS][AddArgs.SUBCMD_SELECT_DATABASE] = {}
-        self.configuration[self.CONFIG_ARGS][AddArgs.SUBCMD_SELECT_DATABASE]["db"] = database_filename
-        logging.debug(f"self.configuration: {self.configuration}")
+    def set_configuration_value(self, key: str, value: str = None, default_value: str = None):
+        self.configuration[key] = value if value is not None else default_value
         self.store_configuration()
 
     def store_configuration(self, args=None):
@@ -111,25 +102,21 @@ class F:
             subcommand = args.subcommand
             subcommand_args = vars(args).copy()
             # Remove the 'subcommand' key / value pair from the subcommand_args
-            if "subcommand" in subcommand_args:
-                del subcommand_args['subcommand']
+            if "subcommand" in subcommand_args: del subcommand_args['subcommand']
             # Remove the old arguments last submitted for this subcommand
-            if subcommand in self.configuration[self.CONFIG_ARGS]:
-                del self.configuration[self.CONFIG_ARGS][subcommand]
+            if subcommand in self.configuration[self.CONFIG_ARGS]: del self.configuration[self.CONFIG_ARGS][subcommand]
             # Store the new arguments for this subcommand
             self.configuration[self.CONFIG_ARGS][subcommand] = subcommand_args
 
         # Store the values of the arguments so we have them next time we run
         with open(self.CONFIG_FILENAME, 'w') as data_file:
-            # Using vars(args) returns the data as a dictionary
-            json.dump(self.configuration, data_file)
+            json.dump(self.configuration, data_file) # Using vars(args) returns the data as a dictionary
 
     def set_memory_stats(self, memory_stats):
         self.memory_stats = memory_stats
 
     @staticmethod
     def dumps(data):
-        logging.debug("### dumps() ###")
         return json.dumps(data, indent=4, default=str)
 
     @staticmethod
@@ -153,12 +140,12 @@ class F:
     def clean_up(self):
         # Now that the subcommands have been run
         if self.memory_stats:
-            # Stop tracing memory allocations
-            tracemalloc.stop()
+            tracemalloc.stop() # Stop tracing memory allocations
 
     def exit_cleanly(self, level, argumentparser_message: str = None, non_argumentparser_message: str = None):
         if non_argumentparser_message is None:
             non_argumentparser_message = argumentparser_message
+
         message = AddArgs.get_message_based_on_parser(self.parser, argumentparser_message, non_argumentparser_message)
         if level == 0:
             logging.info("Application ended successfully")
@@ -186,17 +173,24 @@ class F:
 
     def subcommand_file_search(self, args: []):
         logging.debug(f"### F.search() ###")
-        self.print_message_based_on_parser(None, "Finding filenames:")
-        self.print_message_based_on_parser(None, "")
         search = args.search # if "search" in args else None
         category = args.category if "category" in args else None
         label = args.label # if "label" in args else None
         if search is None and category is None and label is None:
             self.exit_cleanly(self.EXIT_ERROR, "No search terms provided")
+        self.print_message_based_on_parser(None, f"Finding files & dirs matching:")
+        if search is not None and search != "": self.print_message_based_on_parser(None, f" - search: '{search}'")
+        #if category is not None and category != "": self.print_message_based_on_parser(None, f" - category: '{category}'")
+        if label is not None and label != "": self.print_message_based_on_parser(None, f" - label: '{label}'")
+        self.print_message_based_on_parser(None, "")
         select_result = self.database.find_filenames_search(search, category, label)
         rows_found = 0
         for row in select_result:
-            print(f"{row[1]}, {row[0]}")
+            if label is not None and row[1] == label:
+                print(f"{row[0]}")
+            else:
+                # No label was provided, so we need to display the label the file is stored on
+                print(f"{row[1]}, {row[0]}")
             rows_found += 1
         # Print a blank row if we are in the GUI and rows were found
         if rows_found != 0:
@@ -276,8 +270,8 @@ class F:
             #print(f"")
             #print('Processing Volume:')
             label = import_listing_values["label"]
-            if args.add_label is not None:
-                label = args.add_label
+            if args.label is not None:
+                label = args.label
             print(f'Drive: "{import_listing_values["drive_letter"]}:"')
             print(f'Label: "{label}"')
             print(f'Hostname: "{import_listing_values["hostname"]}"')
@@ -288,10 +282,8 @@ class F:
 
             # Check if Label exists in the Database
             if self.database.does_label_exists(label):
-                print(f'Label "{label}" already exists in the Database!')
-                pass
+                self.exit_cleanly(self.EXIT_ERROR, f'Label "{label}" already exists in the Database!')
 
-            print('')
             print('Generating the Volume Listing ...')
             output = self.system.create_path_listing(import_listing_values["drive_letter"] + ':\\',
                                                      self.DEFAULT_TEMP_LISTING_FILE)
@@ -332,7 +324,7 @@ class F:
             print(f"Database file does not exists at location: \"{os.path.abspath(database_filename)}\"")
             self.create_database(database_filename, verbose)
         else:
-            print(f"Selecting database: \"{database_filename}\"")
+            #print(f"Selecting database: \"{database_filename}\"")
             self.database = Database(database_filename)
             self.database.set_verbose_mode(verbose)
             # Apply any database upgrades
@@ -505,24 +497,22 @@ class F:
         # Store Volume details
         self.store_configuration()
 
-
     def process_args_and_call_subcommand(self, args):
         logging.debug(f"### F.process_args_and_call_subcommand() ###")
 
         database_changed = False
         if 'db' in args:
-            self.database_filename = args.db
-            self.configuration[self.CONFIG_ARGS][AddArgs.SUBCMD_SELECT_DATABASE]["db"] = args.db
+            #self.configuration[self.CONFIG_ARGS][AddArgs.SUBCMD_SELECT_DATABASE]["db"] = args.db
+            self.set_configuration_value(self.CONFIG_DATABASE_FILENAME, args.db, self.DEFAULT_DATABASE_FILENAME)
             database_changed = True
-            logging.info(
-                f'self.configuration[self.CONFIGURATION_STORED_ARGS][F.SUBCMD_SELECT_DATABASE]["db"]: {self.configuration[self.CONFIG_ARGS][AddArgs.SUBCMD_SELECT_DATABASE]["db"]}')
+            logging.debug(f"database_filename: {args.db}'")
 
-        # Save the configuration first, as processing the arguments may result in an error
+        # Save the configuration first, as selecting the database or processing the arguments may result in an error
         self.store_configuration(args)
 
         if database_changed:
             # Open a connection to the selected database filename
-            self.select_database(self.database_filename, self.verbose)
+            self.select_database(args.db, self.verbose)
 
         # If 'create' and 'refresh_volumes' subcommands are specified, then we don't need to open the database
         if args.subcommand == AddArgs.SUBCMD_SELECT_DATABASE:

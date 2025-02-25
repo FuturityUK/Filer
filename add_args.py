@@ -161,15 +161,18 @@ class AddArgs:
         help_text = '''Search string to be found within filenames
 - if search doesn't include '%' or '_' characters, then it is a fast exact case-sensitive search
 - if search includes '%' or '_' characters, then it is a slower pattern match case-insensitive search
-- '%' wildcard matches any sequence of zero or more characters
-- '_' wildcard matches exactly one character'''
+- '%' wildcard character matches any sequence of zero or more characters.
+- '_' wildcard character matches exactly one character
+- To find all files, use a % by itself.'''
         if AddArgs.is_std_argument_parser(subparsers):
             help_text = help_text.replace(r"%", r"%%")
         AddArgs.add_argument(subparser_search_group, "-s", "--search", metavar='Search', default=None, help=help_text)
         # ADD BACK WHEN FUNCTIONALITY IMPLEMENTED
         #if not AddArgs.is_std_argument_parser(subparsers):
         #    AddArgs.add_argument(subparser_search_group, "-c", "--category", dest='category', metavar='Category', choices=file_categories, nargs='?', help="Category of files to be considered")
-        AddArgs.add_argument(subparser_search_group, "-l", "--label", dest='label', metavar='Label', default=None, help="Label of the drive listing")
+        AddArgs.add_argument(subparser_search_group, "-l", "--label", dest='label', metavar='Label',
+                             widget = 'Dropdown', nargs = '?', default = None,
+                             help="Label of the drive listing")
         AddArgs.add_db_argument_to_parser(subparser_search_group)
         #AddArgs.add_verbose_argument_to_parser(subparser_search_group)
 
@@ -190,10 +193,10 @@ class AddArgs:
 
             if AddArgs.is_std_argument_parser(subparsers):
                 help_text = help_text.replace(r"%", r"%%")
-            AddArgs.add_argument(subparser_add_volume_group, "--volume", dest='volume', metavar='Volume', widget='Dropdown',
-                                       nargs='?', default=None, help=help_text)
+            AddArgs.add_argument(subparser_add_volume_group, "--volume", dest='volume', metavar='Volume',
+                                 widget='Dropdown', nargs='?', default=None, help=help_text)
             #AddArgs.add_argument(subparser_add_volume_group, "-l", "--label", dest='label', metavar='Label', default=None, help="Label of the drive listing. If provided it will override the volume label.",
-            AddArgs.add_argument(subparser_add_volume_group, "--add_label", dest='add_label', metavar='Label',
+            AddArgs.add_argument(subparser_add_volume_group, "--label", dest='label', metavar='Label',
                                           widget = 'Dropdown', nargs = '?', default = None,
                                           help="Label of the drive listing. If left blank, the volume's label will be used instead.'"
                                           # gooey_options={ 'initial_value': "" }

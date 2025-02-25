@@ -34,6 +34,10 @@ class Fgui:
             # Load labels
             label_choices = [""]
             label_choices = [*label_choices, *self.f.database.find_filesystem_labels()]
+            logging.debug(f"label_choices: {label_choices}")
+            label_choice = self.f.get_configuration_value(self.f.CONFIG_CHOSEN_LABEL, None)
+            #label_choice = self.f.configuration[self.f.CONFIG_ARGS]["label"]
+            logging.debug(f"label_choice: {label_choice}")
 
             volume_default_choice = None
             volume_choices = []
@@ -47,6 +51,7 @@ class Fgui:
             dynamic_values = {
                 'volume': volume_default_choice,
                 'db': self.f.database_filename,
+                'label': label_choice,
                 'test_required_1': None,  # This will be replaced with the initial value
                 # 'test_required_2' will be left alone
                 'test_optional_1': None,
@@ -63,7 +68,7 @@ class Fgui:
                 #    f'Random entry {i}' for i in range(__import__('random').randrange(30))
                 #],
                 'volume': volume_choices,
-                'add_label': label_choices
+                'label': label_choices
                 #'volume': ["Neil", baker]
             }
             logging.info(f"dynamic_items: {dynamic_items}")
@@ -146,11 +151,11 @@ class Fgui:
         args = self.parser.parse_args()
 
         if not gooey_stdout():
-            pass
-            # Debug to show arguments past to the program
-            print(f"Program arguments:")
-            print(f"{F.dumps(vars(args))}")
-            print(f"")
+            if F.SHOW_SUBMITTED_ARGS:
+                # Debug to show arguments past to the program
+                print(f"Program arguments:")
+                print(f"{F.dumps(vars(args))}")
+                print(f"")
 
         # Now process the args
         self.f.main()

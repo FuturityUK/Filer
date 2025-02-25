@@ -213,14 +213,14 @@ class Database:
                     print("More than one DBVersion found in the DatabaseInformation table. Can't continue.")
                     exit(2)
             # If we are here, then db_version have been loaded correctly
-            print(f"Database version {db_version} detected.")
 
             sql_versions_length = len(self.__sql_versions)
             if db_version >= sql_versions_length:
                 # Database is up to date
-                print(f"Database version {db_version} is the latest version. No upgrade needed.")
+                #print(f"Database version {db_version} is the latest version. No upgrade needed.")
                 break
             else:
+                print(f"Database version {db_version} detected.")
                 # Database needs upgrading
                 new_db_version = db_version + 1
                 if str(new_db_version) not in self.__sql_versions:
@@ -348,7 +348,7 @@ class Database:
             return False
 
     def find_filesystem_labels(self):
-        logging.debug(f"SQL Query: \"{self.__sql_dictionary["find_filesystem_id"]}\"")
+        logging.debug(f"SQL Query: \"{self.__sql_dictionary["find_filesystem_ids"]}\"")
         self.execute(self.__sql_dictionary["find_filesystem_ids"])
         filesystem_labels = []
         rows_found = 0

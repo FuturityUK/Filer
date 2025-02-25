@@ -4,13 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Added an example image">
+    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Removed &quot;Select Option&quot; from the dropdown lists">
+      <change afterPath="$PROJECT_DIR$/scripts/delete_generated_files.bat" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/add_args.py" beforeDir="false" afterPath="$PROJECT_DIR$/add_args.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/database.py" beforeDir="false" afterPath="$PROJECT_DIR$/database.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dyngooey.py" beforeDir="false" afterPath="$PROJECT_DIR$/dyngooey.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/f.py" beforeDir="false" afterPath="$PROJECT_DIR$/f.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/fgui.py" beforeDir="false" afterPath="$PROJECT_DIR$/fgui.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sql.py" beforeDir="false" afterPath="$PROJECT_DIR$/sql.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/file_system_processors.py" beforeDir="false" afterPath="$PROJECT_DIR$/file_system_processors.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -106,14 +107,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1736868367160</updated>
-    </task>
-    <task id="LOCAL-00103" summary="Added dyngooey.py as a way of resetting choices after running subcommands">
-      <option name="closed" value="true" />
-      <created>1739217695237</created>
-      <option name="number" value="00103" />
-      <option name="presentableId" value="LOCAL-00103" />
-      <option name="project" value="LOCAL" />
-      <updated>1739217695237</updated>
     </task>
     <task id="LOCAL-00104" summary="Still loads more debug required to work out how it works and then find a solutions (dictionary of subcommands, containing dictionary of default values)">
       <option name="closed" value="true" />
@@ -499,7 +492,15 @@
       <option name="project" value="LOCAL" />
       <updated>1740494784099</updated>
     </task>
-    <option name="localTasksCounter" value="152" />
+    <task id="LOCAL-00152" summary="Removed &quot;Select Option&quot; from the dropdown lists">
+      <option name="closed" value="true" />
+      <created>1740496100324</created>
+      <option name="number" value="00152" />
+      <option name="presentableId" value="LOCAL-00152" />
+      <option name="project" value="LOCAL" />
+      <updated>1740496100324</updated>
+    </task>
+    <option name="localTasksCounter" value="153" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -529,7 +530,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="INSERT REFRESH_VOLUME TRUE / FALSE IN THAT SUBCOMMAND.&#10;HARDCODE INTO process_actions THAT WHEN IT SEES THAT REFRESH_VOLUME field = True, then populate VOLUME ARRAY.&#10;&#10;OR JUST STORE THE VOLUME DATA STRUCTURE IN A JSON FILE AND LOAD IT INTO THE SEED FUNCTION EVERY TIME. WOULD BE FASTER" />
     <MESSAGE value="dyngooey.py&#10;- commented out &quot;with _self.retainSelection()&quot; as it had an indexing issue.&#10;&#10;f.py&#10;- now saves the volume information to a file when the &quot;refresh volumes&quot; subcommand run&#10;- now loads the volume information previously save if it is available&#10;&#10;fgui.py&#10;- further tests to set choice (dropdown) values" />
     <MESSAGE value="dyngooey.py&#10;- now selects the default value in the dropdown / choices" />
     <MESSAGE value="The Volumes dropdown menu now works" />
@@ -554,6 +554,7 @@
     <MESSAGE value="- Argument code mostly moved to add_args.py&#10;- Some common code in fgui.py moved to f.py&#10;- Basic checks to see if label exists in the database when adding a volume (no error yet)" />
     <MESSAGE value="Initial README.md" />
     <MESSAGE value="Added an example image" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added an example image" />
+    <MESSAGE value="Removed &quot;Select Option&quot; from the dropdown lists" />
+    <option name="LAST_COMMIT_MESSAGE" value="Removed &quot;Select Option&quot; from the dropdown lists" />
   </component>
 </project>

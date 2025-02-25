@@ -209,7 +209,7 @@ class PowerShellFilesystemListing:
                         #exit()
                 return filesystem_ids[0]
                 """
-                print(f"Error: There are {len(filesystem_ids)} entries in the database with the Label specified.")
+                print(f'Error: Label "{self.__label}" already exists in the database.')
                 exit(1)
             elif len(filesystem_ids) == 0:
                 # No drive_id found so create one
