@@ -4,7 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Result Limit now works" />
+    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Update to README.md saying that after specifying the database filename once, it's stored in the config files and doesn't need to be specified again.">
+      <change afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database.py" beforeDir="false" afterPath="$PROJECT_DIR$/database.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/f.py" beforeDir="false" afterPath="$PROJECT_DIR$/f.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/fgui.py" beforeDir="false" afterPath="$PROJECT_DIR$/fgui.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sql.py" beforeDir="false" afterPath="$PROJECT_DIR$/sql.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -48,32 +55,44 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Python.Fgui.executor&quot;: &quot;Run&quot;,
-    &quot;Python.database.executor&quot;: &quot;Run&quot;,
-    &quot;Python.dyngooey.executor&quot;: &quot;Run&quot;,
-    &quot;Python.f.executor&quot;: &quot;Run&quot;,
-    &quot;Python.fgui.executor&quot;: &quot;Run&quot;,
-    &quot;Python.file_system_processors.executor&quot;: &quot;Run&quot;,
-    &quot;Python.file_types.executor&quot;: &quot;Run&quot;,
-    &quot;Python.filer.executor&quot;: &quot;Run&quot;,
-    &quot;Python.logtest.executor&quot;: &quot;Run&quot;,
-    &quot;Python.main.executor&quot;: &quot;Run&quot;,
-    &quot;Python.powershell.executor&quot;: &quot;Run&quot;,
-    &quot;Python.print.executor&quot;: &quot;Run&quot;,
-    &quot;Python.sql.executor&quot;: &quot;Run&quot;,
-    &quot;Python.subparser_demo.executor&quot;: &quot;Run&quot;,
-    &quot;Python.system.executor&quot;: &quot;Run&quot;,
-    &quot;Python.test.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;run.code.analysis.last.selected.profile&quot;: &quot;aDefault&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Python.Fgui.executor": "Run",
+    "Python.database.executor": "Run",
+    "Python.dyngooey.executor": "Run",
+    "Python.f.executor": "Run",
+    "Python.fgui.executor": "Run",
+    "Python.file_system_processors.executor": "Run",
+    "Python.file_types.executor": "Run",
+    "Python.filer.executor": "Run",
+    "Python.logtest.executor": "Run",
+    "Python.main.executor": "Run",
+    "Python.powershell.executor": "Run",
+    "Python.print.executor": "Run",
+    "Python.sql.executor": "Run",
+    "Python.subparser_demo.executor": "Run",
+    "Python.system.executor": "Run",
+    "Python.test.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "master",
+    "ignore.virus.scanning.warn.message": "true",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "run.code.analysis.last.selected.profile": "aDefault",
+    "settings.editor.selected.configurable": "settings.sync",
+    "vue.rearranger.settings.migration": "true"
+  },
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "sqlite"
+    ]
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\Neil.FUTURITY\PycharmProjects\Filer\raw\images\readme-images" />
@@ -84,7 +103,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-python-sdk-fc1d50d2d915-aa17d162503b-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-243.24978.54" />
+        <option value="bundled-js-predefined-d6986cc7102b-76f8388c3a79-JavaScript-PY-243.24978.54" />
+        <option value="bundled-python-sdk-91e3b7efe1d4-466328ff949b-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-243.24978.54" />
       </set>
     </attachedChunks>
   </component>
@@ -99,14 +119,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1736868367160</updated>
-    </task>
-    <task id="LOCAL-00106" summary="label2's value on the search subcommand is successfully reset to its initial value after being changes and started">
-      <option name="closed" value="true" />
-      <created>1739299114187</created>
-      <option name="number" value="00106" />
-      <option name="presentableId" value="LOCAL-00106" />
-      <option name="project" value="LOCAL" />
-      <updated>1739299114187</updated>
+      <workItem from="1740589533362" duration="5294000" />
     </task>
     <task id="LOCAL-00107" summary="Now works on the widget's dest value rather than the '-' or '--' commandline option as they may be duplicated over many subcommands. the 'dest's can be made unique.">
       <option name="closed" value="true" />
@@ -492,8 +505,19 @@
       <option name="project" value="LOCAL" />
       <updated>1740513534779</updated>
     </task>
-    <option name="localTasksCounter" value="155" />
+    <task id="LOCAL-00155" summary="Update to README.md saying that after specifying the database filename once, it's stored in the config files and doesn't need to be specified again.">
+      <option name="closed" value="true" />
+      <created>1740513875694</created>
+      <option name="number" value="00155" />
+      <option name="presentableId" value="LOCAL-00155" />
+      <option name="project" value="LOCAL" />
+      <updated>1740513875694</updated>
+    </task>
+    <option name="localTasksCounter" value="156" />
     <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="RECENT_FILTERS">
@@ -522,7 +546,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="The Volumes dropdown menu now works" />
     <MESSAGE value="Added header descriptions for the subcommand actions by using groups." />
     <MESSAGE value="Added proper tab names (from instead of the subcommand names)" />
     <MESSAGE value="Added F.print_message_based_on_parser(parser, argumentparser_message, non_argumentparser_message)&#10;- Provide it with the parser&#10;- it'll print &quot;argumentparser_message&quot; for the standard ArgumentParser&#10;- it'll print &quot;non_argumentparser_message&quot; for any other parser type" />
@@ -547,6 +570,10 @@
     <MESSAGE value="Removed &quot;Select Option&quot; from the dropdown lists" />
     <MESSAGE value="Tested version" />
     <MESSAGE value="Result Limit now works" />
-    <option name="LAST_COMMIT_MESSAGE" value="Result Limit now works" />
+    <MESSAGE value="Update to README.md saying that after specifying the database filename once, it's stored in the config files and doesn't need to be specified again." />
+    <option name="LAST_COMMIT_MESSAGE" value="Update to README.md saying that after specifying the database filename once, it's stored in the config files and doesn't need to be specified again." />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/Filer$Fgui.coverage" NAME="Fgui Coverage Results" MODIFIED="1740595360987" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

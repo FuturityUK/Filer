@@ -194,11 +194,15 @@ class F:
         select_result = self.database.find_filenames_search(search, category, label, results)
         rows_found = 0
         for row in select_result:
-            if label is not None and row[1] == label:
-                print(f"{row[0]}")
-            else:
-                # No label was provided, so we need to display the label the file is stored on
-                print(f"{row[1]}, {row[0]}")
+            for i in range(0, len(row)):
+                temp_string = str(row[i])
+                """
+                if i == 0 and not (label is not None and row[0] == label):
+                    # No label specified so display the label for each result
+                    print(temp_string)
+                else:
+                """
+                print(f"{temp_string}", end=" ")
             rows_found += 1
         # Print a blank row if we are in the GUI and rows were found
         if rows_found != 0:

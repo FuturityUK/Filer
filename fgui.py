@@ -141,6 +141,8 @@ class Fgui:
             #fullscreen=True,
             show_restart_button=False,
             hide_progress_msg=True,
+            #monospace_display = True,
+            terminal_font_family='Courier New',
             clear_before_run=True,# Was True
             show_stop_warning=False, # From test.py
             show_success_modal=False, # From test.py

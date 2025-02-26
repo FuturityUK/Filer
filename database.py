@@ -261,7 +261,7 @@ class Database:
         clause_added = False
 
         if file_search is not None and file_search.count("%") == 0 and file_search.count("_") == 0:
-            # We can replace this SQL "like" with an exact match '=' as it doesn't contain 'like" special characters
+            # We can replace this SQL "like" with an exact match '=' as it doesn't contain "like" special characters
             like = False
 
         # Filename clause
