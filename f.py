@@ -53,10 +53,22 @@ class F:
     VOL_ARG_DETAILS_VOLUMES_PHYSICAL_DICT_IDX: int = 2
 
     CONFIG_FILENAME: str = "filer.json"
-    CONFIG_ARGS = "args"
-    CONFIG_VOL_DETAILS = "volume_details"
-    CONFIG_DATABASE_FILENAME = "database_filename"
-    CONFIG_CHOSEN_LABEL = "chosen_label"
+    CONFIG_ARGS: str = "args"
+    CONFIG_VOL_DETAILS: str = "volume_details"
+    CONFIG_DATABASE_FILENAME: str = "database_filename"
+    CONFIG_CHOSEN_LABEL: str = "chosen_label"
+
+    FIND_FILES_LABEL = 0
+    FIND_FILES_FILENAME = 1
+    FIND_FILES_BYTE_SIZE = 2
+    FIND_FILES_LAST_WRITE_TIME = 3
+    FIND_FILES_IS_DIRECTORY = 4
+    FIND_FILES_IS_ARCHIVE = 5
+    FIND_FILES_IS_READONLY = 6
+    FIND_FILES_IS_HIDDEN = 7
+    FIND_FILES_IS_SYSTEM = 8
+    FIND_FILES_IS_LINK = 9
+    FIND_FILES_IS_FULL_PATH = 10
 
     def __init__(self, parser, database_filename_argument: str = None):
         self.database = self.logical_disk_array = self.physical_disk_array = self.volumes_array = None
@@ -171,6 +183,68 @@ class F:
             print("The directory must exist before a new database can be created there.")
             exit(2)
 
+    def print_file_files_result(self, select_results, label=None):
+
+        # Calculate Max Widths
+        field_widths = {}
+        for row in select_results:
+            for i in range(0, len(row)):
+                temp_field_string = str(row[i])
+                temp_field_width = len(temp_field_string)
+                if i not in field_widths:
+                    field_widths[i] = temp_field_width
+                else:
+                    if temp_field_width > field_widths[i]:
+                        field_widths[i] = temp_field_width
+        # Print results
+        rows_found = 0
+        for row in select_results:
+            attributes = ""
+            for i in range(0, len(row)):
+                # Justify and space pad the field based on the max field width
+                temp_value = row[i]
+                temp_string = str(temp_value).rjust(field_widths[i])
+                match i:
+                    case self.FIND_FILES_LABEL:
+                        if label is None:
+                            # Label isn't specified so we need to show the label for each filesystem entity
+                            print(temp_string, end=" ")
+                    case self.FIND_FILES_FILENAME:
+                        print(temp_string, end=" ")
+                    case self.FIND_FILES_BYTE_SIZE:
+                        print(temp_string, end=" ")
+                    case self.FIND_FILES_LAST_WRITE_TIME:
+                        print(temp_string, end=" ")
+                    case self.FIND_FILES_IS_DIRECTORY:
+                        append_char = 'd' if temp_value == 1 else '-'
+                        attributes += append_char
+                    case self.FIND_FILES_IS_ARCHIVE:
+                        append_char = 'a' if temp_value == 1 else '-'
+                        attributes += append_char
+                    case self.FIND_FILES_IS_READONLY:
+                        append_char = 'r' if temp_value == 1 else '-'
+                        attributes += append_char
+                    case self.FIND_FILES_IS_HIDDEN:
+                        append_char = 'h' if temp_value == 1 else '-'
+                        attributes += append_char
+                    case self.FIND_FILES_IS_SYSTEM:
+                        append_char = 's' if temp_value == 1 else '-'
+                        attributes += append_char
+                    case self.FIND_FILES_IS_LINK:
+                        append_char = 'l' if temp_value == 1 else '-'
+                        attributes += append_char
+                        print(f"{attributes} ", end=" ")
+                    case self.FIND_FILES_IS_FULL_PATH:
+                        print(temp_string)
+
+            rows_found += 1
+        # Print a blank row if we are in the GUI and rows were found
+        if rows_found != 0:
+            self.print_message_based_on_parser(None, "")
+        # Print the number of row found in the GUI
+        self.print_message_based_on_parser(None, f"{rows_found} results found")
+
+
     def subcommand_file_search(self, args: []):
         logging.debug(f"### F.search() ###")
         search = args.search # if "search" in args else None
@@ -191,24 +265,8 @@ class F:
         if label is not None and label != "": self.print_message_based_on_parser(None, f" - label: '{label}'")
         self.print_message_based_on_parser(None, f" - results: '{results}'")
         self.print_message_based_on_parser(None, "")
-        select_result = self.database.find_filenames_search(search, category, label, results)
-        rows_found = 0
-        for row in select_result:
-            for i in range(0, len(row)):
-                temp_string = str(row[i])
-                """
-                if i == 0 and not (label is not None and row[0] == label):
-                    # No label specified so display the label for each result
-                    print(temp_string)
-                else:
-                """
-                print(f"{temp_string}", end=" ")
-            rows_found += 1
-        # Print a blank row if we are in the GUI and rows were found
-        if rows_found != 0:
-            self.print_message_based_on_parser(None, "")
-        # Print the number of row found in the GUI
-        self.print_message_based_on_parser(None, f"{rows_found} results found")
+        select_results = self.database.find_filenames_search(search, category, label, results)
+        self.print_file_files_result(select_results, label)
 
     def subcommand_refresh_volumes(self, args: []):
         logging.debug("### F.refresh_volumes() ###")
