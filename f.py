@@ -58,17 +58,17 @@ class F:
     CONFIG_DATABASE_FILENAME: str = "database_filename"
     CONFIG_CHOSEN_LABEL: str = "chosen_label"
 
-    FIND_FILES_LABEL = 0
-    FIND_FILES_FILENAME = 1
-    FIND_FILES_BYTE_SIZE = 2
-    FIND_FILES_LAST_WRITE_TIME = 3
-    FIND_FILES_IS_DIRECTORY = 4
-    FIND_FILES_IS_ARCHIVE = 5
-    FIND_FILES_IS_READONLY = 6
-    FIND_FILES_IS_HIDDEN = 7
-    FIND_FILES_IS_SYSTEM = 8
-    FIND_FILES_IS_LINK = 9
-    FIND_FILES_IS_FULL_PATH = 10
+    FILE_SEARCH_RESULTS_LABEL = 0
+    FILE_SEARCH_RESULTS_FILENAME = 1
+    FILE_SEARCH_RESULTS_BYTE_SIZE = 2
+    FILE_SEARCH_RESULTS_LAST_WRITE_TIME = 3
+    FILE_SEARCH_RESULTS_IS_DIRECTORY = 4
+    FILE_SEARCH_RESULTS_IS_ARCHIVE = 5
+    FILE_SEARCH_RESULTS_IS_READONLY = 6
+    FILE_SEARCH_RESULTS_IS_HIDDEN = 7
+    FILE_SEARCH_RESULTS_IS_SYSTEM = 8
+    FILE_SEARCH_RESULTS_IS_LINK = 9
+    FILE_SEARCH_RESULTS_IS_FULL_PATH = 10
 
     def __init__(self, parser, database_filename_argument: str = None):
         self.database = self.logical_disk_array = self.physical_disk_array = self.volumes_array = None
@@ -183,7 +183,7 @@ class F:
             print("The directory must exist before a new database can be created there.")
             exit(2)
 
-    def print_file_files_result(self, select_results, label=None):
+    def print_file_search_result(self, select_results, label=None):
 
         # Calculate Max Widths
         field_widths = {}
@@ -205,36 +205,36 @@ class F:
                 temp_value = row[i]
                 temp_string = str(temp_value).rjust(field_widths[i])
                 match i:
-                    case self.FIND_FILES_LABEL:
+                    case self.FILE_SEARCH_RESULTS_LABEL:
                         if label is None:
                             # Label isn't specified so we need to show the label for each filesystem entity
                             print(temp_string, end=" ")
-                    case self.FIND_FILES_FILENAME:
+                    case self.FILE_SEARCH_RESULTS_FILENAME:
                         print(temp_string, end=" ")
-                    case self.FIND_FILES_BYTE_SIZE:
+                    case self.FILE_SEARCH_RESULTS_BYTE_SIZE:
                         print(temp_string, end=" ")
-                    case self.FIND_FILES_LAST_WRITE_TIME:
+                    case self.FILE_SEARCH_RESULTS_LAST_WRITE_TIME:
                         print(temp_string, end=" ")
-                    case self.FIND_FILES_IS_DIRECTORY:
+                    case self.FILE_SEARCH_RESULTS_IS_DIRECTORY:
                         append_char = 'd' if temp_value == 1 else '-'
                         attributes += append_char
-                    case self.FIND_FILES_IS_ARCHIVE:
+                    case self.FILE_SEARCH_RESULTS_IS_ARCHIVE:
                         append_char = 'a' if temp_value == 1 else '-'
                         attributes += append_char
-                    case self.FIND_FILES_IS_READONLY:
+                    case self.FILE_SEARCH_RESULTS_IS_READONLY:
                         append_char = 'r' if temp_value == 1 else '-'
                         attributes += append_char
-                    case self.FIND_FILES_IS_HIDDEN:
+                    case self.FILE_SEARCH_RESULTS_IS_HIDDEN:
                         append_char = 'h' if temp_value == 1 else '-'
                         attributes += append_char
-                    case self.FIND_FILES_IS_SYSTEM:
+                    case self.FILE_SEARCH_RESULTS_IS_SYSTEM:
                         append_char = 's' if temp_value == 1 else '-'
                         attributes += append_char
-                    case self.FIND_FILES_IS_LINK:
+                    case self.FILE_SEARCH_RESULTS_IS_LINK:
                         append_char = 'l' if temp_value == 1 else '-'
                         attributes += append_char
                         print(f"{attributes} ", end=" ")
-                    case self.FIND_FILES_IS_FULL_PATH:
+                    case self.FILE_SEARCH_RESULTS_IS_FULL_PATH:
                         print(temp_string)
 
             rows_found += 1
@@ -266,7 +266,7 @@ class F:
         self.print_message_based_on_parser(None, f" - results: '{results}'")
         self.print_message_based_on_parser(None, "")
         select_results = self.database.find_filenames_search(search, category, label, results)
-        self.print_file_files_result(select_results, label)
+        self.print_file_search_result(select_results, label)
 
     def subcommand_refresh_volumes(self, args: []):
         logging.debug("### F.refresh_volumes() ###")

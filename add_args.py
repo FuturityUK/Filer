@@ -8,6 +8,7 @@ class AddArgs:
 
     SHOW_DB_FILENAME_ARG_IN_GUI: bool = False
     SHOW_VERBOSE_ARG_IN_GUI: bool = False
+    SHOW_FILE_SEARCH_ARG_IN_GUI: bool = True
 
     SUBCMD_FILE_SEARCH: str = 'file_search'
     SUBCMD_REFRESH_VOLUMES: str = 'refresh_volumes'
@@ -20,8 +21,10 @@ class AddArgs:
     SUBCMD_RESET_DATABASE: str = 'reset_db'
 
     SUBCMD_FILE_SEARCH_LABEL_ALL_LABELS: str = ' '
-    SUBCMD_FILE_SEARCH_RESULTS_DEFAULT_CHOICE: str = '100'
-    SUBCMD_FILE_SEARCH_RESULTS_CHOICES: list = ['100', '250', '500', '1000', '10000', '100000']
+    SUBCMD_FILE_SEARCH_MAX_RESULTS_DEFAULT_CHOICE: str = '100'
+    SUBCMD_FILE_SEARCH_MAX_RESULTS_CHOICES: list = ['100', '250', '500', '1000', '10000', '100000']
+    SUBCMD_FILE_SEARCH_ORDER_DEFAULT_CHOICE: str = 'Full Path'
+    SUBCMD_FILE_SEARCH_ORDER_CHOICES: list = ['Full Path', 'Filename', 'Size', 'Last Modified', 'Attributes']
 
     DEFAULT_DATABASE_FILENAME: str = 'AddArgs.DEFAULT_DATABASE_FILENAME'
 
@@ -171,15 +174,39 @@ class AddArgs:
         if AddArgs.is_std_argument_parser(subparsers):
             help_text = help_text.replace(r"%", r"%%")
         AddArgs.add_argument(subparser_search_group, "-s", "--search", metavar='Search', default="%", help=help_text)
+
+        # Invisible GUI Argument purely for widget arrangement
+        AddArgs.add_argument(subparser_search_group, "--invisible", dest='invisible', metavar='Invisible',
+                             action='store_true', default=True, help="Invisible checkbox", gooey_options={'visible': False})
+
         # ADD BACK WHEN FUNCTIONALITY IMPLEMENTED
         #if not AddArgs.is_std_argument_parser(subparsers):
         #    AddArgs.add_argument(subparser_search_group, "-c", "--category", dest='category', metavar='Category', choices=file_categories, nargs='?', help="Category of files to be considered")
         AddArgs.add_argument(subparser_search_group, "-l", "--label", dest='label', metavar='Label',
                              widget = 'Dropdown', const='all', nargs = '?', default = None,
                              help="Label of the drive listing")
-        AddArgs.add_argument(subparser_search_group, dest='results', metavar='Results',
-                             widget = 'Dropdown', const='all', nargs = '?', default = AddArgs.SUBCMD_FILE_SEARCH_RESULTS_DEFAULT_CHOICE, choices=AddArgs.SUBCMD_FILE_SEARCH_RESULTS_CHOICES,
+        AddArgs.add_argument(subparser_search_group, "--max_results", dest='max_results', metavar='Max Results',
+                             widget = 'Dropdown', const='all', nargs = '?', default = AddArgs.SUBCMD_FILE_SEARCH_MAX_RESULTS_DEFAULT_CHOICE, choices=AddArgs.SUBCMD_FILE_SEARCH_MAX_RESULTS_CHOICES,
                              help="Max number of results to display.")
+
+        AddArgs.add_argument(subparser_search_group, "--order", dest='order', metavar='Sort Order',
+                             widget = 'Dropdown', const='all', nargs = '?', default = AddArgs.SUBCMD_FILE_SEARCH_ORDER_DEFAULT_CHOICE, choices=AddArgs.SUBCMD_FILE_SEARCH_ORDER_CHOICES,
+                             help="Field used to sort results.")
+        AddArgs.add_argument(subparser_search_group, "--order_desc", dest='order_desc', metavar='\n\nOrder Descending', help="Show results in Descending Order.", default=False,
+                            action="store_true", gooey_options={'visible': AddArgs.SHOW_FILE_SEARCH_ARG_IN_GUI})
+
+
+        AddArgs.add_argument(subparser_search_group, "--show_full_path", dest='show_full_path', metavar='Show Full Path', help="Show 'Full Path' in results.", default=True,
+                            action="store_true", gooey_options={'visible': AddArgs.SHOW_FILE_SEARCH_ARG_IN_GUI})
+        AddArgs.add_argument(subparser_search_group, "--show_filename", dest='show_filename', metavar="Show Filename", help="Show 'Filename' in results. Filename is included in the Full Path.", default=False,
+                            action="store_true", gooey_options={'visible': AddArgs.SHOW_FILE_SEARCH_ARG_IN_GUI})
+        AddArgs.add_argument(subparser_search_group, "--show_size", dest='show_size', metavar='Show Size', help="Show 'Size' in results.", default=False,
+                            action="store_true", gooey_options={'visible': AddArgs.SHOW_FILE_SEARCH_ARG_IN_GUI})
+        AddArgs.add_argument(subparser_search_group, "--show_last_modified", dest='show_last_modified', metavar='Show Last Modified Time', help="Show 'Time Last Modified' in results.", default=False,
+                            action="store_true", gooey_options={'visible': AddArgs.SHOW_FILE_SEARCH_ARG_IN_GUI})
+        AddArgs.add_argument(subparser_search_group, "--show_attributes", dest='show_attributes', metavar='Show Attributes', help="Show 'Attributes' in results.", default=False,
+                            action="store_true", gooey_options={'visible': AddArgs.SHOW_FILE_SEARCH_ARG_IN_GUI})
+
         AddArgs.add_db_argument_to_parser(subparser_search_group)
         #AddArgs.add_verbose_argument_to_parser(subparser_search_group)
 
@@ -194,6 +221,7 @@ class AddArgs:
                 'Add Volume Files to Database',
                 description='Add Files on a selected Volume to the Database'
             )
+
             help_text = f'''Volume that you wish to add.
 - If you don't see your volume, please use the {AddArgs.get_message_based_on_parser(subparsers, "'"+AddArgs.SUBCMD_REFRESH_VOLUMES+"' subcommand", "'Refresh Volumes List' action.")}'''
 # - Values last updated: {self.configuration[self.CONFIG_VOL_DETAILS][self.VOL_ARG_DETAILS_CREATED]}
@@ -203,14 +231,27 @@ class AddArgs:
             AddArgs.add_argument(subparser_add_volume_group, "--volume", dest='volume', metavar='Volume',
                                  widget='Dropdown', nargs='?', default=None, help=help_text)
             #AddArgs.add_argument(subparser_add_volume_group, "-l", "--label", dest='label', metavar='Label', default=None, help="Label of the drive listing. If provided it will override the volume label.",
+            # Invisible GUI Argument purely for widget arrangement
+            AddArgs.add_argument(subparser_add_volume_group, "--invisible", dest='invisible', metavar='Invisible',
+                                 action='store_true', default=True, help="Invisible checkbox",
+                                 gooey_options={'visible': False})
+
             AddArgs.add_argument(subparser_add_volume_group, "--label", dest='label', metavar='Label',
                                           widget = 'Dropdown', nargs = '?', default = None,
                                           help="Label of the drive listing. If left blank, the volume's label will be used instead.'"
                                           # gooey_options={ 'initial_value': "" }
                            )
+            AddArgs.add_argument(subparser_add_volume_group, "--invisible2", dest='invisible2', metavar='Invisible2',
+                                 action='store_true', default=True, help="Invisible2 checkbox",
+                                 gooey_options={'visible': False})
+
             hostname = socket.gethostname()
             AddArgs.add_argument(subparser_add_volume_group, "-n", "--hostname", dest='hostname', metavar='Hostname', default=hostname,
                                           help="Hostname of the machine containing the drive")
+            AddArgs.add_argument(subparser_add_volume_group, "--invisible3", dest='invisible3', metavar='Invisible3',
+                                 action='store_true', default=True, help="Invisible2 checkbox",
+                                 gooey_options={'visible': False})
+
             AddArgs.add_argument(subparser_add_volume_group, "-r", "--remove", dest='remove', default=False,
                                  action="store_true",
                                  metavar='Remove',
@@ -229,7 +270,7 @@ class AddArgs:
                 'Refresh Volumes List',
                 description='Refresh the List of Volumes that appear on the "Add_Volumes" action page.'
             )
-            AddArgs.add_argument(subparser_refresh_volumes_group, "-i", "--invisible", dest='invisible', metavar='Invisible',
+            AddArgs.add_argument(subparser_refresh_volumes_group, "--invisible", dest='invisible', metavar='Invisible',
                            action='store_true', default=True,
                            help="Invisible checkbox", gooey_options = {'visible': False})
 
