@@ -4,9 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Upgraded to use PyCharm Pro&#10;Now displays all filesystem entity information, but in an ugly format.">
+    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Update to README.md saying that after specifying the database filename once, it's stored in the config files and doesn't need to be specified again.">
+      <change afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database.py" beforeDir="false" afterPath="$PROJECT_DIR$/database.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/f.py" beforeDir="false" afterPath="$PROJECT_DIR$/f.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/fgui.py" beforeDir="false" afterPath="$PROJECT_DIR$/fgui.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sql.py" beforeDir="false" afterPath="$PROJECT_DIR$/sql.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -51,44 +55,44 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Python.Fgui.executor&quot;: &quot;Run&quot;,
-    &quot;Python.database.executor&quot;: &quot;Run&quot;,
-    &quot;Python.dyngooey.executor&quot;: &quot;Run&quot;,
-    &quot;Python.f.executor&quot;: &quot;Run&quot;,
-    &quot;Python.fgui.executor&quot;: &quot;Run&quot;,
-    &quot;Python.file_system_processors.executor&quot;: &quot;Run&quot;,
-    &quot;Python.file_types.executor&quot;: &quot;Run&quot;,
-    &quot;Python.filer.executor&quot;: &quot;Run&quot;,
-    &quot;Python.logtest.executor&quot;: &quot;Run&quot;,
-    &quot;Python.main.executor&quot;: &quot;Run&quot;,
-    &quot;Python.powershell.executor&quot;: &quot;Run&quot;,
-    &quot;Python.print.executor&quot;: &quot;Run&quot;,
-    &quot;Python.sql.executor&quot;: &quot;Run&quot;,
-    &quot;Python.subparser_demo.executor&quot;: &quot;Run&quot;,
-    &quot;Python.system.executor&quot;: &quot;Run&quot;,
-    &quot;Python.test.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;run.code.analysis.last.selected.profile&quot;: &quot;aDefault&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Python.Fgui.executor": "Run",
+    "Python.database.executor": "Run",
+    "Python.dyngooey.executor": "Run",
+    "Python.f.executor": "Run",
+    "Python.fgui.executor": "Run",
+    "Python.file_system_processors.executor": "Run",
+    "Python.file_types.executor": "Run",
+    "Python.filer.executor": "Run",
+    "Python.logtest.executor": "Run",
+    "Python.main.executor": "Run",
+    "Python.powershell.executor": "Run",
+    "Python.print.executor": "Run",
+    "Python.sql.executor": "Run",
+    "Python.subparser_demo.executor": "Run",
+    "Python.system.executor": "Run",
+    "Python.test.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "master",
+    "ignore.virus.scanning.warn.message": "true",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "run.code.analysis.last.selected.profile": "aDefault",
+    "settings.editor.selected.configurable": "settings.sync",
+    "vue.rearranger.settings.migration": "true"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;DatabaseDriversLRU&quot;: [
-      &quot;sqlite&quot;
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "sqlite"
     ]
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\Neil.FUTURITY\PycharmProjects\Filer\raw\images\readme-images" />
@@ -115,10 +119,15 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1736868367160</updated>
-      <workItem from="1740589533362" duration="5732000" />
-      <workItem from="1740674307976" duration="2217000" />
-      <workItem from="1740676549577" duration="434000" />
-      <workItem from="1740676993726" duration="712000" />
+      <workItem from="1740589533362" duration="5294000" />
+    </task>
+    <task id="LOCAL-00107" summary="Now works on the widget's dest value rather than the '-' or '--' commandline option as they may be duplicated over many subcommands. the 'dest's can be made unique.">
+      <option name="closed" value="true" />
+      <created>1739301168368</created>
+      <option name="number" value="00107" />
+      <option name="presentableId" value="LOCAL-00107" />
+      <option name="project" value="LOCAL" />
+      <updated>1739301168368</updated>
     </task>
     <task id="LOCAL-00108" summary="Dynamic values have to match:&#10; for non optional parameters it needs to match the parameter name (which is the dest name).&#10; for optional parameters it needs to match the either the first '-' or '--' parameter, whichever is defined first, or the dest parameter if the former doesn't exist.">
       <option name="closed" value="true" />
@@ -504,15 +513,7 @@
       <option name="project" value="LOCAL" />
       <updated>1740513875694</updated>
     </task>
-    <task id="LOCAL-00156" summary="Upgraded to use PyCharm Pro&#10;Now displays all filesystem entity information, but in an ugly format.">
-      <option name="closed" value="true" />
-      <created>1740595762053</created>
-      <option name="number" value="00156" />
-      <option name="presentableId" value="LOCAL-00156" />
-      <option name="project" value="LOCAL" />
-      <updated>1740595762053</updated>
-    </task>
-    <option name="localTasksCounter" value="157" />
+    <option name="localTasksCounter" value="156" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -545,6 +546,7 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
+    <MESSAGE value="Added header descriptions for the subcommand actions by using groups." />
     <MESSAGE value="Added proper tab names (from instead of the subcommand names)" />
     <MESSAGE value="Added F.print_message_based_on_parser(parser, argumentparser_message, non_argumentparser_message)&#10;- Provide it with the parser&#10;- it'll print &quot;argumentparser_message&quot; for the standard ArgumentParser&#10;- it'll print &quot;non_argumentparser_message&quot; for any other parser type" />
     <MESSAGE value="dyngooey.py&#10;- Disabled logging as no longer required&#10;&#10;database.py&#10;- Now returns the results to the calling function to display, rather that handle the displaying itself.&#10;&#10;f.py&#10;- Added F.exit_cleanly()&#10;- Provides better error handling&#10;&#10;Made parser a F instance variable so that i don't have to keep passing it between functions." />
@@ -569,10 +571,9 @@
     <MESSAGE value="Tested version" />
     <MESSAGE value="Result Limit now works" />
     <MESSAGE value="Update to README.md saying that after specifying the database filename once, it's stored in the config files and doesn't need to be specified again." />
-    <MESSAGE value="Upgraded to use PyCharm Pro&#10;Now displays all filesystem entity information, but in an ugly format." />
-    <option name="LAST_COMMIT_MESSAGE" value="Upgraded to use PyCharm Pro&#10;Now displays all filesystem entity information, but in an ugly format." />
+    <option name="LAST_COMMIT_MESSAGE" value="Update to README.md saying that after specifying the database filename once, it's stored in the config files and doesn't need to be specified again." />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/Filer$Fgui.coverage" NAME="Fgui Coverage Results" MODIFIED="1740677709438" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Filer$Fgui.coverage" NAME="Fgui Coverage Results" MODIFIED="1740595360987" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
