@@ -33,9 +33,9 @@ from add_args import AddArgs
 
 class F:
 
+    SHOW_SUBMITTED_ARGS: bool = True
     SHOW_DB_FILENAME_ARG_IN_GUI: bool = False
     SHOW_DB_SELECTION: bool = False
-    SHOW_SUBMITTED_ARGS: bool = False
     PROGRESS_INSERT_FREQUENCY: int = 10000
 
     EXIT_OK: int = 0 #
@@ -183,7 +183,7 @@ class F:
             print("The directory must exist before a new database can be created there.")
             exit(2)
 
-    def print_file_search_result(self, select_results, label=None):
+    def print_file_search_result(self, select_results, label, show_size, show_last_modified, show_attributes):
 
         # Calculate Max Widths
         field_widths = {}
@@ -210,11 +210,14 @@ class F:
                             # Label isn't specified so we need to show the label for each filesystem entity
                             print(temp_string, end=" ")
                     case self.FILE_SEARCH_RESULTS_FILENAME:
-                        print(temp_string, end=" ")
+                        if show_filename:
+                            print(temp_string, end=" ")
                     case self.FILE_SEARCH_RESULTS_BYTE_SIZE:
-                        print(temp_string, end=" ")
+                        if show_size:
+                            print(temp_string, end=" ")
                     case self.FILE_SEARCH_RESULTS_LAST_WRITE_TIME:
-                        print(temp_string, end=" ")
+                        if show_last_modified:
+                            print(temp_string, end=" ")
                     case self.FILE_SEARCH_RESULTS_IS_DIRECTORY:
                         append_char = 'd' if temp_value == 1 else '-'
                         attributes += append_char
@@ -233,7 +236,8 @@ class F:
                     case self.FILE_SEARCH_RESULTS_IS_LINK:
                         append_char = 'l' if temp_value == 1 else '-'
                         attributes += append_char
-                        print(f"{attributes} ", end=" ")
+                        if show_attributes:
+                            print(f"{attributes} ", end=" ")
                     case self.FILE_SEARCH_RESULTS_IS_FULL_PATH:
                         print(temp_string)
 
@@ -251,22 +255,33 @@ class F:
         category = args.category if "category" in args else None
         label = args.label # if "label" in args else None
         label = None if label == AddArgs.SUBCMD_FILE_SEARCH_LABEL_ALL_LABELS else label
-        results = 0
+        max_results = args.max_results if "max_results" in args else AddArgs.SUBCMD_FILE_SEARCH_MAX_RESULTS_DEFAULT_CHOICE
+        order_by = args.order_by
+        order_desc = args.order_desc
+        show_size = args.show_size
+        show_last_modified = args.show_last_modified
+        show_attributes = args.show_attributes
+
+        max_results_int = 0
         try:
-            results = int(args.results) # if "results" in args else None
+            # Convert strings to int
+            max_results_int = int(max_results)
         except ValueError:
             # Handle the exception
-            self.exit_cleanly(self.EXIT_ERROR, f'Results value "{args.results}" is not an integer!')
+            self.exit_cleanly(self.EXIT_ERROR, f'Results value "{args.max_results}" is not an integer!')
+
         if search is None and category is None and label is None:
             self.exit_cleanly(self.EXIT_ERROR, "No search terms provided")
+
         self.print_message_based_on_parser(None, f"Finding files & dirs matching:")
         if search is not None and search != "": self.print_message_based_on_parser(None, f" - search: '{search}'")
         #if category is not None and category != "": self.print_message_based_on_parser(None, f" - category: '{category}'")
         if label is not None and label != "": self.print_message_based_on_parser(None, f" - label: '{label}'")
-        self.print_message_based_on_parser(None, f" - results: '{results}'")
+        self.print_message_based_on_parser(None, f" - max results: '{max_results_int}'")
         self.print_message_based_on_parser(None, "")
-        select_results = self.database.find_filenames_search(search, category, label, results)
-        self.print_file_search_result(select_results, label)
+
+        select_results = self.database.find_filenames_search(search, category, label, max_results_int, order_by, order_desc)
+        self.print_file_search_result(select_results, label, show_size, show_last_modified, show_attributes)
 
     def subcommand_refresh_volumes(self, args: []):
         logging.debug("### F.refresh_volumes() ###")

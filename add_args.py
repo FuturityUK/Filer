@@ -189,24 +189,19 @@ class AddArgs:
                              widget = 'Dropdown', const='all', nargs = '?', default = AddArgs.SUBCMD_FILE_SEARCH_MAX_RESULTS_DEFAULT_CHOICE, choices=AddArgs.SUBCMD_FILE_SEARCH_MAX_RESULTS_CHOICES,
                              help="Max number of results to display.")
 
-        AddArgs.add_argument(subparser_search_group, "--order", dest='order', metavar='Sort Order',
+        AddArgs.add_argument(subparser_search_group, "--order_by", dest='order_by', metavar='Order By',
                              widget = 'Dropdown', const='all', nargs = '?', default = AddArgs.SUBCMD_FILE_SEARCH_ORDER_DEFAULT_CHOICE, choices=AddArgs.SUBCMD_FILE_SEARCH_ORDER_CHOICES,
-                             help="Field used to sort results.")
+                             help="Use this Field to Order the results.")
         AddArgs.add_argument(subparser_search_group, "--order_desc", dest='order_desc', metavar='\n\nOrder Descending', help="Show results in Descending Order.", default=False,
                             action="store_true", gooey_options={'visible': AddArgs.SHOW_FILE_SEARCH_ARG_IN_GUI})
 
-
-        AddArgs.add_argument(subparser_search_group, "--show_full_path", dest='show_full_path', metavar='Show Full Path', help="Show 'Full Path' in results.", default=True,
-                            action="store_true", gooey_options={'visible': AddArgs.SHOW_FILE_SEARCH_ARG_IN_GUI})
-        AddArgs.add_argument(subparser_search_group, "--show_filename", dest='show_filename', metavar="Show Filename", help="Show 'Filename' in results. Filename is included in the Full Path.", default=False,
-                            action="store_true", gooey_options={'visible': AddArgs.SHOW_FILE_SEARCH_ARG_IN_GUI})
         AddArgs.add_argument(subparser_search_group, "--show_size", dest='show_size', metavar='Show Size', help="Show 'Size' in results.", default=False,
                             action="store_true", gooey_options={'visible': AddArgs.SHOW_FILE_SEARCH_ARG_IN_GUI})
         AddArgs.add_argument(subparser_search_group, "--show_last_modified", dest='show_last_modified', metavar='Show Last Modified Time', help="Show 'Time Last Modified' in results.", default=False,
                             action="store_true", gooey_options={'visible': AddArgs.SHOW_FILE_SEARCH_ARG_IN_GUI})
+
         AddArgs.add_argument(subparser_search_group, "--show_attributes", dest='show_attributes', metavar='Show Attributes', help="Show 'Attributes' in results.", default=False,
                             action="store_true", gooey_options={'visible': AddArgs.SHOW_FILE_SEARCH_ARG_IN_GUI})
-
         AddArgs.add_db_argument_to_parser(subparser_search_group)
         #AddArgs.add_verbose_argument_to_parser(subparser_search_group)
 

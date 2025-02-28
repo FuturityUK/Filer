@@ -240,7 +240,7 @@ class Database:
                         print(f"Database upgraded to version {new_db_version} complete.")
         self.commit()
 
-    def find_filenames_exact_match(self, filename: str, file_type: str, label: str = None, results: int = None):
+    def find_filenames_exact_match(self, filename: str, file_type: str, label: str = None, max_results: int = None, order_by: str = None, order_desc: bool = False):
         """
         if label is None:
             self.find_filenames(
@@ -253,9 +253,9 @@ class Database:
                 [filename, label]
             )
         """
-        return self.find_filenames_search(filename, file_type, label, results, False)
+        return self.find_filenames_search(filename, file_type, label, max_results, order_by, order_desc, False)
 
-    def find_filenames_search(self, file_search: str, file_category: str, label: str = None, results: int = None, like: bool = True):
+    def find_filenames_search(self, file_search: str, file_category: str, label: str = None, max_results: int = None, order_by: str = None, order_desc: bool = False, like: bool = True):
         sql_string = self.__sql_dictionary["find_filename_base"]
         sql_argument_array = []
         clause_added = False
@@ -291,9 +291,9 @@ class Database:
         sql_string += " " + self.__sql_dictionary["find_filename_join"]
 
         # Limit results clause
-        if results is not None:
+        if max_results is not None:
             sql_string += self.__sql_dictionary["find_filename_limit_clause"]
-            sql_argument_array.append(results)
+            sql_argument_array.append(max_results)
 
         sql_string += ";"
 
