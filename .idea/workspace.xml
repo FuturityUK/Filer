@@ -4,9 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Started adding the select database option">
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/154586c9-d442-4f56-9d2b-98583addf14b.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/154586c9-d442-4f56-9d2b-98583addf14b.xml" afterDir="false" />
+    <list default="true" id="37081b5b-bd4c-40da-9935-dbc0ee627108" name="Changes" comment="Update to README.md saying that after specifying the database filename once, it's stored in the config files and doesn't need to be specified again.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/add_args.py" beforeDir="false" afterPath="$PROJECT_DIR$/add_args.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/f.py" beforeDir="false" afterPath="$PROJECT_DIR$/f.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/fgui.py" beforeDir="false" afterPath="$PROJECT_DIR$/fgui.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -36,8 +38,8 @@
 }</component>
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/FuturityUK/Filer.git&quot;,
-    &quot;accountId&quot;: &quot;23ac875c-01ab-481f-83b9-3222b502990b&quot;
+    &quot;url&quot;: &quot;https://github.com/FuturityUK/Filer&quot;,
+    &quot;accountId&quot;: &quot;bf24ea4b-c4fb-478d-a615-f16c1d4f9975&quot;
   }
 }</component>
   <component name="ProjectColorInfo">{
@@ -53,6 +55,7 @@
   </component>
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
+    &quot;Python.Fgui.executor&quot;: &quot;Run&quot;,
     &quot;Python.database.executor&quot;: &quot;Run&quot;,
     &quot;Python.dyngooey.executor&quot;: &quot;Run&quot;,
     &quot;Python.f.executor&quot;: &quot;Run&quot;,
@@ -70,14 +73,27 @@
     &quot;Python.test.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;master&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
     &quot;run.code.analysis.last.selected.profile&quot;: &quot;aDefault&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;org.jetbrains.plugins.gitlab.GitLabSettingsConfigurable&quot;
+    &quot;settings.editor.selected.configurable&quot;: &quot;settings.sync&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  },
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;sqlite&quot;
+    ]
   }
 }</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Neil.FUTURITY\PycharmProjects\Filer\raw\images\readme-images" />
       <recent name="C:\Users\Neil.FUTURITY\PycharmProjects\Filer\scripts" />
       <recent name="C:\Users\Neil.FUTURITY\PycharmProjects\Filer" />
     </key>
@@ -85,7 +101,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-python-sdk-fc1d50d2d915-aa17d162503b-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-243.24978.54" />
+        <option value="bundled-js-predefined-d6986cc7102b-76f8388c3a79-JavaScript-PY-243.24978.54" />
+        <option value="bundled-python-sdk-91e3b7efe1d4-466328ff949b-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-243.24978.54" />
       </set>
     </attachedChunks>
   </component>
@@ -100,166 +117,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1736868367160</updated>
-    </task>
-    <task id="LOCAL-00087" summary="Added code to extract file extension information">
-      <option name="closed" value="true" />
-      <created>1738870390584</created>
-      <option name="number" value="00087" />
-      <option name="presentableId" value="LOCAL-00087" />
-      <option name="project" value="LOCAL" />
-      <updated>1738870390584</updated>
-    </task>
-    <task id="LOCAL-00088" summary="Now downloads file types from the wiki page if a local copy doesn't already exist.">
-      <option name="closed" value="true" />
-      <created>1738939936320</created>
-      <option name="number" value="00088" />
-      <option name="presentableId" value="LOCAL-00088" />
-      <option name="project" value="LOCAL" />
-      <updated>1738939936320</updated>
-    </task>
-    <task id="LOCAL-00089" summary="Now downloads file types from the wiki page if a local copy doesn't already exist.">
-      <option name="closed" value="true" />
-      <created>1738940140510</created>
-      <option name="number" value="00089" />
-      <option name="presentableId" value="LOCAL-00089" />
-      <option name="project" value="LOCAL" />
-      <updated>1738940140510</updated>
-    </task>
-    <task id="LOCAL-00090" summary="File type line now split into extensions and description">
-      <option name="closed" value="true" />
-      <created>1738952739420</created>
-      <option name="number" value="00090" />
-      <option name="presentableId" value="LOCAL-00090" />
-      <option name="project" value="LOCAL" />
-      <updated>1738952739420</updated>
-    </task>
-    <task id="LOCAL-00091" summary="Extensions are now split into individual extensions together with their descriptions. More wikitext formatting correctly removed">
-      <option name="closed" value="true" />
-      <created>1738960695135</created>
-      <option name="number" value="00091" />
-      <option name="presentableId" value="LOCAL-00091" />
-      <option name="project" value="LOCAL" />
-      <updated>1738960695135</updated>
-    </task>
-    <task id="LOCAL-00092" summary="Finished file_types.py which now can download directly from the wikipedia website, cache the file locally and extract the extension data from it. It then stores the details in a csv file">
-      <option name="closed" value="true" />
-      <created>1738963162329</created>
-      <option name="number" value="00092" />
-      <option name="presentableId" value="LOCAL-00092" />
-      <option name="project" value="LOCAL" />
-      <updated>1738963162329</updated>
-    </task>
-    <task id="LOCAL-00093" summary="changed name of cached file to file_types.wikitext">
-      <option name="closed" value="true" />
-      <created>1738963292672</created>
-      <option name="number" value="00093" />
-      <option name="presentableId" value="LOCAL-00093" />
-      <option name="project" value="LOCAL" />
-      <updated>1738963292672</updated>
-    </task>
-    <task id="LOCAL-00094" summary="Work on search (find) GUI (not finished)">
-      <option name="closed" value="true" />
-      <created>1739027638412</created>
-      <option name="number" value="00094" />
-      <option name="presentableId" value="LOCAL-00094" />
-      <option name="project" value="LOCAL" />
-      <updated>1739027638418</updated>
-    </task>
-    <task id="LOCAL-00095" summary="Find and Search subcommands now share the same code">
-      <option name="closed" value="true" />
-      <created>1739030224284</created>
-      <option name="number" value="00095" />
-      <option name="presentableId" value="LOCAL-00095" />
-      <option name="project" value="LOCAL" />
-      <updated>1739030224284</updated>
-    </task>
-    <task id="LOCAL-00096" summary="Fixed passing *args and **kwargs">
-      <option name="closed" value="true" />
-      <created>1739035631960</created>
-      <option name="number" value="00096" />
-      <option name="presentableId" value="LOCAL-00096" />
-      <option name="project" value="LOCAL" />
-      <updated>1739035631960</updated>
-    </task>
-    <task id="LOCAL-00097" summary="add_argument() now strips out Gooey 'widget' attributes if non GUI versions running.&#10;Started migrating add_argument native functions over to custom F.add_argument() function.">
-      <option name="closed" value="true" />
-      <created>1739114101341</created>
-      <option name="number" value="00097" />
-      <option name="presentableId" value="LOCAL-00097" />
-      <option name="project" value="LOCAL" />
-      <updated>1739114101341</updated>
-    </task>
-    <task id="LOCAL-00098" summary="Database 'create' subcommand works, but should really be moved to the Database class">
-      <option name="closed" value="true" />
-      <created>1739115263485</created>
-      <option name="number" value="00098" />
-      <option name="presentableId" value="LOCAL-00098" />
-      <option name="project" value="LOCAL" />
-      <updated>1739115263485</updated>
-    </task>
-    <task id="LOCAL-00099" summary="Added DBVersion &quot;2&quot; upgrade SQL.&#10;It's not being run yet though.">
-      <option name="closed" value="true" />
-      <created>1739127383715</created>
-      <option name="number" value="00099" />
-      <option name="presentableId" value="LOCAL-00099" />
-      <option name="project" value="LOCAL" />
-      <updated>1739127383715</updated>
-    </task>
-    <task id="LOCAL-00100" summary="Database.upgrade_database() now cycles through the SQL create and upgrade SQL in order">
-      <option name="closed" value="true" />
-      <created>1739129157280</created>
-      <option name="number" value="00100" />
-      <option name="presentableId" value="LOCAL-00100" />
-      <option name="project" value="LOCAL" />
-      <updated>1739129157280</updated>
-    </task>
-    <task id="LOCAL-00101" summary="Database.upgrade_database() now works">
-      <option name="closed" value="true" />
-      <created>1739133899654</created>
-      <option name="number" value="00101" />
-      <option name="presentableId" value="LOCAL-00101" />
-      <option name="project" value="LOCAL" />
-      <updated>1739133899654</updated>
-    </task>
-    <task id="LOCAL-00102" summary="filer.py: Split up code into functions that can be used by other programs&#10;f.py: Only scan volumes and add choices for argparse if no arguments provided to program">
-      <option name="closed" value="true" />
-      <created>1739211336787</created>
-      <option name="number" value="00102" />
-      <option name="presentableId" value="LOCAL-00102" />
-      <option name="project" value="LOCAL" />
-      <updated>1739211336787</updated>
-    </task>
-    <task id="LOCAL-00103" summary="Added dyngooey.py as a way of resetting choices after running subcommands">
-      <option name="closed" value="true" />
-      <created>1739217695237</created>
-      <option name="number" value="00103" />
-      <option name="presentableId" value="LOCAL-00103" />
-      <option name="project" value="LOCAL" />
-      <updated>1739217695237</updated>
-    </task>
-    <task id="LOCAL-00104" summary="Still loads more debug required to work out how it works and then find a solutions (dictionary of subcommands, containing dictionary of default values)">
-      <option name="closed" value="true" />
-      <created>1739225215590</created>
-      <option name="number" value="00104" />
-      <option name="presentableId" value="LOCAL-00104" />
-      <option name="project" value="LOCAL" />
-      <updated>1739225215590</updated>
-    </task>
-    <task id="LOCAL-00105" summary="More arguments testing">
-      <option name="closed" value="true" />
-      <created>1739284636882</created>
-      <option name="number" value="00105" />
-      <option name="presentableId" value="LOCAL-00105" />
-      <option name="project" value="LOCAL" />
-      <updated>1739284636883</updated>
-    </task>
-    <task id="LOCAL-00106" summary="label2's value on the search subcommand is successfully reset to its initial value after being changes and started">
-      <option name="closed" value="true" />
-      <created>1739299114187</created>
-      <option name="number" value="00106" />
-      <option name="presentableId" value="LOCAL-00106" />
-      <option name="project" value="LOCAL" />
-      <updated>1739299114187</updated>
+      <workItem from="1740589533362" duration="5294000" />
     </task>
     <task id="LOCAL-00107" summary="Now works on the widget's dest value rather than the '-' or '--' commandline option as they may be duplicated over many subcommands. the 'dest's can be made unique.">
       <option name="closed" value="true" />
@@ -493,10 +351,188 @@
       <option name="project" value="LOCAL" />
       <updated>1740249113166</updated>
     </task>
-    <option name="localTasksCounter" value="136" />
+    <task id="LOCAL-00136" summary="Arguments are now stored when subcommand run.&#10;An alternative database can be specified on the command line in the format:&#10;- python.exe fgui.py &quot;I:\Filer\database.sqlite&quot;">
+      <option name="closed" value="true" />
+      <created>1740259343342</created>
+      <option name="number" value="00136" />
+      <option name="presentableId" value="LOCAL-00136" />
+      <option name="project" value="LOCAL" />
+      <updated>1740259343342</updated>
+    </task>
+    <task id="LOCAL-00137" summary="database location now updated in the configuration arguments if it's changed in any of the subcommands">
+      <option name="closed" value="true" />
+      <created>1740316579925</created>
+      <option name="number" value="00137" />
+      <option name="presentableId" value="LOCAL-00137" />
+      <option name="project" value="LOCAL" />
+      <updated>1740316579925</updated>
+    </task>
+    <task id="LOCAL-00138" summary="Started work on &quot;add_volume_files&quot;">
+      <option name="closed" value="true" />
+      <created>1740317100895</created>
+      <option name="number" value="00138" />
+      <option name="presentableId" value="LOCAL-00138" />
+      <option name="project" value="LOCAL" />
+      <updated>1740317100895</updated>
+    </task>
+    <task id="LOCAL-00139" summary="Major changes, but is finally adding volumes.">
+      <option name="closed" value="true" />
+      <created>1740335929150</created>
+      <option name="number" value="00139" />
+      <option name="presentableId" value="LOCAL-00139" />
+      <option name="project" value="LOCAL" />
+      <updated>1740335929150</updated>
+    </task>
+    <task id="LOCAL-00140" summary="Add_volume label is reset after every submission">
+      <option name="closed" value="true" />
+      <created>1740337382039</created>
+      <option name="number" value="00140" />
+      <option name="presentableId" value="LOCAL-00140" />
+      <option name="project" value="LOCAL" />
+      <updated>1740337382039</updated>
+    </task>
+    <task id="LOCAL-00141" summary="Started work on changing database initialisation.&#10;- From now on, if the database doesn't exist, it is automatically created.&#10;- This way we can rely on the database being there, and can populate dropdowns etc, with useful values.">
+      <option name="closed" value="true" />
+      <created>1740339740647</created>
+      <option name="number" value="00141" />
+      <option name="presentableId" value="LOCAL-00141" />
+      <option name="project" value="LOCAL" />
+      <updated>1740339740647</updated>
+    </task>
+    <task id="LOCAL-00142" summary="Fgui.py arguments added for help and setting alternative Database filename / path.&#10;Database subcommands turned off for the moment">
+      <option name="closed" value="true" />
+      <created>1740402141190</created>
+      <option name="number" value="00142" />
+      <option name="presentableId" value="LOCAL-00142" />
+      <option name="project" value="LOCAL" />
+      <updated>1740402141190</updated>
+    </task>
+    <task id="LOCAL-00143" summary="Configuration storage functions moved to f.py&#10;Volume details now stored in the configuration file.">
+      <option name="closed" value="true" />
+      <created>1740419225577</created>
+      <option name="number" value="00143" />
+      <option name="presentableId" value="LOCAL-00143" />
+      <option name="project" value="LOCAL" />
+      <updated>1740419225577</updated>
+    </task>
+    <task id="LOCAL-00144" summary="First Tidy version">
+      <option name="closed" value="true" />
+      <created>1740425555735</created>
+      <option name="number" value="00144" />
+      <option name="presentableId" value="LOCAL-00144" />
+      <option name="project" value="LOCAL" />
+      <updated>1740425555735</updated>
+    </task>
+    <task id="LOCAL-00145" summary="First Tidy version">
+      <option name="closed" value="true" />
+      <created>1740425578186</created>
+      <option name="number" value="00145" />
+      <option name="presentableId" value="LOCAL-00145" />
+      <option name="project" value="LOCAL" />
+      <updated>1740425578186</updated>
+    </task>
+    <task id="LOCAL-00146" summary="- Argument code mostly moved to add_args.py&#10;- Some common code in fgui.py moved to f.py&#10;- Basic checks to see if label exists in the database when adding a volume (no error yet)">
+      <option name="closed" value="true" />
+      <created>1740488388939</created>
+      <option name="number" value="00146" />
+      <option name="presentableId" value="LOCAL-00146" />
+      <option name="project" value="LOCAL" />
+      <updated>1740488388939</updated>
+    </task>
+    <task id="LOCAL-00147" summary="Initial README.md">
+      <option name="closed" value="true" />
+      <created>1740493708621</created>
+      <option name="number" value="00147" />
+      <option name="presentableId" value="LOCAL-00147" />
+      <option name="project" value="LOCAL" />
+      <updated>1740493708621</updated>
+    </task>
+    <task id="LOCAL-00148" summary="Added an example image">
+      <option name="closed" value="true" />
+      <created>1740494237309</created>
+      <option name="number" value="00148" />
+      <option name="presentableId" value="LOCAL-00148" />
+      <option name="project" value="LOCAL" />
+      <updated>1740494237309</updated>
+    </task>
+    <task id="LOCAL-00149" summary="Added an example image">
+      <option name="closed" value="true" />
+      <created>1740494353022</created>
+      <option name="number" value="00149" />
+      <option name="presentableId" value="LOCAL-00149" />
+      <option name="project" value="LOCAL" />
+      <updated>1740494353022</updated>
+    </task>
+    <task id="LOCAL-00150" summary="Added an example image">
+      <option name="closed" value="true" />
+      <created>1740494605553</created>
+      <option name="number" value="00150" />
+      <option name="presentableId" value="LOCAL-00150" />
+      <option name="project" value="LOCAL" />
+      <updated>1740494605553</updated>
+    </task>
+    <task id="LOCAL-00151" summary="Added an example image">
+      <option name="closed" value="true" />
+      <created>1740494784098</created>
+      <option name="number" value="00151" />
+      <option name="presentableId" value="LOCAL-00151" />
+      <option name="project" value="LOCAL" />
+      <updated>1740494784099</updated>
+    </task>
+    <task id="LOCAL-00152" summary="Removed &quot;Select Option&quot; from the dropdown lists">
+      <option name="closed" value="true" />
+      <created>1740496100324</created>
+      <option name="number" value="00152" />
+      <option name="presentableId" value="LOCAL-00152" />
+      <option name="project" value="LOCAL" />
+      <updated>1740496100324</updated>
+    </task>
+    <task id="LOCAL-00153" summary="Tested version">
+      <option name="closed" value="true" />
+      <created>1740506671664</created>
+      <option name="number" value="00153" />
+      <option name="presentableId" value="LOCAL-00153" />
+      <option name="project" value="LOCAL" />
+      <updated>1740506671664</updated>
+    </task>
+    <task id="LOCAL-00154" summary="Result Limit now works">
+      <option name="closed" value="true" />
+      <created>1740513534779</created>
+      <option name="number" value="00154" />
+      <option name="presentableId" value="LOCAL-00154" />
+      <option name="project" value="LOCAL" />
+      <updated>1740513534779</updated>
+    </task>
+    <task id="LOCAL-00155" summary="Update to README.md saying that after specifying the database filename once, it's stored in the config files and doesn't need to be specified again.">
+      <option name="closed" value="true" />
+      <created>1740513875694</created>
+      <option name="number" value="00155" />
+      <option name="presentableId" value="LOCAL-00155" />
+      <option name="project" value="LOCAL" />
+      <updated>1740513875694</updated>
+    </task>
+    <option name="localTasksCounter" value="156" />
     <servers />
   </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
   <component name="Vcs.Log.Tabs.Properties">
+    <option name="RECENT_FILTERS">
+      <map>
+        <entry key="User">
+          <value>
+            <list>
+              <RecentGroup>
+                <option name="FILTER_VALUES">
+                  <option value="*" />
+                </option>
+              </RecentGroup>
+            </list>
+          </value>
+        </entry>
+      </map>
+    </option>
     <option name="TAB_STATES">
       <map>
         <entry key="MAIN">
@@ -508,22 +544,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="More arguments testing" />
-    <MESSAGE value="label2's value on the search subcommand is successfully reset to its initial value after being changes and started" />
-    <MESSAGE value="Now works on the widget's dest value rather than the '-' or '--' commandline option as they may be duplicated over many subcommands. the 'dest's can be made unique." />
-    <MESSAGE value="Dynamic values have to match:&#10; for non optional parameters it needs to match the parameter name (which is the dest name).&#10; for optional parameters it needs to match the either the first '-' or '--' parameter, whichever is defined first, or the dest parameter if the former doesn't exist." />
-    <MESSAGE value="Removed Gooey 1.2 alpha imports" />
-    <MESSAGE value="Moved finding the volume and drive information to its own function" />
-    <MESSAGE value="The Volume choice is now populated after running a command and clicking on edit." />
-    <MESSAGE value="Fixed the '%' character error as it needs to be escaped for the command line, but not for the GUI" />
-    <MESSAGE value="Moved some common code from filer.py to f.py" />
-    <MESSAGE value="- Moved common code to f.py&#10;- Loading of the system Volume information (which is a slow process) doesn't happen when the program is run. The user has to manually trigger it using the &quot;refresh-volumes&quot; subcommand which is only available in the GUI." />
-    <MESSAGE value="Still experimenting with ways to persist data.&#10;- Seeding fixed&#10;- Turned on the loading and saving of Gooey dumps, but the load and save only happen at the very start of the program." />
-    <MESSAGE value="Still experimenting with ways to persist data.&#10;- Turned off Gooey Config backup dump and Load" />
-    <MESSAGE value="INSERT REFRESH_VOLUME TRUE / FALSE IN THAT SUBCOMMAND.&#10;HARDCODE INTO process_actions THAT WHEN IT SEES THAT REFRESH_VOLUME field = True, then populate VOLUME ARRAY.&#10;&#10;OR JUST STORE THE VOLUME DATA STRUCTURE IN A JSON FILE AND LOAD IT INTO THE SEED FUNCTION EVERY TIME. WOULD BE FASTER" />
-    <MESSAGE value="dyngooey.py&#10;- commented out &quot;with _self.retainSelection()&quot; as it had an indexing issue.&#10;&#10;f.py&#10;- now saves the volume information to a file when the &quot;refresh volumes&quot; subcommand run&#10;- now loads the volume information previously save if it is available&#10;&#10;fgui.py&#10;- further tests to set choice (dropdown) values" />
-    <MESSAGE value="dyngooey.py&#10;- now selects the default value in the dropdown / choices" />
-    <MESSAGE value="The Volumes dropdown menu now works" />
     <MESSAGE value="Added header descriptions for the subcommand actions by using groups." />
     <MESSAGE value="Added proper tab names (from instead of the subcommand names)" />
     <MESSAGE value="Added F.print_message_based_on_parser(parser, argumentparser_message, non_argumentparser_message)&#10;- Provide it with the parser&#10;- it'll print &quot;argumentparser_message&quot; for the standard ArgumentParser&#10;- it'll print &quot;non_argumentparser_message&quot; for any other parser type" />
@@ -533,9 +553,25 @@
     <MESSAGE value="Slowly unpacking the self.volume_argument_details[&quot;volume_dictionary&quot;].items()" />
     <MESSAGE value="Saves arguments last used in actions. &#10;Needs to fill in the values as defaults" />
     <MESSAGE value="Started adding the select database option" />
-    <option name="LAST_COMMIT_MESSAGE" value="Started adding the select database option" />
+    <MESSAGE value="Arguments are now stored when subcommand run.&#10;An alternative database can be specified on the command line in the format:&#10;- python.exe fgui.py &quot;I:\Filer\database.sqlite&quot;" />
+    <MESSAGE value="database location now updated in the configuration arguments if it's changed in any of the subcommands" />
+    <MESSAGE value="Started work on &quot;add_volume_files&quot;" />
+    <MESSAGE value="Major changes, but is finally adding volumes." />
+    <MESSAGE value="Add_volume label is reset after every submission" />
+    <MESSAGE value="Started work on changing database initialisation.&#10;- From now on, if the database doesn't exist, it is automatically created.&#10;- This way we can rely on the database being there, and can populate dropdowns etc, with useful values." />
+    <MESSAGE value="Fgui.py arguments added for help and setting alternative Database filename / path.&#10;Database subcommands turned off for the moment" />
+    <MESSAGE value="Configuration storage functions moved to f.py&#10;Volume details now stored in the configuration file." />
+    <MESSAGE value="First Tidy version" />
+    <MESSAGE value="- Argument code mostly moved to add_args.py&#10;- Some common code in fgui.py moved to f.py&#10;- Basic checks to see if label exists in the database when adding a volume (no error yet)" />
+    <MESSAGE value="Initial README.md" />
+    <MESSAGE value="Added an example image" />
+    <MESSAGE value="Removed &quot;Select Option&quot; from the dropdown lists" />
+    <MESSAGE value="Tested version" />
+    <MESSAGE value="Result Limit now works" />
+    <MESSAGE value="Update to README.md saying that after specifying the database filename once, it's stored in the config files and doesn't need to be specified again." />
+    <option name="LAST_COMMIT_MESSAGE" value="Update to README.md saying that after specifying the database filename once, it's stored in the config files and doesn't need to be specified again." />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/Filer$f.coverage" NAME="f Coverage Results" MODIFIED="1740613444037" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Filer$Fgui.coverage" NAME="Fgui Coverage Results" MODIFIED="1740682079635" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

@@ -53,7 +53,7 @@ class Fgui:
                 'volume': volume_default_choice,
                 'db': self.f.database_filename,
                 'label': label_choice,
-                'results': AddArgs.SUBCMD_FILE_SEARCH_RESULTS_DEFAULT_CHOICE,
+                'results': AddArgs.SUBCMD_FILE_SEARCH_MAX_RESULTS_DEFAULT_CHOICE,
                 'test_required_1': None,  # This will be replaced with the initial value
                 # 'test_required_2' will be left alone
                 'test_optional_1': None,
@@ -71,7 +71,7 @@ class Fgui:
                 #],
                 'volume': volume_choices,
                 'label': label_choices,
-                'results': AddArgs.SUBCMD_FILE_SEARCH_RESULTS_CHOICES
+                'results': AddArgs.SUBCMD_FILE_SEARCH_MAX_RESULTS_CHOICES
                 #'volume': ["Neil", baker]
             }
             logging.info(f"dynamic_items: {dynamic_items}")
@@ -132,12 +132,12 @@ class Fgui:
         return seeds
 
     @Gooey(
-            program_name='Filer', # Overrides name pulled from sys.argv[0]
+            program_name='Filer', # Override name pulled from sys.argv[0]
             program_description = 'Filer - File Cataloger', # Overrides the description pulled from ArgumentParser
-            required_cols=1,
-            optional_cols=1,
+            required_cols=1,  # number of columns in the "Required" section
+            optional_cols=2,  # number of columns in the "Optional" section
             navigation='TABBED',
-            default_size=(1024, 768),
+            default_size=(1024, 800), # starting size of the GUI
             #fullscreen=True,
             show_restart_button=False,
             hide_progress_msg=True,
