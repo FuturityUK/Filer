@@ -189,6 +189,10 @@ class F:
             Format.print_local_timezone_info()
             print("")
 
+        if show_attributes:
+            print("Info: " + AddArgs.SHOW_ATTRIBUTES_EXTRA_HELP)
+            print("")
+
         # Calculate Max Widths
         field_widths = {'label': 0, 'size': 0, 'datetime': 19, 'attributes': 6}
         if label is None or show_size:

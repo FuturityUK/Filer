@@ -28,6 +28,8 @@ class AddArgs:
 
     DEFAULT_DATABASE_FILENAME: str = 'AddArgs.DEFAULT_DATABASE_FILENAME'
 
+    SHOW_ATTRIBUTES_EXTRA_HELP: str = "'D' = Directory, 'A' = Archive, 'R' = Read-only, 'H' = Hidden, 'S' = System, 'L' = Link"
+
     def __init__(self, f):
         self.f = f
 
@@ -200,8 +202,8 @@ class AddArgs:
         AddArgs.add_argument(subparser_search_group, "--show_last_modified", dest='show_last_modified', metavar='Show Last Modified Time', help="Show 'Time Last Modified' in results.", default=False,
                             action="store_true", gooey_options={'visible': AddArgs.SHOW_FILE_SEARCH_ARG_IN_GUI})
 
-        AddArgs.add_argument(subparser_search_group, "--show_attributes", dest='show_attributes', metavar='Show Attributes / Information',
-                             help="Show 'Attributes / Information' in results. 'D' = Directory, 'A' = Archive, 'R' = Read-only, 'H' = Hidden, 'S' = System, 'L' = Link", default=False,
+        AddArgs.add_argument(subparser_search_group, "--show_attributes", dest='show_attributes', metavar='Show Information / Attributes',
+                             help="Show 'Information / Attributes' in results. " + AddArgs.SHOW_ATTRIBUTES_EXTRA_HELP, default=False,
                              action="store_true", gooey_options={'visible': AddArgs.SHOW_FILE_SEARCH_ARG_IN_GUI})
 
         AddArgs.add_db_argument_to_parser(subparser_search_group)
