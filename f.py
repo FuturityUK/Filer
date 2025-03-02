@@ -203,21 +203,20 @@ class F:
             for i in range(0, len(row)):
                 # Justify and space pad the field based on the max field width
                 temp_value = row[i]
-                temp_string = str(temp_value).rjust(field_widths[i])
+                temp_string = str(temp_value)
                 match i:
                     case self.FILE_SEARCH_RESULTS_LABEL:
                         if label is None:
                             # Label isn't specified so we need to show the label for each filesystem entity
-                            print(temp_string, end=" ")
-                    case self.FILE_SEARCH_RESULTS_FILENAME:
-                        if show_filename:
-                            print(temp_string, end=" ")
+                            print(temp_string.rjust(field_widths[i]), end=" ")
                     case self.FILE_SEARCH_RESULTS_BYTE_SIZE:
                         if show_size:
-                            print(temp_string, end=" ")
+                            size_bytes = 0 if temp_value is None else temp_value
+                            size_bytes_formatted = Format.format_storage_size(size_bytes, True)
+                            print(size_bytes_formatted.rjust(field_widths[i]), end=" ")
                     case self.FILE_SEARCH_RESULTS_LAST_WRITE_TIME:
                         if show_last_modified:
-                            print(temp_string, end=" ")
+                            print(temp_string.rjust(field_widths[i]), end=" ")
                     case self.FILE_SEARCH_RESULTS_IS_DIRECTORY:
                         append_char = 'd' if temp_value == 1 else '-'
                         attributes += append_char
@@ -237,9 +236,9 @@ class F:
                         append_char = 'l' if temp_value == 1 else '-'
                         attributes += append_char
                         if show_attributes:
-                            print(f"{attributes} ", end=" ")
+                            print(f"{attributes} ", end=" ") # Not justifying or padding required as fixed width
                     case self.FILE_SEARCH_RESULTS_IS_FULL_PATH:
-                        print(temp_string)
+                        print(temp_string) # .ljust(field_widths[i]) - Not needed as last string and left justified anyway
 
             rows_found += 1
         # Print a blank row if we are in the GUI and rows were found

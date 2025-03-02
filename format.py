@@ -1,7 +1,7 @@
 class Format:
 
-    METRIC_LABELS: [str] = ["B", "kB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"]
-    BINARY_LABELS: [str] = ["B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB"]
+    BINARY_LABELS: [str] = ["B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"]
+    METRIC_LABELS: [str] = ["B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB"]
     PRECISION_FORMATS: [str] = []
 
     def __init__(self):
