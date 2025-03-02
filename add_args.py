@@ -200,8 +200,10 @@ class AddArgs:
         AddArgs.add_argument(subparser_search_group, "--show_last_modified", dest='show_last_modified', metavar='Show Last Modified Time', help="Show 'Time Last Modified' in results.", default=False,
                             action="store_true", gooey_options={'visible': AddArgs.SHOW_FILE_SEARCH_ARG_IN_GUI})
 
-        AddArgs.add_argument(subparser_search_group, "--show_attributes", dest='show_attributes', metavar='Show Attributes', help="Show 'Attributes' in results.", default=False,
-                            action="store_true", gooey_options={'visible': AddArgs.SHOW_FILE_SEARCH_ARG_IN_GUI})
+        AddArgs.add_argument(subparser_search_group, "--show_attributes", dest='show_attributes', metavar='Show Attributes / Information',
+                             help="Show 'Attributes / Information' in results. 'D' = Directory, 'A' = Archive, 'R' = Read-only, 'H' = Hidden, 'S' = System, 'L' = Link", default=False,
+                             action="store_true", gooey_options={'visible': AddArgs.SHOW_FILE_SEARCH_ARG_IN_GUI})
+
         AddArgs.add_db_argument_to_parser(subparser_search_group)
         #AddArgs.add_verbose_argument_to_parser(subparser_search_group)
 
