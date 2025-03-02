@@ -185,20 +185,36 @@ class F:
 
     def print_file_search_result(self, select_results, label, show_size, show_last_modified, show_attributes):
 
+        if show_last_modified:
+            Format.print_local_timezone_info()
+            print("")
+
         # Calculate Max Widths
-        field_widths = {}
-        for row in select_results:
-            for i in range(0, len(row)):
-                temp_field_string = str(row[i])
-                if i == self.FILE_SEARCH_RESULTS_BYTE_SIZE:
-                    size_bytes = 0 if row[i] is None else row[i]
+        field_widths = {'label': 0, 'size': 0, 'datetime': 19, 'attributes': 6}
+        if label is None or show_size:
+            for row in select_results:
+                if label is None:
+                    temp_field_string = "" if row[self.FILE_SEARCH_RESULTS_LABEL] is None else row[self.FILE_SEARCH_RESULTS_LABEL]
+                    temp_field_width = len(temp_field_string)
+                    if temp_field_width > field_widths['label']: field_widths['label'] = temp_field_width
+                if show_size:
+                    size_bytes = 0 if row[self.FILE_SEARCH_RESULTS_BYTE_SIZE] is None else row[self.FILE_SEARCH_RESULTS_BYTE_SIZE]
                     temp_field_string = Format.format_storage_size(size_bytes, False)
-                temp_field_width = len(temp_field_string)
-                if i not in field_widths:
-                    field_widths[i] = temp_field_width
-                else:
-                    if temp_field_width > field_widths[i]:
-                        field_widths[i] = temp_field_width
+                    temp_field_width = len(temp_field_string)
+                    if temp_field_width > field_widths['size']: field_widths['size'] = temp_field_width
+
+        # Print Headers
+        if label is None: print("Label".rjust(field_widths['label']), end=" ")
+        if show_size: print("Size".rjust(field_widths['size']), end=" ")
+        if show_last_modified: print("Last Modified".rjust(field_widths['datetime']), end=" ")
+        if show_attributes: print("Info".rjust(field_widths['attributes']), end=" ")
+        print("Full Path")
+        if label is None: print("=" * field_widths['label'], end=" ")
+        if show_size: print("=" * field_widths['size'], end=" ")
+        if show_last_modified: print("=" * field_widths['datetime'], end=" ")
+        if show_attributes: print("=" * field_widths['attributes'], end=" ")
+        print("=" * len("Full Path"))
+
         # Print results
         rows_found = 0
         for row in select_results:
@@ -211,35 +227,37 @@ class F:
                     case self.FILE_SEARCH_RESULTS_LABEL:
                         if label is None:
                             # Label isn't specified so we need to show the label for each filesystem entity
-                            print(temp_string.rjust(field_widths[i]), end=" ")
+                            print(temp_string.rjust(field_widths['label']), end=" ")
                     case self.FILE_SEARCH_RESULTS_BYTE_SIZE:
                         if show_size:
                             size_bytes = 0 if row[i] is None else row[i]
                             temp_string = Format.format_storage_size(size_bytes, False)
-                            print(temp_string.rjust(field_widths[i]), end=" ")
+                            print(temp_string.rjust(field_widths['size']), end=" ")
                     case self.FILE_SEARCH_RESULTS_LAST_WRITE_TIME:
                         if show_last_modified:
-                            print(temp_string.rjust(field_widths[i]), end=" ")
+                            temp_string = "" if row[i] is None else Format.datetime_to_string(time.gmtime(row[i]))
+                            #print(temp_string.rjust(field_widths['datetime']), end=" ")
+                            print(temp_string, end=" ")
                     case self.FILE_SEARCH_RESULTS_IS_DIRECTORY:
-                        append_char = 'd' if temp_value == 1 else '-'
+                        append_char = 'D' if temp_value == 1 else '-'
                         attributes += append_char
                     case self.FILE_SEARCH_RESULTS_IS_ARCHIVE:
-                        append_char = 'a' if temp_value == 1 else '-'
+                        append_char = 'A' if temp_value == 1 else '-'
                         attributes += append_char
                     case self.FILE_SEARCH_RESULTS_IS_READONLY:
-                        append_char = 'r' if temp_value == 1 else '-'
+                        append_char = 'R' if temp_value == 1 else '-'
                         attributes += append_char
                     case self.FILE_SEARCH_RESULTS_IS_HIDDEN:
-                        append_char = 'h' if temp_value == 1 else '-'
+                        append_char = 'H' if temp_value == 1 else '-'
                         attributes += append_char
                     case self.FILE_SEARCH_RESULTS_IS_SYSTEM:
-                        append_char = 's' if temp_value == 1 else '-'
+                        append_char = 'S' if temp_value == 1 else '-'
                         attributes += append_char
                     case self.FILE_SEARCH_RESULTS_IS_LINK:
-                        append_char = 'l' if temp_value == 1 else '-'
+                        append_char = 'L' if temp_value == 1 else '-'
                         attributes += append_char
                         if show_attributes:
-                            print(f"{attributes} ", end=" ") # Not justifying or padding required as fixed width
+                            print(f"{attributes}", end=" ") # Not justifying or padding required as fixed width
                     case self.FILE_SEARCH_RESULTS_IS_FULL_PATH:
                         print(temp_string) # .ljust(field_widths[i]) - Not needed as last string and left justified anyway
 
