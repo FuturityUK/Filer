@@ -1,7 +1,9 @@
+import time
+
 class Format:
 
-    BINARY_LABELS: [str] = [" B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"]
-    METRIC_LABELS: [str] = [" iB", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB"]
+    BINARY_LABELS: [str] = ["B ", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"]
+    METRIC_LABELS: [str] = ["iB ", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB"]
     PRECISION_FORMATS: [str] = []
 
     def __init__(self):
@@ -22,7 +24,20 @@ class Format:
         while temp_size >= divide_factor:
             size_type += 1
             temp_size = temp_size / divide_factor
+        if size_type == 0:
+            # Under the first divide_factor so it doesn't make sense to show a decimal point
+            precision = 0
         return Format.PRECISION_FORMATS[precision].format("-" if is_negative else "", temp_size, unit_labels[size_type])
+
+    @staticmethod
+    def print_local_timezone_info():
+        local_time = time.localtime()
+        print("Local Time Zones : ", time.tzname)
+        print("Current Time Zone: ", time.strftime("%Z", local_time))
+
+    @staticmethod
+    def datetime_to_string(datetime_object: time = None):
+        return time.strftime("%Y-%m-%d %H:%M:%S", datetime_object)
 
 """
 print(Format.format_storage_size(2251799813685247)) # 2 pebibytes
