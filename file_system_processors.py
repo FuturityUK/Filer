@@ -1,10 +1,9 @@
 import csv
 import os
-import datetime
+#import datetime
 import os.path
 import time
 import tracemalloc
-from datetime import datetime
 from database import Database
 import logging
 
