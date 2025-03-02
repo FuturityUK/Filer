@@ -190,6 +190,9 @@ class F:
         for row in select_results:
             for i in range(0, len(row)):
                 temp_field_string = str(row[i])
+                if i == self.FILE_SEARCH_RESULTS_BYTE_SIZE:
+                    size_bytes = 0 if row[i] is None else row[i]
+                    temp_field_string = Format.format_storage_size(size_bytes, False)
                 temp_field_width = len(temp_field_string)
                 if i not in field_widths:
                     field_widths[i] = temp_field_width
@@ -211,9 +214,9 @@ class F:
                             print(temp_string.rjust(field_widths[i]), end=" ")
                     case self.FILE_SEARCH_RESULTS_BYTE_SIZE:
                         if show_size:
-                            size_bytes = 0 if temp_value is None else temp_value
-                            size_bytes_formatted = Format.format_storage_size(size_bytes, True)
-                            print(size_bytes_formatted.rjust(field_widths[i]), end=" ")
+                            size_bytes = 0 if row[i] is None else row[i]
+                            temp_string = Format.format_storage_size(size_bytes, False)
+                            print(temp_string.rjust(field_widths[i]), end=" ")
                     case self.FILE_SEARCH_RESULTS_LAST_WRITE_TIME:
                         if show_last_modified:
                             print(temp_string.rjust(field_widths[i]), end=" ")
