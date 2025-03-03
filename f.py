@@ -616,7 +616,7 @@ class F:
             logging.debug(f"database_filename: {args.db}'")
 
         if 'label' in args:
-            self.set_configuration_value(self.CONFIG_CHOSEN_LABEL, args.label, None)
+            self.set_configuration_value(self.CONFIG_CHOSEN_LABEL, args.label, AddArgs.SUBCMD_FILE_SEARCH_LABEL_ALL_LABELS)
             logging.debug(f"label: {args.label}'")
 
         # Save the configuration first, as selecting the database or processing the arguments may result in an error

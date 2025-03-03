@@ -20,7 +20,7 @@ class AddArgs:
     SUBCMD_VACUUM_DATABASE: str = 'vacuum_db'
     SUBCMD_RESET_DATABASE: str = 'reset_db'
 
-    SUBCMD_FILE_SEARCH_LABEL_ALL_LABELS: str = ' '
+    SUBCMD_FILE_SEARCH_LABEL_ALL_LABELS: str = ''
     SUBCMD_FILE_SEARCH_MAX_RESULTS_DEFAULT_CHOICE: str = '100'
     SUBCMD_FILE_SEARCH_MAX_RESULTS_CHOICES: list = ['100', '250', '500', '1000', '10000', '100000']
     SUBCMD_FILE_SEARCH_ORDER_DEFAULT_CHOICE: str = 'Full Path'
@@ -229,13 +229,13 @@ class AddArgs:
                 help_text = help_text.replace(r"%", r"%%")
             AddArgs.add_argument(subparser_add_volume_group, "--volume", dest='volume', metavar='Volume',
                                  widget='Dropdown', nargs='?', default=None, help=help_text)
-            #AddArgs.add_argument(subparser_add_volume_group, "-l", "--label", dest='label', metavar='Label', default=None, help="Label of the drive listing. If provided it will override the volume label.",
+
             # Invisible GUI Argument purely for widget arrangement
             AddArgs.add_argument(subparser_add_volume_group, "--invisible", dest='invisible', metavar='Invisible',
                                  action='store_true', default=True, help="Invisible checkbox",
                                  gooey_options={'visible': False})
 
-            AddArgs.add_argument(subparser_add_volume_group, "--label", dest='label', metavar='Label',
+            AddArgs.add_argument(subparser_add_volume_group, "--vol_label", dest='vol_label', metavar='Label',
                                           widget = 'Dropdown', nargs = '?', default = None,
                                           help="Label of the drive listing. If left blank, the volume's label will be used instead.'"
                                           # gooey_options={ 'initial_value': "" }
