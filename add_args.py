@@ -20,11 +20,32 @@ class AddArgs:
     SUBCMD_VACUUM_DATABASE: str = 'vacuum_db'
     SUBCMD_RESET_DATABASE: str = 'reset_db'
 
-    SUBCMD_FILE_SEARCH_LABEL_ALL_LABELS: str = ''
+    SUBCMD_FILE_SEARCH_LABEL_ALL_LABELS: str = '< All Labels >'
     SUBCMD_FILE_SEARCH_MAX_RESULTS_DEFAULT_CHOICE: str = '100'
     SUBCMD_FILE_SEARCH_MAX_RESULTS_CHOICES: list = ['100', '250', '500', '1000', '10000', '100000']
-    SUBCMD_FILE_SEARCH_ORDER_DEFAULT_CHOICE: str = 'Full Path'
-    SUBCMD_FILE_SEARCH_ORDER_CHOICES: list = ['Full Path', 'Filename', 'Size', 'Last Modified', 'Attributes']
+
+    SUBCMD_FILE_SEARCH_ORDER_FULL_PATH_ASCENDING: str = 'Full Path (A -> Z)'
+    SUBCMD_FILE_SEARCH_ORDER_FILENAME_ASCENDING: str = 'Filename (A -> Z)'
+    SUBCMD_FILE_SEARCH_ORDER_SIZE_ASCENDING: str = 'Size (Smallest -> Largest)'
+    SUBCMD_FILE_SEARCH_ORDER_LAST_MODIFIED_ASCENDING: str = 'Last Modified (Oldest -> Newest)'
+    SUBCMD_FILE_SEARCH_ORDER_FULL_PATH_DESCENDING: str = 'Full Path (Z -> A)'
+    SUBCMD_FILE_SEARCH_ORDER_FILENAME_DESCENDING: str = 'Filename (Z -> A)'
+    SUBCMD_FILE_SEARCH_ORDER_SIZE_DESCENDING: str = 'Size (Largest -> Smallest)'
+    SUBCMD_FILE_SEARCH_ORDER_LAST_MODIFIED_DESCENDING: str = 'Last Modified (Newest -> Oldest)'
+    SUBCMD_FILE_SEARCH_ORDER_DEFAULT_CHOICE: str = SUBCMD_FILE_SEARCH_ORDER_FULL_PATH_ASCENDING
+    SUBCMD_FILE_SEARCH_ORDER_CHOICES: list = [SUBCMD_FILE_SEARCH_ORDER_FULL_PATH_ASCENDING, SUBCMD_FILE_SEARCH_ORDER_FULL_PATH_DESCENDING, SUBCMD_FILE_SEARCH_ORDER_FILENAME_ASCENDING, SUBCMD_FILE_SEARCH_ORDER_FILENAME_DESCENDING,
+                                                SUBCMD_FILE_SEARCH_ORDER_SIZE_ASCENDING, SUBCMD_FILE_SEARCH_ORDER_SIZE_DESCENDING, SUBCMD_FILE_SEARCH_ORDER_LAST_MODIFIED_ASCENDING, SUBCMD_FILE_SEARCH_ORDER_LAST_MODIFIED_DESCENDING]
+
+    SUBCMD_FILE_SEARCH_SEARCH_FOR_FILES: str = 'Files'
+    SUBCMD_FILE_SEARCH_SEARCH_FOR_DIRECTORIES: str = 'Directories'
+    SUBCMD_FILE_SEARCH_SEARCH_FOR_EVERYTHING: str = 'Everything'
+    SUBCMD_FILE_SEARCH_SEARCH_FOR_CHOICE: str = SUBCMD_FILE_SEARCH_SEARCH_FOR_FILES
+    SUBCMD_FILE_SEARCH_SEARCH_FOR_CHOICES: list = [SUBCMD_FILE_SEARCH_SEARCH_FOR_FILES, SUBCMD_FILE_SEARCH_SEARCH_FOR_DIRECTORIES, SUBCMD_FILE_SEARCH_SEARCH_FOR_EVERYTHING]
+
+    SUBCMD_FILE_SEARCH_SIZE_LIMIT_ALL_FILES: str = 'All Files'
+    SUBCMD_FILE_SEARCH_SIZE_LIMIT_CHOICE: str = SUBCMD_FILE_SEARCH_SIZE_LIMIT_ALL_FILES
+    SUBCMD_FILE_SEARCH_SIZE_LIMIT_CHOICES: list = [SUBCMD_FILE_SEARCH_SIZE_LIMIT_ALL_FILES, '< 1 MB', '< 10 MB', '< 100 MB', '< 1 GB', '< 10 GB', '< 100 GB', '< 1 TB', '> 1 MB', '> 10 MB', '> 100 MB', '> 1 GB', '> 10 GB', '> 100 GB', '> 1 TB']
+
 
     DEFAULT_DATABASE_FILENAME: str = 'AddArgs.DEFAULT_DATABASE_FILENAME'
 
@@ -164,7 +185,7 @@ class AddArgs:
                                             help=AddArgs.SUBCMD_FILE_SEARCH+' help', prog='File Search',
                                             description='Search for files based on search strings')
         subparser_search_group = subparser_search.add_argument_group(
-            'Search for files',
+            'File System Search Options',
             description='Search for files based on search strings'
         )
         help_text = '''Search string to be found within filenames
@@ -173,40 +194,55 @@ class AddArgs:
 - '%' wildcard character matches any sequence of zero or more characters.
 - '_' wildcard character matches exactly one character
 - To find all files, use a % by itself.'''
+        help_text2 = "Search string. Wildcards: '%' = many chars, '_' = one char."
         if AddArgs.is_std_argument_parser(subparsers):
             help_text = help_text.replace(r"%", r"%%")
-        AddArgs.add_argument(subparser_search_group, "-s", "--search", metavar='Search', default="%", help=help_text)
-
-        # Invisible GUI Argument purely for widget arrangement
-        AddArgs.add_argument(subparser_search_group, "--invisible", dest='invisible', metavar='Invisible',
-                             action='store_true', default=True, help="Invisible checkbox", gooey_options={'visible': False})
-
-        # ADD BACK WHEN FUNCTIONALITY IMPLEMENTED
-        #if not AddArgs.is_std_argument_parser(subparsers):
-        #    AddArgs.add_argument(subparser_search_group, "-c", "--category", dest='category', metavar='Category', choices=file_categories, nargs='?', help="Category of files to be considered")
+        AddArgs.add_argument(subparser_search_group, "-s", "--search", dest='search', metavar='Search', default="%", help=help_text2)
         AddArgs.add_argument(subparser_search_group, "-l", "--label", dest='label', metavar='Label',
                              widget = 'Dropdown', const='all', nargs = '?', default = None,
                              help="Label of the drive listing")
-        AddArgs.add_argument(subparser_search_group, "--max_results", dest='max_results', metavar='Max Results',
-                             widget = 'Dropdown', const='all', nargs = '?', default = AddArgs.SUBCMD_FILE_SEARCH_MAX_RESULTS_DEFAULT_CHOICE, choices=AddArgs.SUBCMD_FILE_SEARCH_MAX_RESULTS_CHOICES,
-                             help="Max number of results to display.")
+
+        AddArgs.add_argument(subparser_search_group, "--search_for", dest='search_for', metavar='Search For',
+                             widget = 'Dropdown', const='all', nargs = '?', default = AddArgs.SUBCMD_FILE_SEARCH_SEARCH_FOR_CHOICE, choices=AddArgs.SUBCMD_FILE_SEARCH_SEARCH_FOR_CHOICES,
+                             help="What do you want to search for?")
+        AddArgs.add_argument(subparser_search_group, "-c", "--category", dest='category', metavar='Category', choices=file_categories, nargs='?', help="Category of files to be considered")
+
+        AddArgs.add_argument(subparser_search_group, "--size_limit", dest='size_limit', metavar='Size Limit',
+                             widget = 'Dropdown', const='all', nargs = '?', default = AddArgs.SUBCMD_FILE_SEARCH_SIZE_LIMIT_CHOICE, choices=AddArgs.SUBCMD_FILE_SEARCH_SIZE_LIMIT_CHOICES,
+                             help="Size limit for the results.")
+
+        # Invisible GUI Argument purely for widget arrangement
+        #AddArgs.add_argument(subparser_search_group, "--invisible", dest='invisible', metavar='Invisible',
+        #                     action='store_true', default=True, help="Invisible checkbox", gooey_options={'visible': False})
+
+        # ADD BACK WHEN FUNCTIONALITY IMPLEMENTED
+        #if not AddArgs.is_std_argument_parser(subparsers):
+
 
         AddArgs.add_argument(subparser_search_group, "--order_by", dest='order_by', metavar='Order By',
                              widget = 'Dropdown', const='all', nargs = '?', default = AddArgs.SUBCMD_FILE_SEARCH_ORDER_DEFAULT_CHOICE, choices=AddArgs.SUBCMD_FILE_SEARCH_ORDER_CHOICES,
                              help="Use this Field to Order the results.")
-        AddArgs.add_argument(subparser_search_group, "--order_desc", dest='order_desc', metavar='\n\nOrder Descending', help="Show results in Descending Order.", default=False,
+        #AddArgs.add_argument(subparser_search_group, "--order_desc", dest='order_desc', metavar='\n\nOrder Descending', help="Show results in Descending Order.", default=False,
+        #                    action="store_true", gooey_options={'visible': AddArgs.SHOW_FILE_SEARCH_ARG_IN_GUI})
+
+        subparser_results_group = subparser_search.add_argument_group(
+            'Results Display Options',
+            description='Search for files based on search strings'
+        )
+        AddArgs.add_argument(subparser_results_group, "--max_results", dest='max_results', metavar='Max Results',
+                             widget = 'Dropdown', const='all', nargs = '?', default = AddArgs.SUBCMD_FILE_SEARCH_MAX_RESULTS_DEFAULT_CHOICE, choices=AddArgs.SUBCMD_FILE_SEARCH_MAX_RESULTS_CHOICES,
+                             help="Max number of results to display.")
+
+        AddArgs.add_argument(subparser_results_group, "--show_size", dest='show_size', metavar='Show Size', help="Show 'Size' in results.", default=False,
+                            action="store_true", gooey_options={'visible': AddArgs.SHOW_FILE_SEARCH_ARG_IN_GUI})
+        AddArgs.add_argument(subparser_results_group, "--show_last_modified", dest='show_last_modified', metavar='Show Last Modified Time', help="Show 'Time Last Modified' in results.", default=False,
                             action="store_true", gooey_options={'visible': AddArgs.SHOW_FILE_SEARCH_ARG_IN_GUI})
 
-        AddArgs.add_argument(subparser_search_group, "--show_size", dest='show_size', metavar='Show Size', help="Show 'Size' in results.", default=False,
-                            action="store_true", gooey_options={'visible': AddArgs.SHOW_FILE_SEARCH_ARG_IN_GUI})
-        AddArgs.add_argument(subparser_search_group, "--show_last_modified", dest='show_last_modified', metavar='Show Last Modified Time', help="Show 'Time Last Modified' in results.", default=False,
-                            action="store_true", gooey_options={'visible': AddArgs.SHOW_FILE_SEARCH_ARG_IN_GUI})
-
-        AddArgs.add_argument(subparser_search_group, "--show_attributes", dest='show_attributes', metavar='Show Information / Attributes',
+        AddArgs.add_argument(subparser_results_group, "--show_attributes", dest='show_attributes', metavar='Show Information / Attributes',
                              help="Show 'Information / Attributes' in results. " + AddArgs.SHOW_ATTRIBUTES_EXTRA_HELP, default=False,
                              action="store_true", gooey_options={'visible': AddArgs.SHOW_FILE_SEARCH_ARG_IN_GUI})
 
-        AddArgs.add_db_argument_to_parser(subparser_search_group)
+        AddArgs.add_db_argument_to_parser(subparser_results_group)
         #AddArgs.add_verbose_argument_to_parser(subparser_search_group)
 
     @staticmethod
