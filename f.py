@@ -275,16 +275,17 @@ class F:
 
     def subcommand_file_search(self, args: []):
         logging.debug(f"### F.search() ###")
-        search = args.search # if "search" in args else None
-        category = args.category if "category" in args else None
-        label = args.label # if "label" in args else None
+        search = args.search if "search" in args else AddArgs.SUBCMD_FILE_SEARCH_DEFAULT
+        label = args.label if "label" in args else AddArgs.SUBCMD_FILE_SEARCH_LABEL_ALL_LABELS
         label = None if label == AddArgs.SUBCMD_FILE_SEARCH_LABEL_ALL_LABELS else label
+        search_for = args.search_for if "search_for" in args else AddArgs.SUBCMD_FILE_SEARCH_SEARCH_FOR_CHOICE
+        category = args.category if "category" in args else None
+        size_limit = args.size_limit if "size_limit" in args else AddArgs.SUBCMD_FILE_SEARCH_SIZE_LIMIT_ALL_FILES
+        order_by = args.order_by if "order_by" in args else AddArgs.SUBCMD_FILE_SEARCH_ORDER_DEFAULT_CHOICE
         max_results = args.max_results if "max_results" in args else AddArgs.SUBCMD_FILE_SEARCH_MAX_RESULTS_DEFAULT_CHOICE
-        order_by = args.order_by
-        order_desc = args.order_desc
-        show_size = args.show_size
-        show_last_modified = args.show_last_modified
-        show_attributes = args.show_attributes
+        show_size = args.show_size if "show_size" in args else False
+        show_last_modified = args.show_last_modified if "show_last_modified" in args else False
+        show_attributes = args.show_attributes if "show_attributes" in args else False
 
         max_results_int = 0
         try:
@@ -304,7 +305,7 @@ class F:
         self.print_message_based_on_parser(None, f" - max results: '{max_results_int}'")
         self.print_message_based_on_parser(None, "")
 
-        select_results = self.database.find_filenames_search(search, category, label, max_results_int, order_by, order_desc)
+        select_results = self.database.find_filenames_search(search, category, label, max_results_int, order_by)
         self.print_file_search_result(select_results, label, show_size, show_last_modified, show_attributes)
 
     def subcommand_refresh_volumes(self, args: []):
