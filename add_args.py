@@ -65,7 +65,7 @@ class AddArgs:
                                            required=True,
                                            dest='subcommand',
                                            help='additional help')
-        AddArgs.add_subcommand_file_search_arguments_to_parser(subparsers)
+        AddArgs.add_subcommand_filesystem_search_arguments_to_parser(subparsers)
         AddArgs.add_subcommand_add_volume_arguments_to_parser(subparsers)
         AddArgs.add_subcommand_refresh_volumes_arguments_to_parser(subparsers)
         #AddArgs.add_subcommand_create_database_arguments_to_parser(subparsers)
@@ -177,7 +177,7 @@ class AddArgs:
                             gooey_options={'visible': AddArgs.SHOW_VERBOSE_ARG_IN_GUI})
 
     @staticmethod
-    def add_subcommand_file_search_arguments_to_parser(subparsers):
+    def add_subcommand_filesystem_search_arguments_to_parser(subparsers):
         logging.debug(f"### AddArgs.add_subcommand_file_search_arguments_to_parser() ###")
 
         file_categories = FileTypes.get_file_categories()
@@ -187,8 +187,8 @@ class AddArgs:
                                             help=AddArgs.SUBCMD_FILE_SEARCH+' help', prog='File Search',
                                             description='Search for files based on search strings')
         subparser_search_group = subparser_search.add_argument_group(
-            'File System Search Options',
-            description='Search for files based on search strings'
+            'Filesystem Search Options',
+            description='Search for filesystem  based on search strings'
         )
         help_text = '''Search string to be found within filenames
 - if search doesn't include '%' or '_' characters, then it is a fast exact case-sensitive search
