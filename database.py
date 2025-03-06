@@ -264,6 +264,7 @@ class Database:
         return self.filesystem_search(filename, file_type, label, max_results, order_by, order_desc, False)
 
     def filesystem_search(self, entry_search: str = None, volume_label: str = None, entry_type: int = None, entry_category: str = None, entry_size_limit: str = None, order_by: str = None, max_results: int = 100, like: bool = True):
+        # If entry_type is None: Any, 1: Directory, 0: Non-Directory
         sql_string = self.__sql_dictionary["find_filename_base"]
         sql_argument_array = []
         clause_added = False
