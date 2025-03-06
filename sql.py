@@ -162,6 +162,10 @@ class SQLDictionary:
                 AND fse.FileSystemID = fs.FileSystemID
             ''',
 
+            "find_filename_order_by_full_path": "ORDER BY fse.FullName",
+            "find_filename_order_by_entry_name": "ORDER BY fse.EntryName",
+            "find_filename_order_by_size": "ORDER BY fse.ByteSize",
+            "find_filename_order_by_last_modified": "ORDER BY fse.LastWriteTime",
 
             "find_filename_limit_clause": '''
                 LIMIT ?
