@@ -5,7 +5,8 @@ class SQLDictionary:
     def __init__(self):
         self.sql_versions = {
             "1": "create_database_tables_and_indexes",
-            "2": "modify_database_tables_and_indexes_v2"
+            "2": "modify_database_tables_and_indexes_v2",
+            "3": "modify_database_tables_and_indexes_v3"
         }
 
         self.sql_dictionary = {
@@ -110,6 +111,29 @@ class SQLDictionary:
                 INSERT OR REPLACE INTO DatabaseInformation (DatabaseInformationID, KeyName, Value) VALUES (
                     (SELECT DatabaseInformationID FROM DatabaseInformation WHERE KeyName = "DBVersion"),
                     "DBVersion", "2");   
+            ''',
+
+            "modify_database_tables_and_indexes_v3": '''
+                -- Drop DatabaseInformation_Key_IDX as the Key column doesn't exist any more
+                DROP INDEX IF EXISTS DatabaseInformation_Key_IDX;
+                -- Create a new Unique index DatabaseInformation_KeyName_IDX ON table: DatabaseInformation, column: KeyName
+                CREATE UNIQUE INDEX IF NOT EXISTS DatabaseInformation_KeyName_IDX ON DatabaseInformation (KeyName);
+                -- Rename Filename to EntryName in table: FileSystemEntries
+                ALTER TABLE FileSystemEntries RENAME COLUMN Filename TO EntryName;
+                -- Rename table: FileSystemEntries to FilesystemEntries
+                ALTER TABLE FileSystemEntries RENAME TO FileSysEntries;
+                ALTER TABLE FileSysEntries RENAME TO FilesystemEntries;
+                -- Rename table: Filesystems , column: FileSystemEntryID to FilesystemEntryID
+                ALTER TABLE FilesystemEntries RENAME COLUMN FileSystemEntryID TO FilesystemEntryID;
+                -- Rename table: FileSystems to Filesystems
+                ALTER TABLE FileSystems RENAME TO FileSyss;
+                ALTER TABLE FileSyss RENAME TO Filesystems;
+                -- Rename table: Filesystems , column: FileSystemID to FilesystemID
+                ALTER TABLE Filesystems RENAME COLUMN FileSystemID TO FilesystemID;
+                -- Update the database version number to 3
+                INSERT OR REPLACE INTO DatabaseInformation (DatabaseInformationID, KeyName, Value) VALUES (
+                    (SELECT DatabaseInformationID FROM DatabaseInformation WHERE KeyName = "DBVersion"),
+                    "DBVersion", "3");  
             ''',
 
             "find_filename_base": '''

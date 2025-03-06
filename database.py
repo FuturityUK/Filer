@@ -170,7 +170,8 @@ class Database:
         print(f"Database created.")
 
     def upgrade_database(self):
-        db_version = None
+        db_version = 0
+        last_db_version = 0
         while True:
             # Loop until all upgrades have been applied
             '''
@@ -222,6 +223,9 @@ class Database:
                 print(f"Database version {db_version} detected.")
                 # Database needs upgrading
                 new_db_version = db_version + 1
+                if last_db_version >= new_db_version:
+                    print("We seem to be caught in an update loop. Can't continue.")
+                    exit(2)
                 if str(new_db_version) not in self.__sql_versions:
                     print(f"No dictionary key found for upgrade version {new_db_version}")
                     exit(2)
@@ -234,9 +238,14 @@ class Database:
                         upgrade_sql = self.__sql_dictionary[sql_dictionary_key]
                         print(f"Upgrading database to version {new_db_version}.")
                         logging.debug(f"SQL Query: \"{upgrade_sql}\"")
-                        self.executescript(upgrade_sql)
-                        self.commit()
-                        print(f"Database upgraded to version {new_db_version} complete.")
+                        result = self.executescript(upgrade_sql)
+                        if type(result) is sqlite3.OperationalError:
+                            print(f"Error executing SQL upgrade to version {new_db_version}: {result}")
+                            exit(2)
+                        else:
+                            self.commit()
+                            print(f"Database upgraded to version {new_db_version} complete.")
+                            last_db_version = new_db_version
         self.commit()
 
     def find_filenames_exact_match(self, filename: str, file_type: str, label: str = None, max_results: int = None, order_by: str = None, order_desc: bool = False):
