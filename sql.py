@@ -154,9 +154,14 @@ class SQLDictionary:
                 fs.Label = ?
             ''',
 
+            "find_filename_directory_clause": '''
+                fse.IsDirectory = ?
+            ''',
+
             "find_filename_join": '''
                 AND fse.FileSystemID = fs.FileSystemID
             ''',
+
 
             "find_filename_limit_clause": '''
                 LIMIT ?
