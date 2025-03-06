@@ -276,39 +276,44 @@ class F:
         self.print_message_based_on_parser(None, f"{rows_found} results found")
 
 
-    def subcommand_file_search(self, args: []):
+    def subcommand_filesystem_search(self, args: []):
         logging.debug(f"### F.search() ###")
-        search_string = args.search if "search" in args else AddArgs.SUBCMD_FILE_SEARCH_DEFAULT
+        entity_search = args.search if "search" in args else AddArgs.SUBCMD_FILE_SEARCH_DEFAULT
         label = args.label if "label" in args else AddArgs.SUBCMD_FILE_SEARCH_LABEL_ALL_LABELS
-        search_label = None if label == AddArgs.SUBCMD_FILE_SEARCH_LABEL_ALL_LABELS else label
-        search_for = args.search_for if "search_for" in args else AddArgs.SUBCMD_FILE_SEARCH_SEARCH_FOR_CHOICE
-        search_category = args.category if "category" in args else None
-        size_limit = args.size_limit if "size_limit" in args else AddArgs.SUBCMD_FILE_SEARCH_SIZE_LIMIT_ALL_FILES
-        search_order_by = args.order_by if "order_by" in args else AddArgs.SUBCMD_FILE_SEARCH_ORDER_DEFAULT_CHOICE
+        volume_label = None if label == AddArgs.SUBCMD_FILE_SEARCH_LABEL_ALL_LABELS else label
+        entity_type = args.search_for if "search_for" in args else AddArgs.SUBCMD_FILE_SEARCH_SEARCH_FOR_CHOICE
+        entity_category = args.category if "category" in args else None
+        entity_size_limit = args.size_limit if "size_limit" in args else AddArgs.SUBCMD_FILE_SEARCH_SIZE_LIMIT_ALL_FILES
+        order_by = args.order_by if "order_by" in args else AddArgs.SUBCMD_FILE_SEARCH_ORDER_DEFAULT_CHOICE
         max_results = args.max_results if "max_results" in args else AddArgs.SUBCMD_FILE_SEARCH_MAX_RESULTS_DEFAULT_CHOICE
         show_size = args.show_size if "show_size" in args else False
         show_last_modified = args.show_last_modified if "show_last_modified" in args else False
         show_attributes = args.show_attributes if "show_attributes" in args else False
 
-        search_max_results_int = 0
+        max_results_int = 0
         try:
             # Convert strings to int
-            search_max_results_int = int(max_results)
+            max_results_int = int(max_results)
         except ValueError:
             # Handle the exception
             self.exit_cleanly(self.EXIT_ERROR, f'Results value "{args.max_results}" is not an integer!')
 
-        if search_string is None and search_category is None and search_label is None:
+        if entity_search is None and entity_category is None and volume_label is None:
             self.exit_cleanly(self.EXIT_ERROR, "No search terms provided")
 
         self.print_message_based_on_parser(None, f"Finding files & dirs matching:")
-        if search_string is not None and search_string != "": self.print_message_based_on_parser(None, f" - search: '{search_string}'")
-        #if category is not None and category != "": self.print_message_based_on_parser(None, f" - category: '{category}'")
-        if label is not None and label != "": self.print_message_based_on_parser(None, f" - label: '{label}'")
-        self.print_message_based_on_parser(None, f" - max results: '{search_max_results_int}'")
+        if entity_search is not None and entity_search != "": self.print_message_based_on_parser(None, f" - search: '{entity_search}'")
+        #if label is not None and label != "":
+        self.print_message_based_on_parser(None, f" - volume label: '{label}'")
+        if entity_type is not None and entity_type != "": self.print_message_based_on_parser(None, f" - type: '{entity_type}'")
+        if entity_category is not None and entity_category != "": self.print_message_based_on_parser(None, f" - category: '{entity_category}'")
+        if entity_size_limit is not None and entity_size_limit != "": self.print_message_based_on_parser(None, f" - size limit: '{entity_size_limit}'")
+        self.print_message_based_on_parser(None, f" - order by: '{order_by}'")
+        self.print_message_based_on_parser(None, f" - max results: '{max_results_int}'")
         self.print_message_based_on_parser(None, "")
 
-        select_results = self.database.find_filenames_search(search_string, search_category, search_label, search_max_results_int, search_order_by)
+        select_results = self.database.filesystem_search(entity_search, volume_label, entity_type, entity_category, entity_size_limit, order_by, max_results_int)
+
         self.print_file_search_result(select_results, label, show_size, show_last_modified, show_attributes)
 
     def subcommand_refresh_volumes(self, args: []):
@@ -645,7 +650,7 @@ class F:
             start_time = time.time()
 
             if args.subcommand == AddArgs.SUBCMD_FILE_SEARCH:
-                self.subcommand_file_search(args)
+                self.subcommand_filesystem_search(args)
             elif args.subcommand == AddArgs.SUBCMD_ADD_VOLUME:
                 self.subcommand_add_volumes(args)
 

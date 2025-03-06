@@ -9,7 +9,6 @@ from typing import (
 from sql import SQLDictionary
 import logging
 
-
 class Database:
     """ Class to handle SQlite operations """
     __verbose = False
@@ -253,39 +252,39 @@ class Database:
                 [filename, label]
             )
         """
-        return self.find_filenames_search(filename, file_type, label, max_results, order_by, order_desc, False)
+        return self.filesystem_search(filename, file_type, label, max_results, order_by, order_desc, False)
 
-    def find_filenames_search(self, file_search: str, file_category: str, label: str = None, max_results: int = None, order_by: str = None, order_desc: bool = False, like: bool = True):
+    def filesystem_search(self, entity_search: str = None, volume_label: str = None, entity_type: str = None, entity_category: str = None, entity_size_limit: str = None, order_by: str = None, max_results: int = 100, like: bool = True):
         sql_string = self.__sql_dictionary["find_filename_base"]
         sql_argument_array = []
         clause_added = False
 
-        if file_search is not None and file_search.count("%") == 0 and file_search.count("_") == 0:
+        if entity_search is not None and entity_search.count("%") == 0 and entity_search.count("_") == 0:
             # We can replace this SQL "like" with an exact match '=' as it doesn't contain "like" special characters
             like = False
 
         # Filename clause
         if like:
             sql_string += " " + self.__sql_dictionary["find_filename_like_filename_clause"]
-            if file_search is not None and file_search != "":
-                sql_argument_array.append(file_search)
+            if entity_search is not None and entity_search != "":
+                sql_argument_array.append(entity_search)
             else:
                 sql_argument_array.append("%")
         else:
             sql_string += " " + self.__sql_dictionary["find_filename_exact_match_filename_clause"]
-            if file_search is not None and file_search != "":
-                sql_argument_array.append(file_search)
+            if entity_search is not None and entity_search != "":
+                sql_argument_array.append(entity_search)
             else:
                 print("Filename can't be empty for an exact match search")
                 exit()
         clause_added = True
 
         # Label clause
-        if label is not None and label != "" :
+        if volume_label is not None and volume_label != "" :
             if clause_added:
                 sql_string += " AND "
             sql_string += self.__sql_dictionary["find_filename_label_clause"]
-            sql_argument_array.append(label)
+            sql_argument_array.append(volume_label)
 
         # Add table join
         sql_string += " " + self.__sql_dictionary["find_filename_join"]
