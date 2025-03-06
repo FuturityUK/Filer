@@ -195,9 +195,12 @@ class F:
 
         # Calculate Max Widths
         field_widths = {'label': 0, 'size': 0, 'datetime': 19, 'attributes': 6}
-        if label is None or show_size:
+        show_label = False
+        if label == AddArgs.SUBCMD_FILE_SEARCH_LABEL_ALL_LABELS:
+            show_label = True
+        if show_label or show_size:
             for row in select_results:
-                if label is None:
+                if show_label:
                     temp_field_string = "" if row[self.FILE_SEARCH_RESULTS_LABEL] is None else row[self.FILE_SEARCH_RESULTS_LABEL]
                     temp_field_width = len(temp_field_string)
                     if temp_field_width > field_widths['label']: field_widths['label'] = temp_field_width
@@ -208,12 +211,12 @@ class F:
                     if temp_field_width > field_widths['size']: field_widths['size'] = temp_field_width
 
         # Print Headers
-        if label is None: print("Label".rjust(field_widths['label']), end=" ")
+        if show_label: print("Label".rjust(field_widths['label']), end=" ")
         if show_size: print("Size".rjust(field_widths['size']), end=" ")
         if show_last_modified: print("Last Modified".rjust(field_widths['datetime']), end=" ")
         if show_attributes: print("Info".rjust(field_widths['attributes']), end=" ")
         print("Full Path")
-        if label is None: print("=" * field_widths['label'], end=" ")
+        if show_label: print("=" * field_widths['label'], end=" ")
         if show_size: print("=" * field_widths['size'], end=" ")
         if show_last_modified: print("=" * field_widths['datetime'], end=" ")
         if show_attributes: print("=" * field_widths['attributes'], end=" ")
@@ -229,7 +232,7 @@ class F:
                 temp_string = str(temp_value)
                 match i:
                     case self.FILE_SEARCH_RESULTS_LABEL:
-                        if label is None:
+                        if show_label:
                             # Label isn't specified so we need to show the label for each filesystem entity
                             print(temp_string.rjust(field_widths['label']), end=" ")
                     case self.FILE_SEARCH_RESULTS_BYTE_SIZE:
@@ -275,37 +278,37 @@ class F:
 
     def subcommand_file_search(self, args: []):
         logging.debug(f"### F.search() ###")
-        search = args.search if "search" in args else AddArgs.SUBCMD_FILE_SEARCH_DEFAULT
+        search_string = args.search if "search" in args else AddArgs.SUBCMD_FILE_SEARCH_DEFAULT
         label = args.label if "label" in args else AddArgs.SUBCMD_FILE_SEARCH_LABEL_ALL_LABELS
-        label = None if label == AddArgs.SUBCMD_FILE_SEARCH_LABEL_ALL_LABELS else label
+        search_label = None if label == AddArgs.SUBCMD_FILE_SEARCH_LABEL_ALL_LABELS else label
         search_for = args.search_for if "search_for" in args else AddArgs.SUBCMD_FILE_SEARCH_SEARCH_FOR_CHOICE
-        category = args.category if "category" in args else None
+        search_category = args.category if "category" in args else None
         size_limit = args.size_limit if "size_limit" in args else AddArgs.SUBCMD_FILE_SEARCH_SIZE_LIMIT_ALL_FILES
-        order_by = args.order_by if "order_by" in args else AddArgs.SUBCMD_FILE_SEARCH_ORDER_DEFAULT_CHOICE
+        search_order_by = args.order_by if "order_by" in args else AddArgs.SUBCMD_FILE_SEARCH_ORDER_DEFAULT_CHOICE
         max_results = args.max_results if "max_results" in args else AddArgs.SUBCMD_FILE_SEARCH_MAX_RESULTS_DEFAULT_CHOICE
         show_size = args.show_size if "show_size" in args else False
         show_last_modified = args.show_last_modified if "show_last_modified" in args else False
         show_attributes = args.show_attributes if "show_attributes" in args else False
 
-        max_results_int = 0
+        search_max_results_int = 0
         try:
             # Convert strings to int
-            max_results_int = int(max_results)
+            search_max_results_int = int(max_results)
         except ValueError:
             # Handle the exception
             self.exit_cleanly(self.EXIT_ERROR, f'Results value "{args.max_results}" is not an integer!')
 
-        if search is None and category is None and label is None:
+        if search_string is None and search_category is None and search_label is None:
             self.exit_cleanly(self.EXIT_ERROR, "No search terms provided")
 
         self.print_message_based_on_parser(None, f"Finding files & dirs matching:")
-        if search is not None and search != "": self.print_message_based_on_parser(None, f" - search: '{search}'")
+        if search_string is not None and search_string != "": self.print_message_based_on_parser(None, f" - search: '{search_string}'")
         #if category is not None and category != "": self.print_message_based_on_parser(None, f" - category: '{category}'")
         if label is not None and label != "": self.print_message_based_on_parser(None, f" - label: '{label}'")
-        self.print_message_based_on_parser(None, f" - max results: '{max_results_int}'")
+        self.print_message_based_on_parser(None, f" - max results: '{search_max_results_int}'")
         self.print_message_based_on_parser(None, "")
 
-        select_results = self.database.find_filenames_search(search, category, label, max_results_int, order_by)
+        select_results = self.database.find_filenames_search(search_string, search_category, search_label, search_max_results_int, search_order_by)
         self.print_file_search_result(select_results, label, show_size, show_last_modified, show_attributes)
 
     def subcommand_refresh_volumes(self, args: []):
