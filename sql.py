@@ -137,17 +137,17 @@ class SQLDictionary:
             ''',
 
             "find_filename_base": '''
-                SELECT fs.Label, fse.Filename, fse.ByteSize, fse.LastWriteTime, fse.IsDirectory, fse.IsArchive, fse.IsReadOnly, fse.IsHidden, fse.IsSystem, fse.IsLink, fse.FullName
-                FROM FileSystemEntries AS fse, FileSystems AS fs
+                SELECT fs.Label, fse.EntryName, fse.ByteSize, fse.LastWriteTime, fse.IsDirectory, fse.IsArchive, fse.IsReadOnly, fse.IsHidden, fse.IsSystem, fse.IsLink, fse.FullName
+                FROM FilesystemEntries AS fse, FileSystems AS fs
                 WHERE 
             ''',
 
             "find_filename_like_filename_clause": '''
-                fse.Filename LIKE ?
+                fse.EntryName LIKE ?
             ''',
 
             "find_filename_exact_match_filename_clause": '''
-                fse.Filename = ?
+                fse.EntryName = ?
             ''',
 
             "find_filename_label_clause": '''
@@ -197,7 +197,7 @@ class SQLDictionary:
             ''',
 
             "delete_filesystem_entries": '''
-                DELETE FROM FileSystemEntries
+                DELETE FROM FilesystemEntries
                 WHERE FileSystemID = ?; 
             ''',
 

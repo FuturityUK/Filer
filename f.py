@@ -278,12 +278,12 @@ class F:
 
     def subcommand_filesystem_search(self, args: []):
         logging.debug(f"### F.search() ###")
-        entity_search = args.search if "search" in args else AddArgs.SUBCMD_FILE_SEARCH_DEFAULT
+        entry_search = args.search if "search" in args else AddArgs.SUBCMD_FILE_SEARCH_DEFAULT
         label = args.label if "label" in args else AddArgs.SUBCMD_FILE_SEARCH_LABEL_ALL_LABELS
         volume_label = None if label == AddArgs.SUBCMD_FILE_SEARCH_LABEL_ALL_LABELS else label
-        entity_type = args.search_for if "search_for" in args else AddArgs.SUBCMD_FILE_SEARCH_SEARCH_FOR_CHOICE
-        entity_category = args.category if "category" in args else None
-        entity_size_limit = args.size_limit if "size_limit" in args else AddArgs.SUBCMD_FILE_SEARCH_SIZE_LIMIT_ALL_FILES
+        entry_type = args.type if "type" in args else AddArgs.SUBCMD_FILE_SEARCH_SEARCH_FOR_CHOICE
+        entry_category = args.category if "category" in args else None
+        entry_size_limit = args.size_limit if "size_limit" in args else AddArgs.SUBCMD_FILE_SEARCH_SIZE_LIMIT_ALL_FILES
         order_by = args.order_by if "order_by" in args else AddArgs.SUBCMD_FILE_SEARCH_ORDER_DEFAULT_CHOICE
         max_results = args.max_results if "max_results" in args else AddArgs.SUBCMD_FILE_SEARCH_MAX_RESULTS_DEFAULT_CHOICE
         show_size = args.show_size if "show_size" in args else False
@@ -298,21 +298,21 @@ class F:
             # Handle the exception
             self.exit_cleanly(self.EXIT_ERROR, f'Results value "{args.max_results}" is not an integer!')
 
-        if entity_search is None and entity_category is None and volume_label is None:
+        if entry_search is None and entry_category is None and volume_label is None:
             self.exit_cleanly(self.EXIT_ERROR, "No search terms provided")
 
         self.print_message_based_on_parser(None, f"Finding files & dirs matching:")
-        if entity_search is not None and entity_search != "": self.print_message_based_on_parser(None, f" - search: '{entity_search}'")
+        if entry_search is not None and entry_search != "": self.print_message_based_on_parser(None, f" - search: '{entry_search}'")
         #if label is not None and label != "":
         self.print_message_based_on_parser(None, f" - volume label: '{label}'")
-        if entity_type is not None and entity_type != "": self.print_message_based_on_parser(None, f" - type: '{entity_type}'")
-        if entity_category is not None and entity_category != "": self.print_message_based_on_parser(None, f" - category: '{entity_category}'")
-        if entity_size_limit is not None and entity_size_limit != "": self.print_message_based_on_parser(None, f" - size limit: '{entity_size_limit}'")
+        if entry_type is not None and entry_type != "": self.print_message_based_on_parser(None, f" - type: '{entry_type}'")
+        if entry_category is not None and entry_category != "": self.print_message_based_on_parser(None, f" - category: '{entry_category}'")
+        if entry_size_limit is not None and entry_size_limit != "": self.print_message_based_on_parser(None, f" - size limit: '{entry_size_limit}'")
         self.print_message_based_on_parser(None, f" - order by: '{order_by}'")
         self.print_message_based_on_parser(None, f" - max results: '{max_results_int}'")
         self.print_message_based_on_parser(None, "")
 
-        select_results = self.database.filesystem_search(entity_search, volume_label, entity_type, entity_category, entity_size_limit, order_by, max_results_int)
+        select_results = self.database.filesystem_search(entry_search, volume_label, entry_type, entry_category, entry_size_limit, order_by, max_results_int)
 
         self.print_file_search_result(select_results, label, show_size, show_last_modified, show_attributes)
 

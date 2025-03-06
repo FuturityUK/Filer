@@ -103,7 +103,7 @@ class PowerShellFilesystemListing:
                 return None
             else:
                 self.__database.execute(
-                    "INSERT INTO FileSystemEntries (FileSystemID, LastWriteTime, ByteSize, ParentFileSystemEntryID, IsDirectory, IsArchive, IsReadOnly, IsHidden, IsSystem, IsLink, Filename, FullName) VALUES (?,?,?,?,?,?,?,?,?,?,?,?);",
+                    "INSERT INTO FilesystemEntries (FileSystemID, LastWriteTime, ByteSize, ParentFileSystemEntryID, IsDirectory, IsArchive, IsReadOnly, IsHidden, IsSystem, IsLink, EntryName, FullName) VALUES (?,?,?,?,?,?,?,?,?,?,?,?);",
                         (filesystem_id, unix_timestamp, byte_size, parent_file_system_entry_id, mode_is_directory, mode_is_archive, mode_is_read_only,
                                     mode_is_hidden, mode_is_system, mode_is_link, entity_name, full_name) )
                 # Retrieve the ID of the newly inserted row
@@ -126,7 +126,7 @@ class PowerShellFilesystemListing:
                 # If not, see if it's in the database
                 # print("Database")
                 self.__database.execute(
-                    "SELECT FileSystemEntryID FROM FileSystemEntries WHERE IsDirectory = 1 AND FullName = ?;",
+                    "SELECT FilesystemEntryID FROM FilesystemEntries WHERE IsDirectory = 1 AND FullName = ?;",
                     [entity_parent_directory])
                 select_result = self.__database.fetch_all_results()
                 for x in select_result:
@@ -409,7 +409,7 @@ class PowerShellFilesystemListing:
                                 # print(directory_dictionary)
 
                             #database_cursor.execute(
-                            #    "INSERT INTO FileSystemEnties (LastWriteTime, ByteSize, ParentFileSystemEntryID, IsDirectory, IsArchive, IsReadOnly, IsHidden, IsSystem, IsLink, Filename, FullName) VALUES (?,?,NULL,?,?,?,?,?,?,?,?);",
+                            #    "INSERT INTO FileSystemEnties (LastWriteTime, ByteSize, ParentFileSystemEntryID, IsDirectory, IsArchive, IsReadOnly, IsHidden, IsSystem, IsLink, EntryName, FullName) VALUES (?,?,NULL,?,?,?,?,?,?,?,?);",
                             #    (unix_timestamp, byte_size, mode_is_directory, mode_is_archive, mode_is_read_only, mode_is_hidden, mode_is_system, mode_is_link, entity_name, full_name) )
 
 
@@ -446,20 +446,20 @@ class PowerShellFilesystemListing:
         return True
 
     def directory_sizes_clear(self):
-        sql_directory_sizes_clear = """UPDATE FileSystemEntries SET ByteSize = NULL WHERE IsDirectory = 1;"""
+        sql_directory_sizes_clear = """UPDATE FilesystemEntries SET ByteSize = NULL WHERE IsDirectory = 1;"""
         # Execute SQL
         self.__database.execute(sql_directory_sizes_clear)
         # Commit changes to the database
         self.__database.commit()
 
     def directory_sizes_calculate(self):
-        sql_directory_sizes_calculate = """SELECT fse1.FileSystemEntryID, fse1.FullName, fse1.ByteSize,
+        sql_directory_sizes_calculate = """SELECT fse1.FilesystemEntryID, fse1.FullName, fse1.ByteSize,
 SUM(fse2.IsDirectory) Sub_Dirs, SUM(CASE WHEN fse2.ByteSize IS NULL THEN 1 ELSE 0 END) Sub_Dirs_Nulls,
 count(fse2.ByteSize) Sub_Dirs_Not_Nulls, SUM(fse2.ByteSize) Total_Size, COUNT(fse2.FullName) Entities_In_Dir
-FROM FileSystemEntries fse1
-INNER JOIN FileSystemEntries fse2
-ON fse1.FileSystemEntryID = fse2.ParentFileSystemEntryID
-GROUP BY fse1.FileSystemEntryID
+FROM FilesystemEntries fse1
+INNER JOIN FilesystemEntries fse2
+ON fse1.FilesystemEntryID = fse2.ParentFileSystemEntryID
+GROUP BY fse1.FilesystemEntryID
 HAVING fse1.ByteSize = NULL;"""
         # Execute SQL
         self.__database.execute(sql_directory_sizes_calculate)

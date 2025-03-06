@@ -200,14 +200,14 @@ class AddArgs:
         if AddArgs.is_std_argument_parser(subparsers):
             help_text = help_text.replace(r"%", r"%%")
         AddArgs.add_argument(subparser_search_group, "-s", "--search", dest='search', metavar='Search', default=AddArgs.SUBCMD_FILE_SEARCH_DEFAULT, help=help_text2)
-        AddArgs.add_argument(subparser_search_group, "-l", "--label", dest='label', metavar='Label',
+        AddArgs.add_argument(subparser_search_group, "-l", "--label", dest='label', metavar='Volume Label',
                              widget = 'Dropdown', nargs = '?', default = None,
                              help="Label of the drive listing")
 
-        AddArgs.add_argument(subparser_search_group, "--search_for", dest='search_for', metavar='Search For',
+        AddArgs.add_argument(subparser_search_group, "--type", dest='type', metavar='Entry Type',
                              widget = 'Dropdown', nargs = '?', default = AddArgs.SUBCMD_FILE_SEARCH_SEARCH_FOR_CHOICE, choices=AddArgs.SUBCMD_FILE_SEARCH_SEARCH_FOR_CHOICES,
                              help="What do you want to search for?")
-        AddArgs.add_argument(subparser_search_group, "-c", "--category", dest='category', metavar='Category',
+        AddArgs.add_argument(subparser_search_group, "-c", "--category", dest='category', metavar='File Category',
                              choices=file_categories, nargs='?', help="Category of files to be considered")
 
         AddArgs.add_argument(subparser_search_group, "--size_limit", dest='size_limit', metavar='Size Limit',

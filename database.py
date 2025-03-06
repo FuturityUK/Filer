@@ -263,26 +263,26 @@ class Database:
         """
         return self.filesystem_search(filename, file_type, label, max_results, order_by, order_desc, False)
 
-    def filesystem_search(self, entity_search: str = None, volume_label: str = None, entity_type: str = None, entity_category: str = None, entity_size_limit: str = None, order_by: str = None, max_results: int = 100, like: bool = True):
+    def filesystem_search(self, entry_search: str = None, volume_label: str = None, entry_type: str = None, entry_category: str = None, entry_size_limit: str = None, order_by: str = None, max_results: int = 100, like: bool = True):
         sql_string = self.__sql_dictionary["find_filename_base"]
         sql_argument_array = []
         clause_added = False
 
-        if entity_search is not None and entity_search.count("%") == 0 and entity_search.count("_") == 0:
+        if entry_search is not None and entry_search.count("%") == 0 and entry_search.count("_") == 0:
             # We can replace this SQL "like" with an exact match '=' as it doesn't contain "like" special characters
             like = False
 
         # Filename clause
         if like:
             sql_string += " " + self.__sql_dictionary["find_filename_like_filename_clause"]
-            if entity_search is not None and entity_search != "":
-                sql_argument_array.append(entity_search)
+            if entry_search is not None and entry_search != "":
+                sql_argument_array.append(entry_search)
             else:
                 sql_argument_array.append("%")
         else:
             sql_string += " " + self.__sql_dictionary["find_filename_exact_match_filename_clause"]
-            if entity_search is not None and entity_search != "":
-                sql_argument_array.append(entity_search)
+            if entry_search is not None and entry_search != "":
+                sql_argument_array.append(entry_search)
             else:
                 print("Filename can't be empty for an exact match search")
                 exit()
