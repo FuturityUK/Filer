@@ -280,7 +280,6 @@ class F:
         logging.debug(f"### F.search() ###")
         entry_search = args.search if "search" in args else AddArgs.SUBCMD_FILE_SEARCH_DEFAULT
         label = args.label if "label" in args else AddArgs.SUBCMD_FILE_SEARCH_LABEL_ALL_LABELS
-        volume_label = None if label == AddArgs.SUBCMD_FILE_SEARCH_LABEL_ALL_LABELS else label
         entry_type = args.type if "type" in args else AddArgs.SUBCMD_FILE_SEARCH_SEARCH_FOR_CHOICE
         entry_category = args.category if "category" in args else None
         entry_size_limit = args.size_limit if "size_limit" in args else AddArgs.SUBCMD_FILE_SEARCH_SIZE_LIMIT_ALL_FILES
@@ -289,6 +288,17 @@ class F:
         show_size = args.show_size if "show_size" in args else False
         show_last_modified = args.show_last_modified if "show_last_modified" in args else False
         show_attributes = args.show_attributes if "show_attributes" in args else False
+
+        volume_label = None if label == AddArgs.SUBCMD_FILE_SEARCH_LABEL_ALL_LABELS else label
+        entry_type_int = None
+        if entry_type == AddArgs.SUBCMD_FILE_SEARCH_SEARCH_FOR_EVERYTHING:
+            entry_type_int = None
+        elif entry_type == AddArgs.SUBCMD_FILE_SEARCH_SEARCH_FOR_DIRECTORIES:
+            entry_type_int = 1 # Directories
+        elif entry_type == AddArgs.SUBCMD_FILE_SEARCH_SEARCH_FOR_FILES:
+            entry_type_int = 0 # Files
+        else:
+            self.exit_cleanly(self.EXIT_ERROR, f'Entry Type "{entry_type}" is not one of the choices!')
 
         max_results_int = 0
         try:
@@ -312,7 +322,7 @@ class F:
         self.print_message_based_on_parser(None, f" - max results: '{max_results_int}'")
         self.print_message_based_on_parser(None, "")
 
-        select_results = self.database.filesystem_search(entry_search, volume_label, entry_type, entry_category, entry_size_limit, order_by, max_results_int)
+        select_results = self.database.filesystem_search(entry_search, volume_label, entry_type_int, entry_category, entry_size_limit, order_by, max_results_int)
 
         self.print_file_search_result(select_results, label, show_size, show_last_modified, show_attributes)
 

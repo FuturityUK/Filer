@@ -8,6 +8,7 @@ from typing import (
 )
 from sql import SQLDictionary
 import logging
+from add_args import AddArgs
 
 class Database:
     """ Class to handle SQlite operations """
@@ -264,6 +265,7 @@ class Database:
         return self.filesystem_search(filename, file_type, label, max_results, order_by, order_desc, False)
 
     def filesystem_search(self, entry_search: str = None, volume_label: str = None, entry_type: int = None, entry_category: str = None, entry_size_limit: str = None, order_by: str = None, max_results: int = 100, like: bool = True):
+        # If entry_type is None: Any, 1: Directory, 0: Non-Directory
         sql_string = self.__sql_dictionary["find_filename_base"]
         sql_argument_array = []
         clause_added = False
@@ -306,6 +308,24 @@ class Database:
 
         # Add table join
         sql_string += " " + self.__sql_dictionary["find_filename_join"]
+
+        # Order By
+        """
+        "find_filename_order_by_full_path": "ORDER BY fse.FullName",
+        "find_filename_order_by_entry_name": "ORDER BY fse.EntryName",
+        "find_filename_order_by_size": "ORDER BY fse.ByteSize",
+        "find_filename_order_by_last_modified": "ORDER BY fse.LastWriteTime",
+        """
+        if order_by is not None:
+            if order_by == AddArgs.SUBCMD_FILE_SEARCH_ORDER_FULL_PATH_ASCENDING: sql_string += " " + self.__sql_dictionary["find_filename_order_by_full_path"]
+            if order_by == AddArgs.SUBCMD_FILE_SEARCH_ORDER_FULL_PATH_DESCENDING: sql_string += " " + self.__sql_dictionary["find_filename_order_by_full_path"] + " DESC "
+            if order_by == AddArgs.SUBCMD_FILE_SEARCH_ORDER_FILENAME_ASCENDING: sql_string += " " + self.__sql_dictionary["find_filename_order_by_entry_name"]
+            if order_by == AddArgs.SUBCMD_FILE_SEARCH_ORDER_FILENAME_DESCENDING: sql_string += " " + self.__sql_dictionary["find_filename_order_by_entry_name"] + " DESC "
+            if order_by == AddArgs.SUBCMD_FILE_SEARCH_ORDER_SIZE_ASCENDING: sql_string += " " + self.__sql_dictionary["find_filename_order_by_size"]
+            if order_by == AddArgs.SUBCMD_FILE_SEARCH_ORDER_SIZE_DESCENDING: sql_string += " " + self.__sql_dictionary["find_filename_order_by_size"] + " DESC "
+            if order_by == AddArgs.SUBCMD_FILE_SEARCH_ORDER_LAST_MODIFIED_ASCENDING: sql_string += " " + self.__sql_dictionary["find_filename_order_by_last_modified"]
+            if order_by == AddArgs.SUBCMD_FILE_SEARCH_ORDER_LAST_MODIFIED_DESCENDING: sql_string += " " + self.__sql_dictionary["find_filename_order_by_last_modified"] + " DESC "
+
 
         # Limit results clause
         if max_results is not None:

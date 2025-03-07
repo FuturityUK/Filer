@@ -207,10 +207,10 @@ class AddArgs:
         AddArgs.add_argument(subparser_search_group, "--type", dest='type', metavar='Entry Type',
                              widget = 'Dropdown', nargs = '?', default = AddArgs.SUBCMD_FILE_SEARCH_SEARCH_FOR_CHOICE, choices=AddArgs.SUBCMD_FILE_SEARCH_SEARCH_FOR_CHOICES,
                              help="What do you want to search for?")
-        AddArgs.add_argument(subparser_search_group, "-c", "--category", dest='category', metavar='File Category',
+        AddArgs.add_argument(subparser_search_group, "-c", "--category", dest='category', metavar='File Category (NOT IMPLEMENTED YET)',
                              choices=file_categories, nargs='?', help="Category of files to be considered")
 
-        AddArgs.add_argument(subparser_search_group, "--size_limit", dest='size_limit', metavar='Size Limit',
+        AddArgs.add_argument(subparser_search_group, "--size_limit", dest='size_limit', metavar='Size Limit  (NOT IMPLEMENTED YET)',
                              widget = 'Dropdown', nargs = '?', default = AddArgs.SUBCMD_FILE_SEARCH_SIZE_LIMIT_CHOICE, choices=AddArgs.SUBCMD_FILE_SEARCH_SIZE_LIMIT_CHOICES,
                              help="Size limit for the results.")
 
