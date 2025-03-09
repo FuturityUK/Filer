@@ -276,10 +276,10 @@ class AddArgs:
                                  gooey_options={'visible': False})
 
             AddArgs.add_argument(subparser_add_volume_group, "--vol_label", dest='vol_label', metavar='Volume Label',
-                                default=AddArgs.SUBCMD_ADD_VOLUME_VOL_LABEL_DEFAULT,
-                                const='all', nargs = '?', choices=[AddArgs.SUBCMD_ADD_VOLUME_VOL_LABEL_DEFAULT],
+                                #default=AddArgs.SUBCMD_ADD_VOLUME_VOL_LABEL_DEFAULT,
+                                const='all', nargs = '?', # choices=[AddArgs.SUBCMD_ADD_VOLUME_VOL_LABEL_DEFAULT],
                                 help="Label of the drive listing. If left blank, the volume's label will be used instead.'",
-                                widget = 'Dropdown', gooey_options={ 'initial_value': AddArgs.SUBCMD_ADD_VOLUME_VOL_LABEL_DEFAULT }
+                                widget = 'Dropdown' #, gooey_options={ 'initial_value': AddArgs.SUBCMD_ADD_VOLUME_VOL_LABEL_DEFAULT                                                                      }
                            )
             AddArgs.add_argument(subparser_add_volume_group, "--invisible2", dest='invisible2', metavar='Invisible2',
                                  action='store_true', default=True, help="Invisible2 checkbox",

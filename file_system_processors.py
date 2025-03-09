@@ -1,11 +1,11 @@
 import csv
 import os
-#import datetime
 import os.path
 import time
+from datetime import datetime
 import tracemalloc
-from database import Database
 import logging
+from database import Database
 
 class PowerShellFilesystemListing:
     """ Class to convert the output from the PowerShell Get-ChildItem command into a CSV database form """

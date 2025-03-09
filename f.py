@@ -33,7 +33,7 @@ from add_args import AddArgs
 
 class F:
 
-    SHOW_SUBMITTED_ARGS: bool = True
+    SHOW_SUBMITTED_ARGS: bool = False
     SHOW_DB_FILENAME_ARG_IN_GUI: bool = False
     SHOW_DB_SELECTION: bool = False
     PROGRESS_INSERT_FREQUENCY: int = 10000
@@ -341,27 +341,27 @@ class F:
         print(f"- {volume_default_choice}")
 
     @staticmethod
-    def get_values_for_volume_array(result_array: []) -> {}:
-        import_listing_values = {}
-        result_array_length = len(result_array)
+    def get_values_from_volume_array(volume_array: []) -> {}:
+        volume_summary_array = {}
+        result_array_length = len(volume_array)
         # Get values from the volume dictionary
-        volume_dictionary = result_array[F.VOL_ARG_DETAILS_VOLUMES_VOLUME_DICT_IDX]
-        import_listing_values["drive_letter"] = volume_dictionary['DriveLetter']
-        import_listing_values["label"] = volume_dictionary['FileSystemLabel']
+        volume_dictionary = volume_array[F.VOL_ARG_DETAILS_VOLUMES_VOLUME_DICT_IDX]
+        volume_summary_array["drive_letter"] = volume_dictionary['DriveLetter']
+        volume_summary_array["label"] = volume_dictionary['FileSystemLabel']
 
         # Get values from the logical drive dictionary, but only if it exists
         if result_array_length > 1:
-            logical_disk_dictionary = result_array[F.VOL_ARG_DETAILS_VOLUMES_LOGICAL_DICT_IDX]
-            import_listing_values["make"] = logical_disk_dictionary['Manufacturer']
-            import_listing_values["model"] = logical_disk_dictionary['Model']
-            import_listing_values["serial_number"] = logical_disk_dictionary['SerialNumber']
+            logical_disk_dictionary = volume_array[F.VOL_ARG_DETAILS_VOLUMES_LOGICAL_DICT_IDX]
+            volume_summary_array["make"] = logical_disk_dictionary['Manufacturer']
+            volume_summary_array["model"] = logical_disk_dictionary['Model']
+            volume_summary_array["serial_number"] = logical_disk_dictionary['SerialNumber']
         else:
-            import_listing_values["make"] = ""
-            import_listing_values["model"] = ""
-            import_listing_values["serial_number"] = ""
+            volume_summary_array["make"] = ""
+            volume_summary_array["model"] = ""
+            volume_summary_array["serial_number"] = ""
 
-        import_listing_values["hostname"] = socket.gethostname()
-        return import_listing_values
+        volume_summary_array["hostname"] = socket.gethostname()
+        return volume_summary_array
 
     def subcommand_add_volumes(self, args: []):
         logging.debug("### F.subcommand_add_volumes() ###")
@@ -392,20 +392,20 @@ class F:
             #print(f"Chosen volume_dictionary:")
             #Print.print_array_of_dictionaries(volume_array)
             print(f"")
-            import_listing_values = self.get_values_for_volume_array(volume_array)
+            volume_summary_array = self.get_values_from_volume_array(volume_array)
             #print(f"import_listing_values:")
             #Print.print_dictionary(import_listing_values)
             #print(f"")
             #print('Processing Volume:')
-            label = import_listing_values["label"]
-            if args.label is not None:
-                label = args.label
-            print(f'Drive: "{import_listing_values["drive_letter"]}:"')
+            label = volume_summary_array["label"]
+            if args.vol_label is not None and args.vol_label != AddArgs.SUBCMD_ADD_VOLUME_VOL_LABEL_DEFAULT:
+                label = args.vol_label
+            print(f'Drive: "{volume_summary_array["drive_letter"]}:"')
             print(f'Label: "{label}"')
-            print(f'Hostname: "{import_listing_values["hostname"]}"')
-            print(f'Make: "{import_listing_values["make"]}"')
-            print(f'Model: "{import_listing_values["model"]}"')
-            print(f'Serial: "{import_listing_values["serial_number"]}"')
+            print(f'Hostname: "{volume_summary_array["hostname"]}"')
+            print(f'Make: "{volume_summary_array["make"]}"')
+            print(f'Model: "{volume_summary_array["model"]}"')
+            print(f'Serial: "{volume_summary_array["serial_number"]}"')
             print('')
 
             # Check if Label exists in the Database
@@ -413,7 +413,7 @@ class F:
                 self.exit_cleanly(self.EXIT_ERROR, f'Label "{label}" already exists in the Database!')
 
             print('Generating the Volume Listing ...')
-            output = self.system.create_path_listing(import_listing_values["drive_letter"] + ':\\',
+            output = self.system.create_path_listing(volume_summary_array["drive_letter"] + ':\\',
                                                      self.DEFAULT_TEMP_LISTING_FILE)
             # print(f"create_path_listing output: {output}")
             print('Processing the Volume Listing ...')
@@ -424,17 +424,17 @@ class F:
             #if args.test is not None:
             #    powershell_filesystem_listing.set_test(args.test)
 
-            powershell_filesystem_listing.set_make(import_listing_values["make"])
-            powershell_filesystem_listing.set_model(import_listing_values["model"])
-            powershell_filesystem_listing.set_serial_number(import_listing_values["serial_number"])
+            powershell_filesystem_listing.set_make(volume_summary_array["make"])
+            powershell_filesystem_listing.set_model(volume_summary_array["model"])
+            powershell_filesystem_listing.set_serial_number(volume_summary_array["serial_number"])
             # powershell_filesystem_listing.set_combined(args.combined)
-            powershell_filesystem_listing.set_hostname(import_listing_values["hostname"])
+            powershell_filesystem_listing.set_hostname(volume_summary_array["hostname"])
             # powershell_filesystem_listing.set_prefix(args.prefix)
             powershell_filesystem_listing.set_memory_stats(self.memory_stats)
             powershell_filesystem_listing.save_to_database()
             import_listing_success = powershell_filesystem_listing.import_listing(self.PROGRESS_INSERT_FREQUENCY)
             if import_listing_success:
-                print(f"Volume {import_listing_values["drive_letter"]}: Added Successfully...")
+                print(f"Volume {volume_summary_array["drive_letter"]}: Added Successfully...")
 
     def subcommand_select_database(self, args: []):
         logging.debug(f"### F.subcommand_select_database() ###")

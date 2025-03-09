@@ -57,7 +57,7 @@ class Fgui:
                 'volume': volume_default_choice,
                 'db': self.f.database_filename,
                 'label': filesystem_search_label_choice,
-                'vol_label': None, # This will be replaced with the initial value
+                'vol_label': AddArgs.SUBCMD_ADD_VOLUME_VOL_LABEL_DEFAULT, # This will be replaced with the initial value
                 'results': AddArgs.SUBCMD_FILE_SEARCH_MAX_RESULTS_DEFAULT_CHOICE,
 
                 'test_required_1': None,  # This will be replaced with the initial value
