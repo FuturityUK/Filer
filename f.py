@@ -111,7 +111,8 @@ class F:
 
         if args is not None:
             # A subcommand has been run so store its arguments
-            subcommand = args.subcommand
+            subcommand = args.subcommand if "subcommand" in args else None
+            # Create an array of all the arguments
             subcommand_args = vars(args).copy()
             # Remove the 'subcommand' key / value pair from the subcommand_args
             if "subcommand" in subcommand_args: del subcommand_args['subcommand']
@@ -306,7 +307,7 @@ class F:
             max_results_int = int(max_results)
         except ValueError:
             # Handle the exception
-            self.exit_cleanly(self.EXIT_ERROR, f'Results value "{args.max_results}" is not an integer!')
+            self.exit_cleanly(self.EXIT_ERROR, f'Results value "{max_results}" is not an integer!')
 
         if entry_search is None and entry_category is None and volume_label is None:
             self.exit_cleanly(self.EXIT_ERROR, "No search terms provided")
@@ -363,6 +364,9 @@ class F:
         volume_summary_array["hostname"] = socket.gethostname()
         return volume_summary_array
 
+    def subcommand_delete_volumes(self, args: []):
+        vol_label = args.vol_label if "vol_label" in args else None
+
     def subcommand_add_volumes(self, args: []):
         logging.debug("### F.subcommand_add_volumes() ###")
         print("Adding volume:")
@@ -378,7 +382,11 @@ class F:
         print(f"self.volume_argument_details[\"{self.VOL_ARG_DETAILS_CREATED}\"]: {self.volume_argument_details[self.VOL_ARG_DETAILS_CREATED]}")
         print(f"")
         """
-        volume_choice = args.volume
+        volume_choice = args.volume if "volume" in args else None
+        vol_label = args.vol_label if "vol_label" in args else None
+        replace = args.replace if "replace" in args else None
+        verbose = args.verbose if "verbose" in args else False
+
         if volume_choice not in self.configuration[self.CONFIG_VOL_DETAILS][self.VOL_ARG_DETAILS_CHOICES]:
             message= f"Volume description \"{volume_choice}\" not found in the list of available volumes."
             self.exit_cleanly(self.EXIT_ERROR, message, message)
@@ -398,8 +406,8 @@ class F:
             #print(f"")
             #print('Processing Volume:')
             label = volume_summary_array["label"]
-            if args.vol_label is not None and args.vol_label != AddArgs.SUBCMD_ADD_VOLUME_VOL_LABEL_DEFAULT:
-                label = args.vol_label
+            if vol_label is not None and vol_label != AddArgs.SUBCMD_ADD_VOLUME_VOL_LABEL_DEFAULT:
+                label = vol_label
             print(f'Drive: "{volume_summary_array["drive_letter"]}:"')
             print(f'Label: "{label}"')
             print(f'Hostname: "{volume_summary_array["hostname"]}"')
@@ -410,7 +418,13 @@ class F:
 
             # Check if Label exists in the Database
             if self.database.does_label_exists(label):
-                self.exit_cleanly(self.EXIT_ERROR, f'Label "{label}" already exists in the Database!')
+                if not replace:
+                    self.exit_cleanly(self.EXIT_ERROR, f'Label "{label}" already exists in the Database! Use the \'--replace\' flag.', f'Label "{label}" already exists in the Database! Use the \'Replace\' checkbox.')
+                else:
+                    print(f'Label "{label}" already exists in the Database.!')
+                    print("Confirmation accepted")
+                    print(f'Deleting old entries for label: "{label}"')
+                    self.database.delete_filesystem(label)
 
             print('Generating the Volume Listing ...')
             output = self.system.create_path_listing(volume_summary_array["drive_letter"] + ':\\',
@@ -419,17 +433,13 @@ class F:
             print('Processing the Volume Listing ...')
             powershell_filesystem_listing = PowerShellFilesystemListing(self.database, label,
                                                                         self.DEFAULT_TEMP_LISTING_FILE)
-            if args.verbose is not None:
-                powershell_filesystem_listing.set_verbose(args.verbose)
-            #if args.test is not None:
-            #    powershell_filesystem_listing.set_test(args.test)
+            if verbose is not None:
+                powershell_filesystem_listing.set_verbose(verbose)
 
             powershell_filesystem_listing.set_make(volume_summary_array["make"])
             powershell_filesystem_listing.set_model(volume_summary_array["model"])
             powershell_filesystem_listing.set_serial_number(volume_summary_array["serial_number"])
-            # powershell_filesystem_listing.set_combined(args.combined)
             powershell_filesystem_listing.set_hostname(volume_summary_array["hostname"])
-            # powershell_filesystem_listing.set_prefix(args.prefix)
             powershell_filesystem_listing.set_memory_stats(self.memory_stats)
             powershell_filesystem_listing.save_to_database()
             import_listing_success = powershell_filesystem_listing.import_listing(self.PROGRESS_INSERT_FREQUENCY)
@@ -438,7 +448,7 @@ class F:
 
     def subcommand_select_database(self, args: []):
         logging.debug(f"### F.subcommand_select_database() ###")
-        database_filename = args.db
+        database_filename = args.db if "db" in args else None
         verbose = args.verbose if "verbose" in args else False
         self.select_database(database_filename, verbose)
 
@@ -460,7 +470,7 @@ class F:
 
     def subcommand_create_database(self, args: []):
         logging.debug(f"### F.subcommand_create_database() ###")
-        database_filename = args.db
+        database_filename = args.db if "db" in args else None
         verbose = args.verbose if "verbose" in args else False
         self.create_database(database_filename, verbose)
 
@@ -501,28 +511,30 @@ class F:
     def subcommand_import_listing(self, args: []):
         logging.debug(f"### F.import_listing() ###")
         print(f"Import subcommand: Needs Further Testing !!!")
-        powershell_filesystem_listing = PowerShellFilesystemListing(self.database, args.label, args.filename)
+        label = args.label if "label" in args else None
+        filename = args.filename if "filename" in args else None
+        powershell_filesystem_listing = PowerShellFilesystemListing(self.database, label, filename)
 
-        if args.verbose is not None:
-            powershell_filesystem_listing.set_verbose(args.verbose)
-        #if args.test is not None:
-        #    powershell_filesystem_listing.set_test(args.test)
-        if args.make is not None:
-            powershell_filesystem_listing.set_make(args.make)
-        if args.model is not None:
-            powershell_filesystem_listing.set_model(args.model)
-        if args.serial is not None:
-            powershell_filesystem_listing.set_serial_number(args.serial)
-        if args.combined is not None:
-            powershell_filesystem_listing.set_combined(args.combined)
-        if args.hostname is not None:
-            powershell_filesystem_listing.set_hostname(args.hostname)
-        if args.prefix is not None:
-            powershell_filesystem_listing.set_prefix(args.prefix)
+        verbose = args.verbose if "verbose" in args else False
+        make = args.make if "make" in args else None
+        model = args.model if "model" in args else None
+        serial = args.serial if "serial" in args else None
+        hostname = args.hostname if "hostname" in args else None
+
+        if verbose is not None:
+            powershell_filesystem_listing.set_verbose(verbose)
+        if make is not None:
+            powershell_filesystem_listing.set_make(make)
+        if model is not None:
+            powershell_filesystem_listing.set_model(model)
+        if serial is not None:
+            powershell_filesystem_listing.set_serial_number(serial)
+        if hostname is not None:
+            powershell_filesystem_listing.set_hostname(hostname)
 
         powershell_filesystem_listing.set_memory_stats(self.memory_stats)
-        powershell_filesystem_listing.save_to_database()
-
+        #powershell_filesystem_listing.save_to_database() # There is also an option to save to file, but this isn't being maintained.
+        powershell_filesystem_listing.set_save_to_mode(PowerShellFilesystemListing.SAVE_TO_DATABASE)
         powershell_filesystem_listing.import_listing()
 
     def load_volume_drive_details(self):
@@ -646,34 +658,39 @@ class F:
             self.select_database(args.db, self.verbose)
 
         # If 'create' and 'refresh_volumes' subcommands are specified, then we don't need to open the database
-        if args.subcommand == AddArgs.SUBCMD_SELECT_DATABASE:
+        subcommand = args.subcommand if "subcommand" in args else None
+        if subcommand == AddArgs.SUBCMD_SELECT_DATABASE:
             self.subcommand_select_database(args)
-        elif args.subcommand == AddArgs.SUBCMD_CREATE_DATABASE:
+        elif subcommand == AddArgs.SUBCMD_CREATE_DATABASE:
             self.subcommand_create_database(args)
-        elif args.subcommand == AddArgs.SUBCMD_REFRESH_VOLUMES:
+        elif subcommand == AddArgs.SUBCMD_REFRESH_VOLUMES:
             self.subcommand_refresh_volumes(args)
         else:
             # These subcommands all need a working database connection
-
-            if "verbose" in args:
-                self.database.set_verbose_mode(args.verbose)
+            verbose = args.verbose if "verbose" in args else False
+            if verbose is not None:
+                self.database.set_verbose_mode(verbose)
             start_time = time.time()
 
-            if args.subcommand == AddArgs.SUBCMD_FILE_SEARCH:
+            if subcommand == AddArgs.SUBCMD_FILE_SEARCH:
                 self.subcommand_filesystem_search(args)
-            elif args.subcommand == AddArgs.SUBCMD_ADD_VOLUME:
+
+            elif subcommand == AddArgs.SUBCMD_ADD_VOLUME:
                 self.subcommand_add_volumes(args)
 
-            elif args.subcommand == AddArgs.SUBCMD_IMPORT_VOLUME:
+            elif subcommand == AddArgs.SUBCMD_DELETE_VOLUME:
+                self.subcommand_delete_volumes(args)
+
+            elif subcommand == AddArgs.SUBCMD_IMPORT_VOLUME:
                 self.subcommand_import_listing(args)
 
-            elif args.subcommand == AddArgs.SUBCMD_UPGRADE_DATABASE:
+            elif subcommand == AddArgs.SUBCMD_UPGRADE_DATABASE:
                 self.subcommand_upgrade_database()
 
-            elif args.subcommand == AddArgs.SUBCMD_VACUUM_DATABASE:
+            elif subcommand == AddArgs.SUBCMD_VACUUM_DATABASE:
                 self.subcommand_vacuum_database()
 
-            elif args.subcommand == AddArgs.SUBCMD_RESET_DATABASE:
+            elif subcommand == AddArgs.SUBCMD_RESET_DATABASE:
                 self.subcommand_reset_database(args)
 
             end_time = time.time()

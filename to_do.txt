@@ -1,5 +1,16 @@
 To DO:
 
+f.py
+- process_args_and_call_subcommand()
+  - Check if the database filename has changed and only if it has changed:
+    then store the new value in the configuration and store it and
+    then select the new database
+
+database.py
+- delete_filesystem()
+  - If the drive used isn't being used by any other filesystem
+    then delete it as we don't want stale unused drives in the database
+
 - Add subcommand to delete filesystems with a label.
 
 - Option to force deletion of a Volume's filesystem with a label if it already exists.

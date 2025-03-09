@@ -15,9 +15,12 @@ class PowerShellFilesystemListing:
     # Get-ChildItem -Path E:\ -ErrorAction SilentlyContinue -Recurse -Force | Select-Object Mode, LastWriteTime, Length, FullName | Format-Table -Wrap -AutoSize | Out-File -width 9999 -Encoding utf8 "C:\Users\Administrator.WS1\Documents\csv\ws1-e.csv"
 
     # Constants
-    PROCESSING_MODE_NOT_SET = 0
-    PROCESSING_MODE_CSV = 1
-    PROCESSING_MODE_DB = 2
+    PROCESSING_MODE_NOT_SET: int = 0
+    PROCESSING_MODE_CSV: int = 1
+    PROCESSING_MODE_DB: int = 2
+
+    SAVE_TO_CVS: int = 0
+    SAVE_TO_DATABASE: int = 1
 
     def __init__(self, database: Database, label: str, input_filename: str):
         self.__label = label
@@ -43,9 +46,6 @@ class PowerShellFilesystemListing:
     def __vprint(self, string: str):
         if self.__verbose:
             print(string)
-
-    def set_test(self, test: bool):
-        self.__test = test
 
     def set_verbose(self, verbose: bool):
         self.__verbose = verbose
@@ -74,11 +74,14 @@ class PowerShellFilesystemListing:
     def set_hostname(self, hostname: str):
         self.__hostname = hostname
 
-    def set_prefix(self, prefix: str):
-        self.__prefix = prefix
-
     def set_date(self, date: int):
         self.__date = date
+
+    def set_save_to_mode(self, save_mode: int = SAVE_TO_DATABASE, output_csv_filename: str = None):
+        if save_mode == self.SAVE_TO_CVS:
+            self.save_to_csv(output_csv_filename)
+        elif save_mode == self.SAVE_TO_DATABASE:
+            self.save_to_database()
 
     def save_to_csv(self, output_csv_filename: str):
         self.__processing_mode = self.PROCESSING_MODE_CSV

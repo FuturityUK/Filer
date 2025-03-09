@@ -430,6 +430,23 @@ class Database:
         logging.debug(f"New row filesystem_id: \"{filesystem_id}\"")
         return filesystem_id
 
+    def delete_filesystem(self, label: str = None):
+        if label is None:
+            result = "The label must be specified. Can't delete label entries without one."
+        else:
+            filesystem_ids = self.find_filesystem_id(label)
+            if len(filesystem_ids) == 1:
+                filesystem_id = filesystem_ids[0]
+                # First Delete the filesystem entries
+                self.delete_filesystem_listing_entries(filesystem_id)
+                # Next Check if the Drive is being used by any other Volume Labels
+                # If not, delete the Drive as it's no longer required
+                # Finally delete the filesystem listing itself
+                self.delete_filesystem_listing(filesystem_id)
+                result = True
+            else:
+                result = "Too many filesystem entries found for the label specified."
+
     def delete_filesystem_listing(self, filesystem_id: int):
         logging.debug(f"SQL Query: \"{self.__sql_dictionary["delete_filesystem"]}\"")
         logging.debug(f"filesystem_id: \"{filesystem_id}\"")
