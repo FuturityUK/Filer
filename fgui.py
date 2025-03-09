@@ -59,6 +59,8 @@ class Fgui:
                 'label': filesystem_search_label_choice,
                 'vol_label': AddArgs.SUBCMD_ADD_VOLUME_VOL_LABEL_DEFAULT, # This will be replaced with the initial value
                 'results': AddArgs.SUBCMD_FILE_SEARCH_MAX_RESULTS_DEFAULT_CHOICE,
+                'replace': False,
+                'remove': False,
 
                 'test_required_1': None,  # This will be replaced with the initial value
                 # 'test_required_2' will be left alone
@@ -148,10 +150,16 @@ class Fgui:
             #fullscreen=True,
             show_restart_button=False,
             hide_progress_msg=True,
+            progress_regex=r"^progress: (?P<current>\d+)/(?P<total>\d+)$",
+            progress_expr="current / total * 100",
+            timing_options={
+                'show_time_remaining': True,
+                'hide_time_remaining_on_complete': True,
+            },
             #monospace_display = True,
             terminal_font_family='Courier New',
             clear_before_run=True,# Was True
-            show_stop_warning=False, # From test.py
+            show_stop_warning=True, # From test.py
             show_success_modal=False, # From test.py
             show_failure_modal=False # From test.py
             #dump_build_config = True,  # Dump the JSON Gooey uses to configure itself

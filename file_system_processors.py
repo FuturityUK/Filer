@@ -224,14 +224,27 @@ class PowerShellFilesystemListing:
                 exit(1)
 
     def import_listing(self, print_progress_every: int = 10000):
-        self.__vprint("Recording listing details.")
+        if self.__processing_mode == self.PROCESSING_MODE_DB:
+            self.__vprint("Importing listing to database. This may take a while. Please wait. . ...")
+            self.process_listing(print_progress_every)
+        else:
+            # Only other mode is writing results to a CSV file
+            self.__vprint("Importing listing to CSV file. This may take a while. . ...")
+            self.__vprint(f"Opening CSV file: {self.__output_csv_filename}")
+            with open(self.__output_csv_filename, 'w', newline='', encoding="utf-8") as csv_file:
+                writer = csv.writer(csv_file, quoting=csv.QUOTE_NONE,
+                                    delimiter='|', quotechar='"', escapechar='\\')
+                self.process_listing(print_progress_every, writer)
+        return True
+
+    def process_listing(self, print_progress_every: int = 10000, writer: csv.writer = None):
         # Check if records exist first and warn user if they do.
         filesystem_id = self.get_filesystem_id()
-
         self.__vprint(f"filesystem_id: {filesystem_id}")
         if filesystem_id is None:
             # No filesystem_id returned so likely that it already existed and user didn't want to replace it
             return None
+
         self.__vprint("Processing listing file.")
         header_line_processed = False
         next_line_field_widths = False
@@ -243,210 +256,216 @@ class PowerShellFilesystemListing:
         offset = 0
         root_entity_not_found = True
         directory_dictionary = {}
-        last_saved_directory_name = "" # Shouldn't use None because we can't use string operations on a None type
-        last_saved_directory_id = 0 # IDs start at 1 so this 0 will never be used.
+        last_saved_directory_name = ""  # Shouldn't use None because we can't use string operations on a None type
+        last_saved_directory_id = 0  # IDs start at 1 so this 0 will never be used.
         hits_last_saved_directory = 0
         hits_directory_dictionary = 0
         hits_database = 0
 
-        with open(self.__output_csv_filename, 'w', newline='', encoding="utf-8") as csv_file:
-            writer = csv.writer(csv_file, quoting=csv.QUOTE_NONE,
-                                delimiter='|', quotechar='"', escapechar='\\')
+        #if self.__processing_mode == self.PROCESSING_MODE_DB:
+            # Check is tables already exist.
+            # If it exists, empty all the data and reset autoincrement counters
+            ##### self.__database.empty_table()
+            # Vacuum database to reclaim empty space
+            # self.__database.vacuum()
 
-            if self.__processing_mode == self.PROCESSING_MODE_DB:
-                # Check is tables already exist.
-                # If it exists, empty all the data and reset autoincrement counters
-                ##### self.__database.empty_table()
-                # Vacuum database to reclaim empty space
-                self.__database.vacuum()
+        for width in field_widths:
+            slices.append(slice(offset, offset + width))
+            offset += width
 
-                # If not create them.
-                # Create database tables
-                # create_table_sql = """;"""
-                # database_cursor.execute(create_table_sql)
+        input_file_stats = os.stat(self.__input_filename)
+        input_file_size_bytes = input_file_stats.st_size
+        input_file_processed_bytes = 0
+        entries_inserted = 0
+        processing_data_lines_start_time = time.time()
+        time_taken_ms = 0
 
+        self.__vprint(f"Opening Filesystem Listing file: {self.__input_filename}")
+        for filelineno, line in enumerate(open(self.__input_filename, encoding="utf-8")):
+            line_number += 1
+            input_file_processed_bytes += len(line) + 1  # +1 for \n line terminator (HANDLE \r\n in future)
 
-            for width in field_widths:
-                slices.append(slice(offset, offset + width))
-                offset += width
+            # if line_number % print_progress_every == 0:
+            if line_number % 1000 == 0:
+                #print(f'Processing line {line_number} of {input_file_size_bytes} bytes')
+                progress = int(input_file_processed_bytes / input_file_size_bytes * 100)
+                print(f'progress: {progress}/100')
 
-            input_file_stats = os.stat(self.__input_filename)
-            input_file_size_bytes = input_file_stats.st_size
-            input_file_processed_bytes = 0
-            entries_inserted = 0
+            line_right_strip = line.rstrip()
+            # print("Line loaded")
+            # print(f"next_line_field_widths: {next_line_field_widths}")
+            # print(f"{line_number}: '{line_right_strip}'")  # .strip()
+            if not header_line_processed:
+                if line_right_strip.startswith("Mode"):
+                    # Must be the first line containing text, so much be the header
+                    field_headers = line_right_strip.split()
+                    # print(field_headers)
+                    if self.__processing_mode == self.PROCESSING_MODE_CSV:
+                        writer.writelines([field_headers])  # Wrap inside a list to stop writer delimiting each char
+                        # csv_file.flush()
 
-            for filelineno, line in enumerate(open(self.__input_filename, encoding="utf-8")):
-                line_number += 1
-                input_file_processed_bytes += len(line) +1 # +1 for \n line terminator (HANDLE \r\n in future)
+                    header_line_processed = True
+                    next_line_field_widths = True
+                    # exit()
+            elif next_line_field_widths is True:
+                """
+                if(not line_right_strip.startswith("---- ")):
+                    print("Unexpected field width definition line similar to:")
+                    print("'----   -------------       ------       --------'")
+                    exit()
+                else:
+                """
+                # Calculate max column widths from line, as each path and hence line could be a different length.
+                char = '-'
+                last_char = '-'
+                char_offset = 0
+                line_length = len(line)
+                for i in range(line_length):
+                    last_char = char
+                    char = line[i]
+                    # print(char, end="")
+                    if (last_char == ' ') and (char == '-'):
+                        field_length = i - char_offset
+                        char_offset = i
+                        field_widths.append(field_length)
+                # Append Path field width
+                field_length = line_length - char_offset
+                # Check that the longest path doesn't get truncated
+                field_widths.append(field_length)
+                # print()
+                # print(field_widths)
+                # Create slices
+                offset = 0
+                for width in field_widths:
+                    slices.append(slice(offset, offset + width))
+                    offset += width
+                # print(slices)
+                next_line_field_widths = False
+                next_line_process = True
+                processing_data_lines_start_time = time.time()
 
-                #if line_number % print_progress_every == 0:
-                #    print(f'Processing line {line_number} of {input_file_size_bytes} bytes')
+            elif next_line_process:
+                pieces = [line_right_strip[slice] for slice in slices]
+                pieces_right_strip = [piece.rstrip() for piece in pieces]
+                if len(pieces_right_strip) > 0 and pieces_right_strip[0] != "":
+                    # Only save lines with content in them. No mode = no valid row.
+                    # print(f"{pieces_right_strip}: {len(pieces_right_strip)}")
+                    if self.__processing_mode == self.PROCESSING_MODE_CSV:
+                        writer.writelines(
+                            [pieces_right_strip])  # Wrap inside a list to stop writer delimiting each char
+                        # csv_file.flush()
+                    elif self.__processing_mode == self.PROCESSING_MODE_DB:
+                        modes_list = list(pieces_right_strip[0])
+                        mode_is_directory = True if (modes_list[0] == 'd') else False  # d - Directory
+                        mode_is_archive = True if (modes_list[1] == 'a') else False  # a - Archive
+                        mode_is_read_only = True if (modes_list[2] == 'r') else False  # r - Read-only
+                        mode_is_hidden = True if (modes_list[3] == 'h') else False  # h - Hidden
+                        mode_is_system = True if (modes_list[4] == 's') else False  # s - System
+                        mode_is_link = True if (modes_list[5] == 'l') else False  # l - Reparse point, symlink, etc.
 
-                line_right_strip = line.rstrip()
-                # print("Line loaded")
-                # print(f"next_line_field_widths: {next_line_field_widths}")
-                # print(f"{line_number}: '{line_right_strip}'")  # .strip()
-                if not header_line_processed:
-                    if line_right_strip.startswith("Mode"):
-                        # Must be the first line containing text, so much be the header
-                        field_headers = line_right_strip.split()
-                        #print(field_headers)
-                        if self.__processing_mode == self.PROCESSING_MODE_CSV:
-                            writer.writelines([field_headers]) # Wrap inside a list to stop writer delimiting each char
-                            # csv_file.flush()
+                        # print(f"{pieces_right_strip[0]}{modes_list}{mode_is_directory}{mode_is_archive}{mode_is_read_only}{mode_is_hidden}{mode_is_system}{mode_is_link}")
+                        # DateTime string
+                        datetime_string = pieces_right_strip[1]
+                        try:
+                            self.__vprint(f"datetime_string: {datetime_string}")
+                            # Parse the string into a datetime object
+                            datetime_obj = datetime.strptime(datetime_string, "%d/%m/%Y %H:%M:%S")
+                            self.__vprint(f"datetime_obj: {datetime_obj}")
+                            # Convert to UNIX timestamp
+                            unix_timestamp = datetime_obj.timestamp()
+                        except OSError as err:
+                            print(f"datetime_string: {datetime_string}, Timestamp() - OSError: {err}")
+                            unix_timestamp = 0
+                        # print(f"unix_timestamp: {unix_timestamp}")
+                        byte_size = pieces_right_strip[
+                            2]  # Windows refers to it as length, but this is a reserved word in Sqlite. I'm calling it byte_size
+                        if len(byte_size) == 0:
+                            byte_size = None
+                        full_name = pieces_right_strip[3]  # Windows refers to the "path" as "FullName" for some reason.
+                        try:
+                            # Find the entry name
+                            entity_name = os.path.basename(full_name)
+                            # Find the directory that this entity lives in
+                            entity_parent_directory = os.path.dirname(full_name)
+                            # print(f"full_name: {full_name}")
+                            # print(f"entity_parent_directory: {entity_parent_directory}")
+                        except OSError as err:
+                            print(f"full_name: {full_name}")
+                            print(f"os.path - OSError: {err}")
+                            exit()
 
-                        header_line_processed = True
-                        next_line_field_widths = True
-                        # exit()
-                elif next_line_field_widths is True:
-                    """
-                    if(not line_right_strip.startswith("---- ")):
-                        print("Unexpected field width definition line similar to:")
-                        print("'----   -------------       ------       --------'")
-                        exit()
-                    else:
-                    """
-                    # Calculate max column widths from line, as each path and hence line could be a different length.
-                    char = '-'
-                    last_char = '-'
-                    char_offset = 0
-                    line_length = len(line)
-                    for i in range(line_length):
-                        last_char = char
-                        char = line[i]
-                        #print(char, end="")
-                        if (last_char == ' ') and (char == '-'):
-                            field_length = i - char_offset
-                            char_offset = i
-                            field_widths.append(field_length)
-                    # Append Path field width
-                    field_length = line_length - char_offset
-                    # Check that the longest path doesn't get truncated
-                    field_widths.append(field_length)
-                    # print()
-                    # print(field_widths)
-                    # Create slices
-                    offset = 0
-                    for width in field_widths:
-                        slices.append(slice(offset, offset + width))
-                        offset += width
-                    # print(slices)
-                    next_line_field_widths = False
-                    next_line_process = True
-                    processing_data_lines_start_time = time.time()
-
-                elif next_line_process:
-                    pieces = [line_right_strip[slice] for slice in slices]
-                    pieces_right_strip = [piece.rstrip() for piece in pieces]
-                    if len(pieces_right_strip) > 0 and pieces_right_strip[0] != "":
-                        # Only save lines with content in them. No mode = no valid row.
-                        # print(f"{pieces_right_strip}: {len(pieces_right_strip)}")
-                        if self.__processing_mode == self.PROCESSING_MODE_CSV:
-                            writer.writelines([pieces_right_strip])  # Wrap inside a list to stop writer delimiting each char
-                            # csv_file.flush()
-                        elif self.__processing_mode == self.PROCESSING_MODE_DB:
-                            modes_list = list(pieces_right_strip[0])
-                            mode_is_directory = True if (modes_list[0] == 'd') else False # d - Directory
-                            mode_is_archive = True if (modes_list[1] == 'a') else False   # a - Archive
-                            mode_is_read_only = True if (modes_list[2] == 'r') else False # r - Read-only
-                            mode_is_hidden = True if (modes_list[3] == 'h') else False    # h - Hidden
-                            mode_is_system = True if (modes_list[4] == 's') else False    # s - System
-                            mode_is_link = True if (modes_list[5] == 'l') else False      # l - Reparse point, symlink, etc.
-
-                            # print(f"{pieces_right_strip[0]}{modes_list}{mode_is_directory}{mode_is_archive}{mode_is_read_only}{mode_is_hidden}{mode_is_system}{mode_is_link}")
-                            # DateTime string
-                            datetime_string = pieces_right_strip[1]
-                            try:
-                                self.__vprint(f"datetime_string: {datetime_string}")
-                                # Parse the string into a datetime object
-                                datetime_obj = datetime.strptime(datetime_string, "%d/%m/%Y %H:%M:%S")
-                                self.__vprint(f"datetime_obj: {datetime_obj}")
-                                # Convert to UNIX timestamp
-                                unix_timestamp = datetime_obj.timestamp()
-                            except OSError as err:
-                                print(f"datetime_string: {datetime_string}, Timestamp() - OSError: {err}")
-                                unix_timestamp = 0
-                            # print(f"unix_timestamp: {unix_timestamp}")
-                            byte_size = pieces_right_strip[2] # Windows refers to it as length, but this is a reserved word in Sqlite. I'm calling it byte_size
-                            if len(byte_size) == 0:
-                                byte_size = None
-                            full_name = pieces_right_strip[3] # Windows refers to the "path" as "FullName" for some reason.
-                            try:
-                                # Find the entry name
-                                entity_name = os.path.basename(full_name)
-                                # Find the directory that this entity lives in
-                                entity_parent_directory = os.path.dirname(full_name)
-                                # print(f"full_name: {full_name}")
-                                # print(f"entity_parent_directory: {entity_parent_directory}")
-                            except OSError as err:
-                                print(f"full_name: {full_name}")
-                                print(f"os.path - OSError: {err}")
-                                exit()
-
-                            if root_entity_not_found and len(entity_parent_directory) == 3 and entity_parent_directory.endswith(":\\"):
-                                # If the root entity hasn't already been found
-                                # and the length of the parent entity directory == 3
-                                # and the parent entity directory ends with ":\"
-                                # then insert it into the database
-                                id_of_inserted_row = self.__db_insert_filesystem_entry(filesystem_id, 1736028193, None,
-                                                        None, 1, 0, 0,
-                                                        1, 1, 0, entity_parent_directory, entity_parent_directory)
-                                entries_inserted += 1
-                                last_saved_directory_name = entity_parent_directory
-                                last_saved_directory_id = id_of_inserted_row
-                                directory_dictionary[entity_parent_directory] = id_of_inserted_row
-                                root_entity_not_found = False
-
-                            # Find Parent Directory ID
-                            parent_file_system_entry_id = self.__find_parent_directory_id(filesystem_id, last_saved_directory_id, last_saved_directory_name, entity_parent_directory, directory_dictionary)
-
-                            # Insert Entity
-                            id_of_inserted_row = self.__db_insert_filesystem_entry(filesystem_id, unix_timestamp, byte_size, parent_file_system_entry_id,
-                                                         mode_is_directory, mode_is_archive, mode_is_read_only, mode_is_hidden,
-                                                         mode_is_system, mode_is_link, entity_name, full_name)
+                        if root_entity_not_found and len(
+                                entity_parent_directory) == 3 and entity_parent_directory.endswith(":\\"):
+                            # If the root entity hasn't already been found
+                            # and the length of the parent entity directory == 3
+                            # and the parent entity directory ends with ":\"
+                            # then insert it into the database
+                            id_of_inserted_row = self.__db_insert_filesystem_entry(filesystem_id, 1736028193, None,
+                                                                                   None, 1, 0, 0,
+                                                                                   1, 1, 0, entity_parent_directory,
+                                                                                   entity_parent_directory)
                             entries_inserted += 1
-                            if mode_is_directory:
-                                last_saved_directory_name = full_name
-                                last_saved_directory_id = id_of_inserted_row
-                                directory_dictionary[full_name] = id_of_inserted_row
-                                # print(directory_dictionary)
+                            last_saved_directory_name = entity_parent_directory
+                            last_saved_directory_id = id_of_inserted_row
+                            directory_dictionary[entity_parent_directory] = id_of_inserted_row
+                            root_entity_not_found = False
 
-                            #database_cursor.execute(
-                            #    "INSERT INTO FileSystemEnties (LastWriteTime, ByteSize, ParentFileSystemEntryID, IsDirectory, IsArchive, IsReadOnly, IsHidden, IsSystem, IsLink, EntryName, FullName) VALUES (?,?,NULL,?,?,?,?,?,?,?,?);",
-                            #    (unix_timestamp, byte_size, mode_is_directory, mode_is_archive, mode_is_read_only, mode_is_hidden, mode_is_system, mode_is_link, entity_name, full_name) )
+                        # Find Parent Directory ID
+                        parent_file_system_entry_id = self.__find_parent_directory_id(filesystem_id,
+                                                                                      last_saved_directory_id,
+                                                                                      last_saved_directory_name,
+                                                                                      entity_parent_directory,
+                                                                                      directory_dictionary)
 
+                        # Insert Entity
+                        id_of_inserted_row = self.__db_insert_filesystem_entry(filesystem_id, unix_timestamp, byte_size,
+                                                                               parent_file_system_entry_id,
+                                                                               mode_is_directory, mode_is_archive,
+                                                                               mode_is_read_only, mode_is_hidden,
+                                                                               mode_is_system, mode_is_link,
+                                                                               entity_name, full_name)
+                        entries_inserted += 1
+                        if mode_is_directory:
+                            last_saved_directory_name = full_name
+                            last_saved_directory_id = id_of_inserted_row
+                            directory_dictionary[full_name] = id_of_inserted_row
+                            # print(directory_dictionary)
 
-                        lines_processed += 1
+                        # database_cursor.execute(
+                        #    "INSERT INTO FileSystemEnties (LastWriteTime, ByteSize, ParentFileSystemEntryID, IsDirectory, IsArchive, IsReadOnly, IsHidden, IsSystem, IsLink, EntryName, FullName) VALUES (?,?,NULL,?,?,?,?,?,?,?,?);",
+                        #    (unix_timestamp, byte_size, mode_is_directory, mode_is_archive, mode_is_read_only, mode_is_hidden, mode_is_system, mode_is_link, entity_name, full_name) )
 
-                        #if(lines_processed > 1):
-                        #    break
+                    lines_processed += 1
 
-                        time_taken_ms = (time.time() - processing_data_lines_start_time)*1000
+                    # if(lines_processed > 1):
+                    #    break
 
-                    if (lines_processed % print_progress_every == 0):
-                        #print(f"Processed: {lines_processed} lines, in {int(time_taken_ms)}ms = {int((lines_processed / time_taken_ms) * 1000)} lines/s, LS: {hits_last_saved_directory} {int(hits_last_saved_directory / (hits_last_saved_directory + hits_directory_dictionary + hits_database) * 100)}%, DD: {hits_directory_dictionary}, DB: {hits_database}")
-                        #print(f"Processed: {int(input_file_processed_bytes*1000/input_file_size_bytes)/10}% {lines_processed} lines, in {int(time_taken_ms)}ms = {int((lines_processed / time_taken_ms) * 1000)} lines/s, LS: {hits_last_saved_directory}, DD: {hits_directory_dictionary}, DB: {hits_database}")
-                        bytes_remaining_to_process = input_file_size_bytes - input_file_processed_bytes
-                        bytes_processed_per_second = input_file_processed_bytes / time_taken_ms * 1000
-                        eta_seconds = int(bytes_remaining_to_process * 10 / bytes_processed_per_second) / 10
-                        print(f"Processed: {int(input_file_processed_bytes*1000/input_file_size_bytes)/10}%, ETA: {eta_seconds} seconds")
-                        self.display_memory_stats()
-                        # Commit changes to the database
-                        self.__database.commit()
+                    time_taken_ms = (time.time() - processing_data_lines_start_time) * 1000
 
-                    # if (lines_processed >= 10000):
-                    #     print(f"Lines: Processed: {lines_processed}, in {time_taken_ms}ms = {(1000 / time_taken_ms) * 1000} lines per second")
-                    #     # Commit changes to the database
-                    #     self.__database_connection.commit()
-                    #     # Closing the connection
-                    #     self.__database_connection.close()
-                    #     exit()
+                if lines_processed % print_progress_every == 0:
+                    # print(f"Processed: {lines_processed} lines, in {int(time_taken_ms)}ms = {int((lines_processed / time_taken_ms) * 1000)} lines/s, LS: {hits_last_saved_directory} {int(hits_last_saved_directory / (hits_last_saved_directory + hits_directory_dictionary + hits_database) * 100)}%, DD: {hits_directory_dictionary}, DB: {hits_database}")
+                    # print(f"Processed: {int(input_file_processed_bytes*1000/input_file_size_bytes)/10}% {lines_processed} lines, in {int(time_taken_ms)}ms = {int((lines_processed / time_taken_ms) * 1000)} lines/s, LS: {hits_last_saved_directory}, DD: {hits_directory_dictionary}, DB: {hits_database}")
+                    bytes_remaining_to_process = input_file_size_bytes - input_file_processed_bytes
+                    bytes_processed_per_second = input_file_processed_bytes / time_taken_ms * 1000
+                    eta_seconds = int(bytes_remaining_to_process * 10 / bytes_processed_per_second) / 10
+                    #print(f"Processed: {int(input_file_processed_bytes * 1000 / input_file_size_bytes) / 10}%, ETA: {eta_seconds} seconds")
+                    self.display_memory_stats()
+                    # Commit changes to the database
+                    self.__database.commit()
+
+                # if (lines_processed >= 10000):
+                #     print(f"Lines: Processed: {lines_processed}, in {time_taken_ms}ms = {(1000 / time_taken_ms) * 1000} lines per second")
+                #     # Commit changes to the database
+                #     self.__database_connection.commit()
+                #     # Closing the connection
+                #     self.__database_connection.close()
+                #     exit()
         print(f"Entries Inserted (inc added top level): {entries_inserted}")
-        print(f"Processed: {lines_processed} lines, in {int(time_taken_ms)}ms = {int((lines_processed / time_taken_ms)) * 1000} lines/s")
+        print(
+            f"Processed: {lines_processed} lines, in {int(time_taken_ms)}ms = {int((lines_processed / time_taken_ms)) * 1000} lines/s")
         self.display_memory_stats()
         # Commit changes to the database
         self.__database.commit()
-        return True
 
     def directory_sizes_clear(self):
         sql_directory_sizes_clear = """UPDATE FilesystemEntries SET ByteSize = NULL WHERE IsDirectory = 1;"""

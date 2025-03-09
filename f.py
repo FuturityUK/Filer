@@ -37,6 +37,7 @@ class F:
     SHOW_DB_FILENAME_ARG_IN_GUI: bool = False
     SHOW_DB_SELECTION: bool = False
     PROGRESS_INSERT_FREQUENCY: int = 10000
+    REUSE_TEMP_LISTING_FILE: bool = True
 
     EXIT_OK: int = 0 #
     EXIT_ERROR: int = 1 #
@@ -454,13 +455,21 @@ class F:
                     print("Confirmation accepted")
                     self.delete_filesystem(label)
 
-            print('Generating the Volume Listing ...')
-            output = self.system.create_path_listing(volume_summary_array["drive_letter"] + ':\\',
-                                                     self.DEFAULT_TEMP_LISTING_FILE)
+            if not self.REUSE_TEMP_LISTING_FILE:
+                print('Generating the Volume Listing ...')
+                output = self.system.create_path_listing(volume_summary_array["drive_letter"] + ':\\',
+                                                         self.DEFAULT_TEMP_LISTING_FILE)
+            else:
+                print('Reusing the Volume Listing ...')
+
             # print(f"create_path_listing output: {output}")
             print('Processing the Volume Listing ...')
             powershell_filesystem_listing = PowerShellFilesystemListing(self.database, label,
                                                                         self.DEFAULT_TEMP_LISTING_FILE)
+
+            # For testing
+            #verbose = True
+
             if verbose is not None:
                 powershell_filesystem_listing.set_verbose(verbose)
 
@@ -469,7 +478,8 @@ class F:
             powershell_filesystem_listing.set_serial_number(volume_summary_array["serial_number"])
             powershell_filesystem_listing.set_hostname(volume_summary_array["hostname"])
             powershell_filesystem_listing.set_memory_stats(self.memory_stats)
-            powershell_filesystem_listing.save_to_database()
+            #powershell_filesystem_listing.save_to_database()
+            powershell_filesystem_listing.set_save_to_mode(PowerShellFilesystemListing.SAVE_TO_DATABASE)
             import_listing_success = powershell_filesystem_listing.import_listing(self.PROGRESS_INSERT_FREQUENCY)
             if import_listing_success:
                 print(f"Volume {volume_summary_array["drive_letter"]}: Added Successfully...")
@@ -570,17 +580,20 @@ class F:
         logging.info("Finding Logical Drives ...")
         print(f"Finding Logical Drives ...")
         self.logical_disk_array = self.system.get_logical_drives_details()
+        print(f'progress: 25/100')
         # display_array_of_dictionaries(self.logical_disk_array)
         # print(f"logical_disk_array: {self.logical_disk_array}")
 
         logging.info("Finding Physical Drives ...")
         print(f"Finding Physical Drives ...")
         self.physical_disk_array = self.system.get_physical_drives_details()
+        print(f'progress: 50/100')
         # print(f"physical_disk_array: {self.physical_disk_array}")
 
         logging.info("Finding Volumes ...")
         print(f"Finding Volumes ...")
         self.volumes_array = self.system.get_volumes(True)
+        print(f'progress: 75/100')
         # print(f"volumes: {self.volumes_array}")
         # display_array_of_dictionaries(self.volumes_array)
         # display_diff_dictionaries(volumes[0], volumes[1])
@@ -595,6 +608,9 @@ class F:
         print(f"Matching Volumes to Drives ...")
         option_number = 1
         options = []
+        progress_bar_starting_percentage = 75
+        function_total_percentage = 100 - progress_bar_starting_percentage
+        volume_array_length = len(self.volumes_array)
         for volume_dictionary in self.volumes_array:
             # Initialise the volume_array_of_dicts with the volume_dictionary
             volume_array_of_dicts = [volume_dictionary]
@@ -618,6 +634,9 @@ class F:
                     volume_info_line += ""
             option = [str(option_number), volume_info_line, volume_array_of_dicts]
             options.append(option)
+            volume_array_progress_percentage = int((option_number / volume_array_length) * function_total_percentage)
+            progress_percentage = progress_bar_starting_percentage + volume_array_progress_percentage
+            print(f'progress: {progress_percentage}/100')
             option_number += 1
         return options
 
@@ -667,6 +686,7 @@ class F:
 
     def process_args_and_call_subcommand(self, args):
         logging.debug(f"### F.process_args_and_call_subcommand() ###")
+        print(f'progress: 0/100')
 
         database_changed = False
         if 'db' in args:
@@ -730,6 +750,7 @@ class F:
 
         # Clean up and exit
         self.clean_up()
+        print(f'progress: 100/100')
 
     def init(self):
         logging.debug(f"### init() ###")

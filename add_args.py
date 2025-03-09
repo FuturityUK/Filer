@@ -290,8 +290,7 @@ class AddArgs:
             AddArgs.add_argument(subparser_add_volume_group, "-r", "--replace", dest='replace', default=False,
                                  action="store_true",
                                  metavar='Replace',
-                                 help="CONFIRM: Replace this Volume Label's filesystem entries in the database with new entries from the filesystem.",
-                                 gooey_options={ 'initial_value': False })
+                                 help="CONFIRM: Replace this Volume Label's filesystem entries in the database with new entries from the filesystem." )
             AddArgs.add_db_argument_to_parser(subparser_add_volume_group)
             AddArgs.add_verbose_argument_to_parser(subparser_add_volume_group)
 
@@ -323,8 +322,7 @@ class AddArgs:
             AddArgs.add_argument(subparser_delete_volume_group, "-r", "--remove", dest='remove', default=False,
                                  action="store_true",
                                  metavar='Remove',
-                                 help="CONFIRM: Removal of this Volume Label's filesystem entries from the database.",
-                                 gooey_options={ 'initial_value': False })
+                                 help="CONFIRM: Removal of this Volume Label's filesystem entries from the database." )
             AddArgs.add_db_argument_to_parser(subparser_delete_volume_group)
             AddArgs.add_verbose_argument_to_parser(subparser_delete_volume_group)
 
