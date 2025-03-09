@@ -446,6 +446,7 @@ class Database:
                 result = True
             else:
                 result = "Too many filesystem entries found for the label specified."
+        return result
 
     def delete_filesystem_listing(self, filesystem_id: int):
         logging.debug(f"SQL Query: \"{self.__sql_dictionary["delete_filesystem"]}\"")

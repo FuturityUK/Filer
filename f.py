@@ -424,7 +424,15 @@ class F:
                     print(f'Label "{label}" already exists in the Database.!')
                     print("Confirmation accepted")
                     print(f'Deleting old entries for label: "{label}"')
-                    self.database.delete_filesystem(label)
+                    result = self.database.delete_filesystem(label)
+                    if type(result) is not bool:
+                        # Must be an error message
+                        self.exit_cleanly(self.EXIT_ERROR, result)
+                    elif result != True:
+                        # delete_filesystem(label) failed for some other reason
+                        self.exit_cleanly(self.EXIT_ERROR, f"Failed to delete volume with label: {label} for an unknown reason.")
+                    else:
+                        print(f'Deleted old entries for label: "{label}"')
 
             print('Generating the Volume Listing ...')
             output = self.system.create_path_listing(volume_summary_array["drive_letter"] + ':\\',
