@@ -33,15 +33,16 @@ class Fgui:
             #  - missing  => Left alone
 
             # Load labels
-            label_choices = [AddArgs.SUBCMD_FILE_SEARCH_LABEL_ALL_LABELS]
-            label_choices = [*label_choices, *self.f.database.find_filesystem_labels()]
-            logging.debug(f"label_choices: {label_choices}")
-            label_choice = self.f.get_configuration_value(self.f.CONFIG_CHOSEN_LABEL, AddArgs.SUBCMD_FILE_SEARCH_LABEL_ALL_LABELS)
-            #label_choice = self.f.configuration[self.f.CONFIG_ARGS]["label"]
-            logging.debug(f"label_choice: {label_choice}")
-            empty_vol_label_choice = ""
-            vol_label_choices = [empty_vol_label_choice]
-            vol_label_choices = [*vol_label_choices, *self.f.database.find_filesystem_labels()]
+            database_volume_labels = self.f.database.find_filesystem_labels()
+            # Create the
+            filesystem_search_label_choices = [AddArgs.SUBCMD_FILE_SEARCH_LABEL_ALL_LABELS]
+            filesystem_search_label_choices = [*filesystem_search_label_choices, *database_volume_labels]
+            logging.debug(f"filesystem_search_label_choices: {filesystem_search_label_choices}")
+            filesystem_search_label_choice = self.f.get_configuration_value(self.f.CONFIG_CHOSEN_LABEL, AddArgs.SUBCMD_FILE_SEARCH_LABEL_ALL_LABELS)
+            logging.debug(f"filesystem_search_label_choice: {filesystem_search_label_choice}")
+
+            add_volume_label_choices = [AddArgs.SUBCMD_ADD_VOLUME_VOL_LABEL_DEFAULT]
+            add_volume_label_choices = [*add_volume_label_choices, *database_volume_labels]
 
             volume_default_choice = None
             volume_choices = []
@@ -55,9 +56,10 @@ class Fgui:
             dynamic_values = {
                 'volume': volume_default_choice,
                 'db': self.f.database_filename,
-                'label': label_choice,
-                'vol_label': empty_vol_label_choice,
+                'label': filesystem_search_label_choice,
+                'vol_label': None, # This will be replaced with the initial value
                 'results': AddArgs.SUBCMD_FILE_SEARCH_MAX_RESULTS_DEFAULT_CHOICE,
+
                 'test_required_1': None,  # This will be replaced with the initial value
                 # 'test_required_2' will be left alone
                 'test_optional_1': None,
@@ -74,8 +76,8 @@ class Fgui:
                 #    f'Random entry {i}' for i in range(__import__('random').randrange(30))
                 #],
                 'volume': volume_choices,
-                'label': label_choices,
-                'vol_label': label_choices,
+                'label': filesystem_search_label_choices,
+                'vol_label': add_volume_label_choices,
                 'results': AddArgs.SUBCMD_FILE_SEARCH_MAX_RESULTS_CHOICES
                 #'volume': ["Neil", baker]
             }

@@ -49,6 +49,8 @@ class AddArgs:
     SUBCMD_FILE_SEARCH_SIZE_LIMIT_CHOICE: str = SUBCMD_FILE_SEARCH_SIZE_LIMIT_ALL_FILES
     SUBCMD_FILE_SEARCH_SIZE_LIMIT_CHOICES: list = [SUBCMD_FILE_SEARCH_SIZE_LIMIT_ALL_FILES, '> 1 MB', '> 10 MB', '> 100 MB', '> 1 GB', '> 10 GB', '> 100 GB', '> 1 TB', '< 1 MB', '< 10 MB', '< 100 MB', '< 1 GB', '< 10 GB', '< 100 GB', '< 1 TB']
 
+    SUBCMD_ADD_VOLUME_VOL_LABEL_DEFAULT: str = ""
+
     DEFAULT_DATABASE_FILENAME: str = 'AddArgs.DEFAULT_DATABASE_FILENAME'
 
     SHOW_ATTRIBUTES_EXTRA_HELP: str = "'D' Directory, 'A' Archive, 'R' Read-only, 'H' Hidden, 'S' System, 'L' Link"
@@ -184,8 +186,8 @@ class AddArgs:
         #print(f"file_categories: {file_categories}")
 
         subparser_search = subparsers.add_parser(AddArgs.SUBCMD_FILE_SEARCH,
-                                            help=AddArgs.SUBCMD_FILE_SEARCH+' help', prog='File Search',
-                                            description='Search for files based on search strings')
+                                            help=AddArgs.SUBCMD_FILE_SEARCH+' help', prog='Filesystem Search',
+                                            description='Search for filesystem entries based on search strings')
         subparser_search_group = subparser_search.add_argument_group(
             'Filesystem Search Options',
             description='Search for filesystem  based on search strings'
@@ -273,10 +275,11 @@ class AddArgs:
                                  action='store_true', default=True, help="Invisible checkbox",
                                  gooey_options={'visible': False})
 
-            AddArgs.add_argument(subparser_add_volume_group, "--vol_label", dest='vol_label', metavar='Label',
-                                          widget = 'Dropdown', nargs = '?', default = None,
-                                          help="Label of the drive listing. If left blank, the volume's label will be used instead.'"
-                                          # gooey_options={ 'initial_value': "" }
+            AddArgs.add_argument(subparser_add_volume_group, "--vol_label", dest='vol_label', metavar='Volume Label',
+                                default=AddArgs.SUBCMD_ADD_VOLUME_VOL_LABEL_DEFAULT,
+                                const='all', nargs = '?', choices=[AddArgs.SUBCMD_ADD_VOLUME_VOL_LABEL_DEFAULT],
+                                help="Label of the drive listing. If left blank, the volume's label will be used instead.'",
+                                widget = 'Dropdown', gooey_options={ 'initial_value': AddArgs.SUBCMD_ADD_VOLUME_VOL_LABEL_DEFAULT }
                            )
             AddArgs.add_argument(subparser_add_volume_group, "--invisible2", dest='invisible2', metavar='Invisible2',
                                  action='store_true', default=True, help="Invisible2 checkbox",
