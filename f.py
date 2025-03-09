@@ -364,8 +364,37 @@ class F:
         volume_summary_array["hostname"] = socket.gethostname()
         return volume_summary_array
 
+    def delete_filesystem(self, label):
+        print(f'Deleting old entries for label: "{label}"')
+        result = self.database.delete_filesystem(label)
+        if type(result) is not bool:
+            # Must be an error message
+            self.exit_cleanly(self.EXIT_ERROR, result)
+        elif not result:
+            # delete_filesystem(label) failed for some other reason
+            self.exit_cleanly(self.EXIT_ERROR, f"Failed to delete volume with label: {label} for an unknown reason.")
+        else:
+            print(f'Deleted old entries for label: "{label}"')
+
     def subcommand_delete_volumes(self, args: []):
         vol_label = args.vol_label if "vol_label" in args else None
+        remove = args.remove if "remove" in args else None
+        #verbose = args.verbose if "verbose" in args else False
+
+        # Check if Label exists in the Database
+        if self.database.does_label_exists(vol_label):
+            print(f'Label "{vol_label}" exists in the Database.')
+            if not remove:
+                self.exit_cleanly(self.EXIT_ERROR,
+                                  f'Use the "--remove" flag to confirm that you want to delete entries for this volume.',
+                                  f'Use the "Remove" checkbox to confirm that you want to delete entries for this volume.')
+            else:
+                print("Confirmation accepted")
+                self.delete_filesystem(vol_label)
+        else:
+            self.exit_cleanly(self.EXIT_ERROR,
+                              f'Label "{vol_label}" doesn\'t exist in the Database!',
+                              f'Label "{vol_label}" doesn\'t exist in the Database!')
 
     def subcommand_add_volumes(self, args: []):
         logging.debug("### F.subcommand_add_volumes() ###")
@@ -423,16 +452,7 @@ class F:
                 else:
                     print(f'Label "{label}" already exists in the Database.!')
                     print("Confirmation accepted")
-                    print(f'Deleting old entries for label: "{label}"')
-                    result = self.database.delete_filesystem(label)
-                    if type(result) is not bool:
-                        # Must be an error message
-                        self.exit_cleanly(self.EXIT_ERROR, result)
-                    elif result != True:
-                        # delete_filesystem(label) failed for some other reason
-                        self.exit_cleanly(self.EXIT_ERROR, f"Failed to delete volume with label: {label} for an unknown reason.")
-                    else:
-                        print(f'Deleted old entries for label: "{label}"')
+                    self.delete_filesystem(label)
 
             print('Generating the Volume Listing ...')
             output = self.system.create_path_listing(volume_summary_array["drive_letter"] + ':\\',

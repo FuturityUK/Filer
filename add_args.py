@@ -252,8 +252,8 @@ class AddArgs:
             # create the parser for the "add" subcommand
             subparser_add_volume = subparsers.add_parser(AddArgs.SUBCMD_ADD_VOLUME, help=AddArgs.SUBCMD_ADD_VOLUME+' help', prog='Add Volume', description='Add Filesystem Entries on a selected Volume to the Database')
             subparser_add_volume_group = subparser_add_volume.add_argument_group(
-                'Add Volume Filesystem Entries to the Database',
-                description='Add Filesystem Entries on a selected Volume to the Database'
+                'Add Volume',
+                description='Add Filesystem Entries from the selected Volume to the Database'
             )
 
             help_text = f'''Volume that you wish to add.
@@ -273,8 +273,8 @@ class AddArgs:
             AddArgs.add_argument(subparser_add_volume_group, "--vol_label", dest='vol_label', metavar='Volume Label',
                                 #default=AddArgs.SUBCMD_ADD_VOLUME_VOL_LABEL_DEFAULT,
                                 const='all', nargs = '?', # choices=[AddArgs.SUBCMD_ADD_VOLUME_VOL_LABEL_DEFAULT],
-                                help="Label of the drive listing. If left blank, the volume's label will be used instead.'",
-                                widget = 'Dropdown' #, gooey_options={ 'initial_value': AddArgs.SUBCMD_ADD_VOLUME_VOL_LABEL_DEFAULT                                                                      }
+                                help="Optional Label to assign to this drive's filesystem in the database. If left blank, the volume's label will be used instead.'",
+                                widget = 'Dropdown' #, gooey_options={ 'initial_value': AddArgs.SUBCMD_ADD_VOLUME_VOL_LABEL_DEFAULT }
                            )
             AddArgs.add_argument(subparser_add_volume_group, "--invisible2", dest='invisible2', metavar='Invisible2',
                                  action='store_true', default=True, help="Invisible2 checkbox",
@@ -290,7 +290,8 @@ class AddArgs:
             AddArgs.add_argument(subparser_add_volume_group, "-r", "--replace", dest='replace', default=False,
                                  action="store_true",
                                  metavar='Replace',
-                                 help="CONFIRM: Replace this Volume Label's filesystem entries in the database with new entries from the filesystem.")
+                                 help="CONFIRM: Replace this Volume Label's filesystem entries in the database with new entries from the filesystem.",
+                                 gooey_options={ 'initial_value': False })
             AddArgs.add_db_argument_to_parser(subparser_add_volume_group)
             AddArgs.add_verbose_argument_to_parser(subparser_add_volume_group)
 
@@ -303,30 +304,14 @@ class AddArgs:
                                                          prog='Delete Volume',
                                                          description='Delete Filesystem Entries on a selected Volume from the Database')
             subparser_delete_volume_group = subparser_delete_volume.add_argument_group(
-                'Delete Volume Filesystem Entries from the Database',
-                description='Delete Filesystem Entries on a selected Volume from the Database'
+                'Delete Volume',
+                description='Delete Filesystem Entries for the selected Volume Label from the Database'
             )
-
-            """
-            help_text = f'''Volume that you wish to delete.
-- If you don't see your volume, please use the {AddArgs.get_message_based_on_parser(subparsers, "'" + AddArgs.SUBCMD_REFRESH_VOLUMES + "' subcommand", "'Refresh Volumes List' action.")}'''
-            # - Values last updated: {self.configuration[self.CONFIG_VOL_DETAILS][self.VOL_ARG_DETAILS_CREATED]}
-
-            if AddArgs.is_std_argument_parser(subparsers):
-                help_text = help_text.replace(r"%", r"%%")
-            AddArgs.add_argument(subparser_delete_volume_group, "--volume", dest='volume', metavar='Volume',
-                                 widget='Dropdown', nargs='?', default=None, help=help_text)
-
-            # Invisible GUI Argument purely for widget arrangement
-            AddArgs.add_argument(subparser_delete_volume_group, "--invisible", dest='invisible', metavar='Invisible',
-                                 action='store_true', default=True, help="Invisible checkbox",
-                                 gooey_options={'visible': False})
-            """
             AddArgs.add_argument(subparser_delete_volume_group, "--vol_label", dest='vol_label',
                                  metavar='Volume Label',
                                  # default=AddArgs.SUBCMD_ADD_VOLUME_VOL_LABEL_DEFAULT,
                                  const='all', nargs='?',  # choices=[AddArgs.SUBCMD_ADD_VOLUME_VOL_LABEL_DEFAULT],
-                                 help="Label of the drive listing. If left blank, the volume's label will be used instead.'",
+                                 help="Label of the Volume that you wish to delete.",
                                  widget='Dropdown'
                                  # , gooey_options={ 'initial_value': AddArgs.SUBCMD_ADD_VOLUME_VOL_LABEL_DEFAULT                                                                      }
                                  )
@@ -335,20 +320,11 @@ class AddArgs:
                                  metavar='Invisible2',
                                  action='store_true', default=True, help="Invisible2 checkbox",
                                  gooey_options={'visible': False})
-            """
-            hostname = socket.gethostname()
-            AddArgs.add_argument(subparser_delete_volume_group, "-n", "--hostname", dest='hostname',
-                                 metavar='Hostname', default=hostname,
-                                 help="Hostname of the machine containing the drive")
-            AddArgs.add_argument(subparser_delete_volume_group, "--invisible3", dest='invisible3',
-                                 metavar='Invisible3',
-                                 action='store_true', default=True, help="Invisible2 checkbox",
-                                 gooey_options={'visible': False})
-            """
             AddArgs.add_argument(subparser_delete_volume_group, "-r", "--remove", dest='remove', default=False,
                                  action="store_true",
                                  metavar='Remove',
-                                 help="CONFIRM: Removal of the Volume Label's filesystem entries from the database.")
+                                 help="CONFIRM: Removal of this Volume Label's filesystem entries from the database.",
+                                 gooey_options={ 'initial_value': False })
             AddArgs.add_db_argument_to_parser(subparser_delete_volume_group)
             AddArgs.add_verbose_argument_to_parser(subparser_delete_volume_group)
 
