@@ -31,6 +31,8 @@ import json
 #from print import Print
 from add_args import AddArgs
 
+import wx
+
 class F:
 
     SHOW_SUBMITTED_ARGS: bool = False
@@ -86,6 +88,7 @@ class F:
         self.database_filename = self.get_configuration_value( self.CONFIG_DATABASE_FILENAME, self.DEFAULT_DATABASE_FILENAME )
         # The following subcommands all require a database
         self.select_database(self.database_filename, self.verbose)
+        self.wxapp = wx.App()
 
     def load_configuration(self):
         # Read in the prior arguments as a dictionary
@@ -332,8 +335,21 @@ class F:
 
         self.print_file_search_result(select_results, label, show_size, show_last_modified, show_attributes)
 
+    def ask(self, question):
+        dlg = wx.MessageDialog(None, question, 'App Title', wx.YES_NO | wx.ICON_QUESTION)
+        result = dlg.ShowModal()
+
+        if result == wx.ID_YES:
+            return True
+        else:
+            return False
+
     def subcommand_refresh_volumes(self, args: []):
         logging.debug("### F.refresh_volumes() ###")
+        if not self.ask("Do you want to refresh the volume list?"):
+            # they selected No so don't refresh
+            return
+
         self.prepare_volume_details()
         #print(self.volume_argument_details )
         volume_default_choice = self.configuration[self.CONFIG_VOL_DETAILS][self.VOL_ARG_DETAILS_DEFAULT_CHOICE]
