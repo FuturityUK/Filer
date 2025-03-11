@@ -6,7 +6,7 @@ import tracemalloc
 
 class Program:
 
-    def __init__(self, argument_parser: argparse.ArgumentParser, memory_stats: bool, database_filename: str = None):
+    def __init__(self, argument_parser, memory_stats: bool, database_filename: str = None): # : argparse.ArgumentParser
         F.start_logger(logging.DEBUG)
         logging.debug(f"### __init__() ###")
         self.argument_parser = argument_parser
@@ -28,8 +28,7 @@ class Program:
         logging.debug(f"### init() ###")
         logging.info(f"Initialising Argument Parser Arguments...")
         AddArgs.add_subcommands_to_parser(self.argument_parser)
-        self.f = F(self.argument_parser, self.database_filename)
-        self.f.set_memory_stats(self.memory_stats)
+        self.f = F(self, self.argument_parser, self.memory_stats, self.database_filename)
         # self.parser.set_defaults(**self.stored_args)
 
     def seed(self, clear: []=None):

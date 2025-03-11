@@ -29,7 +29,7 @@ from datetime import datetime
 import json
 #from print import Print
 from add_args import AddArgs
-from program import Program
+#from program import Program
 
 class F:
 
@@ -71,7 +71,7 @@ class F:
     FILE_SEARCH_RESULTS_IS_LINK = 9
     FILE_SEARCH_RESULTS_IS_FULL_PATH = 10
 
-    def __init__(self, program: Program, parser, memory_stats: bool, database_filename_argument: str = None):
+    def __init__(self, program, parser, memory_stats: bool, database_filename_argument: str = None):
         self.program = program
         self.parser = parser
         self.database = self.logical_disk_array = self.physical_disk_array = self.volumes_array = None
@@ -127,9 +127,6 @@ class F:
         # Store the values of the arguments so we have them next time we run
         with open(self.CONFIG_FILENAME, 'w') as data_file:
             json.dump(self.configuration, data_file) # Using vars(args) returns the data as a dictionary
-
-    def set_memory_stats(self, memory_stats):
-        self.memory_stats = memory_stats
 
     @staticmethod
     def start_logger(logging_level):
