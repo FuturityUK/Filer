@@ -18,7 +18,6 @@ import sys
 from file_system_processors import PowerShellFilesystemListing
 from database import Database
 import tracemalloc
-import argparse
 import os.path
 from system import System
 import time
@@ -778,34 +777,5 @@ class F:
         #print(f'progress: 100/100')
         self.progress(100)
 
-    def init(self):
-        logging.debug(f"### init() ###")
-
-        if self.memory_stats:
-            # Start tracing memory allocations
-            tracemalloc.start()
-
-        logging.info(f"Initialising Argument Parser Arguments...")
-        AddArgs.add_subcommands_to_parser(self.parser)
-
-        # self.parser.set_defaults(**self.stored_args)
-
-    def main(self):
-        logging.info(f"### main() ###")
-        args = self.parser.parse_args()
-        self.process_args_and_call_subcommand(args)
-
-    def start(self):
-        logging.debug(f"### F.start() ###")
-        self.init()
-        self.main()
-
 if __name__ == "__main__":
-
-    #my_logger = logging.getLogger(__name__)
-    F.start_logger(logging.DEBUG)
-    new_parser = argparse.ArgumentParser(
-        description="Filer - File Cataloger"
-    )
-    f = F(new_parser)
-    f.start()
+    pass

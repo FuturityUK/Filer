@@ -3,20 +3,9 @@ from f import F
 from dyngooey import Gooey, GooeyParser, gooey_stdout, gooey_id
 import logging
 import sys
+from program import Program
 
-class Fgui:
-
-    def __init__(self, database_filename: str = None):
-        logging.debug(f"### __init__() ###")
-        self.parser = GooeyParser(
-            #description="Filer - File Cataloger",
-            description='Some words'#, formatter_class=CustomHelpFormatter
-        )
-        self.f = F(self.parser, database_filename)
-
-    def init(self):
-        logging.debug(f"### init() ###")
-        self.f.init()
+class Fgui(Program):
 
     def seed(self, clear=None):
         logging.debug(f"### seed() ###")
@@ -85,10 +74,10 @@ class Fgui:
             }
             logging.info(f"dynamic_items: {dynamic_items}")
 
-            logging.debug(f"_actions: {self.parser._actions}")
+            logging.debug(f"_actions: {self.argument_parser._actions}")
 
             seeds = {}
-            seeds = self.process_actions(self.parser, seeds, dynamic_values, dynamic_items)
+            seeds = self.process_actions(self.argument_parser, seeds, dynamic_values, dynamic_items)
             logging.info(f"seeds: {seeds}")
             logging.info(f"")
 
@@ -167,8 +156,9 @@ class Fgui:
         )
     #@Gooey(optional_cols=2, program_name="Subparser Layout Demo")
     def main(self):
+        #super().main()
         logging.info(f"### main() ###")
-        args = self.parser.parse_args()
+        args = self.argument_parser.parse_args()
 
         if not gooey_stdout():
             if F.SHOW_SUBMITTED_ARGS:
@@ -178,7 +168,7 @@ class Fgui:
                 print(f"")
 
         # Now process the args
-        self.f.main()
+        self.f.process_args_and_call_subcommand(args)
 
 def print_help_and_exit():
     print("Filer - File Cataloger")
@@ -223,8 +213,11 @@ if __name__ == "__main__":
                 print("Unrecognised option.")
                 print("")
                 print_help_and_exit()
-
-    fgui = Fgui(db_filename)
+    new_parser = GooeyParser(
+        # description="Filer - File Cataloger",
+        description='Some words'  # , formatter_class=CustomHelpFormatter
+    )
+    fgui = Fgui(new_parser, False, db_filename)
     fgui.init()
     fgui.seed()
     fgui.main()
