@@ -29,9 +29,10 @@ class Program:
         logging.info(f"Initialising Argument Parser Arguments...")
         AddArgs.add_subcommands_to_parser(self.argument_parser)
         self.f = F(self.argument_parser, self.database_filename)
+        self.f.set_memory_stats(self.memory_stats)
         # self.parser.set_defaults(**self.stored_args)
 
-    def seed(self):
+    def seed(self, clear: []=None):
         logging.info(f"### seed() ###")
 
     def main(self):

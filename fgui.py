@@ -1,16 +1,34 @@
-from add_args import AddArgs
-from f import F
 from dyngooey import Gooey, GooeyParser, gooey_stdout, gooey_id
 import logging
 import sys
+import json
+import wx
 from program import Program
+from add_args import AddArgs
+from f import F
 
 class Fgui(Program):
 
-    def seed(self, clear=None):
-        logging.debug(f"### seed() ###")
-        logging.info(f"Seeding Argument Parser Values...")
+    def __init__(self, argument_parser, memory_stats: bool, database_filename: str = None):
+        super().__init__(argument_parser, memory_stats, database_filename)
+        self.wx_app = wx.App()
 
+    @staticmethod
+    def ask(self, question):
+        dlg = wx.MessageDialog(None, question, 'App Title', wx.YES_NO | wx.ICON_QUESTION)
+        result = dlg.ShowModal()
+        if result == wx.ID_YES:
+            return True
+        else:
+            return False
+
+    @staticmethod
+    def dumps(data):
+        return json.dumps(data, indent=4, default=str)
+
+    def seed(self, clear: []=None):
+        super().seed(clear)
+        logging.info(f"Seeding Argument Parser Values...")
         if clear is None:
             clear = []
         if gooey_stdout():
@@ -81,10 +99,10 @@ class Fgui(Program):
             logging.info(f"seeds: {seeds}")
             logging.info(f"")
 
-            logging.info(f"self.dumps(seeds): {F.dumps(seeds)}")
+            logging.info(f"self.dumps(seeds): {self.dumps(seeds)}")
             logging.info(f"")
 
-            print(F.dumps(seeds), file=gooey_stdout())
+            print(self.dumps(seeds), file=gooey_stdout())
             logging.info(f"Past the dump to gooey_stdout()")
 
 
@@ -164,7 +182,7 @@ class Fgui(Program):
             if F.SHOW_SUBMITTED_ARGS:
                 # Debug to show arguments past to the program
                 print(f"Program arguments:")
-                print(f"{F.dumps(vars(args))}")
+                print(f"{self.dumps(vars(args))}")
                 print(f"")
 
         # Now process the args

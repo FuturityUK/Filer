@@ -29,8 +29,7 @@ from datetime import datetime
 import json
 #from print import Print
 from add_args import AddArgs
-
-import wx
+from program import Program
 
 class F:
 
@@ -72,10 +71,12 @@ class F:
     FILE_SEARCH_RESULTS_IS_LINK = 9
     FILE_SEARCH_RESULTS_IS_FULL_PATH = 10
 
-    def __init__(self, parser, database_filename_argument: str = None):
-        self.database = self.logical_disk_array = self.physical_disk_array = self.volumes_array = None
-        self.memory_stats = self.verbose = False
+    def __init__(self, program: Program, parser, memory_stats: bool, database_filename_argument: str = None):
+        self.program = program
         self.parser = parser
+        self.database = self.logical_disk_array = self.physical_disk_array = self.volumes_array = None
+        self.memory_stats = memory_stats
+        self.verbose = False
         self.system = System()
 
         self.configuration = { self.CONFIG_ARGS: {} }
@@ -87,7 +88,6 @@ class F:
         self.database_filename = self.get_configuration_value( self.CONFIG_DATABASE_FILENAME, self.DEFAULT_DATABASE_FILENAME )
         # The following subcommands all require a database
         self.select_database(self.database_filename, self.verbose)
-        self.wxapp = wx.App()
 
     def load_configuration(self):
         # Read in the prior arguments as a dictionary
@@ -130,10 +130,6 @@ class F:
 
     def set_memory_stats(self, memory_stats):
         self.memory_stats = memory_stats
-
-    @staticmethod
-    def dumps(data):
-        return json.dumps(data, indent=4, default=str)
 
     @staticmethod
     def start_logger(logging_level):
@@ -333,15 +329,6 @@ class F:
         select_results = self.database.filesystem_search(entry_search, volume_label, entry_type_int, entry_category, entry_size_limit, order_by, max_results_int)
 
         self.print_file_search_result(select_results, label, show_size, show_last_modified, show_attributes)
-
-    def ask(self, question):
-        dlg = wx.MessageDialog(None, question, 'App Title', wx.YES_NO | wx.ICON_QUESTION)
-        result = dlg.ShowModal()
-
-        if result == wx.ID_YES:
-            return True
-        else:
-            return False
 
     def subcommand_refresh_volumes(self, args: []):
         logging.debug("### F.refresh_volumes() ###")
