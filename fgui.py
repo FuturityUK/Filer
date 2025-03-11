@@ -218,9 +218,8 @@ if __name__ == "__main__":
         description='Some words'  # , formatter_class=CustomHelpFormatter
     )
     fgui = Fgui(new_parser, False, db_filename)
-    fgui.init()
-    fgui.seed()
-    fgui.main()
+    fgui.start()
+
 
 
 
