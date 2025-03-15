@@ -13,9 +13,11 @@ class Fgui(Program):
         super().__init__(argument_parser, memory_stats, database_filename)
         self.wx_app = wx.App()
 
-    @staticmethod
-    def ask(self, question):
-        dlg = wx.MessageDialog(None, question, 'App Title', wx.YES_NO | wx.ICON_QUESTION)
+    def question_yes_no(self, question: str, title: str = None) -> bool:
+        super().question_yes_no(question, title)
+        logging.debug(f"### Fgui.question_yes_no() ###")
+        title = self.program_name if title is None else title
+        dlg = wx.MessageDialog(None, question, title, wx.YES_NO | wx.ICON_QUESTION)
         result = dlg.ShowModal()
         if result == wx.ID_YES:
             return True
@@ -23,11 +25,18 @@ class Fgui(Program):
             return False
 
     @staticmethod
-    def dumps(data):
+    def dumps(data) -> str:
         return json.dumps(data, indent=4, default=str)
+
+    def display_progress_percentage(self, progress_percentage: float = None):
+        super().display_progress_percentage(progress_percentage)
+        logging.debug(f"### Fgui.display_progress_percentage() ###")
+        progress_percentage_int = int(progress_percentage)
+        print(f'progress: {progress_percentage_int}/100')
 
     def seed(self, clear: []=None):
         super().seed(clear)
+        logging.debug(f"### Fgui.seed() ###")
         logging.info(f"Seeding Argument Parser Values...")
         if clear is None:
             clear = []
@@ -105,10 +114,9 @@ class Fgui(Program):
             print(self.dumps(seeds), file=gooey_stdout())
             logging.info(f"Past the dump to gooey_stdout()")
 
-
     @staticmethod
     def process_actions(parser, seeds: {}, dynamic_values: {}, dynamic_items: {}) -> {}:
-        logging.info(f"### process_actions() ###")
+        logging.info(f"### Fgui.process_actions() ###")
 
         for action in parser._actions:
             logging.debug(f"action: {action}")
@@ -144,7 +152,6 @@ class Fgui(Program):
                         logging.debug(f"subparser_choice_key: {subparser_choice_key}")
                         #logging.info(f"subparser_choice_value: {subparser_choice_value}")
                         seeds = Fgui.process_actions(subparser_choice_value, seeds, dynamic_values, dynamic_items)
-
         return seeds
 
     @Gooey(
@@ -175,7 +182,7 @@ class Fgui(Program):
     #@Gooey(optional_cols=2, program_name="Subparser Layout Demo")
     def main(self):
         #super().main()
-        logging.info(f"### main() ###")
+        logging.info(f"### Fgui.main() ###")
         args = self.argument_parser.parse_args()
 
         if not gooey_stdout():
@@ -189,7 +196,7 @@ class Fgui(Program):
         self.f.process_args_and_call_subcommand(args)
 
 def print_help_and_exit():
-    print("Filer - File Cataloger")
+    print(f"{Fgui.PROGRAM_NAME} - File Cataloger")
     print("Usage: filer.py [options]")
     print("Options:")
     print("  -h, --help                    show this help message and exit")
@@ -199,7 +206,7 @@ def print_help_and_exit():
 if __name__ == "__main__":
     #my_logger = logging.getLogger(__name__)
     F.start_logger(logging.DEBUG)
-    logging.info(f"### __main__ ###")
+    logging.info(f"### Fgui.__main__ ###")
 
     # total arguments
     n = len(sys.argv)

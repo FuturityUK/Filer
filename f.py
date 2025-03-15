@@ -146,9 +146,8 @@ class F:
         message = AddArgs.get_message_based_on_parser(self.parser, argumentparser_message, non_argumentparser_message)
         print(message)
 
-    def progress(self, progress_percentage: int = None):
-        if progress_percentage is not None:
-            self.print_message_based_on_parser('', f'progress: {progress_percentage}/100')
+    def progress(self, progress_percentage: float = None):
+        self.program.display_progress_percentage(progress_percentage)
 
     def clean_up(self):
         # Now that the subcommands have been run
@@ -329,7 +328,7 @@ class F:
 
     def subcommand_refresh_volumes(self, args: []):
         logging.debug("### F.refresh_volumes() ###")
-        if not self.ask("Do you want to refresh the volume list?"):
+        if not self.program.question_yes_no("Do you want to refresh the volume list?"):
             # they selected No so don't refresh
             return
 
@@ -583,8 +582,7 @@ class F:
         logging.info("Finding Logical Drives ...")
         print(f"Finding Logical Drives ...")
         self.logical_disk_array = self.system.get_logical_drives_details()
-        #print(f'progress: 25/100')
-        self.progress(25)
+        self.program.display_progress_percentage(25)
         # display_array_of_dictionaries(self.logical_disk_array)
         # print(f"logical_disk_array: {self.logical_disk_array}")
 
@@ -592,14 +590,14 @@ class F:
         print(f"Finding Physical Drives ...")
         self.physical_disk_array = self.system.get_physical_drives_details()
         #print(f'progress: 50/100')
-        self.progress(50)
+        self.program.display_progress_percentage(50)
         # print(f"physical_disk_array: {self.physical_disk_array}")
 
         logging.info("Finding Volumes ...")
         print(f"Finding Volumes ...")
         self.volumes_array = self.system.get_volumes(True)
         #print(f'progress: 75/100')
-        self.progress(75)
+        self.program.display_progress_percentage(75)
         # print(f"volumes: {self.volumes_array}")
         # display_array_of_dictionaries(self.volumes_array)
         # display_diff_dictionaries(volumes[0], volumes[1])
@@ -643,7 +641,7 @@ class F:
             volume_array_progress_percentage = int((option_number / volume_array_length) * function_total_percentage)
             progress_percentage = progress_bar_starting_percentage + volume_array_progress_percentage
             #print(f'progress: {progress_percentage}/100')
-            self.progress(progress_percentage)
+            self.program.display_progress_percentage(progress_percentage)
             option_number += 1
         return options
 
@@ -694,7 +692,7 @@ class F:
     def process_args_and_call_subcommand(self, args):
         logging.debug(f"### F.process_args_and_call_subcommand() ###")
         #print(f'progress: 0/100')
-        self.progress(0)
+        self.program.display_progress_percentage(0)
 
         database_changed = False
         if 'db' in args:
@@ -759,7 +757,7 @@ class F:
         # Clean up and exit
         self.clean_up()
         #print(f'progress: 100/100')
-        self.progress(100)
+        self.program.display_progress_percentage(100)
 
 if __name__ == "__main__":
     pass
