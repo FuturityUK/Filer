@@ -5,6 +5,8 @@ import time
 from datetime import datetime
 import tracemalloc
 import logging
+from unittest import result
+
 from database import Database
 
 class PowerShellFilesystemListing:
@@ -22,12 +24,12 @@ class PowerShellFilesystemListing:
     SAVE_TO_CVS: int = 0
     SAVE_TO_DATABASE: int = 1
 
-    def __init__(self, database: Database, label: str, input_filename: str, f):
+    def __init__(self, f, database: Database, label: str, input_filename: str):
+        self.__f = f
         self.__label = label
         self.__input_filename = input_filename
         self.__processing_mode = self.PROCESSING_MODE_NOT_SET
         self.__database = database
-        self.__f = f
         self.__output_csv_filename = None
         self.__test = False
         self.__verbose = False
@@ -291,7 +293,7 @@ class PowerShellFilesystemListing:
                 #print(f'Processing line {line_number} of {input_file_size_bytes} bytes')
                 progress = int(input_file_processed_bytes / input_file_size_bytes * 100)
                 #print(f'progress: {progress}/100')
-                self.__f.progress(progress)
+                self.__f.display_progress_percentage(progress)
 
             line_right_strip = line.rstrip()
             # print("Line loaded")

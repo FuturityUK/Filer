@@ -163,7 +163,7 @@ class Fgui(Program):
             default_size=(1024, 800), # starting size of the GUI
             #fullscreen=True,
             show_restart_button=False,
-            hide_progress_msg=True,
+            hide_progress_msg=True, # SHOULD BE TRUE FOR PRODUCTION
             progress_regex=r"^progress: (?P<current>\d+)/(?P<total>\d+)$",
             progress_expr="current / total * 100",
             timing_options={

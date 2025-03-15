@@ -72,7 +72,7 @@ class F:
     FILE_SEARCH_RESULTS_IS_FULL_PATH = 10
 
     def __init__(self, program, parser, memory_stats: bool, database_filename_argument: str = None):
-        self.program = program
+        self.__program = program
         self.parser = parser
         self.database = self.logical_disk_array = self.physical_disk_array = self.volumes_array = None
         self.memory_stats = memory_stats
@@ -144,10 +144,11 @@ class F:
 
     def print_message_based_on_parser(self, argumentparser_message, non_argumentparser_message):
         message = AddArgs.get_message_based_on_parser(self.parser, argumentparser_message, non_argumentparser_message)
-        print(message)
+        if message is not None:
+            print(message)
 
-    def progress(self, progress_percentage: float = None):
-        self.program.display_progress_percentage(progress_percentage)
+    def display_progress_percentage(self, progress_percentage: int):
+        self.__program.display_progress_percentage(progress_percentage)
 
     def clean_up(self):
         # Now that the subcommands have been run
@@ -328,7 +329,7 @@ class F:
 
     def subcommand_refresh_volumes(self, args: []):
         logging.debug("### F.refresh_volumes() ###")
-        if not self.program.question_yes_no("Do you want to refresh the volume list?"):
+        if not self.__program.question_yes_no("Do you want to refresh the volume list?"):
             # they selected No so don't refresh
             return
 
@@ -466,8 +467,7 @@ class F:
 
             # print(f"create_path_listing output: {output}")
             print('Processing the Volume Listing ...')
-            powershell_filesystem_listing = PowerShellFilesystemListing(self.database, label,
-                                                                        self.DEFAULT_TEMP_LISTING_FILE, self)
+            powershell_filesystem_listing = PowerShellFilesystemListing(self, self.database, label, self.DEFAULT_TEMP_LISTING_FILE)
 
             # For testing
             #verbose = True
@@ -553,7 +553,7 @@ class F:
         print(f"Import subcommand: Needs Further Testing !!!")
         label = args.label if "label" in args else None
         filename = args.filename if "filename" in args else None
-        powershell_filesystem_listing = PowerShellFilesystemListing(self.database, label, filename, self)
+        powershell_filesystem_listing = PowerShellFilesystemListing(self, self.database, label, filename)
 
         verbose = args.verbose if "verbose" in args else False
         make = args.make if "make" in args else None
@@ -582,7 +582,7 @@ class F:
         logging.info("Finding Logical Drives ...")
         print(f"Finding Logical Drives ...")
         self.logical_disk_array = self.system.get_logical_drives_details()
-        self.program.display_progress_percentage(25)
+        self.display_progress_percentage(25)
         # display_array_of_dictionaries(self.logical_disk_array)
         # print(f"logical_disk_array: {self.logical_disk_array}")
 
@@ -590,14 +590,14 @@ class F:
         print(f"Finding Physical Drives ...")
         self.physical_disk_array = self.system.get_physical_drives_details()
         #print(f'progress: 50/100')
-        self.program.display_progress_percentage(50)
+        self.display_progress_percentage(50)
         # print(f"physical_disk_array: {self.physical_disk_array}")
 
         logging.info("Finding Volumes ...")
         print(f"Finding Volumes ...")
         self.volumes_array = self.system.get_volumes(True)
         #print(f'progress: 75/100')
-        self.program.display_progress_percentage(75)
+        self.display_progress_percentage(75)
         # print(f"volumes: {self.volumes_array}")
         # display_array_of_dictionaries(self.volumes_array)
         # display_diff_dictionaries(volumes[0], volumes[1])
@@ -641,7 +641,7 @@ class F:
             volume_array_progress_percentage = int((option_number / volume_array_length) * function_total_percentage)
             progress_percentage = progress_bar_starting_percentage + volume_array_progress_percentage
             #print(f'progress: {progress_percentage}/100')
-            self.program.display_progress_percentage(progress_percentage)
+            self.display_progress_percentage(progress_percentage)
             option_number += 1
         return options
 
@@ -692,7 +692,7 @@ class F:
     def process_args_and_call_subcommand(self, args):
         logging.debug(f"### F.process_args_and_call_subcommand() ###")
         #print(f'progress: 0/100')
-        self.program.display_progress_percentage(0)
+        self.display_progress_percentage(0)
 
         database_changed = False
         if 'db' in args:
@@ -757,7 +757,7 @@ class F:
         # Clean up and exit
         self.clean_up()
         #print(f'progress: 100/100')
-        self.program.display_progress_percentage(100)
+        self.display_progress_percentage(100)
 
 if __name__ == "__main__":
     pass
