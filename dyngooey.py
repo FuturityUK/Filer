@@ -1,13 +1,18 @@
 
 from collections.abc import Iterable
 import gooey
-from gooey import GooeyParser
+#from gooey import GooeyParser
 from gooey.gui import seeder as gooey_seeder
 import gooey.gui.components.widgets as gooey_widgets
 import json
 import subprocess
 import sys
 import logging
+
+import os
+import re
+#import wx.lib.agw.multidirdialog as MDD
+from gooey.gui.components.widgets.core import MultiDirChooser as gooey_MultiDirChooser
 
 # --------------------------------------------------------------------------- #
 
@@ -18,14 +23,12 @@ logging.getLogger(__name__).disabled = True
 logger = logging.getLogger(__name__)
 # --------------------------------------------------------------------------- #
 
-
 def Gooey(**kwargs):
     logger.debug(f"### Dyngooey.Gooey() ###")
     """Gooey decorator with forcibly enabled dynamic updates"""
     _kwargs = kwargs.copy()
     _kwargs.pop("poll_external_updates", None)
     return gooey.Gooey(**_kwargs, poll_external_updates=True)
-
 
 # --------------------------------------------------------------------------- #
 
@@ -206,3 +209,26 @@ def __setListboxOptions(_self, options):
             else:
                 _self.setValue(value)
 setattr(gooey_widgets.listbox.Listbox, "setOptions", __setListboxOptions)
+
+# --------------------------------------------------------------------------- #
+# Neil's fix to the MultiDirChooser
+
+def __getResult(self, dialog):
+    print(f"### Dyngooey.MultiDirChooser.getResult() ###")
+    paths = dialog.GetPaths()
+    # Remove volume labels from Windows paths
+    if 'nt' == os.name:
+        print(f"os.name: {os.name}")
+        for i, path in enumerate(paths):
+            print(f"path: {path}")
+            if path:
+                parts = path.split(os.sep)
+                print(f"parts: {parts}")
+                vol = parts[0]
+                print(f"vol: {vol}")
+                drives = re.match(r'.*\((?P<drive>\w:)\)', vol)
+                print(f"drives: {drives}")
+                if drives is not None:
+                    paths[i] = os.sep.join([drives.group('drive')] + parts[1:])
+    return os.pathsep.join(paths)
+gooey_MultiDirChooser.getResult = __getResult

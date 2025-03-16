@@ -270,21 +270,45 @@ class AddArgs:
                                  action='store_true', default=True, help="Invisible checkbox",
                                  gooey_options={'visible': False})
 
+            AddArgs.add_argument(subparser_add_volume_group, "--dir", dest='dir', default=None,
+                           widget='MultiDirChooser',
+                           metavar='Directory to Add',
+                           help="Add a Directory to Filesystem Label",
+                           #gooey_options={'visible': AddArgs.SHOW_DB_FILENAME_ARG_IN_GUI}
+                                 )
+
+            # Invisible GUI Argument purely for widget arrangement
+            AddArgs.add_argument(subparser_add_volume_group, "--invisible2", dest='invisible2', metavar='Invisible2',
+                                 action='store_true', default=True, help="Invisible checkbox",
+                                 gooey_options={'visible': False})
+
+            AddArgs.add_argument(subparser_add_volume_group, "--files", dest='files', default=None,
+                           widget='MultiFileChooser',
+                           metavar='Files to Add',
+                           help="Add Files to Filesystem Label",
+                           #gooey_options={'visible': AddArgs.SHOW_DB_FILENAME_ARG_IN_GUI}
+                                 )
+
+            # Invisible GUI Argument purely for widget arrangement
+            AddArgs.add_argument(subparser_add_volume_group, "--invisible3", dest='invisible3', metavar='Invisible3',
+                                 action='store_true', default=True, help="Invisible checkbox",
+                                 gooey_options={'visible': False})
+
             AddArgs.add_argument(subparser_add_volume_group, "--vol_label", dest='vol_label', metavar='Volume Label',
                                 #default=AddArgs.SUBCMD_ADD_VOLUME_VOL_LABEL_DEFAULT,
                                 const='all', nargs = '?', # choices=[AddArgs.SUBCMD_ADD_VOLUME_VOL_LABEL_DEFAULT],
                                 help="Optional Label to assign to this drive's filesystem in the database. If left blank, the volume's label will be used instead.'",
                                 widget = 'Dropdown' #, gooey_options={ 'initial_value': AddArgs.SUBCMD_ADD_VOLUME_VOL_LABEL_DEFAULT }
                            )
-            AddArgs.add_argument(subparser_add_volume_group, "--invisible2", dest='invisible2', metavar='Invisible2',
-                                 action='store_true', default=True, help="Invisible2 checkbox",
+            AddArgs.add_argument(subparser_add_volume_group, "--invisible4", dest='invisible4', metavar='Invisible4',
+                                 action='store_true', default=True, help="Invisible checkbox",
                                  gooey_options={'visible': False})
 
             hostname = socket.gethostname()
             AddArgs.add_argument(subparser_add_volume_group, "-n", "--hostname", dest='hostname', metavar='Hostname', default=hostname,
                                           help="Hostname of the machine containing the drive")
-            AddArgs.add_argument(subparser_add_volume_group, "--invisible3", dest='invisible3', metavar='Invisible3',
-                                 action='store_true', default=True, help="Invisible2 checkbox",
+            AddArgs.add_argument(subparser_add_volume_group, "--invisible5", dest='invisible5', metavar='Invisible5',
+                                 action='store_true', default=True, help="Invisible checkbox",
                                  gooey_options={'visible': False})
 
             AddArgs.add_argument(subparser_add_volume_group, "-r", "--replace", dest='replace', default=False,
