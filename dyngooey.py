@@ -1,7 +1,7 @@
 
 from collections.abc import Iterable
 import gooey
-#from gooey import GooeyParser
+from gooey import GooeyParser # Even though this is greyed out as unused, its actually imported indirectly by the GUI application
 from gooey.gui import seeder as gooey_seeder
 import gooey.gui.components.widgets as gooey_widgets
 import json
@@ -232,3 +232,4 @@ def __getResult(self, dialog):
                     paths[i] = os.sep.join([drives.group('drive')] + parts[1:])
     return os.pathsep.join(paths)
 gooey_MultiDirChooser.getResult = __getResult
+
