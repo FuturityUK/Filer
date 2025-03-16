@@ -7,6 +7,12 @@ from program import Program
 from add_args import AddArgs
 from f import F
 
+"""
+import wx.lib.agw.multidirdialog as MDD
+from gooey.gui.lang.i18n import _
+import os
+"""
+
 class Fgui(Program):
 
     def __init__(self, argument_parser, memory_stats: bool, database_filename: str = None):
@@ -23,6 +29,25 @@ class Fgui(Program):
             return True
         else:
             return False
+
+        """
+        dlg = MDD.MultiDirDialog(None,
+                       message="Choose Directories to Index",
+                       title="Choose Directories",
+                       defaultPath=os.getcwd(),
+                       agwStyle=MDD.DD_MULTIPLE | MDD.DD_DIR_MUST_EXIST)
+
+        if dlg.ShowModal() != wx.ID_OK:
+            print("You Cancelled The Dialog!")
+            dlg.Destroy()
+            return False
+
+        paths = dlg.GetPaths()
+        for index, path in enumerate(paths):
+            print("Path %d: %s" % (index + 1, path))
+
+        dlg.Destroy()
+        """
 
     @staticmethod
     def dumps(data) -> str:
@@ -156,7 +181,7 @@ class Fgui(Program):
 
     @Gooey(
             program_name='Filer', # Override name pulled from sys.argv[0]
-            program_description = 'Filer - File Cataloger', # Overrides the description pulled from ArgumentParser
+            program_description = 'Filer - Filesystem Cataloger', # Overrides the description pulled from ArgumentParser
             required_cols=1,  # number of columns in the "Required" section
             optional_cols=2,  # number of columns in the "Optional" section
             navigation='TABBED',
