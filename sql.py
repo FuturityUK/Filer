@@ -158,6 +158,10 @@ class SQLDictionary:
                 fse.IsDirectory = ?
             ''',
 
+            "find_filename_ByteSize_clause": '''
+                fse.ByteSize => ?
+            ''',
+
             "find_filename_join": '''
                 AND fse.FileSystemID = fs.FileSystemID
             ''',
@@ -169,6 +173,17 @@ class SQLDictionary:
 
             "find_filename_limit_clause": '''
                 LIMIT ?
+            ''',
+
+            "find_duplicates_base": '''
+                SELECT EntryName, ByteSize, FileSystemID, COUNT(*) as duplicates
+                FROM FileSystemEntries
+                WHERE 
+            ''',
+
+            "find_duplicates_group_by": '''
+                GROUP BY EntryName, ByteSize, FileSystemID
+                HAVING COUNT(EntryName) > 1
             ''',
 
             "find_drive_id": '''

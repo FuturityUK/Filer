@@ -42,7 +42,6 @@ class F:
     EXIT_OK: int = 0 #
     EXIT_ERROR: int = 1 #
 
-    DEFAULT_DATABASE_FILENAME: str = 'database.sqlite'
     DEFAULT_TEMP_LISTING_FILE: str = 'filer.fwf'
 
     VOL_ARG_DETAILS_CHOICES: str = 'choices'
@@ -83,9 +82,9 @@ class F:
         self.load_configuration()
         # If the database parameter has been specified, then the user wishes has told use to create a database in a non default location
         if database_filename_argument is not None:
-            self.set_configuration_value( self.CONFIG_DATABASE_FILENAME, database_filename_argument, self.DEFAULT_DATABASE_FILENAME )
+            self.set_configuration_value( self.CONFIG_DATABASE_FILENAME, database_filename_argument, AddArgs.DEFAULT_DATABASE_FILENAME )
         # Get the stored database filename. Note that if it isn't defined yet, it will be set to the default
-        self.database_filename = self.get_configuration_value( self.CONFIG_DATABASE_FILENAME, self.DEFAULT_DATABASE_FILENAME )
+        self.database_filename = self.get_configuration_value( self.CONFIG_DATABASE_FILENAME, AddArgs.DEFAULT_DATABASE_FILENAME )
         # The following subcommands all require a database
         self.select_database(self.database_filename, self.verbose)
 
@@ -696,7 +695,7 @@ class F:
 
         database_changed = False
         if 'db' in args:
-            self.set_configuration_value(self.CONFIG_DATABASE_FILENAME, args.db, self.DEFAULT_DATABASE_FILENAME)
+            self.set_configuration_value(self.CONFIG_DATABASE_FILENAME, args.db, AddArgs.DEFAULT_DATABASE_FILENAME)
             database_changed = True
             logging.debug(f"database_filename: {args.db}'")
 

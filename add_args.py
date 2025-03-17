@@ -53,7 +53,7 @@ class AddArgs:
 
     SUBCMD_ADD_VOLUME_VOL_LABEL_DEFAULT: str = ""
 
-    DEFAULT_DATABASE_FILENAME: str = 'AddArgs.DEFAULT_DATABASE_FILENAME'
+    DEFAULT_DATABASE_FILENAME: str = 'database.sqlite'
 
     SHOW_ATTRIBUTES_EXTRA_HELP: str = "'D' Directory, 'A' Archive, 'R' Read-only, 'H' Hidden, 'S' System, 'L' Link"
 
@@ -70,10 +70,11 @@ class AddArgs:
                                            dest='subcommand',
                                            help='additional help')
         AddArgs.add_subcommand_filesystem_search_arguments_to_parser(subparsers)
-        AddArgs.add_subcommand_filesystem_duplicates_arguments_to_parser(subparsers)
-        AddArgs.add_subcommand_add_volume_arguments_to_parser(subparsers)
-        AddArgs.add_subcommand_refresh_volumes_arguments_to_parser(subparsers)
+        #AddArgs.add_subcommand_filesystem_duplicates_arguments_to_parser(subparsers)
+        #AddArgs.add_subcommand_add_volume_arguments_to_parser(subparsers)
+        #AddArgs.add_subcommand_refresh_volumes_arguments_to_parser(subparsers)
         AddArgs.add_subcommand_delete_volume_arguments_to_parser(subparsers)
+
         #AddArgs.add_subcommand_create_database_arguments_to_parser(subparsers)
         #AddArgs.add_subcommand_select_database_arguments_to_parser(subparsers)
 
@@ -190,16 +191,17 @@ class AddArgs:
             'Filesystem Search Options',
             description='Search for filesystem  based on search strings'
         )
+
         help_text = '''Search string to be found within filenames
 - if search doesn't include '%' or '_' characters, then it is a fast exact case-sensitive search
 - if search includes '%' or '_' characters, then it is a slower pattern match case-insensitive search
 - '%' wildcard character matches any sequence of zero or more characters.
 - '_' wildcard character matches exactly one character
 - To find all files, use a % by itself.'''
-        help_text2 = "Search string. Wildcards: '%' = many chars, '_' = one char."
+        help_text = "Search string. Wildcards: '%' = many chars, '_' = one char."
         if AddArgs.is_std_argument_parser(subparsers):
             help_text = help_text.replace(r"%", r"%%")
-        AddArgs.add_argument(subparser_search_group, "-s", "--search", dest='search', metavar='Search', default=AddArgs.SUBCMD_FILE_SEARCH_DEFAULT, help=help_text2)
+        AddArgs.add_argument(subparser_search_group, "-s", "--search", dest='search', metavar='Search', default=AddArgs.SUBCMD_FILE_SEARCH_DEFAULT, help=help_text)
         AddArgs.add_argument(subparser_search_group, "-l", "--label", dest='label', metavar='Volume Label',
                              widget = 'Dropdown', nargs = '?', default = None,
                              help="Label of the drive listing")
@@ -268,11 +270,11 @@ class AddArgs:
 - '%' wildcard character matches any sequence of zero or more characters.
 - '_' wildcard character matches exactly one character
 - To find all files, use a % by itself.'''
-        help_text2 = "Search string. Wildcards: '%' = many chars, '_' = one char."
+        help_text = "Search string. Wildcards: '%' = many chars, '_' = one char."
         if AddArgs.is_std_argument_parser(subparsers):
             help_text = help_text.replace(r"%", r"%%")
         AddArgs.add_argument(subparser_search_group, "-s", "--search", dest='search', metavar='Search',
-                             default=AddArgs.SUBCMD_FILE_SEARCH_DEFAULT, help=help_text2)
+                             default=AddArgs.SUBCMD_FILE_SEARCH_DEFAULT, help=help_text)
         AddArgs.add_argument(subparser_search_group, "-l", "--label", dest='label', metavar='Volume Label',
                              widget='Dropdown', nargs='?', default=None,
                              help="Label of the drive listing")
