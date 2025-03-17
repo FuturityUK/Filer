@@ -100,8 +100,7 @@ class Fgui(Program):
                 'label': filesystem_search_label_choice,
                 'vol_label': AddArgs.SUBCMD_ADD_VOLUME_VOL_LABEL_DEFAULT, # This will be replaced with the initial value
                 'results': AddArgs.SUBCMD_FILE_SEARCH_MAX_RESULTS_DEFAULT_CHOICE,
-                'replace': False,
-                'remove': False,
+                'confirm': False,
 
                 'test_required_1': None,  # This will be replaced with the initial value
                 # 'test_required_2' will be left alone

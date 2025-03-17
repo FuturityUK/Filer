@@ -11,6 +11,7 @@ class AddArgs:
     SHOW_FILE_SEARCH_ARG_IN_GUI: bool = True
 
     SUBCMD_FILE_SEARCH: str = 'file_search'
+    SUBCMD_DUPLICATE_SEARCH: str = 'duplicate_search'
     SUBCMD_REFRESH_VOLUMES: str = 'refresh_volumes'
     SUBCMD_ADD_VOLUME: str = 'add_volume'
     SUBCMD_DELETE_VOLUME: str = 'delete_volume'
@@ -69,6 +70,7 @@ class AddArgs:
                                            dest='subcommand',
                                            help='additional help')
         AddArgs.add_subcommand_filesystem_search_arguments_to_parser(subparsers)
+        AddArgs.add_subcommand_filesystem_duplicates_arguments_to_parser(subparsers)
         AddArgs.add_subcommand_add_volume_arguments_to_parser(subparsers)
         AddArgs.add_subcommand_refresh_volumes_arguments_to_parser(subparsers)
         AddArgs.add_subcommand_delete_volume_arguments_to_parser(subparsers)
@@ -246,20 +248,115 @@ class AddArgs:
         #AddArgs.add_verbose_argument_to_parser(subparser_search_group)
 
     @staticmethod
+    def add_subcommand_filesystem_duplicates_arguments_to_parser(subparsers):
+        logging.debug(f"### AddArgs.add_subcommand_filesystem_duplicates_arguments_to_parser() ###")
+
+        file_categories = FileTypes.get_file_categories()
+        # print(f"file_categories: {file_categories}")
+
+        subparser_duplicates = subparsers.add_parser(AddArgs.SUBCMD_DUPLICATE_SEARCH,
+                                                 help=AddArgs.SUBCMD_DUPLICATE_SEARCH + ' help',
+                                                 prog='Filesystem Search',
+                                                 description='Search for filesystem entries based on search strings')
+        subparser_search_group = subparser_duplicates.add_argument_group(
+            'Filesystem Search Options',
+            description='Search for filesystem  based on search strings'
+        )
+        help_text = '''Search string to be found within filenames
+- if search doesn't include '%' or '_' characters, then it is a fast exact case-sensitive search
+- if search includes '%' or '_' characters, then it is a slower pattern match case-insensitive search
+- '%' wildcard character matches any sequence of zero or more characters.
+- '_' wildcard character matches exactly one character
+- To find all files, use a % by itself.'''
+        help_text2 = "Search string. Wildcards: '%' = many chars, '_' = one char."
+        if AddArgs.is_std_argument_parser(subparsers):
+            help_text = help_text.replace(r"%", r"%%")
+        AddArgs.add_argument(subparser_search_group, "-s", "--search", dest='search', metavar='Search',
+                             default=AddArgs.SUBCMD_FILE_SEARCH_DEFAULT, help=help_text2)
+        AddArgs.add_argument(subparser_search_group, "-l", "--label", dest='label', metavar='Volume Label',
+                             widget='Dropdown', nargs='?', default=None,
+                             help="Label of the drive listing")
+
+        AddArgs.add_argument(subparser_search_group, "--type", dest='type', metavar='Entry Type',
+                             widget='Dropdown', nargs='?', default=AddArgs.SUBCMD_FILE_SEARCH_SEARCH_FOR_CHOICE,
+                             choices=AddArgs.SUBCMD_FILE_SEARCH_SEARCH_FOR_CHOICES,
+                             help="What do you want to search for?")
+        AddArgs.add_argument(subparser_search_group, "-c", "--category", dest='category',
+                             metavar='File Category (NOT IMPLEMENTED YET)',
+                             choices=file_categories, nargs='?', help="Category of files to be considered")
+
+        AddArgs.add_argument(subparser_search_group, "--size_limit", dest='size_limit',
+                             metavar='Size Limit  (NOT IMPLEMENTED YET)',
+                             widget='Dropdown', nargs='?', default=AddArgs.SUBCMD_FILE_SEARCH_SIZE_LIMIT_CHOICE,
+                             choices=AddArgs.SUBCMD_FILE_SEARCH_SIZE_LIMIT_CHOICES,
+                             help="Size limit for the results.")
+
+        # Invisible GUI Argument purely for widget arrangement
+        # AddArgs.add_argument(subparser_search_group, "--invisible", dest='invisible', metavar='Invisible',
+        #                     action='store_true', default=True, help="Invisible checkbox", gooey_options={'visible': False})
+
+        # ADD BACK WHEN FUNCTIONALITY IMPLEMENTED
+        # if not AddArgs.is_std_argument_parser(subparsers):
+
+        AddArgs.add_argument(subparser_search_group, "--order_by", dest='order_by', metavar='Order By',
+                             widget='Dropdown', nargs='?', default=AddArgs.SUBCMD_FILE_SEARCH_ORDER_DEFAULT_CHOICE,
+                             choices=AddArgs.SUBCMD_FILE_SEARCH_ORDER_CHOICES,
+                             help="Use this Field to Order the results.")
+        # AddArgs.add_argument(subparser_search_group, "--order_desc", dest='order_desc', metavar='\n\nOrder Descending', help="Show results in Descending Order.", default=False,
+        #                    action="store_true", gooey_options={'visible': AddArgs.SHOW_FILE_SEARCH_ARG_IN_GUI})
+
+        subparser_results_group = subparser_duplicates.add_argument_group(
+            'Results Display Options',
+            description='Search for files based on search strings'
+        )
+        AddArgs.add_argument(subparser_results_group, "--max_results", dest='max_results', metavar='Max Results',
+                             widget='Dropdown', nargs='?',
+                             default=AddArgs.SUBCMD_FILE_SEARCH_MAX_RESULTS_DEFAULT_CHOICE,
+                             choices=AddArgs.SUBCMD_FILE_SEARCH_MAX_RESULTS_CHOICES,
+                             help="Max number of results to display.")
+
+        AddArgs.add_argument(subparser_results_group, "--show_size", dest='show_size', metavar='Show Size',
+                             help="Show 'Size' in results.", default=False,
+                             action="store_true", gooey_options={'visible': AddArgs.SHOW_FILE_SEARCH_ARG_IN_GUI})
+        AddArgs.add_argument(subparser_results_group, "--show_last_modified", dest='show_last_modified',
+                             metavar='Show Last Modified Time', help="Show 'Time Last Modified' in results.",
+                             default=False,
+                             action="store_true", gooey_options={'visible': AddArgs.SHOW_FILE_SEARCH_ARG_IN_GUI})
+
+        AddArgs.add_argument(subparser_results_group, "--show_attributes", dest='show_attributes',
+                             metavar='Show Information / Attributes',
+                             help="Show 'Information / Attributes' in results. " + AddArgs.SHOW_ATTRIBUTES_EXTRA_HELP,
+                             default=False,
+                             action="store_true", gooey_options={'visible': AddArgs.SHOW_FILE_SEARCH_ARG_IN_GUI})
+
+        AddArgs.add_db_argument_to_parser(subparser_results_group)
+        # AddArgs.add_verbose_argument_to_parser(subparser_search_group)
+
+    @staticmethod
     def add_subcommand_add_volume_arguments_to_parser(subparsers):
         logging.debug(f"### AddArgs.add_subcommand_add_volume_arguments_to_parser() ###")
         if not AddArgs.is_std_argument_parser(subparsers):
             # create the parser for the "add" subcommand
-            subparser_add_volume = subparsers.add_parser(AddArgs.SUBCMD_ADD_VOLUME, help=AddArgs.SUBCMD_ADD_VOLUME+' help', prog='Add Volume', description='Add Filesystem Entries from the selected Volume to the Database')
+            subparser_add_volume = subparsers.add_parser(AddArgs.SUBCMD_ADD_VOLUME, help=AddArgs.SUBCMD_ADD_VOLUME+' help', prog='Add to Filesystem', description='Add Filesystem Entries to a Filesystem in the Database')
+
             subparser_add_volume_group = subparser_add_volume.add_argument_group(
-                'Add Volume (Drive, Disc, or other storage media)',
-                description='Add Filesystem Entries from the selected Volume to the Database'
+                'Add to Filesystem',
+                description='Add Filesystem Entries: Files, Directories (and the files within them), or a Volume (and the directories and files within it) to a Filesystem in the database.'
             )
 
-            help_text = f'''Volume that you wish to add.
-- If you don't see your volume, please use the {AddArgs.get_message_based_on_parser(subparsers, "'"+AddArgs.SUBCMD_REFRESH_VOLUMES+"' subcommand", "'Refresh Volumes List' action.")}'''
-# - Values last updated: {self.configuration[self.CONFIG_VOL_DETAILS][self.VOL_ARG_DETAILS_CREATED]}
+            AddArgs.add_argument(subparser_add_volume_group, "--vol_label", dest='vol_label', metavar='Label',
+                                #default=AddArgs.SUBCMD_ADD_VOLUME_VOL_LABEL_DEFAULT,
+                                const='all', nargs = '?', # choices=[AddArgs.SUBCMD_ADD_VOLUME_VOL_LABEL_DEFAULT],
+                                help="For a new Filesystem, either enter your custom name here or the selected Volume's Filesystem Name will be used instead.\n"
+                                     "To Add Entries to an existing Filesystem, select an existing Label.",
+                                widget = 'Dropdown' #, gooey_options={ 'initial_value': AddArgs.SUBCMD_ADD_VOLUME_VOL_LABEL_DEFAULT }
+                           )
+            AddArgs.add_argument(subparser_add_volume_group, "--invisible4", dest='invisible4', metavar='Invisible4',
+                                 action='store_true', default=True, help="Invisible checkbox",
+                                 gooey_options={'visible': False})
 
+            help_text = f'''Volume from which you wish to add Filesystem Entries. If you don't use the options to add directories or files, then the Whole Volume's contents will be added to the filesystem, or replaced if the volume already exists. - If you don't see your volume, please use the {AddArgs.get_message_based_on_parser(subparsers, "'"+AddArgs.SUBCMD_REFRESH_VOLUMES+"' subcommand", "'Refresh Volumes List' action.")}'''
+# - Values last updated: {self.configuration[self.CONFIG_VOL_DETAILS][self.VOL_ARG_DETAILS_CREATED]}
             if AddArgs.is_std_argument_parser(subparsers):
                 help_text = help_text.replace(r"%", r"%%")
             AddArgs.add_argument(subparser_add_volume_group, "--volume", dest='volume', metavar='Volume',
@@ -269,23 +366,12 @@ class AddArgs:
                                  action='store_true', default=True, help="Invisible checkbox",
                                  gooey_options={'visible': False})
 
-            AddArgs.add_argument(subparser_add_volume_group, "--vol_label", dest='vol_label', metavar='Label',
-                                #default=AddArgs.SUBCMD_ADD_VOLUME_VOL_LABEL_DEFAULT,
-                                const='all', nargs = '?', # choices=[AddArgs.SUBCMD_ADD_VOLUME_VOL_LABEL_DEFAULT],
-                                help="Optional Label to assign to this volume's filesystem in the database. If left blank, the volume's label will be used instead.'",
-                                widget = 'Dropdown' #, gooey_options={ 'initial_value': AddArgs.SUBCMD_ADD_VOLUME_VOL_LABEL_DEFAULT }
-                           )
-            AddArgs.add_argument(subparser_add_volume_group, "--invisible4", dest='invisible4', metavar='Invisible4',
-                                 action='store_true', default=True, help="Invisible checkbox",
-                                 gooey_options={'visible': False})
-
             AddArgs.add_argument(subparser_add_volume_group, "--dir", dest='dir', default=None,
                            widget='MultiDirChooser',
-                           metavar='Directories to Add',
-                           help="Add Directories to Filesystem Label",
+                           metavar='Directories to Add (Not Implemented Yet)',
+                           help="Add Directories (and their contents). The dialog box takes a while to open depending on the number of directories on your system. Don't click the button more than once !!!",
                            #gooey_options={'visible': AddArgs.SHOW_DB_FILENAME_ARG_IN_GUI}
                                  )
-
             # Invisible GUI Argument purely for widget arrangement
             AddArgs.add_argument(subparser_add_volume_group, "--invisible2", dest='invisible2', metavar='Invisible2',
                                  action='store_true', default=True, help="Invisible checkbox",
@@ -293,11 +379,10 @@ class AddArgs:
 
             AddArgs.add_argument(subparser_add_volume_group, "--files", dest='files', default=None,
                            widget='MultiFileChooser',
-                           metavar='Files to Add',
+                           metavar='Files to Add (Not Implemented Yet)',
                            help="Add Files to Filesystem Label",
                            #gooey_options={'visible': AddArgs.SHOW_DB_FILENAME_ARG_IN_GUI}
                                  )
-
             # Invisible GUI Argument purely for widget arrangement
             AddArgs.add_argument(subparser_add_volume_group, "--invisible3", dest='invisible3', metavar='Invisible3',
                                  action='store_true', default=True, help="Invisible checkbox",
@@ -310,10 +395,10 @@ class AddArgs:
                                  action='store_true', default=True, help="Invisible checkbox",
                                  gooey_options={'visible': False})
 
-            AddArgs.add_argument(subparser_add_volume_group, "-r", "--replace", dest='replace', default=False,
+            AddArgs.add_argument(subparser_add_volume_group, "--confirm", dest='confirm', default=False,
                                  action="store_true",
-                                 metavar='Replace',
-                                 help="CONFIRM: Replace this Volume Label's filesystem entries in the database with new entries from the filesystem." )
+                                 metavar='Confirm',
+                                 help="CONFIRM: Replace Entries for this Filesystem if they already exist." )
             AddArgs.add_db_argument_to_parser(subparser_add_volume_group)
             AddArgs.add_verbose_argument_to_parser(subparser_add_volume_group)
 
@@ -323,17 +408,17 @@ class AddArgs:
         if not AddArgs.is_std_argument_parser(subparsers):
             subparser_delete_volume = subparsers.add_parser(AddArgs.SUBCMD_DELETE_VOLUME,
                                                          help=AddArgs.SUBCMD_DELETE_VOLUME + ' help',
-                                                         prog='Delete Volume',
-                                                         description='Delete Filesystem Entries on a selected Volume from the Database')
+                                                         prog='Delete Filesystem',
+                                                         description='Delete Filesystem from the Database')
             subparser_delete_volume_group = subparser_delete_volume.add_argument_group(
-                'Delete Volume',
-                description='Delete Filesystem Entries for the selected Volume Label from the Database'
+                'Delete Filesystem',
+                description='Delete Filesystem from the Database'
             )
             AddArgs.add_argument(subparser_delete_volume_group, "--vol_label", dest='vol_label',
                                  metavar='Label',
                                  # default=AddArgs.SUBCMD_ADD_VOLUME_VOL_LABEL_DEFAULT,
                                  const='all', nargs='?',  # choices=[AddArgs.SUBCMD_ADD_VOLUME_VOL_LABEL_DEFAULT],
-                                 help="Label of the Volume that you wish to delete.",
+                                 help="Label of the Filesystem that you wish to delete.",
                                  widget='Dropdown'
                                  # , gooey_options={ 'initial_value': AddArgs.SUBCMD_ADD_VOLUME_VOL_LABEL_DEFAULT                                                                      }
                                  )
@@ -342,10 +427,10 @@ class AddArgs:
                                  metavar='Invisible2',
                                  action='store_true', default=True, help="Invisible2 checkbox",
                                  gooey_options={'visible': False})
-            AddArgs.add_argument(subparser_delete_volume_group, "-r", "--remove", dest='remove', default=False,
+            AddArgs.add_argument(subparser_delete_volume_group, "--confirm", dest='confirm', default=False,
                                  action="store_true",
-                                 metavar='Remove',
-                                 help="CONFIRM: Removal of this Volume Label's filesystem entries from the database." )
+                                 metavar='Confirm',
+                                 help="CONFIRM: Removal of this Label's filesystem from the database." )
             AddArgs.add_db_argument_to_parser(subparser_delete_volume_group)
             AddArgs.add_verbose_argument_to_parser(subparser_delete_volume_group)
 

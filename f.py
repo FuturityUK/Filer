@@ -382,16 +382,16 @@ class F:
 
     def subcommand_delete_volumes(self, args: []):
         vol_label = args.vol_label if "vol_label" in args else None
-        remove = args.remove if "remove" in args else None
+        confirm = args.confirm if "confirm" in args else None
         #verbose = args.verbose if "verbose" in args else False
 
         # Check if Label exists in the Database
         if self.database.does_label_exists(vol_label):
             print(f'Label "{vol_label}" exists in the Database.')
-            if not remove:
+            if not confirm:
                 self.exit_cleanly(self.EXIT_ERROR,
-                                  f'Use the "--remove" flag to confirm that you want to delete entries for this volume.',
-                                  f'Use the "Remove" checkbox to confirm that you want to delete entries for this volume.')
+                                  f'Use the "--confirm" flag to confirm that you want to delete entries for this volume.',
+                                  f'Use the "Confirm" checkbox to confirm that you want to delete entries for this volume.')
             else:
                 print("Confirmation accepted")
                 self.delete_filesystem(vol_label)
@@ -417,7 +417,7 @@ class F:
         """
         volume_choice = args.volume if "volume" in args else None
         vol_label = args.vol_label if "vol_label" in args else None
-        replace = args.replace if "replace" in args else None
+        confirm = args.confirm if "confirm" in args else None
         verbose = args.verbose if "verbose" in args else False
 
         if volume_choice not in self.configuration[self.CONFIG_VOL_DETAILS][self.VOL_ARG_DETAILS_CHOICES]:
@@ -451,8 +451,8 @@ class F:
 
             # Check if Label exists in the Database
             if self.database.does_label_exists(label):
-                if not replace:
-                    self.exit_cleanly(self.EXIT_ERROR, f'Label "{label}" already exists in the Database! Use the \'--replace\' flag.', f'Label "{label}" already exists in the Database! Use the \'Replace\' checkbox.')
+                if not confirm:
+                    self.exit_cleanly(self.EXIT_ERROR, f'Label "{label}" already exists in the Database! Use the \'--confirm\' flag.', f'Label "{label}" already exists in the Database! Use the \'Confirm\' checkbox.')
                 else:
                     print(f'Label "{label}" already exists in the Database.!')
                     print("Confirmation accepted")
