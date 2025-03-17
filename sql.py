@@ -178,7 +178,7 @@ class SQLDictionary:
             "find_duplicates_base": '''
                 SELECT EntryName, ByteSize, FileSystemID, COUNT(*) as duplicates
                 FROM FileSystemEntries
-                WHERE 
+                WHERE  
             ''',
 
             "find_duplicates_group_by": '''
