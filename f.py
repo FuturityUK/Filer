@@ -308,8 +308,9 @@ class F:
             # Handle the exception
             self.exit_cleanly(self.EXIT_ERROR, f'Results value "{max_results}" is not an integer!')
 
-        if entry_search is None and entry_category is None and volume_label is None:
-            self.exit_cleanly(self.EXIT_ERROR, "No search terms provided")
+        # It doesn't matter if the none of these are filled in.
+        # if (entry_search is None or entry_search == "") and entry_category is None and volume_label is None:
+        #     self.exit_cleanly(self.EXIT_ERROR, "No search terms provided")
 
         self.print_message_based_on_parser(None, f"Finding files & dirs matching:")
         if entry_search is not None and entry_search != "": self.print_message_based_on_parser(None, f" - search: '{entry_search}'")

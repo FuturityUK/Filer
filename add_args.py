@@ -22,7 +22,8 @@ class AddArgs:
     SUBCMD_VACUUM_DATABASE: str = 'vacuum_db'
     SUBCMD_RESET_DATABASE: str = 'reset_db'
 
-    SUBCMD_FILE_SEARCH_DEFAULT: str = '%'
+    #SUBCMD_FILE_SEARCH_DEFAULT: str = '%'
+    SUBCMD_FILE_SEARCH_DEFAULT: str = None
 
     SUBCMD_FILE_SEARCH_LABEL_ALL_LABELS: str = '- All Labels -'
 

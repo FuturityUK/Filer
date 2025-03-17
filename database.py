@@ -270,25 +270,25 @@ class Database:
         sql_argument_array = []
         clause_added = False
 
-        if entry_search is not None and entry_search.count("%") == 0 and entry_search.count("_") == 0:
-            # We can replace this SQL "like" with an exact match '=' as it doesn't contain "like" special characters
-            like = False
-
-        # Filename clause
-        if like:
-            sql_string += " " + self.__sql_dictionary["find_filename_like_filename_clause"]
-            if entry_search is not None and entry_search != "":
-                sql_argument_array.append(entry_search)
+        if entry_search is not None:
+            if entry_search.count("%") == 0 and entry_search.count("_") == 0:
+                # We can replace this SQL "like" with an exact match '=' as it doesn't contain "like" special characters
+                like = False
+            # Filename clause
+            if like:
+                sql_string += " " + self.__sql_dictionary["find_filename_like_filename_clause"]
+                if entry_search is not None and entry_search != "":
+                    sql_argument_array.append(entry_search)
+                else:
+                    sql_argument_array.append("%")
             else:
-                sql_argument_array.append("%")
-        else:
-            sql_string += " " + self.__sql_dictionary["find_filename_exact_match_filename_clause"]
-            if entry_search is not None and entry_search != "":
-                sql_argument_array.append(entry_search)
-            else:
-                print("Filename can't be empty for an exact match search")
-                exit()
-        clause_added = True
+                sql_string += " " + self.__sql_dictionary["find_filename_exact_match_filename_clause"]
+                if entry_search is not None and entry_search != "":
+                    sql_argument_array.append(entry_search)
+                else:
+                    print("Filename can't be empty for an exact match search")
+                    exit()
+            clause_added = True
 
         # Label clause
         if volume_label is not None and volume_label != "" :
