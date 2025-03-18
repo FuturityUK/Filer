@@ -120,7 +120,9 @@ class Fgui(Program):
                 'volume': volume_choices,
                 'label': filesystem_search_label_choices,
                 'vol_label': add_volume_label_choices,
-                'results': AddArgs.SUBCMD_FILE_SEARCH_MAX_RESULTS_CHOICES
+                'results': AddArgs.SUBCMD_FILE_SEARCH_MAX_RESULTS_CHOICES,
+                'size_gt': AddArgs.SUBCMD_FILE_SEARCH_SIZE_CHOICES,
+                'size_lt': AddArgs.SUBCMD_FILE_SEARCH_SIZE_CHOICES,
                 #'volume': ["Neil", baker]
             }
             logging.info(f"dynamic_items: {dynamic_items}")

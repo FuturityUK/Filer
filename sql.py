@@ -158,8 +158,12 @@ class SQLDictionary:
                 fse.IsDirectory = ?
             ''',
 
-            "find_filename_ByteSize_clause": '''
-                fse.ByteSize => ?
+            "find_filename_ByteSize_greater_than_equal_to_clause": '''
+                fse.ByteSize >= ?
+            ''',
+
+            "find_filename_ByteSize_less_than_clause": '''
+                fse.ByteSize < ?
             ''',
 
             "find_filename_join": '''
@@ -167,8 +171,11 @@ class SQLDictionary:
             ''',
 
             "find_filename_order_by_full_path": "ORDER BY fse.FullName",
+
             "find_filename_order_by_entry_name": "ORDER BY fse.EntryName",
+
             "find_filename_order_by_size": "ORDER BY fse.ByteSize",
+
             "find_filename_order_by_last_modified": "ORDER BY fse.LastWriteTime",
 
             "find_filename_limit_clause": '''
