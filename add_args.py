@@ -11,7 +11,7 @@ class AddArgs:
     SHOW_FILE_SEARCH_ARG_IN_GUI: bool = True
 
     SUBCMD_FILE_SEARCH: str = 'file_search'
-    SUBCMD_DUPLICATE_SEARCH: str = 'duplicate_search'
+    SUBCMD_DUPLICATES_SEARCH: str = 'duplicates_search'
     SUBCMD_REFRESH_VOLUMES: str = 'refresh_volumes'
     SUBCMD_ADD_VOLUME: str = 'add_volume'
     SUBCMD_DELETE_VOLUME: str = 'delete_volume'
@@ -28,7 +28,7 @@ class AddArgs:
     SUBCMD_FILE_SEARCH_LABEL_ALL_LABELS: str = '- All Labels -'
 
     SUBCMD_FILE_SEARCH_MAX_RESULTS_DEFAULT_CHOICE: str = '100'
-    SUBCMD_FILE_SEARCH_MAX_RESULTS_CHOICES: list = ['100', '250', '500', '1000', '10000', '100000']
+    SUBCMD_FILE_SEARCH_MAX_RESULTS_CHOICES: list = ['25', '50', '100', '250', '500', '1000', '10000', '100000']
 
     SUBCMD_FILE_SEARCH_ORDER_FULL_PATH_ASCENDING: str = 'Full Path (A -> Z)'
     SUBCMD_FILE_SEARCH_ORDER_FILENAME_ASCENDING: str = 'Filename (A -> Z)'
@@ -72,7 +72,7 @@ class AddArgs:
                                            dest='subcommand',
                                            help='additional help')
         AddArgs.add_subcommand_filesystem_search_arguments_to_parser(subparsers)
-        AddArgs.add_subcommand_filesystem_duplicates_arguments_to_parser(subparsers)
+        AddArgs.add_subcommand_filesystem_duplicates_search_arguments_to_parser(subparsers)
         AddArgs.add_subcommand_add_volume_arguments_to_parser(subparsers)
         AddArgs.add_subcommand_refresh_volumes_arguments_to_parser(subparsers)
         AddArgs.add_subcommand_delete_volume_arguments_to_parser(subparsers)
@@ -191,7 +191,7 @@ class AddArgs:
                                             description='Search for filesystem entries based on search strings')
         subparser_search_group = subparser_search.add_argument_group(
             'Filesystem Search',
-            description='Search for filesystem  based on search strings'
+            description='Search for filesystem entries'
         )
 
         help_text = '''Search string to be found within filenames
@@ -256,19 +256,19 @@ class AddArgs:
         #AddArgs.add_verbose_argument_to_parser(subparser_search_group)
 
     @staticmethod
-    def add_subcommand_filesystem_duplicates_arguments_to_parser(subparsers):
+    def add_subcommand_filesystem_duplicates_search_arguments_to_parser(subparsers):
         logging.debug(f"### AddArgs.add_subcommand_filesystem_duplicates_arguments_to_parser() ###")
 
         file_categories = FileTypes.get_file_categories()
         # print(f"file_categories: {file_categories}")
 
-        subparser_duplicates = subparsers.add_parser(AddArgs.SUBCMD_DUPLICATE_SEARCH,
-                                                 help=AddArgs.SUBCMD_DUPLICATE_SEARCH + ' help',
+        subparser_duplicates = subparsers.add_parser(AddArgs.SUBCMD_DUPLICATES_SEARCH,
+                                                 help=AddArgs.SUBCMD_DUPLICATES_SEARCH + ' help',
                                                  prog='Duplicate Search',
                                                  description='Search for duplicate filesystem entries based on search strings')
         subparser_search_group = subparser_duplicates.add_argument_group(
             'Duplicate Search',
-            description='Search for duplicate filesystem entries based on search strings'
+            description="Search for duplicate filesystem entries where the their names and sizes match."
         )
 
         help_text = '''Search string to be found within filenames
@@ -296,12 +296,12 @@ class AddArgs:
                              help="Category of files to be considered. Removes Directories from results if selected.")
 
         AddArgs.add_argument(subparser_search_group, "--size_gt", dest='size_gt', metavar='Size >=',
-                             widget='Dropdown', nargs='?', default=AddArgs.SUBCMD_FILE_SEARCH_SIZE_CHOICE,
-                             choices=AddArgs.SUBCMD_FILE_SEARCH_SIZE_CHOICES,
+                             default=AddArgs.SUBCMD_FILE_SEARCH_SIZE_CHOICE,
+                             # widget = 'Dropdown', nargs = '?', choices=AddArgs.SUBCMD_FILE_SEARCH_SIZE_CHOICES,
                              help="Size greater than or equal to value used to limit the results.")
         AddArgs.add_argument(subparser_search_group, "--size_lt", dest='size_lt', metavar='Size <=',
-                             widget='Dropdown', nargs='?', default=AddArgs.SUBCMD_FILE_SEARCH_SIZE_CHOICE,
-                             choices=AddArgs.SUBCMD_FILE_SEARCH_SIZE_CHOICES,
+                             default=AddArgs.SUBCMD_FILE_SEARCH_SIZE_CHOICE,
+                             # widget = 'Dropdown', nargs = '?', choices=AddArgs.SUBCMD_FILE_SEARCH_SIZE_CHOICES,
                              help="Size less than or equal to value used to limit the results.")
 
         # Invisible GUI Argument purely for widget arrangement

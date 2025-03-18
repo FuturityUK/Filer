@@ -276,9 +276,76 @@ class F:
         # Print the number of row found in the GUI
         self.print_message_based_on_parser(None, f"{rows_found} results found")
 
-
     def subcommand_filesystem_search(self, args: []):
-        logging.debug(f"### F.search() ###")
+        logging.debug(f"### F.subcommand_filesystem_search() ###")
+        # Gather argument values or their defaults
+        entry_search = args.search if "search" in args else AddArgs.SUBCMD_FILE_SEARCH_DEFAULT
+        label = args.label if "label" in args else AddArgs.SUBCMD_FILE_SEARCH_LABEL_ALL_LABELS
+        entry_type = args.type if "type" in args else AddArgs.SUBCMD_FILE_SEARCH_SEARCH_FOR_CHOICE
+        entry_category = args.category if "category" in args else None
+        entry_size_gt = args.size_gt if "size_gt" in args else AddArgs.SUBCMD_FILE_SEARCH_SIZE_ALL_FILES
+        entry_size_lt = args.size_lt if "size_lt" in args else AddArgs.SUBCMD_FILE_SEARCH_SIZE_ALL_FILES
+        order_by = args.order_by if "order_by" in args else AddArgs.SUBCMD_FILE_SEARCH_ORDER_DEFAULT_CHOICE
+        max_results = args.max_results if "max_results" in args else AddArgs.SUBCMD_FILE_SEARCH_MAX_RESULTS_DEFAULT_CHOICE
+        show_size = args.show_size if "show_size" in args else False
+        show_last_modified = args.show_last_modified if "show_last_modified" in args else False
+        show_attributes = args.show_attributes if "show_attributes" in args else False
+        # volume_label = None if the default value has been selected
+        volume_label = None if label == AddArgs.SUBCMD_FILE_SEARCH_LABEL_ALL_LABELS else label
+        # Convert entry_type string into the entry_type_int number
+        entry_type_int = None
+        if entry_type == AddArgs.SUBCMD_FILE_SEARCH_SEARCH_FOR_EVERYTHING:
+            entry_type_int = None
+        elif entry_type == AddArgs.SUBCMD_FILE_SEARCH_SEARCH_FOR_DIRECTORIES:
+            entry_type_int = Database.ENTRY_TYPE_DIRECTORIES
+        elif entry_type == AddArgs.SUBCMD_FILE_SEARCH_SEARCH_FOR_FILES:
+            entry_type_int = Database.ENTRY_TYPE_FILES
+        else:
+            self.exit_cleanly(self.EXIT_ERROR, f'Entry Type "{entry_type}" is not one of the choices!')
+        # Convert max_results into an integer
+        max_results_int = 0
+        try:
+            max_results_int = int(max_results)
+        except ValueError:
+            self.exit_cleanly(self.EXIT_ERROR, f'Results value "{max_results}" is not an integer!') # Handle the exception
+        # Convert entry_size_gt into an integer
+        if entry_size_gt is not None and entry_size_gt != "":
+            entry_size_gt_int = Convert.string2bytesize(entry_size_gt)
+            if entry_size_gt is not None and entry_size_gt_int is None:
+                self.exit_cleanly(self.EXIT_ERROR, f'Entry Size >= value "{entry_size_gt}" is not in a valid file size format!') # Handle the exception
+        else:
+            entry_size_gt_int = None
+        # Convert entry_size_lt into an integer
+        if entry_size_lt is not None and entry_size_lt != "":
+            entry_size_lt_int = Convert.string2bytesize(entry_size_lt)
+            if entry_size_lt is not None and entry_size_lt_int is None:
+                self.exit_cleanly(self.EXIT_ERROR, f'Entry Size <= value "{entry_size_lt}" is not in a valid file size format!') # Handle the exception
+        else:
+            entry_size_lt_int = None
+
+        # It doesn't matter if the none of these are filled in.
+        # if (entry_search is None or entry_search == "") and entry_category is None and volume_label is None:
+        #     self.exit_cleanly(self.EXIT_ERROR, "No search terms provided")
+
+        self.print_message_based_on_parser(None, f"Finding files & dirs matching:")
+        if entry_search is not None and entry_search != "": self.print_message_based_on_parser(None, f" - search: '{entry_search}'")
+        #if label is not None and label != "":
+        self.print_message_based_on_parser(None, f" - volume label: '{label}'")
+        if entry_type is not None and entry_type != "": self.print_message_based_on_parser(None, f" - entry type: '{entry_type}'")
+        if entry_category is not None and entry_category != "": self.print_message_based_on_parser(None, f" - category: '{entry_category}'")
+        if entry_size_gt_int is not None and entry_size_gt_int != "": self.print_message_based_on_parser(None, f" - size limit >= : '{entry_size_gt}'")
+        if entry_size_lt_int is not None and entry_size_lt_int != "": self.print_message_based_on_parser(None, f" - size limit <= : '{entry_size_lt}'")
+        self.print_message_based_on_parser(None, f" - order by: '{order_by}'")
+        self.print_message_based_on_parser(None, f" - max results: '{max_results_int}'")
+        self.print_message_based_on_parser(None, "")
+
+        select_results = self.database.filesystem_search(entry_search, volume_label, entry_type_int, entry_category, entry_size_gt_int, entry_size_lt_int, order_by, max_results_int)
+
+        self.print_file_search_result(select_results, label, show_size, show_last_modified, show_attributes)
+
+    def subcommand_filesystem_duplicates_search(self, args: []):
+        logging.debug(f"### F.subcommand_filesystem_duplicates_search() ###")
+        print(f"### F.subcommand_filesystem_duplicates_search() ###")
         # Gather argument values or their defaults
         entry_search = args.search if "search" in args else AddArgs.SUBCMD_FILE_SEARCH_DEFAULT
         label = args.label if "label" in args else AddArgs.SUBCMD_FILE_SEARCH_LABEL_ALL_LABELS
@@ -345,7 +412,7 @@ class F:
         self.print_file_search_result(select_results, label, show_size, show_last_modified, show_attributes)
 
     def subcommand_refresh_volumes(self, args: []):
-        logging.debug("### F.refresh_volumes() ###")
+        logging.debug("### F.subcommand_refresh_volumes() ###")
         if not self.__program.question_yes_no("Do you want to refresh the volume list?"):
             # they selected No so don't refresh
             return
@@ -398,6 +465,7 @@ class F:
             print(f'Deleted old entries for label: "{label}"')
 
     def subcommand_delete_volumes(self, args: []):
+        logging.debug("### F.subcommand_delete_volumes() ###")
         vol_label = args.vol_label if "vol_label" in args else None
         confirm = args.confirm if "confirm" in args else None
         #verbose = args.verbose if "verbose" in args else False
@@ -746,8 +814,12 @@ class F:
             if subcommand == AddArgs.SUBCMD_FILE_SEARCH:
                 self.subcommand_filesystem_search(args)
 
+            elif subcommand == AddArgs.SUBCMD_DUPLICATES_SEARCH:
+                self.subcommand_filesystem_duplicates_search(args)
+
             elif subcommand == AddArgs.SUBCMD_ADD_VOLUME:
                 self.subcommand_add_volumes(args)
+
 
             elif subcommand == AddArgs.SUBCMD_DELETE_VOLUME:
                 self.subcommand_delete_volumes(args)
