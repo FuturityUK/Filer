@@ -184,6 +184,11 @@ class F:
             print("The directory must exist before a new database can be created there.")
             exit(2)
 
+    def print_duplicates_search_result(self, select_results, label, show_size, show_last_modified, show_attributes):
+        print("*** F().print_file_search_result ***")
+        print("select_results:")
+        print(select_results)
+
     def print_file_search_result(self, select_results, label, show_size, show_last_modified, show_attributes):
 
         if show_last_modified:
@@ -410,7 +415,7 @@ class F:
 
         select_results = self.database.filesystem_duplicates_search(entry_search, volume_label, entry_type_int, entry_category, entry_size_gt_int, entry_size_lt_int, order_by, max_results_int)
 
-        self.print_file_search_result(select_results, label, show_size, show_last_modified, show_attributes)
+        self.print_duplicates_search_result(select_results, label, show_size, show_last_modified, show_attributes)
 
     def subcommand_refresh_volumes(self, args: []):
         logging.debug("### F.subcommand_refresh_volumes() ###")
