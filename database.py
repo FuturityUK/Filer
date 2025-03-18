@@ -309,6 +309,22 @@ class Database:
             sql_argument_array.append(entry_type)
             clause_added = True
 
+        # >= clause
+        if entry_size_gt is not None:
+            if clause_added:
+                sql_string += " AND "
+            sql_string += self.__sql_dictionary["find_filename_ByteSize_greater_than_equal_to_clause"]
+            sql_argument_array.append(entry_size_gt)
+            clause_added = True
+
+        # <= clause
+        if entry_size_lt is not None:
+            if clause_added:
+                sql_string += " AND "
+            sql_string += self.__sql_dictionary["find_filename_ByteSize_less_than_equal_to_clause"]
+            sql_argument_array.append(entry_size_lt)
+            clause_added = True
+
         # Add table join
         sql_string += " " + self.__sql_dictionary["find_filename_join"]
 

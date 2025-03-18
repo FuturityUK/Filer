@@ -214,11 +214,11 @@ class AddArgs:
         AddArgs.add_argument(subparser_search_group, "-c", "--category", dest='category', metavar='File Category (NOT IMPLEMENTED YET)',
                              choices=file_categories, nargs='?', help="Category of files to be considered. Removes Directories from results if selected.")
 
-        AddArgs.add_argument(subparser_search_group, "--size_gt", dest='size_gt', metavar='Size >=',
-                             widget = 'Dropdown', nargs = '?', default = AddArgs.SUBCMD_FILE_SEARCH_SIZE_CHOICE, choices=AddArgs.SUBCMD_FILE_SEARCH_SIZE_CHOICES,
+        AddArgs.add_argument(subparser_search_group, "--size_gt", dest='size_gt', metavar='Size >=', default = AddArgs.SUBCMD_FILE_SEARCH_SIZE_CHOICE,
+                             # widget = 'Dropdown', nargs = '?', choices=AddArgs.SUBCMD_FILE_SEARCH_SIZE_CHOICES,
                              help="Size greater than or equal to value used to limit the results.")
-        AddArgs.add_argument(subparser_search_group, "--size_lt", dest='size_lt', metavar='Size <=',
-                             widget = 'Dropdown', nargs = '?', default = AddArgs.SUBCMD_FILE_SEARCH_SIZE_CHOICE, choices=AddArgs.SUBCMD_FILE_SEARCH_SIZE_CHOICES,
+        AddArgs.add_argument(subparser_search_group, "--size_lt", dest='size_lt', metavar='Size <=', default = AddArgs.SUBCMD_FILE_SEARCH_SIZE_CHOICE,
+                             # widget = 'Dropdown', nargs = '?', choices=AddArgs.SUBCMD_FILE_SEARCH_SIZE_CHOICES,
                              help="Size less than or equal to value used to limit the results.")
 
         # Invisible GUI Argument purely for widget arrangement

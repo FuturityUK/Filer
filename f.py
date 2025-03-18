@@ -332,10 +332,10 @@ class F:
         if entry_search is not None and entry_search != "": self.print_message_based_on_parser(None, f" - search: '{entry_search}'")
         #if label is not None and label != "":
         self.print_message_based_on_parser(None, f" - volume label: '{label}'")
-        if entry_type is not None and entry_type != "": self.print_message_based_on_parser(None, f" - type: '{entry_type}'")
+        if entry_type is not None and entry_type != "": self.print_message_based_on_parser(None, f" - entry type: '{entry_type}'")
         if entry_category is not None and entry_category != "": self.print_message_based_on_parser(None, f" - category: '{entry_category}'")
-        if entry_size_gt_int is not None and entry_size_gt_int != "": self.print_message_based_on_parser(None, f" - size limit >= : '{entry_size_gt_int}'")
-        if entry_size_lt_int is not None and entry_size_lt_int != "": self.print_message_based_on_parser(None, f" - size limit <= : '{entry_size_lt_int}'")
+        if entry_size_gt_int is not None and entry_size_gt_int != "": self.print_message_based_on_parser(None, f" - size limit >= : '{entry_size_gt}'")
+        if entry_size_lt_int is not None and entry_size_lt_int != "": self.print_message_based_on_parser(None, f" - size limit <= : '{entry_size_lt}'")
         self.print_message_based_on_parser(None, f" - order by: '{order_by}'")
         self.print_message_based_on_parser(None, f" - max results: '{max_results_int}'")
         self.print_message_based_on_parser(None, "")

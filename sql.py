@@ -162,8 +162,8 @@ class SQLDictionary:
                 fse.ByteSize >= ?
             ''',
 
-            "find_filename_ByteSize_less_than_clause": '''
-                fse.ByteSize < ?
+            "find_filename_ByteSize_less_than_equal_to_clause": '''
+                fse.ByteSize <= ?
             ''',
 
             "find_filename_join": '''
