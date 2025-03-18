@@ -14,6 +14,9 @@ class Database:
     """ Class to handle SQlite operations """
     __verbose = False
 
+    ENTRY_TYPE_FILES: int = 0
+    ENTRY_TYPE_DIRECTORIES: int = 1
+
     def __init__(self, path: str):
         self.__connection = self.create_connection(path)
         self.__cursor = self.create_cursor()
@@ -264,7 +267,7 @@ class Database:
         """
         return self.filesystem_search(filename, file_type, label, max_results, order_by, order_desc, False)
 
-    def filesystem_search(self, entry_search: str = None, volume_label: str = None, entry_type: int = None, entry_category: str = None, entry_size_limit: str = None, order_by: str = None, max_results: int = 100, like: bool = True):
+    def filesystem_search(self, entry_search: str = None, volume_label: str = None, entry_type: int = None, entry_category: str = None, entry_size_gt: int = None, entry_size_lt: int = None, order_by: str = None, max_results: int = 100, like: bool = True):
         # If entry_type is None: Any, 1: Directory, 0: Non-Directory
         sql_string = self.__sql_dictionary["find_filename_base"]
         sql_argument_array = []
@@ -299,7 +302,7 @@ class Database:
             clause_added = True
 
         # Entry type clause
-        if entry_type is not None:
+        if entry_type is not None and (entry_type == self.ENTRY_TYPE_FILES or entry_type == self.ENTRY_TYPE_DIRECTORIES):
             if clause_added:
                 sql_string += " AND "
             sql_string += self.__sql_dictionary["find_filename_directory_clause"]

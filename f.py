@@ -15,18 +15,19 @@ database_filename = "I:\\FileProcessorDatabase\\database.sqlite"
 """
 import sys
 
-from file_system_processors import PowerShellFilesystemListing
-from database import Database
 import tracemalloc
 import os.path
-from system import System
 import time
 import socket
 import logging
-from data import Data
-from format import Format
-from datetime import datetime
 import json
+from file_system_processors import PowerShellFilesystemListing
+from database import Database
+from data import Data
+from system import System
+from format import Format
+from convert import Convert
+from datetime import datetime
 #from print import Print
 from add_args import AddArgs
 #from program import Program
@@ -206,7 +207,7 @@ class F:
                     if temp_field_width > field_widths['label']: field_widths['label'] = temp_field_width
                 if show_size:
                     size_bytes = 0 if row[self.FILE_SEARCH_RESULTS_BYTE_SIZE] is None else row[self.FILE_SEARCH_RESULTS_BYTE_SIZE]
-                    temp_field_string = Format.format_storage_size(size_bytes, False)
+                    temp_field_string = Convert.bytesize2string(size_bytes, False)
                     temp_field_width = len(temp_field_string)
                     if temp_field_width > field_widths['size']: field_widths['size'] = temp_field_width
 
@@ -238,7 +239,7 @@ class F:
                     case self.FILE_SEARCH_RESULTS_BYTE_SIZE:
                         if show_size:
                             size_bytes = 0 if row[i] is None else row[i]
-                            temp_string = Format.format_storage_size(size_bytes, False)
+                            temp_string = Convert.bytesize2string(size_bytes, False)
                             print(temp_string.rjust(field_widths['size']), end=" ")
                     case self.FILE_SEARCH_RESULTS_LAST_WRITE_TIME:
                         if show_last_modified:
@@ -278,35 +279,50 @@ class F:
 
     def subcommand_filesystem_search(self, args: []):
         logging.debug(f"### F.search() ###")
+        # Gather argument values or their defaults
         entry_search = args.search if "search" in args else AddArgs.SUBCMD_FILE_SEARCH_DEFAULT
         label = args.label if "label" in args else AddArgs.SUBCMD_FILE_SEARCH_LABEL_ALL_LABELS
         entry_type = args.type if "type" in args else AddArgs.SUBCMD_FILE_SEARCH_SEARCH_FOR_CHOICE
         entry_category = args.category if "category" in args else None
-        entry_size_limit = args.size_limit if "size_limit" in args else AddArgs.SUBCMD_FILE_SEARCH_SIZE_LIMIT_ALL_FILES
+        entry_size_gt = args.size_gt if "size_gt" in args else AddArgs.SUBCMD_FILE_SEARCH_SIZE_ALL_FILES
+        entry_size_lt = args.size_lt if "size_lt" in args else AddArgs.SUBCMD_FILE_SEARCH_SIZE_ALL_FILES
         order_by = args.order_by if "order_by" in args else AddArgs.SUBCMD_FILE_SEARCH_ORDER_DEFAULT_CHOICE
         max_results = args.max_results if "max_results" in args else AddArgs.SUBCMD_FILE_SEARCH_MAX_RESULTS_DEFAULT_CHOICE
         show_size = args.show_size if "show_size" in args else False
         show_last_modified = args.show_last_modified if "show_last_modified" in args else False
         show_attributes = args.show_attributes if "show_attributes" in args else False
-
+        # volume_label = None if the default value has been selected
         volume_label = None if label == AddArgs.SUBCMD_FILE_SEARCH_LABEL_ALL_LABELS else label
+        # Convert entry_type string into the entry_type_int number
         entry_type_int = None
         if entry_type == AddArgs.SUBCMD_FILE_SEARCH_SEARCH_FOR_EVERYTHING:
             entry_type_int = None
         elif entry_type == AddArgs.SUBCMD_FILE_SEARCH_SEARCH_FOR_DIRECTORIES:
-            entry_type_int = 1 # Directories
+            entry_type_int = Database.ENTRY_TYPE_DIRECTORIES
         elif entry_type == AddArgs.SUBCMD_FILE_SEARCH_SEARCH_FOR_FILES:
-            entry_type_int = 0 # Files
+            entry_type_int = Database.ENTRY_TYPE_FILES
         else:
             self.exit_cleanly(self.EXIT_ERROR, f'Entry Type "{entry_type}" is not one of the choices!')
-
+        # Convert max_results into an integer
         max_results_int = 0
         try:
-            # Convert strings to int
             max_results_int = int(max_results)
         except ValueError:
-            # Handle the exception
-            self.exit_cleanly(self.EXIT_ERROR, f'Results value "{max_results}" is not an integer!')
+            self.exit_cleanly(self.EXIT_ERROR, f'Results value "{max_results}" is not an integer!') # Handle the exception
+        # Convert entry_size_gt into an integer
+        if entry_size_gt is not None and entry_size_gt != "":
+            entry_size_gt_int = Convert.string2bytesize(entry_size_gt)
+            if entry_size_gt is not None and entry_size_gt_int is None:
+                self.exit_cleanly(self.EXIT_ERROR, f'Entry Size >= value "{entry_size_gt}" is not in a valid file size format!') # Handle the exception
+        else:
+            entry_size_gt_int = None
+        # Convert entry_size_lt into an integer
+        if entry_size_lt is not None and entry_size_lt != "":
+            entry_size_lt_int = Convert.string2bytesize(entry_size_lt)
+            if entry_size_lt is not None and entry_size_lt_int is None:
+                self.exit_cleanly(self.EXIT_ERROR, f'Entry Size <= value "{entry_size_lt}" is not in a valid file size format!') # Handle the exception
+        else:
+            entry_size_lt_int = None
 
         # It doesn't matter if the none of these are filled in.
         # if (entry_search is None or entry_search == "") and entry_category is None and volume_label is None:
@@ -318,12 +334,13 @@ class F:
         self.print_message_based_on_parser(None, f" - volume label: '{label}'")
         if entry_type is not None and entry_type != "": self.print_message_based_on_parser(None, f" - type: '{entry_type}'")
         if entry_category is not None and entry_category != "": self.print_message_based_on_parser(None, f" - category: '{entry_category}'")
-        if entry_size_limit is not None and entry_size_limit != "": self.print_message_based_on_parser(None, f" - size limit: '{entry_size_limit}'")
+        if entry_size_gt_int is not None and entry_size_gt_int != "": self.print_message_based_on_parser(None, f" - size limit >= : '{entry_size_gt_int}'")
+        if entry_size_lt_int is not None and entry_size_lt_int != "": self.print_message_based_on_parser(None, f" - size limit <= : '{entry_size_lt_int}'")
         self.print_message_based_on_parser(None, f" - order by: '{order_by}'")
         self.print_message_based_on_parser(None, f" - max results: '{max_results_int}'")
         self.print_message_based_on_parser(None, "")
 
-        select_results = self.database.filesystem_search(entry_search, volume_label, entry_type_int, entry_category, entry_size_limit, order_by, max_results_int)
+        select_results = self.database.filesystem_search(entry_search, volume_label, entry_type_int, entry_category, entry_size_gt_int, entry_size_lt_int, order_by, max_results_int)
 
         self.print_file_search_result(select_results, label, show_size, show_last_modified, show_attributes)
 
@@ -622,7 +639,7 @@ class F:
             disk_number = self.system.get_disk_number_for_drive_letter(drive_letter)
             # print(f"{drive_letter} is on drive {disk_number}")
 
-            volume_info_line = f"{volume_dictionary['DriveLetter']}: \"{volume_dictionary['FileSystemLabel']}\" {Format.format_storage_size(int(volume_dictionary['Size']), True, 1)}, {volume_dictionary['FileSystemType']} ({volume_dictionary['HealthStatus']})"
+            volume_info_line = f"{volume_dictionary['DriveLetter']}: \"{volume_dictionary['FileSystemLabel']}\" {Convert.bytesize2string(int(volume_dictionary['Size']), True, 1)}, {volume_dictionary['FileSystemType']} ({volume_dictionary['HealthStatus']})"
             if len(disk_number.strip()) != 0:
                 logical_disk_dictionary = Data.find_dictionary_in_array(self.logical_disk_array, "DiskNumber",
                                                                         disk_number)
