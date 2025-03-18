@@ -295,6 +295,7 @@ class Database:
 
         # Label clause
         if volume_label is not None and volume_label != "" :
+            print(f'volume_label: "{volume_label}"')
             if clause_added:
                 sql_string += " AND "
             sql_string += self.__sql_dictionary["find_filename_label_clause"]
@@ -326,6 +327,8 @@ class Database:
             clause_added = True
 
         # Add table join
+        if clause_added:
+            sql_string += " AND "
         sql_string += " " + self.__sql_dictionary["find_filename_join"]
 
         # Order By

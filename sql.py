@@ -167,7 +167,7 @@ class SQLDictionary:
             ''',
 
             "find_filename_join": '''
-                AND fse.FileSystemID = fs.FileSystemID
+                fse.FileSystemID = fs.FileSystemID
             ''',
 
             "find_filename_order_by_full_path": "ORDER BY fse.FullName",
