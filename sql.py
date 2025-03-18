@@ -183,13 +183,13 @@ class SQLDictionary:
             ''',
 
             "find_duplicates_base": '''
-                SELECT EntryName, ByteSize, FileSystemID, COUNT(*) as duplicates
-                FROM FileSystemEntries
-                WHERE  
+                SELECT fse.EntryName, fse.ByteSize, fse.IsDirectory, COUNT(*) as Duplicates
+                FROM FilesystemEntries AS fse, FileSystems AS fs
+                WHERE 
             ''',
 
             "find_duplicates_group_by": '''
-                GROUP BY EntryName, ByteSize, FileSystemID
+                GROUP BY fse.EntryName, fse.ByteSize
                 HAVING COUNT(EntryName) > 1
             ''',
 

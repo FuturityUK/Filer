@@ -252,8 +252,9 @@ class Database:
                             last_db_version = new_db_version
         self.commit()
 
+    """
     def find_filenames_exact_match(self, filename: str, file_type: str, label: str = None, max_results: int = None, order_by: str = None, order_desc: bool = False):
-        """
+
         if label is None:
             self.find_filenames(
                 self.__sql_dictionary["find_filename_exact_match"],
@@ -264,15 +265,22 @@ class Database:
                 self.__sql_dictionary["find_filename_exact_match_with_label"],
                 [filename, label]
             )
-        """
         return self.filesystem_search(filename, file_type, label, max_results, order_by, order_desc, False)
+    """
 
-    def filesystem_search(self, entry_search: str = None, volume_label: str = None, entry_type: int = None, entry_category: str = None, entry_size_gt: int = None, entry_size_lt: int = None, order_by: str = None, max_results: int = 100, like: bool = True):
+    def filesystem_duplicates_search(self, entry_search: str = None, volume_label: str = None, entry_type: int = None, entry_category: str = None, entry_size_gt: int = None, entry_size_lt: int = None, order_by: str = None, max_results: int = 100, like: bool = True):
+        print("*** Database.filesystem_duplicates_search() ***")
         # If entry_type is None: Any, 1: Directory, 0: Non-Directory
-        sql_string = self.__sql_dictionary["find_filename_base"]
+        sql_string = self.__sql_dictionary["find_duplicates_base"]
         sql_argument_array = []
         clause_added = False
 
+
+        return self.find_filenames( sql_string, sql_argument_array )
+
+    clause_added = True
+
+    def create_entry_search_sql_string(self, sql_string: str, sql_argument_array: [], clause_added: bool, entry_search: str, like: bool):
         if entry_search is not None:
             if entry_search.count("%") == 0 and entry_search.count("_") == 0:
                 # We can replace this SQL "like" with an exact match '=' as it doesn't contain "like" special characters
@@ -292,7 +300,9 @@ class Database:
                     print("Filename can't be empty for an exact match search")
                     exit()
             clause_added = True
+        return sql_string, sql_argument_array, clause_added
 
+    def create_volume_label_sql_string(self, sql_string: str, sql_argument_array: [], clause_added: bool, volume_label: str):
         # Label clause
         if volume_label is not None and volume_label != "" :
             print(f'volume_label: "{volume_label}"')
@@ -301,7 +311,9 @@ class Database:
             sql_string += self.__sql_dictionary["find_filename_label_clause"]
             sql_argument_array.append(volume_label)
             clause_added = True
+        return sql_string, sql_argument_array, clause_added
 
+    def create_entry_type_sql_string(self, sql_string: str, sql_argument_array: [], clause_added: bool, entry_type: int):
         # Entry type clause
         if entry_type is not None and (entry_type == self.ENTRY_TYPE_FILES or entry_type == self.ENTRY_TYPE_DIRECTORIES):
             if clause_added:
@@ -309,6 +321,21 @@ class Database:
             sql_string += self.__sql_dictionary["find_filename_directory_clause"]
             sql_argument_array.append(entry_type)
             clause_added = True
+        return sql_string, sql_argument_array, clause_added
+
+    def create__sql_string(self, sql_string: str, sql_argument_array: [], clause_added: bool, entry_search: str):
+        return sql_string, sql_argument_array, clause_added
+
+    def filesystem_search(self, entry_search: str = None, volume_label: str = None, entry_type: int = None, entry_category: str = None, entry_size_gt: int = None, entry_size_lt: int = None, order_by: str = None, max_results: int = 100, like: bool = True):
+        # If entry_type is None: Any, 1: Directory, 0: Non-Directory
+        sql_string = self.__sql_dictionary["find_filename_base"]
+        sql_argument_array = []
+        clause_added = False
+
+        sql_string, sql_argument_array, clause_added = self.create_entry_search_sql_string(sql_string, sql_argument_array, clause_added, entry_search, like)
+        sql_string, sql_argument_array, clause_added = self.create_volume_label_sql_string(sql_string, sql_argument_array, clause_added, volume_label)
+        sql_string, sql_argument_array, clause_added = self.create_entry_type_sql_string(sql_string, sql_argument_array, clause_added, entry_type)
+
 
         # >= clause
         if entry_size_gt is not None:

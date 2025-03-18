@@ -195,21 +195,22 @@ class F:
             print("")
 
         # Calculate Max Widths
-        field_widths = {'label': 0, 'size': 0, 'datetime': 19, 'attributes': 6}
+        field_widths = {'label': 5, 'size': 4, 'datetime': 19, 'attributes': 6} # Start with Label widths: 'label': 5, 'size': 4, Fixed width columns: 'datetime': 19, 'attributes': 6
         show_label = False
         if label == AddArgs.SUBCMD_FILE_SEARCH_LABEL_ALL_LABELS:
             show_label = True
         if show_label or show_size:
-            for row in select_results:
-                if show_label:
-                    temp_field_string = "" if row[self.FILE_SEARCH_RESULTS_LABEL] is None else row[self.FILE_SEARCH_RESULTS_LABEL]
-                    temp_field_width = len(temp_field_string)
-                    if temp_field_width > field_widths['label']: field_widths['label'] = temp_field_width
-                if show_size:
-                    size_bytes = 0 if row[self.FILE_SEARCH_RESULTS_BYTE_SIZE] is None else row[self.FILE_SEARCH_RESULTS_BYTE_SIZE]
-                    temp_field_string = Convert.bytesize2string(size_bytes, False)
-                    temp_field_width = len(temp_field_string)
-                    if temp_field_width > field_widths['size']: field_widths['size'] = temp_field_width
+            if select_results is not None:
+                for row in select_results:
+                    if show_label:
+                        temp_field_string = "" if row[self.FILE_SEARCH_RESULTS_LABEL] is None else row[self.FILE_SEARCH_RESULTS_LABEL]
+                        temp_field_width = len(temp_field_string)
+                        if temp_field_width > field_widths['label']: field_widths['label'] = temp_field_width
+                    if show_size:
+                        size_bytes = 0 if row[self.FILE_SEARCH_RESULTS_BYTE_SIZE] is None else row[self.FILE_SEARCH_RESULTS_BYTE_SIZE]
+                        temp_field_string = Convert.bytesize2string(size_bytes, False)
+                        temp_field_width = len(temp_field_string)
+                        if temp_field_width > field_widths['size']: field_widths['size'] = temp_field_width
 
         # Print Headers
         if show_label: print("Label".rjust(field_widths['label']), end=" ")
@@ -225,51 +226,51 @@ class F:
 
         # Print results
         rows_found = 0
-        for row in select_results:
-            attributes = ""
-            for i in range(0, len(row)):
-                # Justify and space pad the field based on the max field width
-                temp_value = row[i]
-                temp_string = str(temp_value)
-                match i:
-                    case self.FILE_SEARCH_RESULTS_LABEL:
-                        if show_label:
-                            # Label isn't specified so we need to show the label for each filesystem entity
-                            print(temp_string.rjust(field_widths['label']), end=" ")
-                    case self.FILE_SEARCH_RESULTS_BYTE_SIZE:
-                        if show_size:
-                            size_bytes = 0 if row[i] is None else row[i]
-                            temp_string = Convert.bytesize2string(size_bytes, False)
-                            print(temp_string.rjust(field_widths['size']), end=" ")
-                    case self.FILE_SEARCH_RESULTS_LAST_WRITE_TIME:
-                        if show_last_modified:
-                            temp_string = "" if row[i] is None else Format.datetime_to_string(time.gmtime(row[i]))
-                            #print(temp_string.rjust(field_widths['datetime']), end=" ")
-                            print(temp_string, end=" ")
-                    case self.FILE_SEARCH_RESULTS_IS_DIRECTORY:
-                        append_char = 'D' if temp_value == 1 else '-'
-                        attributes += append_char
-                    case self.FILE_SEARCH_RESULTS_IS_ARCHIVE:
-                        append_char = 'A' if temp_value == 1 else '-'
-                        attributes += append_char
-                    case self.FILE_SEARCH_RESULTS_IS_READONLY:
-                        append_char = 'R' if temp_value == 1 else '-'
-                        attributes += append_char
-                    case self.FILE_SEARCH_RESULTS_IS_HIDDEN:
-                        append_char = 'H' if temp_value == 1 else '-'
-                        attributes += append_char
-                    case self.FILE_SEARCH_RESULTS_IS_SYSTEM:
-                        append_char = 'S' if temp_value == 1 else '-'
-                        attributes += append_char
-                    case self.FILE_SEARCH_RESULTS_IS_LINK:
-                        append_char = 'L' if temp_value == 1 else '-'
-                        attributes += append_char
-                        if show_attributes:
-                            print(f"{attributes}", end=" ") # Not justifying or padding required as fixed width
-                    case self.FILE_SEARCH_RESULTS_IS_FULL_PATH:
-                        print(temp_string) # .ljust(field_widths[i]) - Not needed as last string and left justified anyway
-
-            rows_found += 1
+        if select_results is not None:
+            for row in select_results:
+                attributes = ""
+                for i in range(0, len(row)):
+                    # Justify and space pad the field based on the max field width
+                    temp_value = row[i]
+                    temp_string = str(temp_value)
+                    match i:
+                        case self.FILE_SEARCH_RESULTS_LABEL:
+                            if show_label:
+                                # Label isn't specified so we need to show the label for each filesystem entity
+                                print(temp_string.rjust(field_widths['label']), end=" ")
+                        case self.FILE_SEARCH_RESULTS_BYTE_SIZE:
+                            if show_size:
+                                size_bytes = 0 if row[i] is None else row[i]
+                                temp_string = Convert.bytesize2string(size_bytes, False)
+                                print(temp_string.rjust(field_widths['size']), end=" ")
+                        case self.FILE_SEARCH_RESULTS_LAST_WRITE_TIME:
+                            if show_last_modified:
+                                temp_string = "" if row[i] is None else Format.datetime_to_string(time.gmtime(row[i]))
+                                #print(temp_string.rjust(field_widths['datetime']), end=" ")
+                                print(temp_string, end=" ")
+                        case self.FILE_SEARCH_RESULTS_IS_DIRECTORY:
+                            append_char = 'D' if temp_value == 1 else '-'
+                            attributes += append_char
+                        case self.FILE_SEARCH_RESULTS_IS_ARCHIVE:
+                            append_char = 'A' if temp_value == 1 else '-'
+                            attributes += append_char
+                        case self.FILE_SEARCH_RESULTS_IS_READONLY:
+                            append_char = 'R' if temp_value == 1 else '-'
+                            attributes += append_char
+                        case self.FILE_SEARCH_RESULTS_IS_HIDDEN:
+                            append_char = 'H' if temp_value == 1 else '-'
+                            attributes += append_char
+                        case self.FILE_SEARCH_RESULTS_IS_SYSTEM:
+                            append_char = 'S' if temp_value == 1 else '-'
+                            attributes += append_char
+                        case self.FILE_SEARCH_RESULTS_IS_LINK:
+                            append_char = 'L' if temp_value == 1 else '-'
+                            attributes += append_char
+                            if show_attributes:
+                                print(f"{attributes}", end=" ") # Not justifying or padding required as fixed width
+                        case self.FILE_SEARCH_RESULTS_IS_FULL_PATH:
+                            print(temp_string) # .ljust(field_widths[i]) - Not needed as last string and left justified anyway
+                rows_found += 1
         # Print a blank row if we are in the GUI and rows were found
         if rows_found != 0:
             self.print_message_based_on_parser(None, "")
@@ -407,7 +408,7 @@ class F:
         self.print_message_based_on_parser(None, f" - max results: '{max_results_int}'")
         self.print_message_based_on_parser(None, "")
 
-        select_results = self.database.filesystem_search(entry_search, volume_label, entry_type_int, entry_category, entry_size_gt_int, entry_size_lt_int, order_by, max_results_int)
+        select_results = self.database.filesystem_duplicates_search(entry_search, volume_label, entry_type_int, entry_category, entry_size_gt_int, entry_size_lt_int, order_by, max_results_int)
 
         self.print_file_search_result(select_results, label, show_size, show_last_modified, show_attributes)
 
