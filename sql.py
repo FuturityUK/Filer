@@ -183,7 +183,7 @@ class SQLDictionary:
             ''',
 
             "find_duplicates_base": '''
-                SELECT fse.EntryName, fse.ByteSize, fse.IsDirectory, COUNT(*) as Duplicates
+                SELECT COUNT(*) as Duplicates, fse.IsDirectory, fse.ByteSize, fse.EntryName 
                 FROM FilesystemEntries AS fse, FileSystems AS fs
                 WHERE 
             ''',

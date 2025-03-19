@@ -376,7 +376,6 @@ class Database:
         return self.find_filenames( sql_string, sql_argument_array )
 
     def filesystem_duplicates_search(self, entry_search: str = None, volume_label: str = None, entry_type: int = None, entry_category: str = None, entry_size_gt: int = None, entry_size_lt: int = None, order_by: str = None, max_results: int = 100, like: bool = True):
-        print("*** Database.filesystem_duplicates_search() ***")
         # If entry_type is None: Any, 1: Directory, 0: Non-Directory
         sql_string = self.__sql_dictionary["find_duplicates_base"]
         sql_argument_array = []

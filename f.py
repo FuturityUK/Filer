@@ -59,17 +59,22 @@ class F:
     CONFIG_DATABASE_FILENAME: str = "database_filename"
     CONFIG_CHOSEN_LABEL: str = "chosen_label"
 
-    FILE_SEARCH_RESULTS_LABEL = 0
-    FILE_SEARCH_RESULTS_FILENAME = 1
-    FILE_SEARCH_RESULTS_BYTE_SIZE = 2
-    FILE_SEARCH_RESULTS_LAST_WRITE_TIME = 3
-    FILE_SEARCH_RESULTS_IS_DIRECTORY = 4
-    FILE_SEARCH_RESULTS_IS_ARCHIVE = 5
-    FILE_SEARCH_RESULTS_IS_READONLY = 6
-    FILE_SEARCH_RESULTS_IS_HIDDEN = 7
-    FILE_SEARCH_RESULTS_IS_SYSTEM = 8
-    FILE_SEARCH_RESULTS_IS_LINK = 9
-    FILE_SEARCH_RESULTS_IS_FULL_PATH = 10
+    FILE_SEARCH_RESULTS_LABEL: int = 0
+    FILE_SEARCH_RESULTS_FILENAME: int = 1
+    FILE_SEARCH_RESULTS_BYTE_SIZE: int = 2
+    FILE_SEARCH_RESULTS_LAST_WRITE_TIME: int = 3
+    FILE_SEARCH_RESULTS_IS_DIRECTORY: int = 4
+    FILE_SEARCH_RESULTS_IS_ARCHIVE: int = 5
+    FILE_SEARCH_RESULTS_IS_READONLY: int = 6
+    FILE_SEARCH_RESULTS_IS_HIDDEN: int = 7
+    FILE_SEARCH_RESULTS_IS_SYSTEM: int = 8
+    FILE_SEARCH_RESULTS_IS_LINK: int = 9
+    FILE_SEARCH_RESULTS_IS_FULL_PATH: int = 10
+
+    DUPLICATES_SEARCH_RESULTS_DUPLICATES: int = 0
+    DUPLICATES_SEARCH_RESULTS_IS_DIRECTORY: int = 1
+    DUPLICATES_SEARCH_RESULTS_BYTE_SIZE: int = 2
+    DUPLICATES_SEARCH_RESULTS_ENTRY_NAME: int = 3
 
     def __init__(self, program, parser, memory_stats: bool, database_filename_argument: str = None):
         self.__program = program
@@ -184,10 +189,53 @@ class F:
             print("The directory must exist before a new database can be created there.")
             exit(2)
 
-    def print_duplicates_search_result(self, select_results, label, show_size, show_last_modified, show_attributes):
-        print("*** F().print_file_search_result ***")
-        print("select_results:")
-        print(select_results)
+    def print_duplicates_search_result(self, select_results):
+        # Calculate Max Widths
+        field_widths = {'duplicates': 10, 'type': 4, 'size': 4, 'entry_name': 10} # Start with Label widths: 'label': 5, 'size': 4, Fixed width columns: 'datetime': 19, 'attributes': 6
+        if select_results is not None:
+            for row in select_results:
+                size_bytes = 0 if row[self.DUPLICATES_SEARCH_RESULTS_BYTE_SIZE] is None else row[self.DUPLICATES_SEARCH_RESULTS_BYTE_SIZE]
+                temp_field_string = Convert.bytesize2string(size_bytes, False)
+                temp_field_width = len(temp_field_string)
+                if temp_field_width > field_widths['size']: field_widths['size'] = temp_field_width
+
+        # Print Headers
+        print("Duplicates".rjust(field_widths['duplicates']), end=" ")
+        print("Type".rjust(field_widths['type']), end=" ")
+        print("Size".rjust(field_widths['size']), end=" ")
+        print("Entry Name")
+        print("=" * field_widths['duplicates'], end=" ")
+        print("=" * field_widths['type'], end=" ")
+        print("=" * field_widths['size'], end=" ")
+        print("=" * len("Entry Name"))
+
+        # Print results
+        rows_found = 0
+        if select_results is not None:
+            for row in select_results:
+                for i in range(0, len(row)):
+                    # Justify and space pad the field based on the max field width
+                    temp_value = row[i]
+                    temp_string = str(temp_value)
+                    match i:
+                        case self.DUPLICATES_SEARCH_RESULTS_DUPLICATES:
+                            duplicates = 0 if row[i] is None else row[i]
+                            print(temp_string.rjust(field_widths['duplicates']), end=" ")
+                        case self.DUPLICATES_SEARCH_RESULTS_IS_DIRECTORY:
+                            type_char = 'D' if temp_value == 1 else 'F'
+                            print(type_char.rjust(field_widths['type']), end=" ")
+                        case self.DUPLICATES_SEARCH_RESULTS_BYTE_SIZE:
+                            size_bytes = 0 if row[i] is None else row[i]
+                            temp_string = Convert.bytesize2string(size_bytes, False)
+                            print(temp_string.rjust(field_widths['size']), end=" ")
+                        case self.DUPLICATES_SEARCH_RESULTS_ENTRY_NAME:
+                            print(temp_string) # .ljust(field_widths[i]) - Not needed as last string and left justified anyway
+                rows_found += 1
+        # Print a blank row if we are in the GUI and rows were found
+        if rows_found != 0:
+            self.print_message_based_on_parser(None, "")
+        # Print the number of row found in the GUI
+        self.print_message_based_on_parser(None, f"{rows_found} results found")
 
     def print_file_search_result(self, select_results, label, show_size, show_last_modified, show_attributes):
 
@@ -351,7 +399,6 @@ class F:
 
     def subcommand_filesystem_duplicates_search(self, args: []):
         logging.debug(f"### F.subcommand_filesystem_duplicates_search() ###")
-        print(f"### F.subcommand_filesystem_duplicates_search() ###")
         # Gather argument values or their defaults
         entry_search = args.search if "search" in args else AddArgs.SUBCMD_FILE_SEARCH_DEFAULT
         label = args.label if "label" in args else AddArgs.SUBCMD_FILE_SEARCH_LABEL_ALL_LABELS
@@ -401,7 +448,7 @@ class F:
         # if (entry_search is None or entry_search == "") and entry_category is None and volume_label is None:
         #     self.exit_cleanly(self.EXIT_ERROR, "No search terms provided")
 
-        self.print_message_based_on_parser(None, f"Finding files & dirs matching:")
+        self.print_message_based_on_parser(None, f"Finding duplicate files & dirs matching:")
         if entry_search is not None and entry_search != "": self.print_message_based_on_parser(None, f" - search: '{entry_search}'")
         #if label is not None and label != "":
         self.print_message_based_on_parser(None, f" - volume label: '{label}'")
@@ -415,7 +462,7 @@ class F:
 
         select_results = self.database.filesystem_duplicates_search(entry_search, volume_label, entry_type_int, entry_category, entry_size_gt_int, entry_size_lt_int, order_by, max_results_int)
 
-        self.print_duplicates_search_result(select_results, label, show_size, show_last_modified, show_attributes)
+        self.print_duplicates_search_result(select_results)
 
     def subcommand_refresh_volumes(self, args: []):
         logging.debug("### F.subcommand_refresh_volumes() ###")

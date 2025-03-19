@@ -45,8 +45,9 @@ class AddArgs:
     SUBCMD_FILE_SEARCH_SEARCH_FOR_FILES: str = 'Files'
     SUBCMD_FILE_SEARCH_SEARCH_FOR_DIRECTORIES: str = 'Directories'
     SUBCMD_FILE_SEARCH_SEARCH_FOR_EVERYTHING: str = 'Everything'
-    SUBCMD_FILE_SEARCH_SEARCH_FOR_CHOICE: str = SUBCMD_FILE_SEARCH_SEARCH_FOR_EVERYTHING
     SUBCMD_FILE_SEARCH_SEARCH_FOR_CHOICES: list = [SUBCMD_FILE_SEARCH_SEARCH_FOR_FILES, SUBCMD_FILE_SEARCH_SEARCH_FOR_DIRECTORIES, SUBCMD_FILE_SEARCH_SEARCH_FOR_EVERYTHING]
+    SUBCMD_FILE_SEARCH_SEARCH_FOR_CHOICE: str = SUBCMD_FILE_SEARCH_SEARCH_FOR_EVERYTHING
+    SUBCMD_DUPLICATES_SEARCH_SEARCH_FOR_CHOICE: str = SUBCMD_FILE_SEARCH_SEARCH_FOR_FILES
 
     SUBCMD_FILE_SEARCH_SIZE_ALL_FILES: str = ""
     SUBCMD_FILE_SEARCH_SIZE_CHOICE: str = SUBCMD_FILE_SEARCH_SIZE_ALL_FILES
@@ -264,10 +265,10 @@ class AddArgs:
 
         subparser_duplicates = subparsers.add_parser(AddArgs.SUBCMD_DUPLICATES_SEARCH,
                                                  help=AddArgs.SUBCMD_DUPLICATES_SEARCH + ' help',
-                                                 prog='Duplicate Search',
+                                                 prog='Duplicates Search',
                                                  description='Search for duplicate filesystem entries based on search strings')
         subparser_search_group = subparser_duplicates.add_argument_group(
-            'Duplicate Search',
+            'Duplicates Search',
             description="Search for duplicate filesystem entries where the their names and sizes match."
         )
 
@@ -287,7 +288,7 @@ class AddArgs:
                              help="Label of the drive listing")
 
         AddArgs.add_argument(subparser_search_group, "--type", dest='type', metavar='Entry Type',
-                             widget='Dropdown', nargs='?', default=AddArgs.SUBCMD_FILE_SEARCH_SEARCH_FOR_CHOICE,
+                             widget='Dropdown', nargs='?', default=AddArgs.SUBCMD_DUPLICATES_SEARCH_SEARCH_FOR_CHOICE,
                              choices=AddArgs.SUBCMD_FILE_SEARCH_SEARCH_FOR_CHOICES,
                              help="What do you want to search for?")
         AddArgs.add_argument(subparser_search_group, "-c", "--category", dest='category',
@@ -328,7 +329,7 @@ class AddArgs:
                              default=AddArgs.SUBCMD_FILE_SEARCH_MAX_RESULTS_DEFAULT_CHOICE,
                              choices=AddArgs.SUBCMD_FILE_SEARCH_MAX_RESULTS_CHOICES,
                              help="Max number of results to display.")
-
+        """
         AddArgs.add_argument(subparser_search_group, "--show_size", dest='show_size', metavar='Show Size',
                              help="Show 'Size' in results.", default=False,
                              action="store_true", gooey_options={'visible': AddArgs.SHOW_FILE_SEARCH_ARG_IN_GUI})
@@ -342,7 +343,7 @@ class AddArgs:
                              help="Show 'Information / Attributes' in results. " + AddArgs.SHOW_ATTRIBUTES_EXTRA_HELP,
                              default=False,
                              action="store_true", gooey_options={'visible': AddArgs.SHOW_FILE_SEARCH_ARG_IN_GUI})
-
+        """
         AddArgs.add_db_argument_to_parser(subparser_search_group)
         # AddArgs.add_verbose_argument_to_parser(subparser_search_group)
 
