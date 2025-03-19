@@ -193,6 +193,8 @@ class SQLDictionary:
                 HAVING COUNT(EntryName) > 1
             ''',
 
+            "find_duplicates_order_by_duplicates": "ORDER BY Duplicates",
+
             "find_drive_id": '''
                 SELECT DriveID 
                 FROM Drives

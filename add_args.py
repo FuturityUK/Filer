@@ -42,6 +42,14 @@ class AddArgs:
     SUBCMD_FILE_SEARCH_ORDER_CHOICES: list = [SUBCMD_FILE_SEARCH_ORDER_FULL_PATH_ASCENDING, SUBCMD_FILE_SEARCH_ORDER_FULL_PATH_DESCENDING, SUBCMD_FILE_SEARCH_ORDER_FILENAME_ASCENDING, SUBCMD_FILE_SEARCH_ORDER_FILENAME_DESCENDING,
                                                 SUBCMD_FILE_SEARCH_ORDER_SIZE_ASCENDING, SUBCMD_FILE_SEARCH_ORDER_SIZE_DESCENDING, SUBCMD_FILE_SEARCH_ORDER_LAST_MODIFIED_ASCENDING, SUBCMD_FILE_SEARCH_ORDER_LAST_MODIFIED_DESCENDING]
 
+
+    SUBCMD_DUPLICATES_SEARCH_ORDER_DUPLICATES_ASCENDING: str = 'Duplicates (Smallest -> Largest)'
+    SUBCMD_DUPLICATES_SEARCH_ORDER_DUPLICATES_DESCENDING: str = 'Duplicates (Largest -> Smallest)'
+    SUBCMD_DUPLICATES_SEARCH_ORDER_DEFAULT_CHOICE: str = SUBCMD_DUPLICATES_SEARCH_ORDER_DUPLICATES_DESCENDING
+    SUBCMD_DUPLICATES_SEARCH_ORDER_CHOICES: list = [SUBCMD_DUPLICATES_SEARCH_ORDER_DUPLICATES_DESCENDING, SUBCMD_DUPLICATES_SEARCH_ORDER_DUPLICATES_ASCENDING,
+                                                    SUBCMD_FILE_SEARCH_ORDER_SIZE_ASCENDING, SUBCMD_FILE_SEARCH_ORDER_SIZE_DESCENDING,
+                                                    SUBCMD_FILE_SEARCH_ORDER_FILENAME_ASCENDING, SUBCMD_FILE_SEARCH_ORDER_FILENAME_DESCENDING]
+
     SUBCMD_FILE_SEARCH_SEARCH_FOR_FILES: str = 'Files'
     SUBCMD_FILE_SEARCH_SEARCH_FOR_DIRECTORIES: str = 'Directories'
     SUBCMD_FILE_SEARCH_SEARCH_FOR_EVERYTHING: str = 'Everything'
@@ -319,8 +327,8 @@ class AddArgs:
         )
         """
         AddArgs.add_argument(subparser_search_group, "--order_by", dest='order_by', metavar='Order By',
-                             widget='Dropdown', nargs='?', default=AddArgs.SUBCMD_FILE_SEARCH_ORDER_DEFAULT_CHOICE,
-                             choices=AddArgs.SUBCMD_FILE_SEARCH_ORDER_CHOICES,
+                             widget='Dropdown', nargs='?', default=AddArgs.SUBCMD_DUPLICATES_SEARCH_ORDER_DEFAULT_CHOICE,
+                             choices=AddArgs.SUBCMD_DUPLICATES_SEARCH_ORDER_CHOICES,
                              help="Use this Field to Order the results.")
         # AddArgs.add_argument(subparser_results_group, "--order_desc", dest='order_desc', metavar='\n\nOrder Descending', help="Show results in Descending Order.", default=False,
         #                    action="store_true", gooey_options={'visible': AddArgs.SHOW_FILE_SEARCH_ARG_IN_GUI})

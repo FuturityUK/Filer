@@ -349,6 +349,8 @@ class Database:
             elif order_by == AddArgs.SUBCMD_FILE_SEARCH_ORDER_SIZE_DESCENDING: sql_string += " " + self.__sql_dictionary["find_filename_order_by_size"] + " DESC "
             elif order_by == AddArgs.SUBCMD_FILE_SEARCH_ORDER_LAST_MODIFIED_ASCENDING: sql_string += " " + self.__sql_dictionary["find_filename_order_by_last_modified"]
             elif order_by == AddArgs.SUBCMD_FILE_SEARCH_ORDER_LAST_MODIFIED_DESCENDING: sql_string += " " + self.__sql_dictionary["find_filename_order_by_last_modified"] + " DESC "
+            elif order_by == AddArgs.SUBCMD_DUPLICATES_SEARCH_ORDER_DUPLICATES_ASCENDING: sql_string += " " + self.__sql_dictionary["find_duplicates_order_by_duplicates"]
+            elif order_by == AddArgs.SUBCMD_DUPLICATES_SEARCH_ORDER_DUPLICATES_DESCENDING: sql_string += " " + self.__sql_dictionary["find_duplicates_order_by_duplicates"] + " DESC "
         return sql_string, sql_argument_array, clause_added
 
     def create_limit_sql_string(self, sql_string: str, sql_argument_array: [], clause_added: bool, max_results: int):
