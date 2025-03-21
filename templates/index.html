@@ -11,8 +11,9 @@
 <body>
 
 <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="#">Logo</a>
+  <!-- <div class="container-fluid"> -->
+  <div class="container mt-3">
+    <a class="navbar-brand" href="#">FILER WEB-UI</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -40,12 +41,39 @@
   </div>
 </nav>
 
-<div class="container-fluid mt-3">
-  <h3>{{message}}</h3>
-  <p>Neil's test template with navbar.</p>
-</div>
+<div class="container mt-3">
+  <!-- Nav tabs -->
+  <ul class="nav nav-tabs" role="tablist">
+    <li class="nav-item">
+      <a class="nav-link active" data-bs-toggle="tab" href="#home">Home</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-bs-toggle="tab" href="#menu1">Filesystem Search</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-bs-toggle="tab" href="#menu2">Duplicates Search</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-bs-toggle="tab" href="#menu2">Add to Filesystem</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-bs-toggle="tab" href="#menu2">Refresh Volumes List</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-bs-toggle="tab" href="#menu2">Delete Filesystem</a>
+    </li>
+  </ul>
 
-<!-- <form class="row g-3 needs-validation" novalidate> -->
+  <!-- Tab panes -->
+  <div class="tab-content">
+    <div id="home" class="container tab-pane active"><br>
+      <h3>HOME</h3>
+      <p>Home home home home home home home home home home home home home home home home home home home home home home home home home home home.</p>
+    </div>
+    <div id="menu1" class="container tab-pane fade"><br>
+      <h3>Filesystem Search</h3>
+      <p>I love PIs.</p>
+      <!-- <form class="row g-3 needs-validation" novalidate> -->
 <form class="row g-3 was-validated" action="/action_page.php" >
   <div class="col-md-4">
     <label for="validationCustom01" class="form-label">First name</label>
@@ -115,7 +143,13 @@
   </div>
 </form>
 
-
+    </div>
+    <div id="menu2" class="container tab-pane fade"><br>
+      <h3>Menu 2</h3>
+      <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam.</p>
+    </div>
+  </div>
+</div>
 
 </body>
 </html>
