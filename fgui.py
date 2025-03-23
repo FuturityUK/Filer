@@ -211,9 +211,6 @@ class Fgui(Program):
         logging.info(f"### Fgui.main() ###")
         args = self.argument_parser.parse_args()
 
-        print(f"main.params:")
-        print(format())
-
         if not gooey_stdout():
             if F.SHOW_SUBMITTED_ARGS:
                 # Debug to show arguments past to the program
