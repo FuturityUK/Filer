@@ -10,6 +10,7 @@ class AddArgs:
     SHOW_VERBOSE_ARG_IN_GUI: bool = False
     SHOW_FILE_SEARCH_ARG_IN_GUI: bool = True
 
+    SUBCMD_INSTRUCTIONS: str = 'instructions'
     SUBCMD_FILE_SEARCH: str = 'file_search'
     SUBCMD_DUPLICATES_SEARCH: str = 'duplicates_search'
     SUBCMD_REFRESH_VOLUMES: str = 'refresh_volumes'
@@ -80,6 +81,8 @@ class AddArgs:
                                            required=True,
                                            dest='subcommand',
                                            help='additional help')
+        if not AddArgs.is_std_argument_parser(parser):
+            AddArgs.add_subcommand_instructions_arguments_to_parser(subparsers)
         AddArgs.add_subcommand_filesystem_search_arguments_to_parser(subparsers)
         AddArgs.add_subcommand_filesystem_duplicates_search_arguments_to_parser(subparsers)
         AddArgs.add_subcommand_add_volume_arguments_to_parser(subparsers)
@@ -187,6 +190,38 @@ class AddArgs:
                             metavar='Verbose',
                             help="Verbose output",
                             gooey_options={'visible': AddArgs.SHOW_VERBOSE_ARG_IN_GUI})
+
+    @staticmethod
+    def add_subcommand_instructions_arguments_to_parser(subparsers):
+        logging.debug(f"### AddArgs.add_subcommand_instructions_arguments_to_parser() ###")
+
+        subparser_instructions = subparsers.add_parser(AddArgs.SUBCMD_INSTRUCTIONS,
+                                                 help=AddArgs.SUBCMD_INSTRUCTIONS + ' help',
+                                                 prog='Instructions',
+                                                 description='Filer Instructions')
+        description_text = '''
+        Filer's main functionality is to store information about filesystems within its inbuilt database and to search for filesystem entries stored in it using search strings and other criteria.
+        
+        A filesystem currently contains all the entries on a drive. Each filesystem has a unique label. The name of the drive's filesystem can be used as the label by default, but you can also use a different label if you wish.
+        
+        Filer is separated into various functions that you can perform on the database: 
+        - Filesystem Search
+        - Filesystem Duplicates Search.
+        
+        Filesystem entries consist of files and directories read from the drive listings together with with attributes.
+        
+        All filesystem entries are stored unless you choose to exclude them. . These include visible and hidden entries, as well as .         
+       
+        Before you can begin using Filer, you need to import some Filesystems. 
+        '''
+        subparser_instructions_group = subparser_instructions.add_argument_group(
+            'Filer Instructions',
+            description=description_text
+        )
+        AddArgs.add_argument(subparser_instructions_group, "--invisible_instructions", dest='invisible_instructions', metavar='Invisible Instructions',
+                             action='store_true', default=True,
+                             help="Invisible checkbox", gooey_options={'visible': False})
+
 
     @staticmethod
     def add_subcommand_filesystem_search_arguments_to_parser(subparsers):
@@ -465,7 +500,7 @@ class AddArgs:
             subparser_refresh_volumes = subparsers.add_parser(AddArgs.SUBCMD_REFRESH_VOLUMES, help=AddArgs.SUBCMD_REFRESH_VOLUMES+' help', prog='Refresh Volumes List', description='Refresh the List of Volumes that appear on the "Add_Volumes" action page.')
             subparser_refresh_volumes_group = subparser_refresh_volumes.add_argument_group(
                 'Refresh Volumes List',
-                description='Press the START Button, to Refresh the List of Volumes that appear on the "Add_Volumes" action page.'
+                description='Refresh the List of Volumes that appear on the "Add_Volumes" action page.'
             )
             AddArgs.add_argument(subparser_refresh_volumes_group, "--invisible", dest='invisible', metavar='Invisible',
                            action='store_true', default=True,

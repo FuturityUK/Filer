@@ -466,10 +466,11 @@ class F:
 
     def subcommand_refresh_volumes(self, args: []):
         logging.debug("### F.subcommand_refresh_volumes() ###")
+        """
         if not self.__program.question_yes_no("Do you want to refresh the volume list?"):
             # they selected No so don't refresh
             return
-
+        """
         self.prepare_volume_details()
         #print(self.volume_argument_details )
         volume_default_choice = self.configuration[self.CONFIG_VOL_DETAILS][self.VOL_ARG_DETAILS_DEFAULT_CHOICE]
