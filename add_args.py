@@ -200,19 +200,37 @@ class AddArgs:
                                                  prog='Instructions',
                                                  description='Filer Instructions')
         description_text = '''
-        Filer's main functionality is to store information about filesystems within its inbuilt database and to search for filesystem entries stored in it using search strings and other criteria.
+        Filer's main functionality is to store information about filesystems within its inbuilt database. 
+        The user can search for filesystem entries or duplicate entries stored in it using search strings and other criteria.
         
-        A filesystem currently contains all the entries on a drive. Each filesystem has a unique label. The name of the drive's filesystem can be used as the label by default, but you can also use a different label if you wish.
+        Terms:
+        - Drive: Physical drive such as a hard disk, USB drive, SD card or DVD disc.
+        - Volume: A volume is a mountable partition and associated with an independent filesystem.
+        - Filesystem: A filesystem contains the file system structure and data stored on a Volume.
+        - Filesystem entry: A file or directory within a filesystem.
+        
+        Each filesystem has a unique label and this label is used for all operations involving that filesystem. 
+
+        All filesystem entries for a filesystem are stored in the database, including hidden entries, together with their attributes.
         
         Filer is separated into various functions that you can perform on the database: 
         - Filesystem Search
         - Filesystem Duplicates Search.
+        - Add to Filesystem
+        - Refresh Volume List
+        - Delete Filesystem
         
-        Filesystem entries consist of files and directories read from the drive listings together with with attributes.
-        
-        All filesystem entries are stored unless you choose to exclude them. . These include visible and hidden entries, as well as .         
-       
-        Before you can begin using Filer, you need to import some Filesystems. 
+        Before you can search for files, at least one filesystem needs to be added to the database.
+        The process of adding a new filesystem is as follows:
+        1) Refresh Volume List:
+             This scans the computer for all drives and volumes and makes this information available for use.
+        2) Add to Filesystem:
+             This currently adds all the files from a filesystem to the database. 
+             In the future it will be able to add only selected files and directories.
+        3) Delete Filesystem:
+             Should a mistake be made, this will allow the deletion of a filesystem from the database.
+
+        The START BUTTON in the bottom right corner of the window is used to start the selected function.
         '''
         subparser_instructions_group = subparser_instructions.add_argument_group(
             'Filer Instructions',
