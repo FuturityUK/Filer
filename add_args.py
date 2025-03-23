@@ -465,7 +465,7 @@ class AddArgs:
             subparser_refresh_volumes = subparsers.add_parser(AddArgs.SUBCMD_REFRESH_VOLUMES, help=AddArgs.SUBCMD_REFRESH_VOLUMES+' help', prog='Refresh Volumes List', description='Refresh the List of Volumes that appear on the "Add_Volumes" action page.')
             subparser_refresh_volumes_group = subparser_refresh_volumes.add_argument_group(
                 'Refresh Volumes List',
-                description='Refresh the List of Volumes that appear on the "Add_Volumes" action page.'
+                description='Press the START Button, to Refresh the List of Volumes that appear on the "Add_Volumes" action page.'
             )
             AddArgs.add_argument(subparser_refresh_volumes_group, "--invisible", dest='invisible', metavar='Invisible',
                            action='store_true', default=True,

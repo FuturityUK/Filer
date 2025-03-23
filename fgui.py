@@ -201,15 +201,18 @@ class Fgui(Program):
             clear_before_run=True,# Was True
             show_stop_warning=True, # From test.py
             show_success_modal=False, # From test.py
-            show_failure_modal=False # From test.py
+            show_failure_modal=False, # From test.py
+            language_dir="."
             #dump_build_config = True,  # Dump the JSON Gooey uses to configure itself
             #load_build_config = 'gooey_config.json'  # Loads a JSON Gooey-generated configuration
         )
-    #@Gooey(optional_cols=2, program_name="Subparser Layout Demo")
     def main(self):
         #super().main()
         logging.info(f"### Fgui.main() ###")
         args = self.argument_parser.parse_args()
+
+        print(f"main.params:")
+        print(format())
 
         if not gooey_stdout():
             if F.SHOW_SUBMITTED_ARGS:
@@ -220,6 +223,7 @@ class Fgui(Program):
 
         # Now process the args
         self.f.process_args_and_call_subcommand(args)
+
 
 def print_help_and_exit():
     print(f"{Fgui.PROGRAM_NAME} - File Cataloger")
@@ -264,12 +268,14 @@ if __name__ == "__main__":
                 print("Unrecognised option.")
                 print("")
                 print_help_and_exit()
+
     new_parser = GooeyParser(
         # description="Filer - File Cataloger",
         description='Some words'  # , formatter_class=CustomHelpFormatter
     )
     fgui = Fgui(new_parser, False, db_filename)
     fgui.start()
+
 
 
 
