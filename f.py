@@ -509,12 +509,15 @@ class F:
                         break
                     else:
                         # Loop through dirs_to_process_filesystem_entry_ids:
-                        filesystem_entry = dirs_to_process_filesystem_entry_ids[0]
-                        filesystem_entry_id = filesystem_entry[0]
-                        print(f"filesystem_entry: '{filesystem_entry}'")
-                        print(f"filesystem_entry_id: '{filesystem_entry_id}'")
-                        self.database.find_directory_direct_children(filesystem_entry_id)
-
+                        for filesystem_entry in dirs_to_process_filesystem_entry_ids:
+                            # filesystem_entry = dirs_to_process_filesystem_entry_ids[0]
+                            filesystem_entry_id = filesystem_entry[0]
+                            print(f"filesystem_entry: '{filesystem_entry}'")
+                            print(f"filesystem_entry_id: '{filesystem_entry_id}'")
+                            dir_child_filesystem_entry_ids = self.database.find_directory_direct_children(filesystem_entry_id)
+                            self.print_message_based_on_parser(None, f"Found {len(dir_child_filesystem_entry_ids)} FilesystemEntryIDs:")
+                            for result in dir_child_filesystem_entry_ids:
+                                self.print_message_based_on_parser(None, f" - {result}")
 
                         self.print_message_based_on_parser(None,".")
 
