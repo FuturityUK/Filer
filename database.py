@@ -494,9 +494,9 @@ class Database:
         return filesystem_ids
 
     def find_directory_direct_children(self, parent_file_system_entry_id: int):
-        logging.debug(f"SQL Query: \"{self.__sql_dictionary["find_dir_direct_children"]}\"")
+        logging.debug(f"SQL Query: \"{self.__sql_dictionary["find_directory_direct_children"]}\"")
         logging.debug(f"parent_file_system_entry_id: \"{parent_file_system_entry_id}\"")
-        self.execute(self.__sql_dictionary["find_dir_direct_children"],
+        self.execute(self.__sql_dictionary["find_directory_direct_children"],
                      [parent_file_system_entry_id]  # Use [] as a single parameter
                      )
         filesystem_entries_ids = []

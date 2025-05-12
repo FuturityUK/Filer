@@ -247,18 +247,6 @@ class SQLDictionary:
                 AND FileSystemID = ?;
             ''',
 
-            """
-            "reset_filesystem_entries_directory_sizes": '''
-                UPDATE FilesystemEntries
-                SET ByteSize = -1
-                WHERE IsDirectory = 1
-                AND FileSystemID IN (
-                    SELECT FileSystemID
-                    FROM Filesystems
-                    WHERE Label = ?
-                );
-            ''',
-            """
             "find_directory_direct_children": '''
                 SELECT EntryName, ByteSize, IsDirectory 
                 FROM FilesystemEntries

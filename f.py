@@ -504,12 +504,19 @@ class F:
                                                        f"- '{result}' directories found and their file sizes reset: ")
 
                 while True:
-                    results = self.database.find_directories_with_only_child_entries_with_sizes(filesystem_id)
-                    if results is None or len(results) == 0:
+                    dirs_to_process_filesystem_entry_ids = self.database.find_directories_with_only_child_entries_with_sizes(filesystem_id)
+                    if dirs_to_process_filesystem_entry_ids is None or len(dirs_to_process_filesystem_entry_ids) == 0:
                         break
                     else:
-                        print(results[0])
-                        self.print_message_based_on_parser(None,"")
+                        # Loop through dirs_to_process_filesystem_entry_ids:
+                        filesystem_entry = dirs_to_process_filesystem_entry_ids[0]
+                        filesystem_entry_id = filesystem_entry[0]
+                        print(f"filesystem_entry: '{filesystem_entry}'")
+                        print(f"filesystem_entry_id: '{filesystem_entry_id}'")
+                        self.database.find_directory_direct_children(filesystem_entry_id)
+
+
+                        self.print_message_based_on_parser(None,".")
 
 
 
