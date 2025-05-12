@@ -152,6 +152,9 @@ class Database:
         else:
             return self.__cursor.lastrowid
 
+    def rows_affected(self):
+        return self.__cursor.rowcount
+
     def fetch_all_results(self):
         if self.__dry_run_mode:
             return None
@@ -268,7 +271,7 @@ class Database:
         return self.filesystem_search(filename, file_type, label, max_results, order_by, order_desc, False)
     """
 
-    def create_entry_search_sql_string(self, sql_string: str, sql_argument_array: [], clause_added: bool, entry_search: str, like: bool):
+    def create_entry_search_sql_string(self, sql_string: str, sql_argument_array: list, clause_added: bool, entry_search: str, like: bool):
         if entry_search is not None:
             if entry_search.count("%") == 0 and entry_search.count("_") == 0:
                 # We can replace this SQL "like" with an exact match '=' as it doesn't contain "like" special characters
@@ -290,7 +293,7 @@ class Database:
             clause_added = True
         return sql_string, sql_argument_array, clause_added
 
-    def create_volume_label_sql_string(self, sql_string: str, sql_argument_array: [], clause_added: bool, volume_label: str):
+    def create_volume_label_sql_string(self, sql_string: str, sql_argument_array: list, clause_added: bool, volume_label: str):
         # Label clause
         if volume_label is not None and volume_label != "" :
             print(f'volume_label: "{volume_label}"')
@@ -301,7 +304,7 @@ class Database:
             clause_added = True
         return sql_string, sql_argument_array, clause_added
 
-    def create_entry_type_sql_string(self, sql_string: str, sql_argument_array: [], clause_added: bool, entry_type: int):
+    def create_entry_type_sql_string(self, sql_string: str, sql_argument_array: list, clause_added: bool, entry_type: int):
         # Entry type clause
         if entry_type is not None and (entry_type == self.ENTRY_TYPE_FILES or entry_type == self.ENTRY_TYPE_DIRECTORIES):
             if clause_added:
@@ -311,7 +314,7 @@ class Database:
             clause_added = True
         return sql_string, sql_argument_array, clause_added
 
-    def create_gt_sql_string(self, sql_string: str, sql_argument_array: [], clause_added: bool, entry_size_gt: int):
+    def create_gt_sql_string(self, sql_string: str, sql_argument_array: list, clause_added: bool, entry_size_gt: int):
         # >= clause
         if entry_size_gt is not None:
             if clause_added:
@@ -321,7 +324,7 @@ class Database:
             clause_added = True
         return sql_string, sql_argument_array, clause_added
 
-    def create_lt_sql_string(self, sql_string: str, sql_argument_array: [], clause_added: bool, entry_size_lt: int):
+    def create_lt_sql_string(self, sql_string: str, sql_argument_array: list, clause_added: bool, entry_size_lt: int):
         # <= clause
         if entry_size_lt is not None:
             if clause_added:
@@ -331,14 +334,14 @@ class Database:
             clause_added = True
         return sql_string, sql_argument_array, clause_added
 
-    def create_join_sql_string(self, sql_string: str, sql_argument_array: [], clause_added: bool):
+    def create_join_sql_string(self, sql_string: str, sql_argument_array: list, clause_added: bool):
         # Add table join
         if clause_added:
             sql_string += " AND "
         sql_string += " " + self.__sql_dictionary["find_filename_join"]
         return sql_string, sql_argument_array, clause_added
 
-    def create_order_by_sql_string(self, sql_string: str, sql_argument_array: [], clause_added: bool, order_by: str):
+    def create_order_by_sql_string(self, sql_string: str, sql_argument_array: list, clause_added: bool, order_by: str):
         # Order By
         if order_by is not None:
             if order_by == AddArgs.SUBCMD_FILE_SEARCH_ORDER_FULL_PATH_ASCENDING: sql_string += " " + self.__sql_dictionary["find_filename_order_by_full_path"]
@@ -353,7 +356,7 @@ class Database:
             elif order_by == AddArgs.SUBCMD_DUPLICATES_SEARCH_ORDER_DUPLICATES_DESCENDING: sql_string += " " + self.__sql_dictionary["find_duplicates_order_by_duplicates"] + " DESC "
         return sql_string, sql_argument_array, clause_added
 
-    def create_limit_sql_string(self, sql_string: str, sql_argument_array: [], clause_added: bool, max_results: int):
+    def create_limit_sql_string(self, sql_string: str, sql_argument_array: list, clause_added: bool, max_results: int):
         # Limit results clause
         if max_results is not None:
             sql_string += self.__sql_dictionary["find_filename_limit_clause"]
@@ -361,53 +364,53 @@ class Database:
         return sql_string, sql_argument_array, clause_added
 
     @staticmethod
-    def create_close_sql_string(sql_string: str, sql_argument_array: [], clause_added: bool):
+    def create_close_sql_string(sql_string: str, sql_argument_array: list, clause_added: bool):
         sql_string += ";"
         return sql_string, sql_argument_array, clause_added
 
-    def create_group_by_sql_string(self, sql_string: str, sql_argument_array: [], clause_added: bool):
+    def create_group_by_sql_string(self, sql_string: str, sql_argument_array: list, clause_added: bool):
         # Add table join
         # Note: AND not needed before GROUP BY
         sql_string += " " + self.__sql_dictionary["find_duplicates_group_by"]
         return sql_string, sql_argument_array, clause_added
 
-    def run_find_sql(self, sql_string: str, sql_argument_array: []):
+    def run_find_sql(self, sql_string: str, sql_argument_array: list = None):
         # Run the SQL
         logging.debug(f"sql_string: {sql_string}")
         logging.debug(f"sql_argument_array: {sql_argument_array}")
         return self.find_filenames( sql_string, sql_argument_array )
+
+    def filesystem_shared_code(self, sql_string, sql_argument_array, clause_added, entry_search: str = None, volume_label: str = None, entry_type: int = None, entry_size_gt: int = None, entry_size_lt: int = None, like: bool = True):
+        sql_string, sql_argument_array, clause_added = self.create_entry_search_sql_string(sql_string, sql_argument_array, clause_added, entry_search, like)
+        sql_string, sql_argument_array, clause_added = self.create_volume_label_sql_string(sql_string, sql_argument_array, clause_added, volume_label)
+        sql_string, sql_argument_array, clause_added = self.create_entry_type_sql_string(sql_string, sql_argument_array, clause_added, entry_type)
+        sql_string, sql_argument_array, clause_added = self.create_gt_sql_string(sql_string, sql_argument_array, clause_added, entry_size_gt)
+        sql_string, sql_argument_array, clause_added = self.create_lt_sql_string(sql_string, sql_argument_array, clause_added, entry_size_lt)
+        return sql_string, sql_argument_array, clause_added
+
+    def filesystem_shared_code2(self, sql_string, sql_argument_array, clause_added, order_by: str = None, max_results: int = 100):
+        sql_string, sql_argument_array, clause_added = self.create_order_by_sql_string(sql_string, sql_argument_array, clause_added, order_by)
+        sql_string, sql_argument_array, clause_added = self.create_limit_sql_string(sql_string, sql_argument_array, clause_added, max_results)
+        sql_string, sql_argument_array, clause_added = self.create_close_sql_string(sql_string, sql_argument_array, clause_added)
+        return self.run_find_sql( sql_string, sql_argument_array )
 
     def filesystem_duplicates_search(self, entry_search: str = None, volume_label: str = None, entry_type: int = None, entry_category: str = None, entry_size_gt: int = None, entry_size_lt: int = None, order_by: str = None, max_results: int = 100, like: bool = True):
         # If entry_type is None: Any, 1: Directory, 0: Non-Directory
         sql_string = self.__sql_dictionary["find_duplicates_base"]
         sql_argument_array = []
         clause_added = False
-        sql_string, sql_argument_array, clause_added = self.create_entry_search_sql_string(sql_string, sql_argument_array, clause_added, entry_search, like)
-        sql_string, sql_argument_array, clause_added = self.create_volume_label_sql_string(sql_string, sql_argument_array, clause_added, volume_label)
-        sql_string, sql_argument_array, clause_added = self.create_entry_type_sql_string(sql_string, sql_argument_array, clause_added, entry_type)
-        sql_string, sql_argument_array, clause_added = self.create_gt_sql_string(sql_string, sql_argument_array, clause_added, entry_size_gt)
-        sql_string, sql_argument_array, clause_added = self.create_lt_sql_string(sql_string, sql_argument_array, clause_added, entry_size_lt)
+        sql_string, sql_argument_array, clause_added = self.filesystem_shared_code(sql_string, sql_argument_array, clause_added, entry_search, volume_label, entry_type, entry_size_gt, entry_size_lt, like)
         sql_string, sql_argument_array, clause_added = self.create_group_by_sql_string(sql_string, sql_argument_array, clause_added)
-        sql_string, sql_argument_array, clause_added = self.create_order_by_sql_string(sql_string, sql_argument_array, clause_added, order_by)
-        sql_string, sql_argument_array, clause_added = self.create_limit_sql_string(sql_string, sql_argument_array, clause_added, max_results)
-        sql_string, sql_argument_array, clause_added = self.create_close_sql_string(sql_string, sql_argument_array, clause_added)
-        return self.run_find_sql( sql_string, sql_argument_array )
+        return self.filesystem_shared_code2(sql_string, sql_argument_array, clause_added, order_by, max_results)
 
     def filesystem_search(self, entry_search: str = None, volume_label: str = None, entry_type: int = None, entry_category: str = None, entry_size_gt: int = None, entry_size_lt: int = None, order_by: str = None, max_results: int = 100, like: bool = True):
         # If entry_type is None: Any, 1: Directory, 0: Non-Directory
         sql_string = self.__sql_dictionary["find_filename_base"]
         sql_argument_array = []
         clause_added = False
-        sql_string, sql_argument_array, clause_added = self.create_entry_search_sql_string(sql_string, sql_argument_array, clause_added, entry_search, like)
-        sql_string, sql_argument_array, clause_added = self.create_volume_label_sql_string(sql_string, sql_argument_array, clause_added, volume_label)
-        sql_string, sql_argument_array, clause_added = self.create_entry_type_sql_string(sql_string, sql_argument_array, clause_added, entry_type)
-        sql_string, sql_argument_array, clause_added = self.create_gt_sql_string(sql_string, sql_argument_array, clause_added, entry_size_gt)
-        sql_string, sql_argument_array, clause_added = self.create_lt_sql_string(sql_string, sql_argument_array, clause_added, entry_size_lt)
+        sql_string, sql_argument_array, clause_added = self.filesystem_shared_code(sql_string, sql_argument_array, clause_added, entry_search, volume_label, entry_type, entry_size_gt, entry_size_lt, like)
         sql_string, sql_argument_array, clause_added = self.create_join_sql_string(sql_string, sql_argument_array, clause_added)
-        sql_string, sql_argument_array, clause_added = self.create_order_by_sql_string(sql_string, sql_argument_array, clause_added, order_by)
-        sql_string, sql_argument_array, clause_added = self.create_limit_sql_string(sql_string, sql_argument_array, clause_added, max_results)
-        sql_string, sql_argument_array, clause_added = self.create_close_sql_string(sql_string, sql_argument_array, clause_added)
-        return self.run_find_sql( sql_string, sql_argument_array )
+        return self.filesystem_shared_code2(sql_string, sql_argument_array, clause_added, order_by, max_results)
 
     def find_filenames(self,
                        sql: str,
@@ -490,6 +493,38 @@ class Database:
         logging.debug(f"{rows_found} results found")
         return filesystem_ids
 
+    def find_directory_direct_children(self, parent_file_system_entry_id: int):
+        logging.debug(f"SQL Query: \"{self.__sql_dictionary["find_dir_direct_children"]}\"")
+        logging.debug(f"parent_file_system_entry_id: \"{parent_file_system_entry_id}\"")
+        self.execute(self.__sql_dictionary["find_dir_direct_children"],
+                     [parent_file_system_entry_id]  # Use [] as a single parameter
+                     )
+        filesystem_entries_ids = []
+        rows_found = 0
+        select_result = self.fetch_all_results()
+        for row in select_result:
+            #print(row[0])
+            filesystem_entries_ids.append(row[0])
+            rows_found += 1
+        logging.debug(f"{rows_found} results found")
+        return filesystem_entries_ids
+
+    def find_directories_with_only_child_entries_with_sizes(self, parent_file_system_entry_id: int):
+        logging.debug(f"SQL Query: \"{self.__sql_dictionary["find_directories_with_only_child_entries_with_sizes"]}\"")
+        logging.debug(f"parent_file_system_entry_id: \"{parent_file_system_entry_id}\"")
+        self.execute(self.__sql_dictionary["find_directories_with_only_child_entries_with_sizes"],
+                     [parent_file_system_entry_id]  # Use [] as a single parameter
+                     )
+        filesystem_entries_ids = []
+        rows_found = 0
+        select_result = self.fetch_all_results()
+        for row in select_result:
+            #print(row[0])
+            filesystem_entries_ids.append(row[0])
+            rows_found += 1
+        logging.debug(f"{rows_found} results found")
+        return filesystem_entries_ids
+
     def insert_filesystem(self, label: str, drive_id: int, date: int):
         logging.debug(f"SQL Query: \"{self.__sql_dictionary["insert_filesystem"]}\"")
         logging.debug(f"label: \"{label}\", drive_id: \"{drive_id}\", date: \"{date}\"")
@@ -538,6 +573,17 @@ class Database:
         self.execute(self.__sql_dictionary["update_filesystem"],
                      (filesystem_id, date)  # () as a multiple parameters
                      )
+
+    def reset_dir_sizes(self, filesystem_id: int = None):
+        logging.debug(f"SQL Query: \"{self.__sql_dictionary["reset_filesystem_entries_directory_sizes"]}\"")
+        logging.debug(f"filesystem_id: \"{filesystem_id}\"")
+        result = self.execute(self.__sql_dictionary["reset_filesystem_entries_directory_sizes"],
+                     [filesystem_id]  # [] as a single parameter
+                     )
+        if isinstance(result, sqlite3.Error):
+            return result
+        else:
+            return self.rows_affected()
 
     def empty_table(self, table_name: str):
         ## FIX ##

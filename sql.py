@@ -243,8 +243,45 @@ class SQLDictionary:
             "reset_filesystem_entries_directory_sizes": '''
                 UPDATE FilesystemEntries
                 SET ByteSize = -1
-                WHERE IsDirectory = 1 AND FileSystemID = ?;
+                WHERE IsDirectory = 1
+                AND FileSystemID = ?;
+            ''',
+
+            """
+            "reset_filesystem_entries_directory_sizes": '''
+                UPDATE FilesystemEntries
+                SET ByteSize = -1
+                WHERE IsDirectory = 1
+                AND FileSystemID IN (
+                    SELECT FileSystemID
+                    FROM Filesystems
+                    WHERE Label = ?
+                );
+            ''',
+            """
+            "find_directory_direct_children": '''
+                SELECT EntryName, ByteSize, IsDirectory 
+                FROM FilesystemEntries
+                WHERE ParentFileSystemEntryID = ?;
+            ''',
+
+            "find_directories_with_only_child_entries_with_sizes": '''
+                SELECT FileSystemID, EntryName, ByteSize, IsDirectory, FullName
+                FROM FileSystemEntries
+                WHERE IsDirectory = 1
+                AND ByteSize = -1
+                AND FileSystemID = ?
+                AND FileSystemEntryID NOT IN (
+                    SELECT ParentFileSystemEntryID
+                    FROM FileSystemEntries
+                    WHERE ParentFileSystemEntryID IS NOT NULL
+                    AND IsDirectory = 1
+                    AND ByteSize = -1
+                    GROUP BY ParentFileSystemEntryID
+                    HAVING SUM(IsDirectory) > 0
+                );
             '''
+
 
         }
 

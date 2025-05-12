@@ -21,6 +21,7 @@ import time
 import socket
 import logging
 import json
+import sqlite3
 from file_system_processors import PowerShellFilesystemListing
 from database import Database
 from data import Data
@@ -466,6 +467,44 @@ class F:
 
     def subcommand_calculate_directory_sizes(self, args: []):
         logging.debug(f"### F.subcommand_calculate_directory_sizes() ###")
+        label = args.label if "label" in args else AddArgs.SUBCMD_FILE_SEARCH_LABEL_ALL_LABELS
+        volume_label = None if label == AddArgs.SUBCMD_FILE_SEARCH_LABEL_ALL_LABELS else label
+
+        results = None
+        if label == AddArgs.SUBCMD_FILE_SEARCH_LABEL_ALL_LABELS:
+            results = self.database.find_filesystem_labels()
+            if results is not None:
+                for temp_volume_label in results:
+                    print(f"Volume label: {temp_volume_label}")
+                    self.calculate_volume_directory_sizes(temp_volume_label)
+        else:
+            self.calculate_volume_directory_sizes(volume_label)
+
+    def calculate_volume_directory_sizes(self, volume_label: str):
+        # Find FilesystemID
+        results = self.database.find_filesystem_id(volume_label)
+        if results is not None:
+            results_len = len(results)
+            if results_len == 0:
+                self.print_message_based_on_parser(None,f"Error - No FilesystemID found for volume label: '{volume_label}'")
+            elif results_len != 1:
+                self.print_message_based_on_parser(None,f"Error - Found multi FilesystemIDs for volume label: '{volume_label}'")
+                self.print_message_based_on_parser(None, f"Found {len(results)} FilesystemIDs:")
+                for result in results:
+                    self.print_message_based_on_parser(None, f" - {result[0]}")
+            elif results_len == 1:
+                filesystem_id = results[0]
+                self.print_message_based_on_parser(None, f"'{volume_label}' has FilesystemID: '{filesystem_id}'")
+                self.print_message_based_on_parser(None,f"Resetting directory file sizes for volume label: '{volume_label}'")
+                result = self.database.reset_dir_sizes(filesystem_id)
+                if isinstance(result, sqlite3.Error):
+                    self.exit_cleanly(self.EXIT_ERROR, f"Error: {result}")
+                else:
+                    self.print_message_based_on_parser(None,
+                                                       f"- '{result}' directories found and their file sizes reset: ")
+                self.print_message_based_on_parser(None,"")
+
+
 
     def subcommand_refresh_volumes(self, args: []):
         logging.debug("### F.subcommand_refresh_volumes() ###")
