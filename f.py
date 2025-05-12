@@ -38,12 +38,12 @@ class F:
     SHOW_DB_FILENAME_ARG_IN_GUI: bool = False
     SHOW_DB_SELECTION: bool = False
     PROGRESS_INSERT_FREQUENCY: int = 10000
-    REUSE_TEMP_LISTING_FILE: bool = True
+    REUSE_TEMP_LISTING_FILE: bool = False
 
     EXIT_OK: int = 0 #
     EXIT_ERROR: int = 1 #
 
-    DEFAULT_TEMP_LISTING_FILE: str = 'filer.fwf'
+    DEFAULT_TEMP_LISTING_FILE: str = 'filer.fwf.test'
 
     VOL_ARG_DETAILS_CHOICES: str = 'choices'
     VOL_ARG_DETAILS_DEFAULT_CHOICE: str = 'default_choice'
@@ -464,6 +464,9 @@ class F:
 
         self.print_duplicates_search_result(select_results)
 
+    def subcommand_calculate_directory_sizes(self, args: []):
+        logging.debug(f"### F.subcommand_calculate_directory_sizes() ###")
+
     def subcommand_refresh_volumes(self, args: []):
         logging.debug("### F.subcommand_refresh_volumes() ###")
         """
@@ -871,9 +874,11 @@ class F:
             elif subcommand == AddArgs.SUBCMD_DUPLICATES_SEARCH:
                 self.subcommand_filesystem_duplicates_search(args)
 
+            elif subcommand == AddArgs.SUBCMD_CALC_DIR_SIZES:
+                self.subcommand_calculate_directory_sizes(args)
+
             elif subcommand == AddArgs.SUBCMD_ADD_VOLUME:
                 self.subcommand_add_volumes(args)
-
 
             elif subcommand == AddArgs.SUBCMD_DELETE_VOLUME:
                 self.subcommand_delete_volumes(args)

@@ -238,6 +238,12 @@ class SQLDictionary:
                 UPDATE FileSystems
                 SET DateAdded = ?
                 WHERE FileSystemID = ?; 
+            ''',
+
+            "reset_filesystem_entries_directory_sizes": '''
+                UPDATE FilesystemEntries
+                SET ByteSize = -1
+                WHERE IsDirectory = 1 AND FileSystemID = ?;
             '''
 
         }

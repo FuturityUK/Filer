@@ -13,6 +13,7 @@ class AddArgs:
     SUBCMD_INSTRUCTIONS: str = 'instructions'
     SUBCMD_FILE_SEARCH: str = 'file_search'
     SUBCMD_DUPLICATES_SEARCH: str = 'duplicates_search'
+    SUBCMD_CALC_DIR_SIZES: str = 'calc_dir_sizes'
     SUBCMD_REFRESH_VOLUMES: str = 'refresh_volumes'
     SUBCMD_ADD_VOLUME: str = 'add_volume'
     SUBCMD_DELETE_VOLUME: str = 'delete_volume'
@@ -85,6 +86,7 @@ class AddArgs:
             AddArgs.add_subcommand_instructions_arguments_to_parser(subparsers)
         AddArgs.add_subcommand_filesystem_search_arguments_to_parser(subparsers)
         AddArgs.add_subcommand_filesystem_duplicates_search_arguments_to_parser(subparsers)
+        AddArgs.add_subcommand_filesystem_calc_dir_sizes_arguments_to_parser(subparsers)
         AddArgs.add_subcommand_add_volume_arguments_to_parser(subparsers)
         AddArgs.add_subcommand_refresh_volumes_arguments_to_parser(subparsers)
         AddArgs.add_subcommand_delete_volume_arguments_to_parser(subparsers)
@@ -407,6 +409,23 @@ class AddArgs:
         """
         AddArgs.add_db_argument_to_parser(subparser_search_group)
         # AddArgs.add_verbose_argument_to_parser(subparser_search_group)
+
+    @staticmethod
+    def add_subcommand_filesystem_calc_dir_sizes_arguments_to_parser(subparsers):
+        logging.debug(f"### AddArgs.add_subcommand_filesystem_calc_dir_sizes_arguments_to_parser() ###")
+
+        subparser_calc_dir_sizes = subparsers.add_parser(AddArgs.SUBCMD_CALC_DIR_SIZES,
+                                                 help=AddArgs.SUBCMD_CALC_DIR_SIZES + ' help',
+                                                 prog='Calculate Directory Sizes',
+                                                 description='Calculate directory sizes based on filesystem entries')
+        subparser_calc_dir_sizes_group = subparser_calc_dir_sizes.add_argument_group(
+            'Calculate Directory Sizes',
+            description="Calculate directory sizes based on filesystem entries."
+        )
+
+        AddArgs.add_argument(subparser_calc_dir_sizes_group, "-l", "--label", dest='label', metavar='Volume Label',
+                             widget='Dropdown', nargs='?', default=None,
+                             help="Label of the drive listing to calculate directory sizes for.")
 
     @staticmethod
     def add_subcommand_add_volume_arguments_to_parser(subparsers):
