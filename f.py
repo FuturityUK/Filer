@@ -510,10 +510,25 @@ class F:
                     else:
                         # Loop through dirs_to_process_filesystem_entry_ids:
                         for filesystem_entry in dirs_to_process_filesystem_entry_ids:
-                            # filesystem_entry = dirs_to_process_filesystem_entry_ids[0]
-                            filesystem_entry_id = filesystem_entry[0]
                             print(f"filesystem_entry: '{filesystem_entry}'")
-                            print(f"filesystem_entry_id: '{filesystem_entry_id}'")
+                            filesystem_entry_id = filesystem_entry[0]
+                            entry_name = filesystem_entry[1]
+                            byte_size = filesystem_entry[2]
+                            is_directory = filesystem_entry[3]
+                            full_name = filesystem_entry[4]
+                            if(is_directory == 1 and byte_size != -1):
+                                self.print_message_based_on_parser(None,f" - FilesystemEntryID: '{filesystem_entry_id}'")
+                                self.print_message_based_on_parser(None,f" - EntryName: '{entry_name}'")
+                                self.print_message_based_on_parser(None,f" - ByteSize: '{byte_size}'")
+                                self.print_message_based_on_parser(None,f" - IsDirectory: '{is_directory}'")
+                                self.print_message_based_on_parser(None,f" - FullName: '{full_name}'")
+                                """
+                                result = self.database.calculate_directory_size(filesystem_entry_id, entry_name, byte_size)
+                                if isinstance(result, sqlite3.Error):
+                                    self.print_message_based_on_parser(None,f"Error: {result}")
+                                else:
+                                """
+                                self.exit_cleanly(self.EXIT_ERROR, f"Error: Directory with size detected")
                             dir_child_filesystem_entry_ids = self.database.find_directory_direct_children(filesystem_entry_id)
                             self.print_message_based_on_parser(None, f"Found {len(dir_child_filesystem_entry_ids)} FilesystemEntryIDs:")
                             for result in dir_child_filesystem_entry_ids:
