@@ -502,7 +502,14 @@ class F:
                 else:
                     self.print_message_based_on_parser(None,
                                                        f"- '{result}' directories found and their file sizes reset: ")
-                self.print_message_based_on_parser(None,"")
+
+                while True:
+                    results = self.database.find_directories_with_only_child_entries_with_sizes(filesystem_id)
+                    if results is None or len(results) == 0:
+                        break
+                    else:
+                        print(results[0])
+                        self.print_message_based_on_parser(None,"")
 
 
 

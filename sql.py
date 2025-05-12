@@ -266,12 +266,12 @@ class SQLDictionary:
             ''',
 
             "find_directories_with_only_child_entries_with_sizes": '''
-                SELECT FileSystemID, EntryName, ByteSize, IsDirectory, FullName
-                FROM FileSystemEntries
+                SELECT FilesystemEntryID, EntryName, ByteSize, IsDirectory, FullName
+                FROM FilesystemEntries
                 WHERE IsDirectory = 1
                 AND ByteSize = -1
                 AND FileSystemID = ?
-                AND FileSystemEntryID NOT IN (
+                AND FilesystemEntryID NOT IN (
                     SELECT ParentFileSystemEntryID
                     FROM FileSystemEntries
                     WHERE ParentFileSystemEntryID IS NOT NULL

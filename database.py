@@ -509,18 +509,24 @@ class Database:
         logging.debug(f"{rows_found} results found")
         return filesystem_entries_ids
 
-    def find_directories_with_only_child_entries_with_sizes(self, parent_file_system_entry_id: int):
+    def find_directories_with_only_child_entries_with_sizes(self, file_system_id: int):
         logging.debug(f"SQL Query: \"{self.__sql_dictionary["find_directories_with_only_child_entries_with_sizes"]}\"")
-        logging.debug(f"parent_file_system_entry_id: \"{parent_file_system_entry_id}\"")
+        logging.debug(f"file_system_id: \"{file_system_id}\"")
         self.execute(self.__sql_dictionary["find_directories_with_only_child_entries_with_sizes"],
-                     [parent_file_system_entry_id]  # Use [] as a single parameter
+                     [file_system_id]  # Use [] as a single parameter
                      )
         filesystem_entries_ids = []
         rows_found = 0
         select_result = self.fetch_all_results()
         for row in select_result:
             #print(row[0])
-            filesystem_entries_ids.append(row[0])
+            tmp_row = []
+            tmp_row.append(row[0])
+            tmp_row.append(row[1])
+            tmp_row.append(row[2])
+            tmp_row.append(row[3])
+            tmp_row.append(row[4])
+            filesystem_entries_ids.append(tmp_row)
             rows_found += 1
         logging.debug(f"{rows_found} results found")
         return filesystem_entries_ids
