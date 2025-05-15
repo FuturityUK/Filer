@@ -499,15 +499,7 @@ class Database:
         self.execute(self.__sql_dictionary["find_directory_direct_children"],
                      [parent_file_system_entry_id]  # Use [] as a single parameter
                      )
-        filesystem_entries_ids = []
-        rows_found = 0
-        select_result = self.fetch_all_results()
-        for row in select_result:
-            #print(row[0])
-            filesystem_entries_ids.append(row[0])
-            rows_found += 1
-        logging.debug(f"{rows_found} results found")
-        return filesystem_entries_ids
+        return self.build_array_of_results()
 
     def find_directories_with_only_child_entries_with_sizes(self, file_system_id: int):
         logging.debug(f"SQL Query: \"{self.__sql_dictionary["find_directories_with_only_child_entries_with_sizes"]}\"")
@@ -515,17 +507,15 @@ class Database:
         self.execute(self.__sql_dictionary["find_directories_with_only_child_entries_with_sizes"],
                      [file_system_id]  # Use [] as a single parameter
                      )
+        return self.build_array_of_results()
+
+    def build_array_of_results(self):
         filesystem_entries_ids = []
         rows_found = 0
         select_result = self.fetch_all_results()
         for row in select_result:
             #print(row[0])
-            tmp_row = []
-            tmp_row.append(row[0])
-            tmp_row.append(row[1])
-            tmp_row.append(row[2])
-            tmp_row.append(row[3])
-            tmp_row.append(row[4])
+            tmp_row = [row[0], row[1], row[2], row[3], row[4]]
             filesystem_entries_ids.append(tmp_row)
             rows_found += 1
         logging.debug(f"{rows_found} results found")

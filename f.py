@@ -481,7 +481,7 @@ class F:
             self.calculate_volume_directory_sizes(volume_label)
 
     def calculate_volume_directory_sizes(self, volume_label: str):
-        # Find FilesystemID
+        # Find FilesystemID of this volume label:
         results = self.database.find_filesystem_id(volume_label)
         if results is not None:
             results_len = len(results)
@@ -493,16 +493,18 @@ class F:
                 for result in results:
                     self.print_message_based_on_parser(None, f" - {result[0]}")
             elif results_len == 1:
+                # We have the FilesystemID
                 filesystem_id = results[0]
                 self.print_message_based_on_parser(None, f"'{volume_label}' has FilesystemID: '{filesystem_id}'")
                 self.print_message_based_on_parser(None,f"Resetting directory file sizes for volume label: '{volume_label}'")
-                result = self.database.reset_dir_sizes(filesystem_id)
-                if isinstance(result, sqlite3.Error):
-                    self.exit_cleanly(self.EXIT_ERROR, f"Error: {result}")
+                # Reset the directory sizes in the database for this volume label using the FilesystemID:
+                directories_reset = self.database.reset_dir_sizes(filesystem_id)
+                if isinstance(directories_reset, sqlite3.Error):
+                    self.exit_cleanly(self.EXIT_ERROR, f"Error: {directories_reset}")
                 else:
                     self.print_message_based_on_parser(None,
-                                                       f"- '{result}' directories found and their file sizes reset: ")
-
+                                                       f"- '{directories_reset}' directories found and their file sizes reset: ")
+                # Find directories to process that don't contain subdirectories with no size.
                 while True:
                     dirs_to_process_filesystem_entry_ids = self.database.find_directories_with_only_child_entries_with_sizes(filesystem_id)
                     if dirs_to_process_filesystem_entry_ids is None or len(dirs_to_process_filesystem_entry_ids) == 0:
@@ -510,12 +512,14 @@ class F:
                     else:
                         # Loop through dirs_to_process_filesystem_entry_ids:
                         for filesystem_entry in dirs_to_process_filesystem_entry_ids:
-                            print(f"filesystem_entry: '{filesystem_entry}'")
+                            # print(f"filesystem_entry: '{filesystem_entry}'")
                             filesystem_entry_id = filesystem_entry[0]
                             entry_name = filesystem_entry[1]
-                            byte_size = filesystem_entry[2]
+                            byte_size = int(filesystem_entry[2])
                             is_directory = filesystem_entry[3]
                             full_name = filesystem_entry[4]
+                            self.print_message_based_on_parser(None, f"filesystem_entry: {is_directory}, {str(byte_size).rjust(10)},"
+                                                                     f" '{entry_name}'")
                             if(is_directory == 1 and byte_size != -1):
                                 self.print_message_based_on_parser(None,f" - FilesystemEntryID: '{filesystem_entry_id}'")
                                 self.print_message_based_on_parser(None,f" - EntryName: '{entry_name}'")
@@ -529,10 +533,12 @@ class F:
                                 else:
                                 """
                                 self.exit_cleanly(self.EXIT_ERROR, f"Error: Directory with size detected")
+
+                            # Find the direct children of this directory
                             dir_child_filesystem_entry_ids = self.database.find_directory_direct_children(filesystem_entry_id)
-                            self.print_message_based_on_parser(None, f"Found {len(dir_child_filesystem_entry_ids)} FilesystemEntryIDs:")
                             for result in dir_child_filesystem_entry_ids:
                                 self.print_message_based_on_parser(None, f" - {result}")
+                            self.print_message_based_on_parser(None, f"Found {len(dir_child_filesystem_entry_ids)} FilesystemEntryIDs:")
 
                         self.print_message_based_on_parser(None,".")
 

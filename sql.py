@@ -248,7 +248,7 @@ class SQLDictionary:
             ''',
 
             "find_directory_direct_children": '''
-                SELECT EntryName, ByteSize, IsDirectory 
+                SELECT FilesystemEntryID, EntryName, ByteSize, IsDirectory, FullName 
                 FROM FilesystemEntries
                 WHERE ParentFileSystemEntryID = ?;
             ''',
