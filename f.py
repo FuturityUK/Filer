@@ -512,7 +512,8 @@ class F:
                     else:
                         # Loop through dirs_to_process_filesystem_entry_ids:
                         for filesystem_entry in dirs_to_process_filesystem_entry_ids:
-                            # print(f"filesystem_entry: '{filesystem_entry}'")
+                            # self.print_message_based_on_parser(None, f" - {filesystem_entry}")
+                            # FilesystemEntryID, EntryName, ByteSize, IsDirectory, FullName
                             filesystem_entry_id = filesystem_entry[0]
                             entry_name = filesystem_entry[1]
                             byte_size = int(filesystem_entry[2])
@@ -520,24 +521,33 @@ class F:
                             full_name = filesystem_entry[4]
                             self.print_message_based_on_parser(None, f"filesystem_entry: {is_directory}, {str(byte_size).rjust(10)},"
                                                                      f" '{entry_name}'")
-                            if(is_directory == 1 and byte_size != -1):
-                                self.print_message_based_on_parser(None,f" - FilesystemEntryID: '{filesystem_entry_id}'")
-                                self.print_message_based_on_parser(None,f" - EntryName: '{entry_name}'")
-                                self.print_message_based_on_parser(None,f" - ByteSize: '{byte_size}'")
-                                self.print_message_based_on_parser(None,f" - IsDirectory: '{is_directory}'")
-                                self.print_message_based_on_parser(None,f" - FullName: '{full_name}'")
-                                """
-                                result = self.database.calculate_directory_size(filesystem_entry_id, entry_name, byte_size)
-                                if isinstance(result, sqlite3.Error):
-                                    self.print_message_based_on_parser(None,f"Error: {result}")
-                                else:
-                                """
-                                self.exit_cleanly(self.EXIT_ERROR, f"Error: Directory with size detected")
-
                             # Find the direct children of this directory
+                            total_byte_size = 0
                             dir_child_filesystem_entry_ids = self.database.find_directory_direct_children(filesystem_entry_id)
-                            for result in dir_child_filesystem_entry_ids:
-                                self.print_message_based_on_parser(None, f" - {result}")
+                            for child_filesystem_entry in dir_child_filesystem_entry_ids:
+                                self.print_message_based_on_parser(None, f" - {child_filesystem_entry}")
+                                child_filesystem_entry_id = child_filesystem_entry[0]
+                                child_entry_name = child_filesystem_entry[1]
+                                child_byte_size = int(child_filesystem_entry[2])
+                                child_is_directory = child_filesystem_entry[3]
+                                child_full_name = child_filesystem_entry[4]
+                                total_byte_size += child_byte_size
+                                if(child_is_directory == 1 and child_byte_size != -1):
+                                    self.print_message_based_on_parser(None,f" - Child FilesystemEntryID: '{child_filesystem_entry_id}'")
+                                    self.print_message_based_on_parser(None,f" - Child EntryName: '{child_entry_name}'")
+                                    self.print_message_based_on_parser(None,f" - Child ByteSize: '{child_byte_size}'")
+                                    self.print_message_based_on_parser(None,f" - Child IsDirectory: '{child_is_directory}'")
+                                    self.print_message_based_on_parser(None,f" - Child FullName: '{child_full_name}'")
+                                    """
+                                    result = self.database.calculate_directory_size(filesystem_entry_id, entry_name, byte_size)
+                                    if isinstance(result, sqlite3.Error):
+                                        self.print_message_based_on_parser(None,f"Error: {result}")
+                                    else:
+                                    """
+                                    self.exit_cleanly(self.EXIT_ERROR, f"Error: Directory with size detected")
+
+                            self.print_message_based_on_parser(None, f" - TOTAL BYTE SYZE: '{total_byte_size}'")
+
                             self.print_message_based_on_parser(None, f"Found {len(dir_child_filesystem_entry_ids)} FilesystemEntryIDs:")
 
                         self.print_message_based_on_parser(None,".")
