@@ -232,7 +232,8 @@ def print_help_and_exit():
 
 if __name__ == "__main__":
     #my_logger = logging.getLogger(__name__)
-    F.start_logger(logging.DEBUG)
+    #F.start_logger(logging.DEBUG)
+    F.start_logger(logging.CRITICAL)
     logging.info(f"### Fgui.__main__ ###")
 
     # total arguments

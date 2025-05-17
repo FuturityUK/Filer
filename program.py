@@ -9,7 +9,8 @@ class Program:
     PROGRAM_NAME: str = 'Filer'
 
     def __init__(self, argument_parser, memory_stats: bool, database_filename: str = None): # : argparse.ArgumentParser
-        F.start_logger(logging.DEBUG)
+        #F.start_logger(logging.DEBUG)
+        F.start_logger(logging.CRITICAL)
         logging.debug(f"### Program.__init__() ###")
         self.argument_parser = argument_parser
         self.memory_stats = memory_stats

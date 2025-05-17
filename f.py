@@ -465,11 +465,13 @@ class F:
 
         self.print_duplicates_search_result(select_results)
 
-    def subcommand_calculate_directory_sizes(self, args: []):
-        logging.debug(f"### F.subcommand_calculate_directory_sizes() ###")
+    def subcommand_calculate_volume_directory_sizes(self, args: []):
+        logging.debug(f"### F.subcommand_calculate_volume_directory_sizes() ###")
         label = args.label if "label" in args else AddArgs.SUBCMD_FILE_SEARCH_LABEL_ALL_LABELS
         volume_label = None if label == AddArgs.SUBCMD_FILE_SEARCH_LABEL_ALL_LABELS else label
 
+        # Make sure that any previous database changes have been saved
+        self.database.commit()
         results = None
         if label == AddArgs.SUBCMD_FILE_SEARCH_LABEL_ALL_LABELS:
             results = self.database.find_filesystem_labels()
@@ -479,6 +481,8 @@ class F:
                     self.calculate_volume_directory_sizes(temp_volume_label)
         else:
             self.calculate_volume_directory_sizes(volume_label)
+        # If we have reached here, all updates have been made successfully, so save changes to the database,
+        self.database.commit()
 
     def calculate_volume_directory_sizes(self, volume_label: str):
         # Find FilesystemID of this volume label:
@@ -497,6 +501,7 @@ class F:
                 filesystem_id = results[0]
                 self.print_message_based_on_parser(None, f"'{volume_label}' has FilesystemID: '{filesystem_id}'")
                 self.print_message_based_on_parser(None,f"Resetting directory file sizes for volume label: '{volume_label}'")
+                """
                 # Reset the directory sizes in the database for this volume label using the FilesystemID:
                 directories_reset = self.database.reset_dir_sizes(filesystem_id)
                 if isinstance(directories_reset, sqlite3.Error):
@@ -504,14 +509,19 @@ class F:
                 else:
                     self.print_message_based_on_parser(None,
                                                        f"- '{directories_reset}' directories found and their file sizes reset: ")
+                """
                 # Find directories to process that don't contain subdirectories with no size.
                 while True:
                     dirs_to_process_filesystem_entry_ids = self.database.find_directories_with_only_child_entries_with_sizes(filesystem_id)
+                    self.print_message_based_on_parser(None,
+                                                       f"Directories to process: {len(dirs_to_process_filesystem_entry_ids)}")
+                    dirs_to_process_counter = 0
                     if dirs_to_process_filesystem_entry_ids is None or len(dirs_to_process_filesystem_entry_ids) == 0:
                         break
                     else:
                         # Loop through dirs_to_process_filesystem_entry_ids:
                         for filesystem_entry in dirs_to_process_filesystem_entry_ids:
+                            dirs_to_process_counter += 1
                             # self.print_message_based_on_parser(None, f" - {filesystem_entry}")
                             # FilesystemEntryID, EntryName, ByteSize, IsDirectory, FullName
                             filesystem_entry_id = filesystem_entry[0]
@@ -519,20 +529,32 @@ class F:
                             byte_size = int(filesystem_entry[2])
                             is_directory = filesystem_entry[3]
                             full_name = filesystem_entry[4]
-                            self.print_message_based_on_parser(None, f"filesystem_entry: {is_directory}, {str(byte_size).rjust(10)},"
-                                                                     f" '{entry_name}'")
+                            #self.print_message_based_on_parser(None, f"Parent filesystem_entry: {is_directory}, {str(byte_size).rjust(10)}, '{entry_name}'")
+                            if (is_directory == 1 and byte_size != -1):
+                                self.print_message_based_on_parser(None, f" - Parent FilesystemEntryID: '{filesystem_entry_id}'")
+                                self.print_message_based_on_parser(None, f" - Parent EntryName: '{entry_name}'")
+                                self.print_message_based_on_parser(None, f" - Parent ByteSize: '{byte_size}'")
+                                self.print_message_based_on_parser(None, f" - Parent IsDirectory: '{is_directory}'")
+                                self.print_message_based_on_parser(None, f" - Parent FullName: '{full_name}'")
+                                """
+                                result = self.database.calculate_directory_size(filesystem_entry_id, entry_name, byte_size)
+                                if isinstance(result, sqlite3.Error):
+                                    self.print_message_based_on_parser(None,f"Error: {result}")
+                                else:
+                                """
+                                self.exit_cleanly(self.EXIT_ERROR, f"Error: Parent Directory with size already set detected")
                             # Find the direct children of this directory
                             total_byte_size = 0
                             dir_child_filesystem_entry_ids = self.database.find_directory_direct_children(filesystem_entry_id)
                             for child_filesystem_entry in dir_child_filesystem_entry_ids:
-                                self.print_message_based_on_parser(None, f" - {child_filesystem_entry}")
+                                #self.print_message_based_on_parser(None, f" - {child_filesystem_entry}")
                                 child_filesystem_entry_id = child_filesystem_entry[0]
                                 child_entry_name = child_filesystem_entry[1]
                                 child_byte_size = int(child_filesystem_entry[2])
                                 child_is_directory = child_filesystem_entry[3]
                                 child_full_name = child_filesystem_entry[4]
                                 total_byte_size += child_byte_size
-                                if(child_is_directory == 1 and child_byte_size != -1):
+                                if(child_is_directory == 1 and child_byte_size == -1):
                                     self.print_message_based_on_parser(None,f" - Child FilesystemEntryID: '{child_filesystem_entry_id}'")
                                     self.print_message_based_on_parser(None,f" - Child EntryName: '{child_entry_name}'")
                                     self.print_message_based_on_parser(None,f" - Child ByteSize: '{child_byte_size}'")
@@ -544,11 +566,15 @@ class F:
                                         self.print_message_based_on_parser(None,f"Error: {result}")
                                     else:
                                     """
-                                    self.exit_cleanly(self.EXIT_ERROR, f"Error: Directory with size detected")
+                                    self.exit_cleanly(self.EXIT_ERROR, f"Error: Child Directory with no size detected")
 
-                            self.print_message_based_on_parser(None, f" - TOTAL BYTE SYZE: '{total_byte_size}'")
+                            self.print_message_based_on_parser(None, f"{dirs_to_process_counter}, Parent filesystem_entry: {entry_name}, TOTAL BYTE SYZE: '{total_byte_size}'")
+                            # Update the directory size in the database:
+                            result = self.database.update_dir_size(filesystem_entry_id, total_byte_size)
+                            #self.print_message_based_on_parser(None, f"Found {len(dir_child_filesystem_entry_ids)} FilesystemEntryIDs:")
+                            #self.database.commit()
+                            #exit()
 
-                            self.print_message_based_on_parser(None, f"Found {len(dir_child_filesystem_entry_ids)} FilesystemEntryIDs:")
 
                         self.print_message_based_on_parser(None,".")
 
@@ -733,7 +759,7 @@ class F:
         else:
             #print(f"Selecting database: \"{database_filename}\"")
             self.database = Database(database_filename)
-            self.database.set_verbose_mode(verbose)
+            #self.database.set_verbose_mode(verbose)
             # Apply any database upgrades
             self.database.upgrade_database()
 
@@ -755,7 +781,7 @@ class F:
             exit(2)
         print(f"Creating database file...")
         self.database = Database(database_filename)
-        self.database.set_verbose_mode(verbose)
+        #self.database.set_verbose_mode(verbose)
         # Create initial database structure
         self.database.create_database_structure()
         # Apply any database upgrades
@@ -951,8 +977,9 @@ class F:
         else:
             # These subcommands all need a working database connection
             verbose = args.verbose if "verbose" in args else False
-            if verbose is not None:
-                self.database.set_verbose_mode(verbose)
+            #if verbose is not None:
+            #    self.database.set_verbose_mode(verbose)
+
             start_time = time.time()
 
             if subcommand == AddArgs.SUBCMD_FILE_SEARCH:
@@ -962,7 +989,7 @@ class F:
                 self.subcommand_filesystem_duplicates_search(args)
 
             elif subcommand == AddArgs.SUBCMD_CALC_DIR_SIZES:
-                self.subcommand_calculate_directory_sizes(args)
+                self.subcommand_calculate_volume_directory_sizes(args)
 
             elif subcommand == AddArgs.SUBCMD_ADD_VOLUME:
                 self.subcommand_add_volumes(args)

@@ -1,8 +1,10 @@
+import logging
 
 class SQLDictionary:
     """ Class to SQL strings for various operations """
 
     def __init__(self):
+        logging.debug(f"### SQLDictionary.__init__() ###")
         self.sql_versions = {
             "1": "create_database_tables_and_indexes",
             "2": "modify_database_tables_and_indexes_v2",
@@ -238,6 +240,12 @@ class SQLDictionary:
                 UPDATE FileSystems
                 SET DateAdded = ?
                 WHERE FileSystemID = ?; 
+            ''',
+
+            "update_filesystem_entry_size": '''
+                UPDATE FilesystemEntries
+                SET ByteSize = ?
+                WHERE FilesystemEntryID = ?; 
             ''',
 
             "reset_filesystem_entries_directory_sizes": '''

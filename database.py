@@ -1,13 +1,13 @@
 import sqlite3
 import traceback
 import sys
+import logging
 from typing import (
     Iterable,
     Union,
     Optional,
 )
 from sql import SQLDictionary
-import logging
 from add_args import AddArgs
 
 class Database:
@@ -16,32 +16,38 @@ class Database:
 
     ENTRY_TYPE_FILES: int = 0
     ENTRY_TYPE_DIRECTORIES: int = 1
+    SET_TRACE_CALLBACK = True
 
     def __init__(self, path: str):
+        logging.debug(f"### Database.__init__() ###")
         self.__connection = self.create_connection(path)
         self.__cursor = self.create_cursor()
         self.__sql_dictionary = SQLDictionary().sql_dictionary
         self.__sql_versions = SQLDictionary().sql_versions
         self.__dry_run_mode = False
-        self.__verbose = False
+        self.set_verbose_mode(False)
         return
 
     def set_test(self, test: bool):
+        logging.debug(f"### Database.set_test() ###")
         self.__dry_run_mode = test
 
     def set_verbose_mode(self, verbose: bool):
+        logging.debug(f"### Database.set_verbose_mode(verbose: {verbose}) ###")
         self.__verbose = verbose
         if self.__verbose:
-            self.__connection.set_trace_callback(logging.debug)
+            self.__connection.set_trace_callback(print)
         else:
             self.__connection.set_trace_callback(None)
 
     def close_database(self):
+        logging.debug(f"### Database.close_database() ###")
         self.commit()
         self.close_cursor()
         self.close_connection()
 
     def create_connection(self, path: str):
+        logging.debug(f"### Database.create_connection(path: {path}) ###")
         self.__connection = None
         try:
             sqlite3.enable_callback_tracebacks(True)
@@ -54,6 +60,7 @@ class Database:
             else:
                 logging.debug("Connection to SQLite DB failed")
                 raise sqlite3.OperationalError("Connection to SQLite DB failed")
+            self.__connection.set_trace_callback(print)
         except sqlite3.OperationalError as e:
             print(f"sqlite3.OperationalError: '{e}'")
             exit(2)  # Exit with system code 2 to indicate and error
@@ -63,13 +70,16 @@ class Database:
         return self.__connection
 
     def close_connection(self):
+        logging.debug(f"### Database.close_connection() ###")
         self.__connection.close()
 
     def create_cursor(self):
+        logging.debug(f"### Database.create_cursor() ###")
         self.__cursor = self.__connection.cursor()
         return self.__cursor
 
     def close_cursor(self):
+        logging.debug(f"### Database.close_cursor() ###")
         self.__cursor.close()
 
     # Decorator function
@@ -101,7 +111,9 @@ class Database:
         :param parameters: Parameters to use in that statement - an iterable for ``where id = ?``
           parameters, or a dictionary for ``where id = :id``
         """
-        #logging.debug(sql)
+        logging.debug(f"### Database.execute() ###")
+        logging.debug(f"- sql: {sql}")
+        logging.debug(f"- parameters: {parameters}")
         try:
             if parameters is not None:
                 return self.__cursor.execute(sql, parameters)
@@ -123,7 +135,8 @@ class Database:
         Execute SQL statement and return a ``sqlite3.Cursor``.
         :param sql: SQL statement to execute
         """
-        logging.debug(sql)
+        logging.debug(f"### Database.executescript() ###")
+        logging.debug(f"- sql: {sql}")
         try:
             return self.__cursor.executescript(sql)
         except sqlite3.Error as err:
@@ -567,7 +580,14 @@ class Database:
         logging.debug(f"SQL Query: \"{self.__sql_dictionary["update_filesystem"]}\"")
         logging.debug(f"filesystem_id: \"{filesystem_id}\", date: \"{date}\"")
         self.execute(self.__sql_dictionary["update_filesystem"],
-                     (filesystem_id, date)  # () as a multiple parameters
+                     (date, filesystem_id)  # () as multiple parameters
+                     )
+
+    def update_dir_size(self, filesystem_entry_id: int, total_byte_size: int):
+        logging.debug(f"SQL Query: \"{self.__sql_dictionary["update_filesystem_entry_size"]}\"")
+        logging.debug(f"filesystem_entry_id: \"{filesystem_entry_id}\", total_byte_size: \"{total_byte_size}\"")
+        self.execute(self.__sql_dictionary["update_filesystem_entry_size"],
+                     (total_byte_size, filesystem_entry_id)  # () as multiple parameters
                      )
 
     def reset_dir_sizes(self, filesystem_id: int = None):
